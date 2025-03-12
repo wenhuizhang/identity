@@ -39,12 +39,12 @@ jobs:
           username: ${{ secrets.GHCR_USERNAME }}
           password: ${{ secrets.GHCR_TOKEN }}
 
-      - name: Build PyramID Backend
+      - name: Build PyramID Node
         uses: docker/build-push-action@v2
         with:
           context: .
           tags: ghcr.io/pyramid/backend:latest
-          file: ./deployments/docker/backend/webapi/Dockerfile
+          file: ./deployments/docker/pyramid/Dockerfile.node
           push: false
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache

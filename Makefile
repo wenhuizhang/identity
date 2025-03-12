@@ -5,11 +5,11 @@ do_generate_proto:
 	@echo "Generated proto files"
 
 do_stop_mongo:
-	./deployments/scripts/backend/stop_mongo.sh
+	./deployments/scripts/pyramid/stop_mongo.sh
 	@echo "Mongo stopped"
 
 do_start_mongo:
-	./deployments/scripts/backend/launch_mongo.sh
+	./deployments/scripts/pyramid/launch_mongo.sh
 	@echo "Mongo started at PORT 27017"
 
 do_stop_docs:
@@ -29,11 +29,11 @@ do_start_network:
 	@echo "PyramID network started"
 
 do_start_node:
-	./deployments/scripts/backend/launch_node.sh
+	./deployments/scripts/pyramid/launch_node.sh
 	@echo "Node started at http://localhost:4000"
 
 do_stop_node:
-	./deployments/scripts/backend/stop_node.sh
+	./deployments/scripts/pyramid/stop_node.sh
 	@echo "Node stopped"
 
 generate_proto: do_generate_proto

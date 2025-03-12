@@ -1,3 +1,0 @@
-# Client stuff
-
-TO DELETE

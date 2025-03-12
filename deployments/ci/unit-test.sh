@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DOCKER_FILE=./deployments/docker/backend/Dockerfile.test
+DOCKER_FILE=./deployments/docker/pyramid/Dockerfile.test
 TEST_COMMAND='go test -coverprofile=/mnt/coverage.out ./...'
 
 echo RUNNING TESTS

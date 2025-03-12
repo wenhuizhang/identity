@@ -101,7 +101,7 @@ echo "| |_/ / |_| | |     | |_\ \  __/ | | |  __/ | | (_| | ||  __/"
 echo "\____/ \___/\_|      \____/\___|_| |_|\___|_|  \__,_|\__\___|"
 echo ""
 
-rm -rvf ${PyramID_ROOT}/code/backend/internal/pkg/generated 2>&1 || true
+rm -rvf ${PyramID_ROOT}/code/pyramid/internal/pkg/generated 2>&1 || true
 
 cd "${PyramID_ROOT}/code/api-spec"
 

@@ -20,5 +20,5 @@ cd docker && \
   docker compose -f buf-compose.yaml build --no-cache && \
   docker compose -f buf-compose.yaml run --rm -w /pyramid/code/api-spec buf-go run.sh
 docker rmi docker-buf-go
-cd ../../backend/internal/pkg/generated/ && \
+cd ../../pyramid/internal/pkg/generated/ && \
   grep -rl gnostic . | xargs sed -i '' 's/gnostic/gnostic-models/g'

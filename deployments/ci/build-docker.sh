@@ -34,7 +34,7 @@ done
 
 case $DOCKER_IMAGE in
     $PROJECT-node*)
-        DOCKER_FILE=./deployments/docker/backend/webapi/Dockerfile
+        DOCKER_FILE=./deployments/docker/pyramid/node/Dockerfile.node
         ;;
     $PROJECT-docs*)
         DOCKER_FILE=./deployments/docker/docs/Dockerfile
