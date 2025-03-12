@@ -1,0 +1,7 @@
+services:
+  buf-go:
+    build:
+      context: ../../
+      dockerfile: scripts/docker/Dockerfile.buf
+    volumes:
+      - ../../:/pyramid/code

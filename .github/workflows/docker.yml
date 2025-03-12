@@ -1,0 +1,54 @@
+name: Docker
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  packages: write
+
+jobs:
+  docker:
+    name: Docker
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.GHCR_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Cache Docker layers
+        uses: actions/cache@v4
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.ref }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+
+      - name: Get current timestamp
+        id: timestamp
+        run: echo "::set-output name=timestamp::$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ secrets.GHCR_USERNAME }}
+          password: ${{ secrets.GHCR_TOKEN }}
+
+      - name: Build PyramID Backend
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          tags: ghcr.io/pyramid/backend:latest
+          file: ./deployments/docker/backend/webapi/Dockerfile
+          push: false
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache
+          build-args: |
+            VERSION=latest
+            BUILD_TIMESTAMP=${{ steps.timestamp.outputs.timestamp }}
+            COMMIT_HASH=${{ github.sha }}

@@ -1,0 +1,221 @@
+package main
+
+import (
+	"context"
+	"math"
+	"net/http"
+	"os"
+	"os/signal"
+	"time"
+
+	grpcservices "github.com/agntcy/pyramid/internal/node/services/grpc"
+	app_grpc_register "github.com/agntcy/pyramid/internal/pkg/generated"
+	"github.com/agntcy/pyramid/internal/pkg/grpcutil"
+	"github.com/agntcy/pyramid/internal/pkg/healthz"
+	"github.com/agntcy/pyramid/pkg/cmd"
+	"github.com/agntcy/pyramid/pkg/grpcserver"
+	"github.com/agntcy/pyramid/pkg/log"
+	"github.com/agntcy/pyramid/pkg/mongodb"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"github.com/rs/cors"
+	"github.com/sirupsen/logrus"
+	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/health/grpc_health_v1"
+	"google.golang.org/grpc/keepalive"
+)
+
+// ------------------------ GLOBAL -------------------- //
+
+var maxMsgSize = math.MaxInt64
+
+// ------------------------ GLOBAL -------------------- //
+
+func main() {
+	ctx, cancel := context.WithCancel(context.Background())
+
+	config, err := cmd.GetConfiguration[Configuration]()
+	if err != nil {
+		log.WithFields(logrus.Fields{log.ErrorField: err}).Fatal("failed to start")
+	}
+
+	// Configure log level
+	log.Init(config.GoEnv)
+	log.SetLogLevel(config.LogLevel)
+
+	log.Info("Starting in env:", config.GoEnv)
+
+	// Create a gRPC server object
+	var kaep = keepalive.EnforcementPolicy{
+		MinTime: time.Duration(
+			config.ServerGrpcKeepAliveEnvorcementPolicyMinTime,
+		) * time.Second, // If a client pings more than once every X seconds, terminate the connection
+		PermitWithoutStream: config.ServerGrpcKeepAliveEnvorcementPolicyPermitWithoutStream, // Allow pings even when there are no active streams
+	}
+
+	var kasp = keepalive.ServerParameters{
+		MaxConnectionIdle: time.Duration(
+			config.ServerGrpcKeepAliveServerParametersMaxConnectionIdle,
+		) * time.Second, // If a client is idle for X seconds, send a GOAWAY
+		Time: time.Duration(
+			config.ServerGrpcKeepAliveServerParametersTime,
+		) * time.Second, // Ping the client if it is idle for X seconds to ensure the connection is still active
+		Timeout: time.Duration(
+			config.ServerGrpcKeepAliveServerParametersTimeout,
+		) * time.Second, // Wait X second for the ping ack before assuming the connection is dead
+	}
+
+	mongoDbClient, err := mongodb.Connect(
+		ctx,
+		config.MongoDbHost,
+		config.MongoDbPort,
+		config.MongoDbUsername,
+		config.MongoDbPassword,
+		config.EnableTracing,
+		config.EnableDbLogs,
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer func() {
+		if err = mongodb.Disconnect(ctx, mongoDbClient); err != nil {
+			log.Fatal(err)
+		}
+	}()
+
+	dbContext := mongoDbClient.Database("pyramid_test")
+
+	// Create a GRPC server
+	grpcsrv, err := grpcserver.New(
+		config.ServerGrpcHost,
+		grpc.ChainUnaryInterceptor(),
+		grpc.StatsHandler(otelgrpc.NewServerHandler()),
+		grpc.MaxRecvMsgSize(maxMsgSize),
+		grpc.MaxSendMsgSize(maxMsgSize),
+		grpc.KeepaliveEnforcementPolicy(kaep),
+		grpc.KeepaliveParams(kasp),
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer grpcsrv.Shutdown(ctx)
+
+	// Healthz
+	healthzChecker := healthz.NewChecker(dbContext)
+
+	// Add Observability Metrics
+
+	err = pyramidService.CreateAirIfNeeded(ctx)
+	if err != nil {
+		log.WithFields(logrus.Fields{log.ErrorField: err}).
+			Error("failed to bootstrap an PyramID config")
+	}
+
+	register := app_grpc_register.GrpcServiceRegister{
+		DidServiceServer: grpcservices.NewDidService(),
+	}
+
+	register.RegisterGrpcHandlers(grpcsrv.Server)
+
+	grpc_health_v1.RegisterHealthServer(
+		grpcsrv.Server,
+		grpcservices.NewHealthService(healthzChecker),
+	)
+
+	// Serve gRPC server
+	log.Info("Serving gRPC on:", config.ServerGrpcHost)
+	go func() {
+		if err := grpcsrv.Run(); err != nil {
+			log.Fatal(err)
+		}
+	}()
+
+	// Create a client connection to the gRPC server we just started
+	// This is where the gRPC-Gateway proxies the requests
+
+	var kacp = keepalive.ClientParameters{
+		Time: time.Duration(
+			config.ClientGrpcKeepAliveClientParametersTime,
+		) * time.Second, // Ping the client if it is idle for X seconds to ensure the connection is still active
+		Timeout: time.Duration(
+			config.ClientGrpcKeepAliveClientParametersTimeout,
+		) * time.Second, // Wait X second for the ping ack before assuming the connection is dead
+		PermitWithoutStream: config.ClientGrpcKeepAliveClientParametersPermitWithoutStream, // Allow pings even when there are no active streams
+	}
+
+	conn, err := grpc.NewClient(
+		"0.0.0.0"+config.ServerGrpcHost,
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+		grpc.WithStatsHandler(otelgrpc.NewClientHandler()),
+		grpc.WithKeepaliveParams(kacp),
+		grpc.WithDefaultCallOptions(
+			grpc.MaxCallRecvMsgSize(maxMsgSize),
+			grpc.MaxCallSendMsgSize(maxMsgSize),
+		),
+	)
+	if err != nil {
+		log.Fatal("Failed to dial server:", err)
+	}
+
+	gwOpts := []runtime.ServeMuxOption{
+		runtime.WithHealthzEndpoint(grpc_health_v1.NewHealthClient(conn)),
+		runtime.WithIncomingHeaderMatcher(grpcutil.CustomMatcher),
+	}
+	gwmux := runtime.NewServeMux(gwOpts...)
+
+	err = register.RegisterHttpHandlers(ctx, gwmux, conn)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Setup cors for dev
+	options := cors.Options{
+		AllowedOrigins: []string{"*"},
+		AllowedMethods: []string{"PUT", "GET", "DELETE", "POST", "PATCH"},
+		AllowedHeaders: []string{
+			"X-Requested-With",
+			"content-type",
+			"Origin",
+			"Accept",
+			"Authorization",
+		},
+		AllowCredentials: true,
+
+		// Enable Debugging for testing, consider disabling in production
+		Debug: true,
+	}
+
+	// Check current env
+	if config.GoEnv != "development" {
+		options.Debug = false
+	}
+	c := cors.New(options)
+
+	gwServer := &http.Server{
+		Addr:              config.ServerHttpHost,
+		Handler:           c.Handler(gwmux),
+		WriteTimeout:      time.Duration(config.HttpServerWriteTimeout) * time.Second,
+		IdleTimeout:       time.Duration(config.HttpServerIdleTimeout) * time.Second,
+		ReadTimeout:       time.Duration(config.HttpServerReadTimeout) * time.Second,
+		ReadHeaderTimeout: time.Duration(config.HttpServerReadHeaderTimeout) * time.Second,
+	}
+	defer gwServer.Shutdown(ctx)
+
+	go func() {
+		log.Info("Serving gRPC-Gateway on:", config.ServerHttpHost)
+
+		if err := gwServer.ListenAndServe(); err != nil {
+			log.Fatal(err)
+		}
+	}()
+
+	interrupChannel := make(chan os.Signal, 1)
+	signal.Notify(interrupChannel, os.Interrupt)
+	<-interrupChannel
+
+	log.Info("Exiting the node")
+
+	cancel()
+}

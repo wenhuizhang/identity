@@ -1,0 +1,17 @@
+name: pyramid-docs
+services:
+  pyramid-docs:
+    container_name: pyramid-docs
+    pull_policy: always
+    build:
+      context: ../../../
+      dockerfile: deployments/docker/docs/Dockerfile
+    restart: always
+    ports:
+      - 3000:80
+    networks:
+      - pyramid-network
+
+networks:
+  pyramid-network:
+    external: true

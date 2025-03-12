@@ -1,0 +1,2310 @@
+# Generated with protoc-gen-openapi
+# https://github.com/google/gnostic/tree/master/cmd/protoc-gen-openapi
+
+openapi: 3.0.3
+info:
+    title: PyramID API
+    description: PyramID API
+    contact:
+        name: PyramID Team
+        url: https://github.com/cisco-eti/pyramid
+        email: outshift.pyramid@cisco.com
+    version: v1alpha1
+servers:
+    - url: http://0.0.0.0:4000
+      description: Local environment
+paths:
+    /v1alpha1/pyramid:
+        get:
+            tags:
+                - AirService
+            description: List PyramID instances.
+            operationId: AirService_ListAirs
+            parameters:
+                - name: page
+                  in: query
+                  description: The current page of the pagination
+                  schema:
+                    type: integer
+                    format: int32
+                - name: size
+                  in: query
+                  description: The page size of the pagination
+                  schema:
+                    type: integer
+                    format: int32
+                - name: query
+                  in: query
+                  description: The search query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ListAirsResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        post:
+            tags:
+                - AirService
+            description: Create a new PyramID instance.
+            operationId: AirService_CreateAir
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/Air'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Air'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1alpha1/pyramid/{pyramidId}:
+        get:
+            tags:
+                - AirService
+            description: Get an PyramID by id
+            operationId: AirService_GetAir
+            parameters:
+                - name: pyramidId
+                  in: path
+                  description: PyramID Id to get.
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Air'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        put:
+            tags:
+                - AirService
+            description: Update an PyramID.
+            operationId: AirService_UpdateAir
+            parameters:
+                - name: pyramidId
+                  in: path
+                  description: PyramID Id to update.
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/Air'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Air'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        delete:
+            tags:
+                - AirService
+            description: Delete an existing PyramID.
+            operationId: AirService_DeleteAir
+            parameters:
+                - name: pyramidId
+                  in: path
+                  description: PyramID Id to delete.
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1alpha1/pyramid/{pyramidId}/bindings:
+        get:
+            tags:
+                - BindingService
+            description: List PyramID bindings.
+            operationId: BindingService_ListBindings
+            parameters:
+                - name: pyramidId
+                  in: path
+                  description: The id of the PyramID instance
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ListBindingsResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        put:
+            tags:
+                - BindingService
+            description: Update the list of PyramID bindings for a specific PyramID instance.
+            operationId: BindingService_UpdateBindings
+            parameters:
+                - name: pyramidId
+                  in: path
+                  description: The id of the PyramID instance.
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/Binding'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/UpdateBindingsResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1alpha1/byof/functions:
+        post:
+            tags:
+                - ByofService
+            description: Create a new Byof function.
+            operationId: ByofService_CreateByofFunction
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/ByofFunction'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ByofFunction'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1alpha1/byof/functions/{functionId}:
+        get:
+            tags:
+                - ByofService
+            description: Get a Byof function by id
+            operationId: ByofService_GetByofFunction
+            parameters:
+                - name: functionId
+                  in: path
+                  description: Byof function Id to get.
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ByofFunction'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        put:
+            tags:
+                - ByofService
+            description: Update an Byof Function.
+            operationId: ByofService_UpdateByofFunction
+            parameters:
+                - name: functionId
+                  in: path
+                  description: Byof function Id to update.
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/ByofFunction'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ByofFunction'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        delete:
+            tags:
+                - ByofService
+            description: Delete an existing Byof Function.
+            operationId: ByofService_DeleteByofFunction
+            parameters:
+                - name: functionId
+                  in: path
+                  description: Byof Id to delete.
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1alpha1/byof/functions/{functionId}/publish:
+        post:
+            tags:
+                - ByofService
+            description: Publish a Byof function.
+            operationId: ByofService_PublishByofFunction
+            parameters:
+                - name: functionId
+                  in: path
+                  description: Byof function Id to publish.
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/PublishByofFunctionRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1alpha1/byof/functions/{functionId}/test:
+        post:
+            tags:
+                - ByofService
+            description: Test a Byof function.
+            operationId: ByofService_TestByofFunction
+            parameters:
+                - name: functionId
+                  in: path
+                  description: Byof function Id to get.
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/TestByofFunctionRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/TestByofFunctionResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1alpha1/catalogs:
+        get:
+            tags:
+                - CatalogService
+            description: List Catalogs.
+            operationId: CatalogService_ListCatalogs
+            parameters:
+                - name: page
+                  in: query
+                  description: The current page of the pagination
+                  schema:
+                    type: integer
+                    format: int32
+                - name: size
+                  in: query
+                  description: The page size of the pagination
+                  schema:
+                    type: integer
+                    format: int32
+                - name: query
+                  in: query
+                  description: The search query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ListCatalogsResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        post:
+            tags:
+                - CatalogService
+            description: Create a new Catalog.
+            operationId: CatalogService_CreateCatalog
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/Catalog'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Catalog'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1alpha1/catalogs/{catalogId}:
+        get:
+            tags:
+                - CatalogService
+            description: Get Catalog by id
+            operationId: CatalogService_GetCatalog
+            parameters:
+                - name: catalogId
+                  in: path
+                  description: Catalog Id to get.
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Catalog'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        put:
+            tags:
+                - CatalogService
+            description: Update an Catalog.
+            operationId: CatalogService_UpdateCatalog
+            parameters:
+                - name: catalogId
+                  in: path
+                  description: Catalog Id to update.
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/Catalog'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Catalog'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        delete:
+            tags:
+                - CatalogService
+            description: Delete an existing Catalog.
+            operationId: CatalogService_DeleteCatalog
+            parameters:
+                - name: catalogId
+                  in: path
+                  description: Catalog Id to delete.
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1alpha1/catalogs/{catalogId}/search:
+        post:
+            tags:
+                - CatalogService
+            description: Search Catalog by tags for a specific framework
+            operationId: CatalogService_SearchCatalog
+            parameters:
+                - name: catalogId
+                  in: path
+                  description: Catalog Id to get.
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/SearchCatalogRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/SearchCatalogResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1alpha1/catalogs/{catalogId}/sources:
+        get:
+            tags:
+                - SourceService
+            description: List Catalogs.
+            operationId: SourceService_ListSources
+            parameters:
+                - name: catalogId
+                  in: path
+                  description: Catalog Id.
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ListSourcesResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        post:
+            tags:
+                - SourceService
+            description: Create a new source.
+            operationId: SourceService_CreateSource
+            parameters:
+                - name: catalogId
+                  in: path
+                  description: Catalog Id to add the source to.
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/CreateSourceRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CreateSourceResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1alpha1/catalogs/{catalogId}/sources/{sourceId}:
+        put:
+            tags:
+                - SourceService
+            description: Create a new source.
+            operationId: SourceService_UpdateSource
+            parameters:
+                - name: catalogId
+                  in: path
+                  description: Catalog Id to add the source to.
+                  required: true
+                  schema:
+                    type: string
+                - name: sourceId
+                  in: path
+                  description: The id of the source to update
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/UpdateSourceRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/UpdateSourceResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        delete:
+            tags:
+                - SourceService
+            description: Delete an existing Catalog.
+            operationId: SourceService_DeleteSource
+            parameters:
+                - name: catalogId
+                  in: path
+                  description: Catalog Id to delete the source from.
+                  required: true
+                  schema:
+                    type: string
+                - name: sourceId
+                  in: path
+                  description: The id of the source to delete.
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1alpha1/executor/functions/{functionId}/execute:
+        post:
+            tags:
+                - ExecutorService
+            description: Execute a specific function.
+            operationId: ExecutorService_ExecuteFunction
+            parameters:
+                - name: functionId
+                  in: path
+                  description: Function Id to execute.
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/ExecuteFunctionRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ExecuteFunctionResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1alpha1/iam/authorization-contexts:
+        get:
+            tags:
+                - IamService
+            description: List AuthorizationContexts.
+            operationId: IamService_ListAuthorizationContexts
+            parameters:
+                - name: page
+                  in: query
+                  description: The current page of the pagination
+                  schema:
+                    type: integer
+                    format: int32
+                - name: size
+                  in: query
+                  description: The page size of the pagination
+                  schema:
+                    type: integer
+                    format: int32
+                - name: query
+                  in: query
+                  description: The search query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ListAuthorizationContextsResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        post:
+            tags:
+                - IamService
+            description: Create a new AuthorizationContext.
+            operationId: IamService_CreateAuthorizationContext
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/AuthorizationContext'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/AuthorizationContext'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1alpha1/iam/authorization-contexts/{authorizationContextId}:
+        get:
+            tags:
+                - IamService
+            description: Get AuthorizationContext by id
+            operationId: IamService_GetAuthorizationContext
+            parameters:
+                - name: authorizationContextId
+                  in: path
+                  description: AuthorizationContext Id to get.
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/AuthorizationContext'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        put:
+            tags:
+                - IamService
+            description: Update an AuthorizationContext.
+            operationId: IamService_UpdateAuthorizationContext
+            parameters:
+                - name: authorizationContextId
+                  in: path
+                  description: AuthorizationContext Id to update.
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/AuthorizationContext'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/AuthorizationContext'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        delete:
+            tags:
+                - IamService
+            description: Delete an existing AuthorizationContext.
+            operationId: IamService_DeleteAuthorizationContext
+            parameters:
+                - name: authorizationContextId
+                  in: path
+                  description: AuthorizationContext Id to delete.
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1alpha1/iam/authorization-contexts/{authorizationContextId}/search:
+        post:
+            tags:
+                - IamService
+            description: Search AuthorizationContext.
+            operationId: IamService_SearchAuthorizationContext
+            parameters:
+                - name: authorizationContextId
+                  in: path
+                  description: AuthorizationContext Id to update.
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/SearchAuthorizationContextRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/SearchAuthorizationContextResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1alpha1/iam/authorization-contexts/{authorizationContextId}/test:
+        get:
+            tags:
+                - IamService
+            description: Test an AuthorizationContext.
+            operationId: IamService_TestAuthorizationContext
+            parameters:
+                - name: authorizationContextId
+                  in: path
+                  description: AuthorizationContext Id to update.
+                  required: true
+                  schema:
+                    type: string
+                - name: username
+                  in: query
+                  description: Username to test.
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/TestAuthorizationContextResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+components:
+    schemas:
+        Air:
+            type: object
+            properties:
+                id:
+                    type: string
+                    description: A unique identifier for the PyramID instance.
+                catalogId:
+                    type: string
+                    description: The ID of the PyramID Catalog.
+                authorizationContextId:
+                    type: string
+                    description: The identifier for the PyramID Authorization context.
+            description: An PyramID instance
+        AirHeader:
+            type: object
+            properties:
+                name:
+                    type: string
+                    description: Header name.
+                value:
+                    type: string
+                    description: Header value.
+        Any:
+            type: object
+            properties:
+                value:
+                    $ref: '#/components/schemas/GoogleProtobufAny'
+                yaml:
+                    type: string
+        AuthorizationContext:
+            type: object
+            properties:
+                id:
+                    type: string
+                    description: |-
+                        ID is a unique identifier for the authorization context, used to distinguish
+                         it from other contexts within the system.
+                authorizationParameters:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/AuthorizationParameters'
+                    description: Allowed Authorization Parameters.
+                managedDirectory:
+                    allOf:
+                        - $ref: '#/components/schemas/ManagedDirectory'
+                    description: Managed Directory for the AD sync.
+            description: |-
+                AuthorizationContext represents the configuration used to authorize entities
+                 calling functions within the configured data sources.
+        AuthorizationParameters:
+            type: object
+            properties:
+                issuer:
+                    type: string
+                    description: Allowed Authorization issuer.
+                aud:
+                    type: string
+                    description: Allowed audience.
+                cids:
+                    type: array
+                    items:
+                        type: string
+                    description: Allowed Authorization clients.
+                scopes:
+                    type: array
+                    items:
+                        type: string
+                    description: Allowed Authorization scopes.
+            description: Authorization Parameters
+        Binding:
+            type: object
+            properties:
+                id:
+                    type: string
+                    description: An unique identifier for the binding.
+                type:
+                    enum:
+                        - BINDING_TYPE_UNSPECIFIED
+                        - BINDING_TYPE_GROUP
+                        - BINDING_TYPE_SERVICE
+                    type: string
+                    description: Type specifies the type of the binding, as defined by BindingType.
+                    format: enum
+                pyramidId:
+                    type: string
+                    description: AirID is the identifier of the PyramID instance associated with this binding.
+                groups:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/Group'
+                    description: |-
+                        Groups is a list of allowed user groups associated with this binding,
+                         mapping group members to accessible domains within data sources.
+                services:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/ServiceAccount'
+                    description: |-
+                        Services is a list of allowed service accounts associated with this binding,
+                         mapping service accounts to accessible domains within data sources.
+                domainIds:
+                    type: array
+                    items:
+                        type: string
+                    description: |-
+                        DomainIDs is a list of allowed domain identifiers associated with this binding,
+                         specifying the domains in data sources that the groups or service accounts can access.
+            description: |-
+                Binding represents an association between groups or service accounts and
+                 domains, defining what domains within data sources can be accessed by
+                 specific groups or service accounts in an PyramID instance.
+        ByofFunction:
+            type: object
+            properties:
+                id:
+                    type: string
+                    description: |-
+                        ID is a unique identifier for the function, used to distinguish it
+                         from other functions within the system.
+                catalogId:
+                    type: string
+                    description: CatalogID is a reference to the catalog that this function belongs to.
+                type:
+                    enum:
+                        - BYOF_FUNCTION_TYPE_UNSPECIFIED
+                        - BYOF_FUNCTION_TYPE_GENERAL
+                        - BYOF_FUNCTION_TYPE_SPLUNK
+                    type: string
+                    description: Type specifies the type of the function, as defined by ByofFunctionType.
+                    format: enum
+                runtimeType:
+                    enum:
+                        - BYOF_FUNCTION_RUNTIME_TYPE_UNSPECIFIED
+                        - BYOF_FUNCTION_RUNTIME_TYPE_PYTHON
+                    type: string
+                    description: |-
+                        RuntimeType specifies the runtime environment for the function,
+                         as defined by ByofFunctionRuntimeType.
+                    format: enum
+                name:
+                    type: string
+                    description: |-
+                        Name is the human-readable name of the function, providing a descriptive
+                         label that summarizes the function's purpose or functionality.
+                description:
+                    type: string
+                    description: |-
+                        Description offers a human-readable explanation of the function's purpose,
+                         detailing what the function does and its role within the system.
+                implementation:
+                    type: string
+                    description: |-
+                        Implementation contains the code that defines the function's behavior.
+                         Check ByofFunctionRuntimeType to see the supported environments.
+                         Required when choosing ByofFunctionType_BYOF_FUNCTION_TYPE_GENERAL as a type.
+                arguments:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/Parameter'
+                    description: Arguments is a list of parameters that the function accepts when called.
+                returnValues:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/Parameter'
+                    description: ReturnValues is a list of parameters that the function returns upon execution.
+                optimizedImplementation:
+                    type: string
+                    description: OptimizedImplementation contains an LLM optimized version of the function's code.
+                splunkQuery:
+                    type: string
+                    description: |-
+                        SplunkQuery contains a query specific to Splunk, used to perform searches
+                         or retrieve data from a Splunk instance.
+                         Required when choosing ByofFunctionType_BYOF_FUNCTION_TYPE_SPLUNK as a type.
+            description: |-
+                ByofFunction represents a "Bring Your Own Function" (BYOF) configuration,
+                 including metadata, implementation details, and function parameters.
+        Catalog:
+            type: object
+            properties:
+                id:
+                    type: string
+                    description: |-
+                        ID is a unique identifier for the data catalog, used to distinguish it
+                         from other catalogs within the system.
+                name:
+                    type: string
+                    description: A human-readable name for the data Catalog.
+                description:
+                    type: string
+                    description: A human-readable description for the data Catalog.
+            description: |-
+                Catalog represents a data catalog within an PyramID instance, providing
+                 a structured collection of metadata about available data resources.
+        CreateSourceRequest:
+            type: object
+            properties:
+                catalogId:
+                    type: string
+                    description: Catalog Id to add the source to.
+                name:
+                    type: string
+                    description: A human-readable name for the Source.
+                description:
+                    type: string
+                    description: A human-readable description for the Source.
+                type:
+                    enum:
+                        - SOURCE_TYPE_UNSPECIFIED
+                        - SOURCE_TYPE_OPEN_API
+                        - SOURCE_TYPE_SPLUNK_ENT
+                        - SOURCE_TYPE_SALESFORCE
+                    type: string
+                    description: Source type.
+                    format: enum
+                openApiParameters:
+                    allOf:
+                        - $ref: '#/components/schemas/OpenApiParameters'
+                    description: OpenAPI source parameters
+                splunkEntParameters:
+                    allOf:
+                        - $ref: '#/components/schemas/SplunkEntParameters'
+                    description: Splunk Enterprise source parameters
+                salesforceParameters:
+                    allOf:
+                        - $ref: '#/components/schemas/SalesforceParameters'
+                    description: Salesforce source parameters
+        CreateSourceResponse:
+            type: object
+            properties:
+                source:
+                    $ref: '#/components/schemas/Source'
+        Domain:
+            type: object
+            properties:
+                id:
+                    type: string
+                    description: |-
+                        ID is a unique identifier for the Domain, used to distinguish it
+                         from other domains within the system.
+                name:
+                    type: string
+                    description: |-
+                        Name is a human-readable name for the Domain, providing an easily
+                         recognizable and descriptive label for the domain's purpose or area of functionality.
+                description:
+                    type: string
+                    description: |-
+                        Description offers a human-readable explanation of the Domain's purpose,
+                         detailing what the domain encompasses and its role within the system.
+                functions:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/Function'
+                    description: |-
+                        Functions is a list of functions exposed by the Domain. These functions
+                         represent the operations or services provided by the domain, allowing
+                         interaction with the domain's capabilities.
+            description: |-
+                Domain represents a logical grouping of functions and metadata,
+                 providing a unique identity and description for a specific domain of functionality.
+        Encoding:
+            type: object
+            properties:
+                contentType:
+                    type: string
+                headers:
+                    $ref: '#/components/schemas/HeadersOrReferences'
+                style:
+                    type: string
+                explode:
+                    type: boolean
+                allowReserved:
+                    type: boolean
+                specificationExtension:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/NamedAny'
+            description: A single encoding definition applied to a single schema property.
+        Encodings:
+            type: object
+            properties:
+                additionalProperties:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/NamedEncoding'
+        Example:
+            type: object
+            properties:
+                summary:
+                    type: string
+                description:
+                    type: string
+                value:
+                    $ref: '#/components/schemas/Any'
+                externalValue:
+                    type: string
+                specificationExtension:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/NamedAny'
+        ExampleOrReference:
+            type: object
+            properties:
+                example:
+                    $ref: '#/components/schemas/Example'
+                reference:
+                    $ref: '#/components/schemas/Reference'
+        ExamplesOrReferences:
+            type: object
+            properties:
+                additionalProperties:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/NamedExampleOrReference'
+        ExecuteFunctionRequest:
+            type: object
+            properties:
+                functionId:
+                    type: string
+                    description: Function Id to execute.
+                headers:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/AirHeader'
+                    description: 'Headers for the function: provide authentication.'
+                arguments:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/ParameterValue'
+                    description: Function arguments with values.
+        ExecuteFunctionResponse:
+            type: object
+            properties:
+                returnValues:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/ParameterValue'
+                    description: Function return values.
+        ExternalDocumentation:
+            type: object
+            properties:
+                description:
+                    type: string
+                    description: |-
+                        A short description of the target documentation. GFM syntax can be used for
+                         rich text representation.
+                url:
+                    type: string
+                    description: |-
+                        The URL for the target documentation. Value MUST be in the format
+                         of a URL.
+            description: |-
+                `ExternalDocumentation` is a representation of OpenAPI v2 specification's
+                 ExternalDocumentation object.
+
+                 See: https://github.com/OAI/OpenAPI-Specification/blob/3.0.0/versions/2.0.md#externalDocumentationObject
+
+                 Example:
+
+                  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+                    ...
+                    external_docs: {
+                      description: "More about gRPC-Gateway";
+                      url: "https://github.com/grpc-ecosystem/grpc-gateway";
+                    }
+                    ...
+                  };
+        Function:
+            type: object
+            properties:
+                id:
+                    type: string
+                    description: |-
+                        ID is a unique identifier for the function, used to distinguish it
+                         from other functions.
+                name:
+                    type: string
+                    description: |-
+                        Name is the identifier for the function. It must consist of alphanumeric
+                         characters, underscores, or dashes, with a maximum length of 64 characters.
+                description:
+                    type: string
+                    description: |-
+                        Description provides a brief explanation of the function's purpose and usage,
+                         which is used by the model to determine when and how to call the function.
+                type:
+                    enum:
+                        - FUNCTION_TYPE_UNSPECIFIED
+                        - FUNCTION_TYPE_HTTP
+                        - FUNCTION_TYPE_BYOF
+                    type: string
+                    description: Type specifies the type of the function, as defined by FunctionType.
+                    format: enum
+                arguments:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/Parameter'
+                    description: Arguments is a list of parameters that the function accepts when called.
+                returnValues:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/Parameter'
+                    description: ReturnValues is a list of parameters that the function returns upon execution.
+                feid:
+                    type: string
+                    description: |-
+                        Feid is a function execution identifier, used to execute the function
+                         in the runtime environment.
+                auths:
+                    type: array
+                    items:
+                        type: string
+                    description: |-
+                        Auths is a list of identifiers for custom authentication methods used
+                         during the function's execution.
+            description: Function represents a callable function with specified arguments and return values.
+        GoogleProtobufAny:
+            type: object
+            properties:
+                '@type':
+                    type: string
+                    description: The type of the serialized message.
+            additionalProperties: true
+            description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
+        GoogleProtobufValue:
+            description: Represents a dynamically typed value which can be either null, a number, a string, a boolean, a recursive struct value, or a list of values.
+        Group:
+            type: object
+            properties:
+                id:
+                    type: string
+                    description: An unique identifier for the group.
+                name:
+                    type: string
+                    description: A name for the group.
+            description: |-
+                Group represents a collection of users or entities,
+                 identified by a unique ID and a name.
+        Header:
+            type: object
+            properties:
+                description:
+                    type: string
+                    description: '`Description` is a short description of the header.'
+                type:
+                    type: string
+                    description: The type of the object. The value MUST be one of "string", "number", "integer", or "boolean". The "array" type is not supported.
+                format:
+                    type: string
+                    description: '`Format` The extending format for the previously mentioned type.'
+                default:
+                    type: string
+                    description: |-
+                        `Default` Declares the value of the header that the server will use if none is provided.
+                         See: https://tools.ietf.org/html/draft-fge-json-schema-validation-00#section-6.2.
+                         Unlike JSON Schema this value MUST conform to the defined type for the header.
+                pattern:
+                    type: string
+                    description: '''Pattern'' See https://tools.ietf.org/html/draft-fge-json-schema-validation-00#section-5.2.3.'
+            description: |-
+                `Header` is a representation of OpenAPI v2 specification's Header object.
+
+                 See: https://github.com/OAI/OpenAPI-Specification/blob/3.0.0/versions/2.0.md#headerObject
+        HeaderOrReference:
+            type: object
+            properties:
+                header:
+                    $ref: '#/components/schemas/Header'
+                reference:
+                    $ref: '#/components/schemas/Reference'
+        HeadersOrReferences:
+            type: object
+            properties:
+                additionalProperties:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/NamedHeaderOrReference'
+        JSONSchema:
+            type: object
+            properties:
+                ref:
+                    type: string
+                    description: |-
+                        Ref is used to define an external reference to include in the message.
+                         This could be a fully qualified proto message reference, and that type must
+                         be imported into the protofile. If no message is identified, the Ref will
+                         be used verbatim in the output.
+                         For example:
+                          `ref: ".google.protobuf.Timestamp"`.
+                title:
+                    type: string
+                    description: The title of the schema.
+                description:
+                    type: string
+                    description: A short description of the schema.
+                default:
+                    type: string
+                readOnly:
+                    type: boolean
+                example:
+                    type: string
+                    description: |-
+                        A free-form property to include a JSON example of this field. This is copied
+                         verbatim to the output swagger.json. Quotes must be escaped.
+                         This property is the same for 2.0 and 3.0.0 https://github.com/OAI/OpenAPI-Specification/blob/3.0.0/versions/3.0.0.md#schemaObject  https://github.com/OAI/OpenAPI-Specification/blob/3.0.0/versions/2.0.md#schemaObject
+                multipleOf:
+                    type: number
+                    format: double
+                maximum:
+                    type: number
+                    description: |-
+                        Maximum represents an inclusive upper limit for a numeric instance. The
+                         value of MUST be a number,
+                    format: double
+                exclusiveMaximum:
+                    type: boolean
+                minimum:
+                    type: number
+                    description: |-
+                        minimum represents an inclusive lower limit for a numeric instance. The
+                         value of MUST be a number,
+                    format: double
+                exclusiveMinimum:
+                    type: boolean
+                maxLength:
+                    type: string
+                minLength:
+                    type: string
+                pattern:
+                    type: string
+                maxItems:
+                    type: string
+                minItems:
+                    type: string
+                uniqueItems:
+                    type: boolean
+                maxProperties:
+                    type: string
+                minProperties:
+                    type: string
+                required:
+                    type: array
+                    items:
+                        type: string
+                array:
+                    type: array
+                    items:
+                        type: string
+                    description: Items in 'array' must be unique.
+                type:
+                    type: array
+                    items:
+                        enum:
+                            - UNKNOWN
+                            - ARRAY
+                            - BOOLEAN
+                            - INTEGER
+                            - NULL
+                            - NUMBER
+                            - OBJECT
+                            - STRING
+                        type: string
+                        format: enum
+                format:
+                    type: string
+                    description: '`Format`'
+                enum:
+                    type: array
+                    items:
+                        type: string
+                    description: Items in `enum` must be unique https://tools.ietf.org/html/draft-fge-json-schema-validation-00#section-5.5.1
+                fieldConfiguration:
+                    allOf:
+                        - $ref: '#/components/schemas/JSONSchema_FieldConfiguration'
+                    description: Additional field level properties used when generating the OpenAPI v2 file.
+                extensions:
+                    type: object
+                    additionalProperties:
+                        $ref: '#/components/schemas/GoogleProtobufValue'
+                    description: |-
+                        Custom properties that start with "x-" such as "x-foo" used to describe
+                         extra functionality that is not covered by the standard OpenAPI Specification.
+                         See: https://swagger.io/docs/specification/2-0/swagger-extensions/
+            description: |-
+                `JSONSchema` represents properties from JSON Schema taken, and as used, in
+                 the OpenAPI v2 spec.
+
+                 This includes changes made by OpenAPI v2.
+
+                 See: https://github.com/OAI/OpenAPI-Specification/blob/3.0.0/versions/2.0.md#schemaObject
+
+                 See also: https://cswr.github.io/JsonSchema/spec/basic_types/,
+                 https://github.com/json-schema-org/json-schema-spec/blob/master/schema.json
+
+                 Example:
+
+                  message SimpleMessage {
+                    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+                      json_schema: {
+                        title: "SimpleMessage"
+                        description: "A simple message."
+                        required: ["id"]
+                      }
+                    };
+
+                    // Id represents the message identifier.
+                    string id = 1; [
+                        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+                          description: "The unique identifier of the simple message."
+                        }];
+                  }
+        JSONSchema_FieldConfiguration:
+            type: object
+            properties:
+                pathParamName:
+                    type: string
+                    description: |-
+                        Alternative parameter name when used as path parameter. If set, this will
+                         be used as the complete parameter name when this field is used as a path
+                         parameter. Use this to avoid having auto generated path parameter names
+                         for overlapping paths.
+            description: |-
+                'FieldConfiguration' provides additional field level properties used when generating the OpenAPI v2 file.
+                 These properties are not defined by OpenAPIv2, but they are used to control the generation.
+        ListAirsResponse:
+            type: object
+            properties:
+                pyramids:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/Air'
+                    description: A list of PyramID instances.
+                pagination:
+                    allOf:
+                        - $ref: '#/components/schemas/PagedResponse'
+                    description: Pagination response.
+        ListAuthorizationContextsResponse:
+            type: object
+            properties:
+                authorizationContexts:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/AuthorizationContext'
+                    description: A list of AuthorizationContexts.
+                pagination:
+                    allOf:
+                        - $ref: '#/components/schemas/PagedResponse'
+                    description: Pagination response.
+        ListBindingsResponse:
+            type: object
+            properties:
+                bindings:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/Binding'
+                    description: A list of PyramID bindings.
+        ListCatalogsResponse:
+            type: object
+            properties:
+                catalogs:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/Catalog'
+                    description: A list of Catalogs.
+                pagination:
+                    allOf:
+                        - $ref: '#/components/schemas/PagedResponse'
+                    description: Pagination response.
+        ListSourcesResponse:
+            type: object
+            properties:
+                sources:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/Source'
+                    description: A list of sources.
+        ManagedDirectory:
+            type: object
+            properties:
+                id:
+                    type: string
+                    description: |-
+                        ID is a unique identifier for the managed directory configuration, used to
+                         distinguish it from other configurations in the system.
+                type:
+                    enum:
+                        - MANAGED_DIRECTORY_TYPE_UNSPECIFIED
+                        - MANAGED_DIRECTORY_TYPE_OKTA
+                        - MANAGED_DIRECTORY_TYPE_CISCO
+                    type: string
+                    description: Type specifies the type of managed directory, as defined by ManagedDirectoryType.
+                    format: enum
+                orgUrl:
+                    type: string
+                    description: |-
+                        OrgUrl is the URL of the organization's directory service. It typically points
+                         to the administrative interface or API endpoint for the managed directory.
+                orgId:
+                    type: string
+                    description: |-
+                        OrgId is the identifier for the organization within the managed directory service.
+                         It is used to uniquely identify the organization's directory instance (optional).
+                apiClientId:
+                    type: string
+                    description: |-
+                        ApiClientId is the client ID for accessing the managed directory's API.
+                         It is used as part of the credentials to authenticate API requests.
+                apiSecret:
+                    type: string
+                    description: |-
+                        ApiSecret is the secret key used in conjunction with the ApiClientId to authenticate
+                         API requests to the managed directory.
+            description: Managed Directory for the AD sync.
+        MediaType:
+            type: object
+            properties:
+                schema:
+                    $ref: '#/components/schemas/SchemaOrReference'
+                example:
+                    $ref: '#/components/schemas/Any'
+                examples:
+                    $ref: '#/components/schemas/ExamplesOrReferences'
+                encoding:
+                    $ref: '#/components/schemas/Encodings'
+                specificationExtension:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/NamedAny'
+            description: Each Media Type Object provides schema and examples for the media type identified by its key.
+        MediaTypes:
+            type: object
+            properties:
+                additionalProperties:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/NamedMediaType'
+        NamedAny:
+            type: object
+            properties:
+                name:
+                    type: string
+                    description: Map key
+                value:
+                    allOf:
+                        - $ref: '#/components/schemas/Any'
+                    description: Mapped value
+            description: Automatically-generated message used to represent maps of Any as ordered (name,value) ppyramids.
+        NamedEncoding:
+            type: object
+            properties:
+                name:
+                    type: string
+                    description: Map key
+                value:
+                    allOf:
+                        - $ref: '#/components/schemas/Encoding'
+                    description: Mapped value
+            description: Automatically-generated message used to represent maps of Encoding as ordered (name,value) ppyramids.
+        NamedExampleOrReference:
+            type: object
+            properties:
+                name:
+                    type: string
+                    description: Map key
+                value:
+                    allOf:
+                        - $ref: '#/components/schemas/ExampleOrReference'
+                    description: Mapped value
+            description: Automatically-generated message used to represent maps of ExampleOrReference as ordered (name,value) ppyramids.
+        NamedHeaderOrReference:
+            type: object
+            properties:
+                name:
+                    type: string
+                    description: Map key
+                value:
+                    allOf:
+                        - $ref: '#/components/schemas/HeaderOrReference'
+                    description: Mapped value
+            description: Automatically-generated message used to represent maps of HeaderOrReference as ordered (name,value) ppyramids.
+        NamedMediaType:
+            type: object
+            properties:
+                name:
+                    type: string
+                    description: Map key
+                value:
+                    allOf:
+                        - $ref: '#/components/schemas/MediaType'
+                    description: Mapped value
+            description: Automatically-generated message used to represent maps of MediaType as ordered (name,value) ppyramids.
+        OAuthFlow:
+            type: object
+            properties:
+                authorizationUrl:
+                    type: string
+                    description: |-
+                        AuthorizationUrl is the URL to the authorization endpoint for obtaining
+                         user consent and authorization. It is used to initiate the OAuth 2.0 flow.
+                tokenUrl:
+                    type: string
+                    description: |-
+                        TokenUrl is the URL to the token endpoint where the application exchanges
+                         the authorization code or credentials for an access token.
+                refreshUrl:
+                    type: string
+                    description: |-
+                        RefreshUrl is the URL to the refresh endpoint, which is used to obtain a new
+                         access token by using a refresh token, allowing continued access without
+                         re-authentication.
+                scopes:
+                    type: object
+                    additionalProperties:
+                        type: string
+                    description: |-
+                        Scopes is a map of available scopes for the OAuth 2.0 flow. Each key is a scope
+                         name, and the value is a description of what the scope allows.
+            description: |-
+                OAuthFlow represents a single OAuth 2.0 flow configuration. It defines the
+                 necessary endpoints and scopes required for a specific type of OAuth 2.0 flow.
+        OAuthFlows:
+            type: object
+            properties:
+                implicit:
+                    allOf:
+                        - $ref: '#/components/schemas/OAuthFlow'
+                    description: |-
+                        Implicit flow is where the access token is returned directly in the redirect
+                         URI fragment, suitable for client-side applications.
+                password:
+                    allOf:
+                        - $ref: '#/components/schemas/OAuthFlow'
+                    description: |-
+                        Password flow allows resource owner credentials (username and password)
+                         to be exchanged directly for an access token.
+                clientCredentials:
+                    allOf:
+                        - $ref: '#/components/schemas/OAuthFlow'
+                    description: |-
+                        ClientCredentials flow is used by applications to obtain an access token
+                         using their client credentials, without user interaction.
+                authorizationCode:
+                    allOf:
+                        - $ref: '#/components/schemas/OAuthFlow'
+                    description: |-
+                        AuthorizationCode flow involves obtaining an authorization code which is
+                         exchanged for an access token, suitable for server-side applications.
+            description: |-
+                OAuthFlows represents a collection of supported OAuth 2.0 flows.
+                 Each flow provides a different method for acquiring an access token.
+        OpenApiArgumentsConfig:
+            type: object
+            properties:
+                requiredOnly:
+                    type: boolean
+                    description: |-
+                        RequiredOnly indicates whether only the required parameters should be included
+                         in the data source configuration. If set to true, optional parameters will be
+                         excluded, ensuring focus on the parameters necessary for the API operation.
+            description: |-
+                OpenApiArgumentsConfig defines the configuration for handling OpenAPI parameters
+                 during the parsing phase. It determines how parameters should be processed and
+                 included in the data source configuration.
+        OpenApiAuth:
+            type: object
+            properties:
+                type:
+                    enum:
+                        - OPEN_API_AUTH_TYPE_UNSPECIFIED
+                        - OPEN_API_AUTH_TYPE_BASIC
+                        - OPEN_API_AUTH_TYPE_API_KEY
+                        - OPEN_API_AUTH_TYPE_OIDC
+                        - OPEN_API_AUTH_TYPE_OAUTH2
+                    type: string
+                    description: |-
+                        Type specifies the authentication method to be used. It indicates which of the
+                         following authentication configurations is applicable for the API.
+                    format: enum
+                basic:
+                    allOf:
+                        - $ref: '#/components/schemas/OpenApiAuthBasic'
+                    description: |-
+                        Basic contains the configuration for HTTP Basic Authentication. It includes
+                         credentials such as a username and password for authentication.
+                apiKey:
+                    allOf:
+                        - $ref: '#/components/schemas/OpenApiAuthApiKey'
+                    description: |-
+                        ApiKey contains the configuration for API Key Authentication. It specifies the
+                         key name, location (header, query, or cookie), and value required for authenticating requests.
+                oidc:
+                    allOf:
+                        - $ref: '#/components/schemas/OpenApiAuthOIDC'
+                    description: |-
+                        Oidc contains the configuration for OpenID Connect (OIDC) Authentication.
+                         It includes the URL of the OIDC provider's discovery endpoint to facilitate authentication.
+                oauth2:
+                    allOf:
+                        - $ref: '#/components/schemas/OpenApiAuthOAuth2'
+                    description: |-
+                        Oauth2 contains the configuration for OAuth 2.0 Authentication. It defines
+                         the supported OAuth flows and their corresponding endpoints and scopes.
+            description: |-
+                OpenApiAuth represents the authentication configuration for accessing an API.
+                 It supports multiple authentication schemes, allowing flexibility based on the API's requirements.
+        OpenApiAuthApiKey:
+            type: object
+            properties:
+                name:
+                    type: string
+                    description: |-
+                        Name is the key name used to identify the API key in requests.
+                         This name is often required by the web service to recognize the API key.
+                in:
+                    type: string
+                    description: |-
+                        In specifies the location where the API key should be included in requests.
+                         It can be one of "header", "query", or "cookie", indicating whether the
+                         API key is sent as an HTTP header, a query parameter, or a cookie.
+                value:
+                    type: string
+                    description: Value is the actual API key used to authenticate requests to the web service.
+            description: |-
+                OpenApiAuthApiKey represents the API key authentication configuration
+                 for accessing a web service. It specifies the name, location,
+                 and value of the API key used for authenticating requests.
+        OpenApiAuthBasic:
+            type: object
+            properties:
+                username:
+                    type: string
+                    description: |-
+                        Username is the identifier used to authenticate with the web service.
+                         It is usually required along with the password to gain access.
+                password:
+                    type: string
+                    description: |-
+                        Password is the secret key used in conjunction with the username
+                         to authenticate and authorize access to the web service.
+            description: |-
+                OpenApiAuthBasic represents the basic authentication credentials
+                 for accessing an web service. It includes a username and password
+                 that are typically used for HTTP Basic Authentication.
+        OpenApiAuthOAuth2:
+            type: object
+            properties:
+                flows:
+                    allOf:
+                        - $ref: '#/components/schemas/OAuthFlows'
+                    description: |-
+                        Flows defines the OAuth 2.0 flows available for authentication, providing
+                         flexibility in how clients can authenticate and obtain access tokens.
+            description: |-
+                OpenApiAuthOAuth2 represents the configuration for OAuth 2.0 authentication.
+                 It contains the details of the OAuth flows supported by the API.
+        OpenApiAuthOIDC:
+            type: object
+            properties:
+                openIdConnectUrl:
+                    type: string
+                    description: |-
+                        OpenIdConnectUrl is the URL of the OpenID Connect provider's discovery endpoint.
+                         This URL is used to obtain configuration information about the provider, such as
+                         the authorization and token endpoints, supported scopes, and other necessary details
+                         for performing OIDC authentication.
+            description: |-
+                OpenApiAuthOIDC represents the configuration for OpenID Connect (OIDC) authentication.
+                 It contains the necessary information to perform OIDC-based authentication flows.
+        OpenApiParameters:
+            type: object
+            properties:
+                name:
+                    type: string
+                    description: |-
+                        Name is the identifier for the data source, providing a human-readable
+                         label that describes the source's purpose or functionality.
+                specUrl:
+                    type: string
+                    description: |-
+                        SpecUrl is the URL to the OpenAPI specification JSON document. This URL points
+                         to the location of the API's specification, which defines the available
+                         endpoints, operations, and data models.
+                apiHostname:
+                    type: string
+                    description: |-
+                        ApiHostname specifies the hostname of the API server to be called.
+                         It identifies the server where the API requests should be directed.
+                securitySchemes:
+                    type: object
+                    additionalProperties:
+                        $ref: '#/components/schemas/OpenApiAuth'
+                    description: |-
+                        SecuritySchemes is a map of security scheme configurations used to authenticate
+                         and authorize API requests. Each key is a scheme name, and each value is an
+                         OpenApiAuth object detailing the authentication parameters.
+                arguments:
+                    allOf:
+                        - $ref: '#/components/schemas/OpenApiArgumentsConfig'
+                    description: |-
+                        Arguments provides the configuration for handling OpenAPI parameters,
+                         detailing how parameters should be processed during the parsing phase.
+            description: |-
+                OpenApiParameters holds the configuration details for an OpenAPI data source.
+                 It includes information about the source name, API specification, hostname,
+                 security schemes, and argument configurations needed to interact with the API.
+        PagedResponse:
+            type: object
+            properties:
+                nextPage:
+                    type: integer
+                    description: Next page
+                    format: int32
+                hasNextPage:
+                    type: boolean
+                    description: Has next page
+                total:
+                    type: string
+                    description: The total size of items
+                size:
+                    type: integer
+                    description: The size of the current page
+                    format: int32
+            description: Pagination response
+        Parameter:
+            type: object
+            properties:
+                name:
+                    type: string
+                in:
+                    type: string
+                description:
+                    type: string
+                required:
+                    type: boolean
+                deprecated:
+                    type: boolean
+                allowEmptyValue:
+                    type: boolean
+                style:
+                    type: string
+                explode:
+                    type: boolean
+                allowReserved:
+                    type: boolean
+                schema:
+                    $ref: '#/components/schemas/SchemaOrReference'
+                example:
+                    $ref: '#/components/schemas/Any'
+                examples:
+                    $ref: '#/components/schemas/ExamplesOrReferences'
+                content:
+                    $ref: '#/components/schemas/MediaTypes'
+                specificationExtension:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/NamedAny'
+            description: Describes a single operation parameter.  A unique parameter is defined by a combination of a name and location.
+        ParameterValue:
+            type: object
+            properties:
+                name:
+                    type: string
+                    description: |-
+                        Name is the identifier for the parameter being passed to the function.
+                         It specifies which parameter the provided value corresponds to, ensuring
+                         the correct association of values during function execution.
+                value:
+                    type: string
+                    description: |-
+                        Value is the actual value assigned to the parameter during runtime.
+                         This value is used as input to the function, influencing its behavior
+                         and outcome based on the provided parameters.
+            description: |-
+                ParameterValue is used during runtime to hold the value of each parameter
+                 passed to a function. It associates a parameter's name with its provided
+                 value, enabling the execution of functions with dynamic input.
+        PublishByofFunctionRequest:
+            type: object
+            properties:
+                functionId:
+                    type: string
+                    description: Byof function Id to publish.
+                sourceId:
+                    type: string
+                    description: The source id in the catalog.
+                domainId:
+                    type: string
+                    description: The domain id in the catalog.
+        Reference:
+            type: object
+            properties:
+                Ref:
+                    type: string
+                summary:
+                    type: string
+                description:
+                    type: string
+            description: A simple object to allow referencing other components in the specification, internally and externally.  The Reference Object is defined by JSON Reference and follows the same structure, behavior and rules.   For this specification, reference resolution is accomplished as defined by the JSON Reference specification and not by the JSON Schema specification.
+        SalesforceParameters:
+            type: object
+            properties:
+                host:
+                    type: string
+                    description: |-
+                        Host specifies the address of the Salesforce instance.
+                         This could be a domain name or an IP address, used to direct API requests
+                         to the correct Salesforce server.
+                consumerKey:
+                    type: string
+                    description: |-
+                        ConsumerKey is the OAuth consumer key provided by Salesforce.
+                         It is used as part of the authentication process to identify the client
+                         application making the API requests.
+                consumerSecret:
+                    type: string
+                    description: |-
+                        ConsumerSecret is the OAuth consumer secret provided by Salesforce.
+                         This secret, used in conjunction with the consumer key, helps authenticate
+                         the client application.
+            description: |-
+                SalesforceParameters holds the configuration details required to connect
+                 to a Salesforce instance. It includes the host address and the necessary
+                 OAuth credentials for authentication.
+        Schema:
+            type: object
+            properties:
+                jsonSchema:
+                    $ref: '#/components/schemas/JSONSchema'
+                discriminator:
+                    type: string
+                    description: |-
+                        Adds support for polymorphism. The discriminator is the schema property
+                         name that is used to differentiate between other schema that inherit this
+                         schema. The property name used MUST be defined at this schema and it MUST
+                         be in the required property list. When used, the value MUST be the name of
+                         this schema or any schema that inherits it.
+                readOnly:
+                    type: boolean
+                    description: |-
+                        Relevant only for Schema "properties" definitions. Declares the property as
+                         "read only". This means that it MAY be sent as part of a response but MUST
+                         NOT be sent as part of the request. Properties marked as readOnly being
+                         true SHOULD NOT be in the required list of the defined schema. Default
+                         value is false.
+                externalDocs:
+                    allOf:
+                        - $ref: '#/components/schemas/ExternalDocumentation'
+                    description: Additional external documentation for this schema.
+                example:
+                    type: string
+                    description: |-
+                        A free-form property to include an example of an instance for this schema in JSON.
+                         This is copied verbatim to the output.
+            description: |-
+                `Schema` is a representation of OpenAPI v2 specification's Schema object.
+
+                 See: https://github.com/OAI/OpenAPI-Specification/blob/3.0.0/versions/2.0.md#schemaObject
+        SchemaOrReference:
+            type: object
+            properties:
+                schema:
+                    $ref: '#/components/schemas/Schema'
+                reference:
+                    $ref: '#/components/schemas/Reference'
+        SearchAuthorizationContextRequest:
+            type: object
+            properties:
+                authorizationContextId:
+                    type: string
+                    description: AuthorizationContext Id to update.
+                startsWith:
+                    type: string
+                    description: Starts with
+        SearchAuthorizationContextResponse:
+            type: object
+            properties:
+                groups:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/Group'
+                    description: AuthorizationContext groups result.
+        SearchCatalogRequest:
+            type: object
+            properties:
+                catalogId:
+                    type: string
+                    description: Catalog Id to get.
+                headers:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/AirHeader'
+                    description: |-
+                        Headers for the search operation: provide authentication.
+                         Providing authorization headers will filter the search results
+        SearchCatalogResponse:
+            type: object
+            properties:
+                sources:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/Source'
+                    description: Output a list of sources with functions for the given tags
+        ServiceAccount:
+            type: object
+            properties:
+                id:
+                    type: string
+        Source:
+            type: object
+            properties:
+                id:
+                    type: string
+                    description: |-
+                        ID is a unique identifier for the source, used to distinguish it
+                         from other sources in the system.
+                name:
+                    type: string
+                    description: |-
+                        Name is a human-readable name for the Source, providing a descriptive
+                         label that summarizes the source's purpose or functionality.
+                description:
+                    type: string
+                    description: |-
+                        Description offers a human-readable explanation of the Source's purpose,
+                         detailing what the source encompasses and its role within the system.
+                catalogId:
+                    type: string
+                    description: CatalogID is a reference to the parent catalog that this source belongs to.
+                tags:
+                    type: array
+                    items:
+                        type: string
+                    description: Deprecated.
+                domains:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/Domain'
+                    description: |-
+                        Domains is a list of domains exposed by the Source, representing the
+                         functional areas or capabilities provided by the source.
+                type:
+                    enum:
+                        - SOURCE_TYPE_UNSPECIFIED
+                        - SOURCE_TYPE_OPEN_API
+                        - SOURCE_TYPE_SPLUNK_ENT
+                        - SOURCE_TYPE_SALESFORCE
+                    type: string
+                    description: Type specifies the type of the source, as defined by SourceType.
+                    format: enum
+                logoUrl:
+                    type: string
+                    description: |-
+                        LogoUrl is the URL to the logo image for the source, which can be used
+                         in user interfaces to visually represent the source.
+                openApiParameters:
+                    allOf:
+                        - $ref: '#/components/schemas/OpenApiParameters'
+                    description: |-
+                        OpenApiParameters contains the configuration details specific to
+                         an OpenAPI source type, including API specification and connection info.
+                splunkEntParameters:
+                    allOf:
+                        - $ref: '#/components/schemas/SplunkEntParameters'
+                    description: |-
+                        SplunkEntParameters contains the configuration details specific to
+                         a Splunk Enterprise source type, including connection and authentication info.
+                salesforceParameters:
+                    allOf:
+                        - $ref: '#/components/schemas/SalesforceParameters'
+                    description: |-
+                        SalesforceParameters contains the configuration details specific to
+                         a Salesforce source type, including connection and authentication info.
+            description: |-
+                Source represents a data source configuration, including metadata and
+                 parameters needed to access and interact with the source's data.
+        SplunkEntParameters:
+            type: object
+            properties:
+                host:
+                    type: string
+                    description: |-
+                        Host specifies the address of the Splunk Enterprise server.
+                         This could be an IP address or a fully qualified domain name (FQDN).
+                username:
+                    type: string
+                    description: |-
+                        Username is the account username used to authenticate with the Splunk Enterprise server.
+                         It is required for establishing a secure connection and accessing the server's resources.
+                password:
+                    type: string
+                    description: |-
+                        Password is the account password corresponding to the Username.
+                         It is used to authenticate the connection to the Splunk Enterprise server.
+            description: |-
+                SplunkEntParameters holds the configuration details required to connect
+                 to a Splunk Enterprise server. This includes the server's host address
+                 and the necessary authentication credentials.
+        Status:
+            type: object
+            properties:
+                code:
+                    type: integer
+                    description: The status code, which should be an enum value of [google.rpc.Code][google.rpc.Code].
+                    format: int32
+                message:
+                    type: string
+                    description: A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the [google.rpc.Status.details][google.rpc.Status.details] field, or localized by the client.
+                details:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/GoogleProtobufAny'
+                    description: A list of messages that carry the error details.  There is a common set of message types for APIs to use.
+            description: 'The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).'
+        TestAuthorizationContextResponse:
+            type: object
+            properties:
+                result:
+                    type: boolean
+                    description: AuthorizationContext test result.
+        TestByofFunctionRequest:
+            type: object
+            properties:
+                catalogId:
+                    type: string
+                    description: The catalog id to test with.
+                functionId:
+                    type: string
+                    description: Byof function Id to get.
+                payload:
+                    type: string
+                    description: The payload to test in JSON format.
+        TestByofFunctionResponse:
+            type: object
+            properties:
+                result:
+                    type: string
+                    description: The result of the test.
+                error:
+                    type: string
+                    description: The error of the test.
+        UpdateBindingsResponse:
+            type: object
+            properties:
+                bindings:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/Binding'
+                    description: / A list of PyramID bindings.
+        UpdateSourceRequest:
+            type: object
+            properties:
+                catalogId:
+                    type: string
+                    description: Catalog Id to add the source to.
+                sourceId:
+                    type: string
+                    description: The id of the source to update
+                openApiParameters:
+                    allOf:
+                        - $ref: '#/components/schemas/OpenApiParameters'
+                    description: OpenAPI source parameters
+                splunkEntParameters:
+                    allOf:
+                        - $ref: '#/components/schemas/SplunkEntParameters'
+                    description: Splunk Enterprise source parameters
+                salesforceParameters:
+                    allOf:
+                        - $ref: '#/components/schemas/SalesforceParameters'
+                    description: Salesforce source parameters
+        UpdateSourceResponse:
+            type: object
+            properties:
+                source:
+                    $ref: '#/components/schemas/Source'
+    headers:
+        "":
+    securitySchemes:
+        AccessToken:
+            type: http
+            description: A JWT bearer token issued to an admin user during an OIDC flow.
+            scheme: bearer
+            bearerFormat: JWT
+security:
+    - AccessToken: []
+tags:
+    - name: AirService
+      description: AirService manages PyramID instances.
+    - name: BindingService
+      description: BindingService manages the PyramID bindings.
+    - name: ByofService
+      description: ByofService manages Byof instances.
+    - name: CatalogService
+      description: CatalogService manages catalogs.
+    - name: ExecutorService
+      description: ExecutorService manages executors.
+    - name: IamService
+      description: IamService manages setting for a tenant like API Keys.
+    - name: SourceService
+      description: SourceService manages sources.

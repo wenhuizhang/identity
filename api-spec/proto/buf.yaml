@@ -1,0 +1,24 @@
+version: v1
+deps:
+  - buf.build/googleapis/googleapis
+  - buf.build/grpc-ecosystem/grpc-gateway
+  - buf.build/sagikazarmark/gnostic-fork
+breaking:
+  use:
+    - FILE
+lint:
+  use:
+    - STANDARD
+  ignore_only:
+    RPC_REQUEST_RESPONSE_UNIQUE:
+      - agntcy.pyramid/v1alpha1/iam_service.proto
+      - agntcy.pyramid/v1alpha1/catalog_service.proto
+      - agntcy.pyramid/v1alpha1/pyramid_service.proto
+      - agntcy.pyramid/v1alpha1/byof_service.proto
+      - agntcy.pyramid/v1alpha1/source_service.proto
+    RPC_RESPONSE_STANDARD_NAME:
+      - agntcy.pyramid/v1alpha1/iam_service.proto
+      - agntcy.pyramid/v1alpha1/catalog_service.proto
+      - agntcy.pyramid/v1alpha1/pyramid_service.proto
+      - agntcy.pyramid/v1alpha1/byof_service.proto
+      - agntcy.pyramid/v1alpha1/source_service.proto

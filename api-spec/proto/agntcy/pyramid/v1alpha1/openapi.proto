@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package agntcy.pyramid.v1alpha1;
+
+import "openapiv3/annotations.proto";
+
+option go_package = "github.com/agntcy/pyramid/internal/pkg/generated/agntcy.pyramid/pyramid/v1alpha1;pyramid_sdk_go";
+
+option (openapi.v3.document) = {
+    info: {
+        title: "PyramID";
+        description: "PyramID";
+        version: "v1alpha1";
+        contact: {
+            name: "Agntcy Team";
+            url: "https://github.com/agntcy/pyramid";
+            email: "pyramid@agntcy.org";
+        }
+    }
+    servers: [
+        {
+            url: "http://0.0.0.0:4000";
+            description: "Local environment";
+        }
+    ]
+    security: {
+        additional_properties: [
+        ]
+    }
+    components: {
+        headers: {
+            additional_properties: [
+                {}
+             ]
+        },
+        security_schemes: {
+            additional_properties: [
+            ]
+        }
+    }
+};
+

@@ -1,0 +1,46 @@
+#!/bin/bash -e
+# Syntax build-docker.sh [-i|--image imagename]
+
+PROJECT=pyramid
+DOCKER_IMAGE=${PROJECT}:latest
+DOCKER_FILE=Dockerfile
+
+while [[ $# -gt 0 ]]
+do
+    key="${1}"
+
+    case ${key} in
+    -i|--image)
+        DOCKER_IMAGE="${2}"
+        shift;shift
+        ;;
+    -h|--help)
+        less README.md
+        exit 0
+        ;;
+    -c|--code-coverage)
+        CODE_COVERAGE=cc
+        shift
+        ;;
+    -s|--static-analysis)
+        STATIC_ANALYSIS=sa
+        shift
+        ;;
+    *) # unknown
+        echo Unknown Parameter $1
+        exit 4
+    esac
+done
+
+case $DOCKER_IMAGE in
+    $PROJECT-node*)
+        DOCKER_FILE=./deployments/docker/backend/webapi/Dockerfile
+        ;;
+    $PROJECT-docs*)
+        DOCKER_FILE=./deployments/docker/docs/Dockerfile
+        ;;
+
+esac
+
+echo BUILDING DOCKER ${DOCKER_IMAGE}
+docker build -t ${DOCKER_IMAGE} --build-arg ARTIFACTORY_TOKEN=${ARTIFACTORY_TOKEN} -f ${DOCKER_FILE} .

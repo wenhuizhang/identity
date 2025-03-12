@@ -1,0 +1,34 @@
+FROM golang:1.22.5-alpine AS builder
+
+# Build the package
+WORKDIR /build
+COPY ./backend .
+RUN go mod download
+RUN cd ./cmd/node && go build -o ../../pyramid-node
+
+RUN apk update \
+    &&  apk add ca-certificates wget \
+    &&  update-ca-certificates
+
+FROM golang:1.22.5-alpine
+
+# Create a group and user
+RUN addgroup -S web && adduser -u 1999 -S -G web web
+
+# Set workdir
+WORKDIR /home/web
+
+COPY --from=builder /build/pyramid-node .
+
+# Install ffmpeg
+RUN apk update
+RUN apk upgrade
+RUN apk add ffmpeg
+
+# Give permissions
+RUN chmod +x pyramid-webapi && \
+    chown -R web:web .
+
+USER web
+
+ENTRYPOINT ["./pyramid-node"]

@@ -1,0 +1,4548 @@
+{
+  "files": [
+    {
+      "name": "agntcy.pyramid/v1alpha1/pyramid.proto",
+      "description": "",
+      "package": "agntcy.pyramid.v1alpha1",
+      "hasEnums": true,
+      "hasExtensions": false,
+      "hasMessages": true,
+      "hasServices": false,
+      "enums": [
+        {
+          "name": "BindingType",
+          "longName": "BindingType",
+          "fullName": "agntcy.pyramid.v1alpha1.BindingType",
+          "description": "BindingType represents the type of binding.",
+          "values": [
+            {
+              "name": "BINDING_TYPE_UNSPECIFIED",
+              "number": "0",
+              "description": "Unspecified binding type."
+            },
+            {
+              "name": "BINDING_TYPE_GROUP",
+              "number": "1",
+              "description": "TYPE_GROUP denotes a binding type that associates\npermissions with a group, enabling access control\nbased on group membership."
+            },
+            {
+              "name": "BINDING_TYPE_SERVICE",
+              "number": "2",
+              "description": "TYPE_SERVICE denotes a binding type that associates\npermissions with a service account, allowing automated\nprocesses to access data sources."
+            }
+          ]
+        },
+        {
+          "name": "ManagedDirectoryType",
+          "longName": "ManagedDirectoryType",
+          "fullName": "agntcy.pyramid.v1alpha1.ManagedDirectoryType",
+          "description": "Managed Directory Type.",
+          "values": [
+            {
+              "name": "MANAGED_DIRECTORY_TYPE_UNSPECIFIED",
+              "number": "0",
+              "description": "Unspecified Managed Directory Type."
+            },
+            {
+              "name": "MANAGED_DIRECTORY_TYPE_OKTA",
+              "number": "1",
+              "description": "OKTA Directory Type."
+            },
+            {
+              "name": "MANAGED_DIRECTORY_TYPE_CISCO",
+              "number": "2",
+              "description": "Cisco Directory Type."
+            }
+          ]
+        }
+      ],
+      "extensions": [],
+      "messages": [
+        {
+          "name": "Air",
+          "longName": "Air",
+          "fullName": "agntcy.pyramid.v1alpha1.Air",
+          "description": "An PyramID instance",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": true,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "id",
+              "description": "A unique identifier for the PyramID instance.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_id",
+              "defaultValue": ""
+            },
+            {
+              "name": "catalog_id",
+              "description": "The ID of the PyramID Catalog.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_catalog_id",
+              "defaultValue": ""
+            },
+            {
+              "name": "authorization_context_id",
+              "description": "The identifier for the PyramID Authorization context.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_authorization_context_id",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "AirHeader",
+          "longName": "AirHeader",
+          "fullName": "agntcy.pyramid.v1alpha1.AirHeader",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": true,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "name",
+              "description": "Header name.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_name",
+              "defaultValue": ""
+            },
+            {
+              "name": "value",
+              "description": "Header value.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_value",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "AuthorizationContext",
+          "longName": "AuthorizationContext",
+          "fullName": "agntcy.pyramid.v1alpha1.AuthorizationContext",
+          "description": "AuthorizationContext represents the configuration used to authorize entities\ncalling functions within the configured data sources.",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": true,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "id",
+              "description": "ID is a unique identifier for the authorization context, used to distinguish\nit from other contexts within the system.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_id",
+              "defaultValue": ""
+            },
+            {
+              "name": "authorization_parameters",
+              "description": "Allowed Authorization Parameters.",
+              "label": "repeated",
+              "type": "AuthorizationParameters",
+              "longType": "AuthorizationParameters",
+              "fullType": "agntcy.pyramid.v1alpha1.AuthorizationParameters",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "managed_directory",
+              "description": "Managed Directory for the AD sync.",
+              "label": "optional",
+              "type": "ManagedDirectory",
+              "longType": "ManagedDirectory",
+              "fullType": "agntcy.pyramid.v1alpha1.ManagedDirectory",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_managed_directory",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "AuthorizationParameters",
+          "longName": "AuthorizationParameters",
+          "fullName": "agntcy.pyramid.v1alpha1.AuthorizationParameters",
+          "description": "Authorization Parameters",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": true,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "issuer",
+              "description": "Allowed Authorization issuer.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_issuer",
+              "defaultValue": ""
+            },
+            {
+              "name": "aud",
+              "description": "Allowed audience.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_aud",
+              "defaultValue": ""
+            },
+            {
+              "name": "cids",
+              "description": "Allowed Authorization clients.",
+              "label": "repeated",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "scopes",
+              "description": "Allowed Authorization scopes.",
+              "label": "repeated",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "Binding",
+          "longName": "Binding",
+          "fullName": "agntcy.pyramid.v1alpha1.Binding",
+          "description": "Binding represents an association between groups or service accounts and\ndomains, defining what domains within data sources can be accessed by\nspecific groups or service accounts in an PyramID instance.",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": true,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "id",
+              "description": "An unique identifier for the binding.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_id",
+              "defaultValue": ""
+            },
+            {
+              "name": "type",
+              "description": "Type specifies the type of the binding, as defined by BindingType.",
+              "label": "optional",
+              "type": "BindingType",
+              "longType": "BindingType",
+              "fullType": "agntcy.pyramid.v1alpha1.BindingType",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_type",
+              "defaultValue": ""
+            },
+            {
+              "name": "pyramid_id",
+              "description": "AirID is the identifier of the PyramID instance associated with this binding.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_pyramid_id",
+              "defaultValue": ""
+            },
+            {
+              "name": "groups",
+              "description": "Groups is a list of allowed user groups associated with this binding,\nmapping group members to accessible domains within data sources.",
+              "label": "repeated",
+              "type": "Group",
+              "longType": "Group",
+              "fullType": "agntcy.pyramid.v1alpha1.Group",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "services",
+              "description": "Services is a list of allowed service accounts associated with this binding,\nmapping service accounts to accessible domains within data sources.",
+              "label": "repeated",
+              "type": "ServiceAccount",
+              "longType": "ServiceAccount",
+              "fullType": "agntcy.pyramid.v1alpha1.ServiceAccount",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "domain_ids",
+              "description": "DomainIDs is a list of allowed domain identifiers associated with this binding,\nspecifying the domains in data sources that the groups or service accounts can access.",
+              "label": "repeated",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "Group",
+          "longName": "Group",
+          "fullName": "agntcy.pyramid.v1alpha1.Group",
+          "description": "Group represents a collection of users or entities,\nidentified by a unique ID and a name.",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": true,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "id",
+              "description": "An unique identifier for the group.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_id",
+              "defaultValue": ""
+            },
+            {
+              "name": "name",
+              "description": "A name for the group.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_name",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "ManagedDirectory",
+          "longName": "ManagedDirectory",
+          "fullName": "agntcy.pyramid.v1alpha1.ManagedDirectory",
+          "description": "Managed Directory for the AD sync.",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": true,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "id",
+              "description": "ID is a unique identifier for the managed directory configuration, used to\ndistinguish it from other configurations in the system.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_id",
+              "defaultValue": ""
+            },
+            {
+              "name": "type",
+              "description": "Type specifies the type of managed directory, as defined by ManagedDirectoryType.",
+              "label": "optional",
+              "type": "ManagedDirectoryType",
+              "longType": "ManagedDirectoryType",
+              "fullType": "agntcy.pyramid.v1alpha1.ManagedDirectoryType",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_type",
+              "defaultValue": ""
+            },
+            {
+              "name": "org_url",
+              "description": "OrgUrl is the URL of the organization's directory service. It typically points\nto the administrative interface or API endpoint for the managed directory.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_org_url",
+              "defaultValue": ""
+            },
+            {
+              "name": "org_id",
+              "description": "OrgId is the identifier for the organization within the managed directory service.\nIt is used to uniquely identify the organization's directory instance (optional).",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_org_id",
+              "defaultValue": ""
+            },
+            {
+              "name": "api_client_id",
+              "description": "ApiClientId is the client ID for accessing the managed directory's API.\nIt is used as part of the credentials to authenticate API requests.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_api_client_id",
+              "defaultValue": ""
+            },
+            {
+              "name": "api_secret",
+              "description": "ApiSecret is the secret key used in conjunction with the ApiClientId to authenticate\nAPI requests to the managed directory.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_api_secret",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "ServiceAccount",
+          "longName": "ServiceAccount",
+          "fullName": "agntcy.pyramid.v1alpha1.ServiceAccount",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": true,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "id",
+              "description": "",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_id",
+              "defaultValue": ""
+            }
+          ]
+        }
+      ],
+      "services": []
+    },
+    {
+      "name": "agntcy.pyramid/v1alpha1/pyramid_service.proto",
+      "description": "",
+      "package": "agntcy.pyramid.v1alpha1",
+      "hasEnums": false,
+      "hasExtensions": false,
+      "hasMessages": true,
+      "hasServices": true,
+      "enums": [],
+      "extensions": [],
+      "messages": [
+        {
+          "name": "CreateAirRequest",
+          "longName": "CreateAirRequest",
+          "fullName": "agntcy.pyramid.v1alpha1.CreateAirRequest",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "pyramid",
+              "description": "The PyramID to create.",
+              "label": "",
+              "type": "Air",
+              "longType": "Air",
+              "fullType": "agntcy.pyramid.v1alpha1.Air",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "DeleteAirRequest",
+          "longName": "DeleteAirRequest",
+          "fullName": "agntcy.pyramid.v1alpha1.DeleteAirRequest",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "pyramid_id",
+              "description": "PyramID Id to delete.",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "GetAirRequest",
+          "longName": "GetAirRequest",
+          "fullName": "agntcy.pyramid.v1alpha1.GetAirRequest",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "pyramid_id",
+              "description": "PyramID Id to get.",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "ListAirsRequest",
+          "longName": "ListAirsRequest",
+          "fullName": "agntcy.pyramid.v1alpha1.ListAirsRequest",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": true,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "page",
+              "description": "The current page of the pagination",
+              "label": "optional",
+              "type": "int32",
+              "longType": "int32",
+              "fullType": "int32",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_page",
+              "defaultValue": ""
+            },
+            {
+              "name": "size",
+              "description": "The page size of the pagination",
+              "label": "optional",
+              "type": "int32",
+              "longType": "int32",
+              "fullType": "int32",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_size",
+              "defaultValue": ""
+            },
+            {
+              "name": "query",
+              "description": "The search query",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_query",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "ListAirsResponse",
+          "longName": "ListAirsResponse",
+          "fullName": "agntcy.pyramid.v1alpha1.ListAirsResponse",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": true,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "pyramids",
+              "description": "A list of PyramID instances.",
+              "label": "repeated",
+              "type": "Air",
+              "longType": "Air",
+              "fullType": "agntcy.pyramid.v1alpha1.Air",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "pagination",
+              "description": "Pagination response.",
+              "label": "optional",
+              "type": "PagedResponse",
+              "longType": "agntcy.pyramid.shared.v1alpha1.PagedResponse",
+              "fullType": "agntcy.pyramid.shared.v1alpha1.PagedResponse",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_pagination",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "UpdateAirRequest",
+          "longName": "UpdateAirRequest",
+          "fullName": "agntcy.pyramid.v1alpha1.UpdateAirRequest",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "pyramid_id",
+              "description": "PyramID Id to update.",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "pyramid",
+              "description": "PyramID parameters to update.",
+              "label": "",
+              "type": "Air",
+              "longType": "Air",
+              "fullType": "agntcy.pyramid.v1alpha1.Air",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        }
+      ],
+      "services": [
+        {
+          "name": "AirService",
+          "longName": "AirService",
+          "fullName": "agntcy.pyramid.v1alpha1.AirService",
+          "description": "AirService manages PyramID instances.",
+          "methods": [
+            {
+              "name": "ListAirs",
+              "description": "List PyramID instances.",
+              "requestType": "ListAirsRequest",
+              "requestLongType": "ListAirsRequest",
+              "requestFullType": "agntcy.pyramid.v1alpha1.ListAirsRequest",
+              "requestStreaming": false,
+              "responseType": "ListAirsResponse",
+              "responseLongType": "ListAirsResponse",
+              "responseFullType": "agntcy.pyramid.v1alpha1.ListAirsResponse",
+              "responseStreaming": false,
+              "options": {
+                "google.api.http": {
+                  "rules": [
+                    {
+                      "method": "GET",
+                      "pattern": "/v1alpha1/pyramid"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "GetAir",
+              "description": "Get an PyramID by id",
+              "requestType": "GetAirRequest",
+              "requestLongType": "GetAirRequest",
+              "requestFullType": "agntcy.pyramid.v1alpha1.GetAirRequest",
+              "requestStreaming": false,
+              "responseType": "Air",
+              "responseLongType": "Air",
+              "responseFullType": "agntcy.pyramid.v1alpha1.Air",
+              "responseStreaming": false,
+              "options": {
+                "google.api.http": {
+                  "rules": [
+                    {
+                      "method": "GET",
+                      "pattern": "/v1alpha1/pyramid/{pyramid_id}"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "CreateAir",
+              "description": "Create a new PyramID instance.",
+              "requestType": "CreateAirRequest",
+              "requestLongType": "CreateAirRequest",
+              "requestFullType": "agntcy.pyramid.v1alpha1.CreateAirRequest",
+              "requestStreaming": false,
+              "responseType": "Air",
+              "responseLongType": "Air",
+              "responseFullType": "agntcy.pyramid.v1alpha1.Air",
+              "responseStreaming": false,
+              "options": {
+                "google.api.http": {
+                  "rules": [
+                    {
+                      "method": "POST",
+                      "pattern": "/v1alpha1/pyramid",
+                      "body": "pyramid"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "UpdateAir",
+              "description": "Update an PyramID.",
+              "requestType": "UpdateAirRequest",
+              "requestLongType": "UpdateAirRequest",
+              "requestFullType": "agntcy.pyramid.v1alpha1.UpdateAirRequest",
+              "requestStreaming": false,
+              "responseType": "Air",
+              "responseLongType": "Air",
+              "responseFullType": "agntcy.pyramid.v1alpha1.Air",
+              "responseStreaming": false,
+              "options": {
+                "google.api.http": {
+                  "rules": [
+                    {
+                      "method": "PUT",
+                      "pattern": "/v1alpha1/pyramid/{pyramid_id}",
+                      "body": "pyramid"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "DeleteAir",
+              "description": "Delete an existing PyramID.",
+              "requestType": "DeleteAirRequest",
+              "requestLongType": "DeleteAirRequest",
+              "requestFullType": "agntcy.pyramid.v1alpha1.DeleteAirRequest",
+              "requestStreaming": false,
+              "responseType": "Empty",
+              "responseLongType": ".google.protobuf.Empty",
+              "responseFullType": "google.protobuf.Empty",
+              "responseStreaming": false,
+              "options": {
+                "google.api.http": {
+                  "rules": [
+                    {
+                      "method": "DELETE",
+                      "pattern": "/v1alpha1/pyramid/{pyramid_id}"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "agntcy.pyramid/v1alpha1/binding_service.proto",
+      "description": "",
+      "package": "agntcy.pyramid.v1alpha1",
+      "hasEnums": false,
+      "hasExtensions": false,
+      "hasMessages": true,
+      "hasServices": true,
+      "enums": [],
+      "extensions": [],
+      "messages": [
+        {
+          "name": "ListBindingsRequest",
+          "longName": "ListBindingsRequest",
+          "fullName": "agntcy.pyramid.v1alpha1.ListBindingsRequest",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "pyramid_id",
+              "description": "The id of the PyramID instance",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "ListBindingsResponse",
+          "longName": "ListBindingsResponse",
+          "fullName": "agntcy.pyramid.v1alpha1.ListBindingsResponse",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "bindings",
+              "description": "A list of PyramID bindings.",
+              "label": "repeated",
+              "type": "Binding",
+              "longType": "Binding",
+              "fullType": "agntcy.pyramid.v1alpha1.Binding",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "UpdateBindingsRequest",
+          "longName": "UpdateBindingsRequest",
+          "fullName": "agntcy.pyramid.v1alpha1.UpdateBindingsRequest",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "pyramid_id",
+              "description": "The id of the PyramID instance.",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "bindings",
+              "description": "The list of modified PyramID bindings",
+              "label": "repeated",
+              "type": "Binding",
+              "longType": "Binding",
+              "fullType": "agntcy.pyramid.v1alpha1.Binding",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "UpdateBindingsResponse",
+          "longName": "UpdateBindingsResponse",
+          "fullName": "agntcy.pyramid.v1alpha1.UpdateBindingsResponse",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "bindings",
+              "description": "A list of PyramID bindings.",
+              "label": "repeated",
+              "type": "Binding",
+              "longType": "Binding",
+              "fullType": "agntcy.pyramid.v1alpha1.Binding",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        }
+      ],
+      "services": [
+        {
+          "name": "BindingService",
+          "longName": "BindingService",
+          "fullName": "agntcy.pyramid.v1alpha1.BindingService",
+          "description": "BindingService manages the PyramID bindings.",
+          "methods": [
+            {
+              "name": "ListBindings",
+              "description": "List PyramID bindings.",
+              "requestType": "ListBindingsRequest",
+              "requestLongType": "ListBindingsRequest",
+              "requestFullType": "agntcy.pyramid.v1alpha1.ListBindingsRequest",
+              "requestStreaming": false,
+              "responseType": "ListBindingsResponse",
+              "responseLongType": "ListBindingsResponse",
+              "responseFullType": "agntcy.pyramid.v1alpha1.ListBindingsResponse",
+              "responseStreaming": false,
+              "options": {
+                "google.api.http": {
+                  "rules": [
+                    {
+                      "method": "GET",
+                      "pattern": "/v1alpha1/pyramid/{pyramid_id}/bindings"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "UpdateBindings",
+              "description": "Update the list of PyramID bindings for a specific PyramID instance.",
+              "requestType": "UpdateBindingsRequest",
+              "requestLongType": "UpdateBindingsRequest",
+              "requestFullType": "agntcy.pyramid.v1alpha1.UpdateBindingsRequest",
+              "requestStreaming": false,
+              "responseType": "UpdateBindingsResponse",
+              "responseLongType": "UpdateBindingsResponse",
+              "responseFullType": "agntcy.pyramid.v1alpha1.UpdateBindingsResponse",
+              "responseStreaming": false,
+              "options": {
+                "google.api.http": {
+                  "rules": [
+                    {
+                      "method": "PUT",
+                      "pattern": "/v1alpha1/pyramid/{pyramid_id}/bindings",
+                      "body": "bindings"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "agntcy.pyramid/v1alpha1/catalog.proto",
+      "description": "",
+      "package": "agntcy.pyramid.v1alpha1",
+      "hasEnums": true,
+      "hasExtensions": false,
+      "hasMessages": true,
+      "hasServices": false,
+      "enums": [
+        {
+          "name": "FunctionType",
+          "longName": "FunctionType",
+          "fullName": "agntcy.pyramid.v1alpha1.FunctionType",
+          "description": "FunctionType represents the type of function that can be executed.\nIt enumerates the different types of functions available.",
+          "values": [
+            {
+              "name": "FUNCTION_TYPE_UNSPECIFIED",
+              "number": "0",
+              "description": "Unspecified Function Type."
+            },
+            {
+              "name": "FUNCTION_TYPE_HTTP",
+              "number": "1",
+              "description": "TYPE_HTTP represents a function type that communicates via HTTP."
+            },
+            {
+              "name": "FUNCTION_TYPE_BYOF",
+              "number": "2",
+              "description": "TYPE_BYOF represents a \"Bring Your Own Function\" type,\nallowing functions with custom code to be executed."
+            }
+          ]
+        },
+        {
+          "name": "OpenApiAuthType",
+          "longName": "OpenApiAuthType",
+          "fullName": "agntcy.pyramid.v1alpha1.OpenApiAuthType",
+          "description": "OpenApiAuthType represents the authentication method used for accessing a web service.\nIt enumerates the different types of authentication that can be configured.",
+          "values": [
+            {
+              "name": "OPEN_API_AUTH_TYPE_UNSPECIFIED",
+              "number": "0",
+              "description": "Indicates that no specific authentication type has been specified.\nThis can be used as a default or placeholder value."
+            },
+            {
+              "name": "OPEN_API_AUTH_TYPE_BASIC",
+              "number": "1",
+              "description": "AUTH_TYPE_BASIC represents basic authentication,\nwhich typically involves using a username and password."
+            },
+            {
+              "name": "OPEN_API_AUTH_TYPE_API_KEY",
+              "number": "2",
+              "description": "AUTH_TYPE_API_KEY represents API key authentication,\nwhere a unique key is used to authenticate requests."
+            },
+            {
+              "name": "OPEN_API_AUTH_TYPE_OIDC",
+              "number": "3",
+              "description": "AUTH_TYPE_OIDC represents OpenID Connect (OIDC) authentication,\na simple identity layer on top of the OAuth2 protocol."
+            },
+            {
+              "name": "OPEN_API_AUTH_TYPE_OAUTH2",
+              "number": "4",
+              "description": "AUTH_TYPE_OAUTH2 represents OAuth2 authentication,\na protocol for authorization that provides secure delegated access."
+            }
+          ]
+        },
+        {
+          "name": "ParameterType",
+          "longName": "ParameterType",
+          "fullName": "agntcy.pyramid.v1alpha1.ParameterType",
+          "description": "ParameterType represents the type of a parameter used in a function.\nIt enumerates the different data types that a parameter can have.",
+          "values": [
+            {
+              "name": "PARAMETER_TYPE_UNSPECIFIED",
+              "number": "0",
+              "description": "Unspecified Parameter Type."
+            },
+            {
+              "name": "PARAMETER_TYPE_STRING",
+              "number": "1",
+              "description": "TYPE_STRING represents a parameter of type string."
+            },
+            {
+              "name": "PARAMETER_TYPE_INTEGER",
+              "number": "2",
+              "description": "TYPE_INTEGER represents a parameter of type integer."
+            },
+            {
+              "name": "PARAMETER_TYPE_FLOAT",
+              "number": "3",
+              "description": "TYPE_FLOAT represents a parameter of type float."
+            },
+            {
+              "name": "PARAMETER_TYPE_BOOLEAN",
+              "number": "4",
+              "description": "TYPE_BOOLEAN represents a parameter of type boolean."
+            }
+          ]
+        },
+        {
+          "name": "RuntimeType",
+          "longName": "RuntimeType",
+          "fullName": "agntcy.pyramid.v1alpha1.RuntimeType",
+          "description": "RuntimeType represents the type of runtime environment available for execution.\nIt enumerates the different runtime environments supported by the system.",
+          "values": [
+            {
+              "name": "RUNTIME_TYPE_UNSPECIFIED",
+              "number": "0",
+              "description": "Unspecified Runtime Type."
+            },
+            {
+              "name": "RUNTIME_TYPE_OPEN_API",
+              "number": "1",
+              "description": "TYPE_OPEN_API represents a runtime environment configured\nto interact with data sources following the OpenAPI specification."
+            },
+            {
+              "name": "RUNTIME_TYPE_SPLUNK_ENT",
+              "number": "2",
+              "description": "TYPE_SPLUNK_ENT represents a runtime environment configured\nto interact with Splunk Enterprise data sources."
+            },
+            {
+              "name": "RUNTIME_TYPE_SALESFORCE",
+              "number": "3",
+              "description": "TYPE_SALESFORCE represents a runtime environment configured\nto interact with Salesforce data sources."
+            }
+          ]
+        },
+        {
+          "name": "SourceType",
+          "longName": "SourceType",
+          "fullName": "agntcy.pyramid.v1alpha1.SourceType",
+          "description": "SourceType represents the type of data source, indicating the origin\nor nature of the data being accessed or managed.",
+          "values": [
+            {
+              "name": "SOURCE_TYPE_UNSPECIFIED",
+              "number": "0",
+              "description": "Unspecified Source Type."
+            },
+            {
+              "name": "SOURCE_TYPE_OPEN_API",
+              "number": "1",
+              "description": "TYPE_OPEN_API represents a data source that follows\nthe OpenAPI specification for defining API interfaces."
+            },
+            {
+              "name": "SOURCE_TYPE_SPLUNK_ENT",
+              "number": "2",
+              "description": "TYPE_SPLUNK_ENT represents a data source originating\nfrom a Splunk Enterprise instance, typically used for log and data analysis."
+            },
+            {
+              "name": "SOURCE_TYPE_SALESFORCE",
+              "number": "3",
+              "description": "TYPE_SALESFORCE represents a data source from a Salesforce\ninstance, commonly used for customer relationship management (CRM) data."
+            }
+          ]
+        }
+      ],
+      "extensions": [],
+      "messages": [
+        {
+          "name": "Catalog",
+          "longName": "Catalog",
+          "fullName": "agntcy.pyramid.v1alpha1.Catalog",
+          "description": "Catalog represents a data catalog within an PyramID instance, providing\na structured collection of metadata about available data resources.",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": true,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "id",
+              "description": "ID is a unique identifier for the data catalog, used to distinguish it\nfrom other catalogs within the system.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_id",
+              "defaultValue": ""
+            },
+            {
+              "name": "name",
+              "description": "A human-readable name for the data Catalog.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_name",
+              "defaultValue": ""
+            },
+            {
+              "name": "description",
+              "description": "A human-readable description for the data Catalog.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_description",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "Domain",
+          "longName": "Domain",
+          "fullName": "agntcy.pyramid.v1alpha1.Domain",
+          "description": "Domain represents a logical grouping of functions and metadata,\nproviding a unique identity and description for a specific domain of functionality.",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": true,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "id",
+              "description": "ID is a unique identifier for the Domain, used to distinguish it\nfrom other domains within the system.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_id",
+              "defaultValue": ""
+            },
+            {
+              "name": "name",
+              "description": "Name is a human-readable name for the Domain, providing an easily\nrecognizable and descriptive label for the domain's purpose or area of functionality.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_name",
+              "defaultValue": ""
+            },
+            {
+              "name": "description",
+              "description": "Description offers a human-readable explanation of the Domain's purpose,\ndetailing what the domain encompasses and its role within the system.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_description",
+              "defaultValue": ""
+            },
+            {
+              "name": "functions",
+              "description": "Functions is a list of functions exposed by the Domain. These functions\nrepresent the operations or services provided by the domain, allowing\ninteraction with the domain's capabilities.",
+              "label": "repeated",
+              "type": "Function",
+              "longType": "Function",
+              "fullType": "agntcy.pyramid.v1alpha1.Function",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "Function",
+          "longName": "Function",
+          "fullName": "agntcy.pyramid.v1alpha1.Function",
+          "description": "Function represents a callable function with specified arguments and return values.",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": true,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "id",
+              "description": "ID is a unique identifier for the function, used to distinguish it\nfrom other functions.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_id",
+              "defaultValue": ""
+            },
+            {
+              "name": "name",
+              "description": "Name is the identifier for the function. It must consist of alphanumeric\ncharacters, underscores, or dashes, with a maximum length of 64 characters.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_name",
+              "defaultValue": ""
+            },
+            {
+              "name": "description",
+              "description": "Description provides a brief explanation of the function's purpose and usage,\nwhich is used by the model to determine when and how to call the function.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_description",
+              "defaultValue": ""
+            },
+            {
+              "name": "type",
+              "description": "Type specifies the type of the function, as defined by FunctionType.",
+              "label": "optional",
+              "type": "FunctionType",
+              "longType": "FunctionType",
+              "fullType": "agntcy.pyramid.v1alpha1.FunctionType",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_type",
+              "defaultValue": ""
+            },
+            {
+              "name": "arguments",
+              "description": "Arguments is a list of parameters that the function accepts when called.",
+              "label": "repeated",
+              "type": "Parameter",
+              "longType": "Parameter",
+              "fullType": "agntcy.pyramid.v1alpha1.Parameter",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "return_values",
+              "description": "ReturnValues is a list of parameters that the function returns upon execution.",
+              "label": "repeated",
+              "type": "Parameter",
+              "longType": "Parameter",
+              "fullType": "agntcy.pyramid.v1alpha1.Parameter",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "feid",
+              "description": "Feid is a function execution identifier, used to execute the function\nin the runtime environment.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_feid",
+              "defaultValue": ""
+            },
+            {
+              "name": "auths",
+              "description": "Auths is a list of identifiers for custom authentication methods used\nduring the function's execution.",
+              "label": "repeated",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "OAuthFlow",
+          "longName": "OAuthFlow",
+          "fullName": "agntcy.pyramid.v1alpha1.OAuthFlow",
+          "description": "OAuthFlow represents a single OAuth 2.0 flow configuration. It defines the\nnecessary endpoints and scopes required for a specific type of OAuth 2.0 flow.",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": true,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "authorization_url",
+              "description": "AuthorizationUrl is the URL to the authorization endpoint for obtaining\nuser consent and authorization. It is used to initiate the OAuth 2.0 flow.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_authorization_url",
+              "defaultValue": ""
+            },
+            {
+              "name": "token_url",
+              "description": "TokenUrl is the URL to the token endpoint where the application exchanges\nthe authorization code or credentials for an access token.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_token_url",
+              "defaultValue": ""
+            },
+            {
+              "name": "refresh_url",
+              "description": "RefreshUrl is the URL to the refresh endpoint, which is used to obtain a new\naccess token by using a refresh token, allowing continued access without\nre-authentication.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_refresh_url",
+              "defaultValue": ""
+            },
+            {
+              "name": "scopes",
+              "description": "Scopes is a map of available scopes for the OAuth 2.0 flow. Each key is a scope\nname, and the value is a description of what the scope allows.",
+              "label": "repeated",
+              "type": "ScopesEntry",
+              "longType": "OAuthFlow.ScopesEntry",
+              "fullType": "agntcy.pyramid.v1alpha1.OAuthFlow.ScopesEntry",
+              "ismap": true,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "ScopesEntry",
+          "longName": "OAuthFlow.ScopesEntry",
+          "fullName": "agntcy.pyramid.v1alpha1.OAuthFlow.ScopesEntry",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "key",
+              "description": "",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "value",
+              "description": "",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "OAuthFlows",
+          "longName": "OAuthFlows",
+          "fullName": "agntcy.pyramid.v1alpha1.OAuthFlows",
+          "description": "OAuthFlows represents a collection of supported OAuth 2.0 flows.\nEach flow provides a different method for acquiring an access token.",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": true,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "implicit",
+              "description": "Implicit flow is where the access token is returned directly in the redirect\nURI fragment, suitable for client-side applications.",
+              "label": "optional",
+              "type": "OAuthFlow",
+              "longType": "OAuthFlow",
+              "fullType": "agntcy.pyramid.v1alpha1.OAuthFlow",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_implicit",
+              "defaultValue": ""
+            },
+            {
+              "name": "password",
+              "description": "Password flow allows resource owner credentials (username and password)\nto be exchanged directly for an access token.",
+              "label": "optional",
+              "type": "OAuthFlow",
+              "longType": "OAuthFlow",
+              "fullType": "agntcy.pyramid.v1alpha1.OAuthFlow",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_password",
+              "defaultValue": ""
+            },
+            {
+              "name": "client_credentials",
+              "description": "ClientCredentials flow is used by applications to obtain an access token\nusing their client credentials, without user interaction.",
+              "label": "optional",
+              "type": "OAuthFlow",
+              "longType": "OAuthFlow",
+              "fullType": "agntcy.pyramid.v1alpha1.OAuthFlow",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_client_credentials",
+              "defaultValue": ""
+            },
+            {
+              "name": "authorization_code",
+              "description": "AuthorizationCode flow involves obtaining an authorization code which is\nexchanged for an access token, suitable for server-side applications.",
+              "label": "optional",
+              "type": "OAuthFlow",
+              "longType": "OAuthFlow",
+              "fullType": "agntcy.pyramid.v1alpha1.OAuthFlow",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_authorization_code",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "OpenApiArgumentsConfig",
+          "longName": "OpenApiArgumentsConfig",
+          "fullName": "agntcy.pyramid.v1alpha1.OpenApiArgumentsConfig",
+          "description": "OpenApiArgumentsConfig defines the configuration for handling OpenAPI parameters\nduring the parsing phase. It determines how parameters should be processed and\nincluded in the data source configuration.",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": true,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "required_only",
+              "description": "RequiredOnly indicates whether only the required parameters should be included\nin the data source configuration. If set to true, optional parameters will be\nexcluded, ensuring focus on the parameters necessary for the API operation.",
+              "label": "optional",
+              "type": "bool",
+              "longType": "bool",
+              "fullType": "bool",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_required_only",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "OpenApiAuth",
+          "longName": "OpenApiAuth",
+          "fullName": "agntcy.pyramid.v1alpha1.OpenApiAuth",
+          "description": "OpenApiAuth represents the authentication configuration for accessing an API.\nIt supports multiple authentication schemes, allowing flexibility based on the API's requirements.",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": true,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "type",
+              "description": "Type specifies the authentication method to be used. It indicates which of the\nfollowing authentication configurations is applicable for the API.",
+              "label": "optional",
+              "type": "OpenApiAuthType",
+              "longType": "OpenApiAuthType",
+              "fullType": "agntcy.pyramid.v1alpha1.OpenApiAuthType",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_type",
+              "defaultValue": ""
+            },
+            {
+              "name": "basic",
+              "description": "Basic contains the configuration for HTTP Basic Authentication. It includes\ncredentials such as a username and password for authentication.",
+              "label": "optional",
+              "type": "OpenApiAuthBasic",
+              "longType": "OpenApiAuthBasic",
+              "fullType": "agntcy.pyramid.v1alpha1.OpenApiAuthBasic",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_basic",
+              "defaultValue": ""
+            },
+            {
+              "name": "api_key",
+              "description": "ApiKey contains the configuration for API Key Authentication. It specifies the\nkey name, location (header, query, or cookie), and value required for authenticating requests.",
+              "label": "optional",
+              "type": "OpenApiAuthApiKey",
+              "longType": "OpenApiAuthApiKey",
+              "fullType": "agntcy.pyramid.v1alpha1.OpenApiAuthApiKey",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_api_key",
+              "defaultValue": ""
+            },
+            {
+              "name": "oidc",
+              "description": "Oidc contains the configuration for OpenID Connect (OIDC) Authentication.\nIt includes the URL of the OIDC provider's discovery endpoint to facilitate authentication.",
+              "label": "optional",
+              "type": "OpenApiAuthOIDC",
+              "longType": "OpenApiAuthOIDC",
+              "fullType": "agntcy.pyramid.v1alpha1.OpenApiAuthOIDC",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_oidc",
+              "defaultValue": ""
+            },
+            {
+              "name": "oauth2",
+              "description": "Oauth2 contains the configuration for OAuth 2.0 Authentication. It defines\nthe supported OAuth flows and their corresponding endpoints and scopes.",
+              "label": "optional",
+              "type": "OpenApiAuthOAuth2",
+              "longType": "OpenApiAuthOAuth2",
+              "fullType": "agntcy.pyramid.v1alpha1.OpenApiAuthOAuth2",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_oauth2",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "OpenApiAuthApiKey",
+          "longName": "OpenApiAuthApiKey",
+          "fullName": "agntcy.pyramid.v1alpha1.OpenApiAuthApiKey",
+          "description": "OpenApiAuthApiKey represents the API key authentication configuration\nfor accessing a web service. It specifies the name, location,\nand value of the API key used for authenticating requests.",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": true,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "name",
+              "description": "Name is the key name used to identify the API key in requests.\nThis name is often required by the web service to recognize the API key.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_name",
+              "defaultValue": ""
+            },
+            {
+              "name": "in",
+              "description": "In specifies the location where the API key should be included in requests.\nIt can be one of \"header\", \"query\", or \"cookie\", indicating whether the\nAPI key is sent as an HTTP header, a query parameter, or a cookie.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_in",
+              "defaultValue": ""
+            },
+            {
+              "name": "value",
+              "description": "Value is the actual API key used to authenticate requests to the web service.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_value",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "OpenApiAuthBasic",
+          "longName": "OpenApiAuthBasic",
+          "fullName": "agntcy.pyramid.v1alpha1.OpenApiAuthBasic",
+          "description": "OpenApiAuthBasic represents the basic authentication credentials\nfor accessing an web service. It includes a username and password\nthat are typically used for HTTP Basic Authentication.",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": true,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "username",
+              "description": "Username is the identifier used to authenticate with the web service.\nIt is usually required along with the password to gain access.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_username",
+              "defaultValue": ""
+            },
+            {
+              "name": "password",
+              "description": "Password is the secret key used in conjunction with the username\nto authenticate and authorize access to the web service.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_password",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "OpenApiAuthOAuth2",
+          "longName": "OpenApiAuthOAuth2",
+          "fullName": "agntcy.pyramid.v1alpha1.OpenApiAuthOAuth2",
+          "description": "OpenApiAuthOAuth2 represents the configuration for OAuth 2.0 authentication.\nIt contains the details of the OAuth flows supported by the API.",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": true,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "flows",
+              "description": "Flows defines the OAuth 2.0 flows available for authentication, providing\nflexibility in how clients can authenticate and obtain access tokens.",
+              "label": "optional",
+              "type": "OAuthFlows",
+              "longType": "OAuthFlows",
+              "fullType": "agntcy.pyramid.v1alpha1.OAuthFlows",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_flows",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "OpenApiAuthOIDC",
+          "longName": "OpenApiAuthOIDC",
+          "fullName": "agntcy.pyramid.v1alpha1.OpenApiAuthOIDC",
+          "description": "OpenApiAuthOIDC represents the configuration for OpenID Connect (OIDC) authentication.\nIt contains the necessary information to perform OIDC-based authentication flows.",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": true,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "open_id_connect_url",
+              "description": "OpenIdConnectUrl is the URL of the OpenID Connect provider's discovery endpoint.\nThis URL is used to obtain configuration information about the provider, such as\nthe authorization and token endpoints, supported scopes, and other necessary details\nfor performing OIDC authentication.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_open_id_connect_url",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "OpenApiParameters",
+          "longName": "OpenApiParameters",
+          "fullName": "agntcy.pyramid.v1alpha1.OpenApiParameters",
+          "description": "OpenApiParameters holds the configuration details for an OpenAPI data source.\nIt includes information about the source name, API specification, hostname,\nsecurity schemes, and argument configurations needed to interact with the API.",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": true,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "name",
+              "description": "Name is the identifier for the data source, providing a human-readable\nlabel that describes the source's purpose or functionality.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_name",
+              "defaultValue": ""
+            },
+            {
+              "name": "spec_url",
+              "description": "SpecUrl is the URL to the OpenAPI specification JSON document. This URL points\nto the location of the API's specification, which defines the available\nendpoints, operations, and data models.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_spec_url",
+              "defaultValue": ""
+            },
+            {
+              "name": "api_hostname",
+              "description": "ApiHostname specifies the hostname of the API server to be called.\nIt identifies the server where the API requests should be directed.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_api_hostname",
+              "defaultValue": ""
+            },
+            {
+              "name": "security_schemes",
+              "description": "SecuritySchemes is a map of security scheme configurations used to authenticate\nand authorize API requests. Each key is a scheme name, and each value is an\nOpenApiAuth object detailing the authentication parameters.",
+              "label": "repeated",
+              "type": "SecuritySchemesEntry",
+              "longType": "OpenApiParameters.SecuritySchemesEntry",
+              "fullType": "agntcy.pyramid.v1alpha1.OpenApiParameters.SecuritySchemesEntry",
+              "ismap": true,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "arguments",
+              "description": "Arguments provides the configuration for handling OpenAPI parameters,\ndetailing how parameters should be processed during the parsing phase.",
+              "label": "optional",
+              "type": "OpenApiArgumentsConfig",
+              "longType": "OpenApiArgumentsConfig",
+              "fullType": "agntcy.pyramid.v1alpha1.OpenApiArgumentsConfig",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_arguments",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "SecuritySchemesEntry",
+          "longName": "OpenApiParameters.SecuritySchemesEntry",
+          "fullName": "agntcy.pyramid.v1alpha1.OpenApiParameters.SecuritySchemesEntry",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "key",
+              "description": "",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "value",
+              "description": "",
+              "label": "",
+              "type": "OpenApiAuth",
+              "longType": "OpenApiAuth",
+              "fullType": "agntcy.pyramid.v1alpha1.OpenApiAuth",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "Parameter",
+          "longName": "Parameter",
+          "fullName": "agntcy.pyramid.v1alpha1.Parameter",
+          "description": "Parameter defines a parameter that can be used in a function's arguments\nor return values. It specifies the parameter's name, description, and type.",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": true,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "name",
+              "description": "Name is the identifier for the parameter. It must consist of alphanumeric\ncharacters, underscores, or dashes, with a maximum length of 64 characters.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_name",
+              "defaultValue": ""
+            },
+            {
+              "name": "description",
+              "description": "Description provides a brief explanation of the parameter's purpose and usage.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_description",
+              "defaultValue": ""
+            },
+            {
+              "name": "type",
+              "description": "Type indicates the data type of the parameter, as defined by ParameterType.",
+              "label": "optional",
+              "type": "ParameterType",
+              "longType": "ParameterType",
+              "fullType": "agntcy.pyramid.v1alpha1.ParameterType",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_type",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "ParameterValue",
+          "longName": "ParameterValue",
+          "fullName": "agntcy.pyramid.v1alpha1.ParameterValue",
+          "description": "ParameterValue is used during runtime to hold the value of each parameter\npassed to a function. It associates a parameter's name with its provided\nvalue, enabling the execution of functions with dynamic input.",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": true,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "name",
+              "description": "Name is the identifier for the parameter being passed to the function.\nIt specifies which parameter the provided value corresponds to, ensuring\nthe correct association of values during function execution.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_name",
+              "defaultValue": ""
+            },
+            {
+              "name": "value",
+              "description": "Value is the actual value assigned to the parameter during runtime.\nThis value is used as input to the function, influencing its behavior\nand outcome based on the provided parameters.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_value",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "Runtime",
+          "longName": "Runtime",
+          "fullName": "agntcy.pyramid.v1alpha1.Runtime",
+          "description": "Runtime represents a specific runtime environment configuration, including\nthe type of runtime and associated parameters required for execution.",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": true,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "id",
+              "description": "ID is a unique identifier for the runtime configuration, used to distinguish\nit from other runtime configurations in the system.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_id",
+              "defaultValue": ""
+            },
+            {
+              "name": "type",
+              "description": "Type specifies the type of runtime environment, as defined by RuntimeType.",
+              "label": "optional",
+              "type": "RuntimeType",
+              "longType": "RuntimeType",
+              "fullType": "agntcy.pyramid.v1alpha1.RuntimeType",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_type",
+              "defaultValue": ""
+            },
+            {
+              "name": "splunk_ent_parameters",
+              "description": "SplunkEntParameters contains configuration details specific to a Splunk\nEnterprise runtime, including connection and authentication info.",
+              "label": "optional",
+              "type": "SplunkEntParameters",
+              "longType": "SplunkEntParameters",
+              "fullType": "agntcy.pyramid.v1alpha1.SplunkEntParameters",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_splunk_ent_parameters",
+              "defaultValue": ""
+            },
+            {
+              "name": "open_api_parameters",
+              "description": "OpenApiParameters contains configuration details specific to an OpenAPI\nruntime, including API specification and connection info.",
+              "label": "optional",
+              "type": "OpenApiParameters",
+              "longType": "OpenApiParameters",
+              "fullType": "agntcy.pyramid.v1alpha1.OpenApiParameters",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_open_api_parameters",
+              "defaultValue": ""
+            },
+            {
+              "name": "salesforce_parameters",
+              "description": "SalesforceParameters contains configuration details specific to a Salesforce\nruntime, including connection and authentication info.",
+              "label": "optional",
+              "type": "SalesforceParameters",
+              "longType": "SalesforceParameters",
+              "fullType": "agntcy.pyramid.v1alpha1.SalesforceParameters",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_salesforce_parameters",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "RuntimeContext",
+          "longName": "RuntimeContext",
+          "fullName": "agntcy.pyramid.v1alpha1.RuntimeContext",
+          "description": "RuntimeContext represents the execution context for a runtime, specifying\nthe sources that can be executed and the runtime configuration used.",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": true,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "id",
+              "description": "ID is a unique identifier for the execution context, used to distinguish\nit from other execution contexts in the system.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_id",
+              "defaultValue": ""
+            },
+            {
+              "name": "source_ids",
+              "description": "SourceIds is a list of identifiers for the sources that can be run within\nthis execution context, defining the scope of operations possible.",
+              "label": "repeated",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "runtime_id",
+              "description": "RuntimeId specifies the identifier of the runtime configuration that can\nbe used in this context, linking the execution context to a specific runtime setup.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_runtime_id",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "SalesforceParameters",
+          "longName": "SalesforceParameters",
+          "fullName": "agntcy.pyramid.v1alpha1.SalesforceParameters",
+          "description": "SalesforceParameters holds the configuration details required to connect\nto a Salesforce instance. It includes the host address and the necessary\nOAuth credentials for authentication.",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": true,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "host",
+              "description": "Host specifies the address of the Salesforce instance.\nThis could be a domain name or an IP address, used to direct API requests\nto the correct Salesforce server.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_host",
+              "defaultValue": ""
+            },
+            {
+              "name": "consumer_key",
+              "description": "ConsumerKey is the OAuth consumer key provided by Salesforce.\nIt is used as part of the authentication process to identify the client\napplication making the API requests.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_consumer_key",
+              "defaultValue": ""
+            },
+            {
+              "name": "consumer_secret",
+              "description": "ConsumerSecret is the OAuth consumer secret provided by Salesforce.\nThis secret, used in conjunction with the consumer key, helps authenticate\nthe client application.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_consumer_secret",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "Source",
+          "longName": "Source",
+          "fullName": "agntcy.pyramid.v1alpha1.Source",
+          "description": "Source represents a data source configuration, including metadata and\nparameters needed to access and interact with the source's data.",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": true,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "id",
+              "description": "ID is a unique identifier for the source, used to distinguish it\nfrom other sources in the system.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_id",
+              "defaultValue": ""
+            },
+            {
+              "name": "name",
+              "description": "Name is a human-readable name for the Source, providing a descriptive\nlabel that summarizes the source's purpose or functionality.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_name",
+              "defaultValue": ""
+            },
+            {
+              "name": "description",
+              "description": "Description offers a human-readable explanation of the Source's purpose,\ndetailing what the source encompasses and its role within the system.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_description",
+              "defaultValue": ""
+            },
+            {
+              "name": "catalog_id",
+              "description": "CatalogID is a reference to the parent catalog that this source belongs to.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_catalog_id",
+              "defaultValue": ""
+            },
+            {
+              "name": "tags",
+              "description": "Deprecated.",
+              "label": "repeated",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "domains",
+              "description": "Domains is a list of domains exposed by the Source, representing the\nfunctional areas or capabilities provided by the source.",
+              "label": "repeated",
+              "type": "Domain",
+              "longType": "Domain",
+              "fullType": "agntcy.pyramid.v1alpha1.Domain",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "type",
+              "description": "Type specifies the type of the source, as defined by SourceType.",
+              "label": "optional",
+              "type": "SourceType",
+              "longType": "SourceType",
+              "fullType": "agntcy.pyramid.v1alpha1.SourceType",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_type",
+              "defaultValue": ""
+            },
+            {
+              "name": "logo_url",
+              "description": "LogoUrl is the URL to the logo image for the source, which can be used\nin user interfaces to visually represent the source.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_logo_url",
+              "defaultValue": ""
+            },
+            {
+              "name": "open_api_parameters",
+              "description": "OpenApiParameters contains the configuration details specific to\nan OpenAPI source type, including API specification and connection info.",
+              "label": "optional",
+              "type": "OpenApiParameters",
+              "longType": "OpenApiParameters",
+              "fullType": "agntcy.pyramid.v1alpha1.OpenApiParameters",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_open_api_parameters",
+              "defaultValue": ""
+            },
+            {
+              "name": "splunk_ent_parameters",
+              "description": "SplunkEntParameters contains the configuration details specific to\na Splunk Enterprise source type, including connection and authentication info.",
+              "label": "optional",
+              "type": "SplunkEntParameters",
+              "longType": "SplunkEntParameters",
+              "fullType": "agntcy.pyramid.v1alpha1.SplunkEntParameters",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_splunk_ent_parameters",
+              "defaultValue": ""
+            },
+            {
+              "name": "salesforce_parameters",
+              "description": "SalesforceParameters contains the configuration details specific to\na Salesforce source type, including connection and authentication info.",
+              "label": "optional",
+              "type": "SalesforceParameters",
+              "longType": "SalesforceParameters",
+              "fullType": "agntcy.pyramid.v1alpha1.SalesforceParameters",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_salesforce_parameters",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "SplunkEntParameters",
+          "longName": "SplunkEntParameters",
+          "fullName": "agntcy.pyramid.v1alpha1.SplunkEntParameters",
+          "description": "SplunkEntParameters holds the configuration details required to connect\nto a Splunk Enterprise server. This includes the server's host address\nand the necessary authentication credentials.",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": true,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "host",
+              "description": "Host specifies the address of the Splunk Enterprise server.\nThis could be an IP address or a fully qualified domain name (FQDN).",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_host",
+              "defaultValue": ""
+            },
+            {
+              "name": "username",
+              "description": "Username is the account username used to authenticate with the Splunk Enterprise server.\nIt is required for establishing a secure connection and accessing the server's resources.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_username",
+              "defaultValue": ""
+            },
+            {
+              "name": "password",
+              "description": "Password is the account password corresponding to the Username.\nIt is used to authenticate the connection to the Splunk Enterprise server.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_password",
+              "defaultValue": ""
+            }
+          ]
+        }
+      ],
+      "services": []
+    },
+    {
+      "name": "agntcy.pyramid/v1alpha1/byof.proto",
+      "description": "",
+      "package": "agntcy.pyramid.v1alpha1",
+      "hasEnums": true,
+      "hasExtensions": false,
+      "hasMessages": true,
+      "hasServices": false,
+      "enums": [
+        {
+          "name": "ByofFunctionRuntimeType",
+          "longName": "ByofFunctionRuntimeType",
+          "fullName": "agntcy.pyramid.v1alpha1.ByofFunctionRuntimeType",
+          "description": "ByofFunctionRuntimeType represents the runtime environment in which\na BYOF function is executed, defining the supported languages or platforms.",
+          "values": [
+            {
+              "name": "BYOF_FUNCTION_RUNTIME_TYPE_UNSPECIFIED",
+              "number": "0",
+              "description": "Unspecified Function Runtime Type."
+            },
+            {
+              "name": "BYOF_FUNCTION_RUNTIME_TYPE_PYTHON",
+              "number": "1",
+              "description": "TYPE_PYTHON represents a runtime environment that\nexecutes functions written in Python."
+            }
+          ]
+        },
+        {
+          "name": "ByofFunctionType",
+          "longName": "ByofFunctionType",
+          "fullName": "agntcy.pyramid.v1alpha1.ByofFunctionType",
+          "description": "ByofFunctionType represents the type of \"Bring Your Own Function\" (BYOF),\ncategorizing the function based on its target system.",
+          "values": [
+            {
+              "name": "BYOF_FUNCTION_TYPE_UNSPECIFIED",
+              "number": "0",
+              "description": "Unspecified Function Type."
+            },
+            {
+              "name": "BYOF_FUNCTION_TYPE_GENERAL",
+              "number": "1",
+              "description": "TYPE_GENERAL represents a general-purpose function type."
+            },
+            {
+              "name": "BYOF_FUNCTION_TYPE_SPLUNK",
+              "number": "2",
+              "description": "TYPE_SPLUNK represents a function type specifically designed for use with Splunk."
+            }
+          ]
+        }
+      ],
+      "extensions": [],
+      "messages": [
+        {
+          "name": "ByofFunction",
+          "longName": "ByofFunction",
+          "fullName": "agntcy.pyramid.v1alpha1.ByofFunction",
+          "description": "ByofFunction represents a \"Bring Your Own Function\" (BYOF) configuration,\nincluding metadata, implementation details, and function parameters.",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": true,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "id",
+              "description": "ID is a unique identifier for the function, used to distinguish it\nfrom other functions within the system.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_id",
+              "defaultValue": ""
+            },
+            {
+              "name": "catalog_id",
+              "description": "CatalogID is a reference to the catalog that this function belongs to.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_catalog_id",
+              "defaultValue": ""
+            },
+            {
+              "name": "type",
+              "description": "Type specifies the type of the function, as defined by ByofFunctionType.",
+              "label": "optional",
+              "type": "ByofFunctionType",
+              "longType": "ByofFunctionType",
+              "fullType": "agntcy.pyramid.v1alpha1.ByofFunctionType",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_type",
+              "defaultValue": ""
+            },
+            {
+              "name": "runtime_type",
+              "description": "RuntimeType specifies the runtime environment for the function,\nas defined by ByofFunctionRuntimeType.",
+              "label": "optional",
+              "type": "ByofFunctionRuntimeType",
+              "longType": "ByofFunctionRuntimeType",
+              "fullType": "agntcy.pyramid.v1alpha1.ByofFunctionRuntimeType",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_runtime_type",
+              "defaultValue": ""
+            },
+            {
+              "name": "name",
+              "description": "Name is the human-readable name of the function, providing a descriptive\nlabel that summarizes the function's purpose or functionality.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_name",
+              "defaultValue": ""
+            },
+            {
+              "name": "description",
+              "description": "Description offers a human-readable explanation of the function's purpose,\ndetailing what the function does and its role within the system.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_description",
+              "defaultValue": ""
+            },
+            {
+              "name": "implementation",
+              "description": "Implementation contains the code that defines the function's behavior.\nCheck ByofFunctionRuntimeType to see the supported environments.\nRequired when choosing ByofFunctionType_BYOF_FUNCTION_TYPE_GENERAL as a type.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_implementation",
+              "defaultValue": ""
+            },
+            {
+              "name": "arguments",
+              "description": "Arguments is a list of parameters that the function accepts when called.",
+              "label": "repeated",
+              "type": "Parameter",
+              "longType": "Parameter",
+              "fullType": "agntcy.pyramid.v1alpha1.Parameter",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "return_values",
+              "description": "ReturnValues is a list of parameters that the function returns upon execution.",
+              "label": "repeated",
+              "type": "Parameter",
+              "longType": "Parameter",
+              "fullType": "agntcy.pyramid.v1alpha1.Parameter",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "optimized_implementation",
+              "description": "OptimizedImplementation contains an LLM optimized version of the function's code.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_optimized_implementation",
+              "defaultValue": ""
+            },
+            {
+              "name": "splunk_query",
+              "description": "SplunkQuery contains a query specific to Splunk, used to perform searches\nor retrieve data from a Splunk instance.\nRequired when choosing ByofFunctionType_BYOF_FUNCTION_TYPE_SPLUNK as a type.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_splunk_query",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "FunctionTestResult",
+          "longName": "FunctionTestResult",
+          "fullName": "agntcy.pyramid.v1alpha1.FunctionTestResult",
+          "description": "FunctionTestResult represents the outcome of testing a function,\nincluding the result of the test and any error messages encountered.",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": true,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "result",
+              "description": "Result contains the output or result of the function test, if successful.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_result",
+              "defaultValue": ""
+            },
+            {
+              "name": "error",
+              "description": "Error contains any error message encountered during the function test,\nproviding details on what went wrong.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_error",
+              "defaultValue": ""
+            }
+          ]
+        }
+      ],
+      "services": []
+    },
+    {
+      "name": "agntcy.pyramid/v1alpha1/byof_service.proto",
+      "description": "",
+      "package": "agntcy.pyramid.v1alpha1",
+      "hasEnums": false,
+      "hasExtensions": false,
+      "hasMessages": true,
+      "hasServices": true,
+      "enums": [],
+      "extensions": [],
+      "messages": [
+        {
+          "name": "CreateByofFunctionRequest",
+          "longName": "CreateByofFunctionRequest",
+          "fullName": "agntcy.pyramid.v1alpha1.CreateByofFunctionRequest",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "byof_function",
+              "description": "The Byof function to create.",
+              "label": "",
+              "type": "ByofFunction",
+              "longType": "ByofFunction",
+              "fullType": "agntcy.pyramid.v1alpha1.ByofFunction",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "DeleteByofFunctionRequest",
+          "longName": "DeleteByofFunctionRequest",
+          "fullName": "agntcy.pyramid.v1alpha1.DeleteByofFunctionRequest",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "function_id",
+              "description": "Byof Id to delete.",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "GetByofFunctionRequest",
+          "longName": "GetByofFunctionRequest",
+          "fullName": "agntcy.pyramid.v1alpha1.GetByofFunctionRequest",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "function_id",
+              "description": "Byof function Id to get.",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "PublishByofFunctionRequest",
+          "longName": "PublishByofFunctionRequest",
+          "fullName": "agntcy.pyramid.v1alpha1.PublishByofFunctionRequest",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "function_id",
+              "description": "Byof function Id to publish.",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "source_id",
+              "description": "The source id in the catalog.",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "domain_id",
+              "description": "The domain id in the catalog.",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "TestByofFunctionRequest",
+          "longName": "TestByofFunctionRequest",
+          "fullName": "agntcy.pyramid.v1alpha1.TestByofFunctionRequest",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": true,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "catalog_id",
+              "description": "The catalog id to test with.",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "function_id",
+              "description": "Byof function Id to get.",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "payload",
+              "description": "The payload to test in JSON format.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_payload",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "TestByofFunctionResponse",
+          "longName": "TestByofFunctionResponse",
+          "fullName": "agntcy.pyramid.v1alpha1.TestByofFunctionResponse",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": true,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "result",
+              "description": "The result of the test.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_result",
+              "defaultValue": ""
+            },
+            {
+              "name": "error",
+              "description": "The error of the test.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_error",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "UpdateByofFunctionRequest",
+          "longName": "UpdateByofFunctionRequest",
+          "fullName": "agntcy.pyramid.v1alpha1.UpdateByofFunctionRequest",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "function_id",
+              "description": "Byof function Id to update.",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "byof_function",
+              "description": "Byof parameters to update.",
+              "label": "",
+              "type": "ByofFunction",
+              "longType": "ByofFunction",
+              "fullType": "agntcy.pyramid.v1alpha1.ByofFunction",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        }
+      ],
+      "services": [
+        {
+          "name": "ByofService",
+          "longName": "ByofService",
+          "fullName": "agntcy.pyramid.v1alpha1.ByofService",
+          "description": "ByofService manages Byof instances.",
+          "methods": [
+            {
+              "name": "CreateByofFunction",
+              "description": "Create a new Byof function.",
+              "requestType": "CreateByofFunctionRequest",
+              "requestLongType": "CreateByofFunctionRequest",
+              "requestFullType": "agntcy.pyramid.v1alpha1.CreateByofFunctionRequest",
+              "requestStreaming": false,
+              "responseType": "ByofFunction",
+              "responseLongType": "ByofFunction",
+              "responseFullType": "agntcy.pyramid.v1alpha1.ByofFunction",
+              "responseStreaming": false,
+              "options": {
+                "google.api.http": {
+                  "rules": [
+                    {
+                      "method": "POST",
+                      "pattern": "/v1alpha1/byof/functions",
+                      "body": "byof_function"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "GetByofFunction",
+              "description": "Get a Byof function by id",
+              "requestType": "GetByofFunctionRequest",
+              "requestLongType": "GetByofFunctionRequest",
+              "requestFullType": "agntcy.pyramid.v1alpha1.GetByofFunctionRequest",
+              "requestStreaming": false,
+              "responseType": "ByofFunction",
+              "responseLongType": "ByofFunction",
+              "responseFullType": "agntcy.pyramid.v1alpha1.ByofFunction",
+              "responseStreaming": false,
+              "options": {
+                "google.api.http": {
+                  "rules": [
+                    {
+                      "method": "GET",
+                      "pattern": "/v1alpha1/byof/functions/{function_id}"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "TestByofFunction",
+              "description": "Test a Byof function.",
+              "requestType": "TestByofFunctionRequest",
+              "requestLongType": "TestByofFunctionRequest",
+              "requestFullType": "agntcy.pyramid.v1alpha1.TestByofFunctionRequest",
+              "requestStreaming": false,
+              "responseType": "TestByofFunctionResponse",
+              "responseLongType": "TestByofFunctionResponse",
+              "responseFullType": "agntcy.pyramid.v1alpha1.TestByofFunctionResponse",
+              "responseStreaming": false,
+              "options": {
+                "google.api.http": {
+                  "rules": [
+                    {
+                      "method": "POST",
+                      "pattern": "/v1alpha1/byof/functions/{function_id}/test",
+                      "body": "*"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "PublishByofFunction",
+              "description": "Publish a Byof function.",
+              "requestType": "PublishByofFunctionRequest",
+              "requestLongType": "PublishByofFunctionRequest",
+              "requestFullType": "agntcy.pyramid.v1alpha1.PublishByofFunctionRequest",
+              "requestStreaming": false,
+              "responseType": "Empty",
+              "responseLongType": ".google.protobuf.Empty",
+              "responseFullType": "google.protobuf.Empty",
+              "responseStreaming": false,
+              "options": {
+                "google.api.http": {
+                  "rules": [
+                    {
+                      "method": "POST",
+                      "pattern": "/v1alpha1/byof/functions/{function_id}/publish",
+                      "body": "*"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "UpdateByofFunction",
+              "description": "Update an Byof Function.",
+              "requestType": "UpdateByofFunctionRequest",
+              "requestLongType": "UpdateByofFunctionRequest",
+              "requestFullType": "agntcy.pyramid.v1alpha1.UpdateByofFunctionRequest",
+              "requestStreaming": false,
+              "responseType": "ByofFunction",
+              "responseLongType": "ByofFunction",
+              "responseFullType": "agntcy.pyramid.v1alpha1.ByofFunction",
+              "responseStreaming": false,
+              "options": {
+                "google.api.http": {
+                  "rules": [
+                    {
+                      "method": "PUT",
+                      "pattern": "/v1alpha1/byof/functions/{function_id}",
+                      "body": "byof_function"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "DeleteByofFunction",
+              "description": "Delete an existing Byof Function.",
+              "requestType": "DeleteByofFunctionRequest",
+              "requestLongType": "DeleteByofFunctionRequest",
+              "requestFullType": "agntcy.pyramid.v1alpha1.DeleteByofFunctionRequest",
+              "requestStreaming": false,
+              "responseType": "Empty",
+              "responseLongType": ".google.protobuf.Empty",
+              "responseFullType": "google.protobuf.Empty",
+              "responseStreaming": false,
+              "options": {
+                "google.api.http": {
+                  "rules": [
+                    {
+                      "method": "DELETE",
+                      "pattern": "/v1alpha1/byof/functions/{function_id}"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "agntcy.pyramid/v1alpha1/catalog_service.proto",
+      "description": "",
+      "package": "agntcy.pyramid.v1alpha1",
+      "hasEnums": false,
+      "hasExtensions": false,
+      "hasMessages": true,
+      "hasServices": true,
+      "enums": [],
+      "extensions": [],
+      "messages": [
+        {
+          "name": "CreateCatalogRequest",
+          "longName": "CreateCatalogRequest",
+          "fullName": "agntcy.pyramid.v1alpha1.CreateCatalogRequest",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "catalog",
+              "description": "The Catalog to create.",
+              "label": "",
+              "type": "Catalog",
+              "longType": "Catalog",
+              "fullType": "agntcy.pyramid.v1alpha1.Catalog",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "DeleteCatalogRequest",
+          "longName": "DeleteCatalogRequest",
+          "fullName": "agntcy.pyramid.v1alpha1.DeleteCatalogRequest",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "catalog_id",
+              "description": "Catalog Id to delete.",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "GetCatalogRequest",
+          "longName": "GetCatalogRequest",
+          "fullName": "agntcy.pyramid.v1alpha1.GetCatalogRequest",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "catalog_id",
+              "description": "Catalog Id to get.",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "ListCatalogsRequest",
+          "longName": "ListCatalogsRequest",
+          "fullName": "agntcy.pyramid.v1alpha1.ListCatalogsRequest",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": true,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "page",
+              "description": "The current page of the pagination",
+              "label": "optional",
+              "type": "int32",
+              "longType": "int32",
+              "fullType": "int32",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_page",
+              "defaultValue": ""
+            },
+            {
+              "name": "size",
+              "description": "The page size of the pagination",
+              "label": "optional",
+              "type": "int32",
+              "longType": "int32",
+              "fullType": "int32",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_size",
+              "defaultValue": ""
+            },
+            {
+              "name": "query",
+              "description": "The search query",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_query",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "ListCatalogsResponse",
+          "longName": "ListCatalogsResponse",
+          "fullName": "agntcy.pyramid.v1alpha1.ListCatalogsResponse",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": true,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "catalogs",
+              "description": "A list of Catalogs.",
+              "label": "repeated",
+              "type": "Catalog",
+              "longType": "Catalog",
+              "fullType": "agntcy.pyramid.v1alpha1.Catalog",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "pagination",
+              "description": "Pagination response.",
+              "label": "optional",
+              "type": "PagedResponse",
+              "longType": "agntcy.pyramid.shared.v1alpha1.PagedResponse",
+              "fullType": "agntcy.pyramid.shared.v1alpha1.PagedResponse",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_pagination",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "SearchCatalogRequest",
+          "longName": "SearchCatalogRequest",
+          "fullName": "agntcy.pyramid.v1alpha1.SearchCatalogRequest",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "catalog_id",
+              "description": "Catalog Id to get.",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "headers",
+              "description": "Headers for the search operation: provide authentication.\nProviding authorization headers will filter the search results",
+              "label": "repeated",
+              "type": "AirHeader",
+              "longType": "AirHeader",
+              "fullType": "agntcy.pyramid.v1alpha1.AirHeader",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "SearchCatalogResponse",
+          "longName": "SearchCatalogResponse",
+          "fullName": "agntcy.pyramid.v1alpha1.SearchCatalogResponse",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "sources",
+              "description": "Output a list of sources with functions for the given tags",
+              "label": "repeated",
+              "type": "Source",
+              "longType": "Source",
+              "fullType": "agntcy.pyramid.v1alpha1.Source",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "UpdateCatalogRequest",
+          "longName": "UpdateCatalogRequest",
+          "fullName": "agntcy.pyramid.v1alpha1.UpdateCatalogRequest",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "catalog_id",
+              "description": "Catalog Id to update.",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "catalog",
+              "description": "Catalog parameters to update.",
+              "label": "",
+              "type": "Catalog",
+              "longType": "Catalog",
+              "fullType": "agntcy.pyramid.v1alpha1.Catalog",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        }
+      ],
+      "services": [
+        {
+          "name": "CatalogService",
+          "longName": "CatalogService",
+          "fullName": "agntcy.pyramid.v1alpha1.CatalogService",
+          "description": "CatalogService manages catalogs.",
+          "methods": [
+            {
+              "name": "ListCatalogs",
+              "description": "List Catalogs.",
+              "requestType": "ListCatalogsRequest",
+              "requestLongType": "ListCatalogsRequest",
+              "requestFullType": "agntcy.pyramid.v1alpha1.ListCatalogsRequest",
+              "requestStreaming": false,
+              "responseType": "ListCatalogsResponse",
+              "responseLongType": "ListCatalogsResponse",
+              "responseFullType": "agntcy.pyramid.v1alpha1.ListCatalogsResponse",
+              "responseStreaming": false,
+              "options": {
+                "google.api.http": {
+                  "rules": [
+                    {
+                      "method": "GET",
+                      "pattern": "/v1alpha1/catalogs"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "GetCatalog",
+              "description": "Get Catalog by id",
+              "requestType": "GetCatalogRequest",
+              "requestLongType": "GetCatalogRequest",
+              "requestFullType": "agntcy.pyramid.v1alpha1.GetCatalogRequest",
+              "requestStreaming": false,
+              "responseType": "Catalog",
+              "responseLongType": "Catalog",
+              "responseFullType": "agntcy.pyramid.v1alpha1.Catalog",
+              "responseStreaming": false,
+              "options": {
+                "google.api.http": {
+                  "rules": [
+                    {
+                      "method": "GET",
+                      "pattern": "/v1alpha1/catalogs/{catalog_id}"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "SearchCatalog",
+              "description": "Search Catalog by tags for a specific framework",
+              "requestType": "SearchCatalogRequest",
+              "requestLongType": "SearchCatalogRequest",
+              "requestFullType": "agntcy.pyramid.v1alpha1.SearchCatalogRequest",
+              "requestStreaming": false,
+              "responseType": "SearchCatalogResponse",
+              "responseLongType": "SearchCatalogResponse",
+              "responseFullType": "agntcy.pyramid.v1alpha1.SearchCatalogResponse",
+              "responseStreaming": false,
+              "options": {
+                "google.api.http": {
+                  "rules": [
+                    {
+                      "method": "POST",
+                      "pattern": "/v1alpha1/catalogs/{catalog_id}/search",
+                      "body": "*"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "CreateCatalog",
+              "description": "Create a new Catalog.",
+              "requestType": "CreateCatalogRequest",
+              "requestLongType": "CreateCatalogRequest",
+              "requestFullType": "agntcy.pyramid.v1alpha1.CreateCatalogRequest",
+              "requestStreaming": false,
+              "responseType": "Catalog",
+              "responseLongType": "Catalog",
+              "responseFullType": "agntcy.pyramid.v1alpha1.Catalog",
+              "responseStreaming": false,
+              "options": {
+                "google.api.http": {
+                  "rules": [
+                    {
+                      "method": "POST",
+                      "pattern": "/v1alpha1/catalogs",
+                      "body": "catalog"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "UpdateCatalog",
+              "description": "Update an Catalog.",
+              "requestType": "UpdateCatalogRequest",
+              "requestLongType": "UpdateCatalogRequest",
+              "requestFullType": "agntcy.pyramid.v1alpha1.UpdateCatalogRequest",
+              "requestStreaming": false,
+              "responseType": "Catalog",
+              "responseLongType": "Catalog",
+              "responseFullType": "agntcy.pyramid.v1alpha1.Catalog",
+              "responseStreaming": false,
+              "options": {
+                "google.api.http": {
+                  "rules": [
+                    {
+                      "method": "PUT",
+                      "pattern": "/v1alpha1/catalogs/{catalog_id}",
+                      "body": "catalog"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "DeleteCatalog",
+              "description": "Delete an existing Catalog.",
+              "requestType": "DeleteCatalogRequest",
+              "requestLongType": "DeleteCatalogRequest",
+              "requestFullType": "agntcy.pyramid.v1alpha1.DeleteCatalogRequest",
+              "requestStreaming": false,
+              "responseType": "Empty",
+              "responseLongType": ".google.protobuf.Empty",
+              "responseFullType": "google.protobuf.Empty",
+              "responseStreaming": false,
+              "options": {
+                "google.api.http": {
+                  "rules": [
+                    {
+                      "method": "DELETE",
+                      "pattern": "/v1alpha1/catalogs/{catalog_id}"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "agntcy.pyramid/v1alpha1/executor_service.proto",
+      "description": "",
+      "package": "agntcy.pyramid.v1alpha1",
+      "hasEnums": false,
+      "hasExtensions": false,
+      "hasMessages": true,
+      "hasServices": true,
+      "enums": [],
+      "extensions": [],
+      "messages": [
+        {
+          "name": "ExecuteFunctionRequest",
+          "longName": "ExecuteFunctionRequest",
+          "fullName": "agntcy.pyramid.v1alpha1.ExecuteFunctionRequest",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "function_id",
+              "description": "Function Id to execute.",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "headers",
+              "description": "Headers for the function: provide authentication.",
+              "label": "repeated",
+              "type": "AirHeader",
+              "longType": "AirHeader",
+              "fullType": "agntcy.pyramid.v1alpha1.AirHeader",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "arguments",
+              "description": "Function arguments with values.",
+              "label": "repeated",
+              "type": "ParameterValue",
+              "longType": "ParameterValue",
+              "fullType": "agntcy.pyramid.v1alpha1.ParameterValue",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "ExecuteFunctionResponse",
+          "longName": "ExecuteFunctionResponse",
+          "fullName": "agntcy.pyramid.v1alpha1.ExecuteFunctionResponse",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "return_values",
+              "description": "Function return values.",
+              "label": "repeated",
+              "type": "ParameterValue",
+              "longType": "ParameterValue",
+              "fullType": "agntcy.pyramid.v1alpha1.ParameterValue",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        }
+      ],
+      "services": [
+        {
+          "name": "ExecutorService",
+          "longName": "ExecutorService",
+          "fullName": "agntcy.pyramid.v1alpha1.ExecutorService",
+          "description": "ExecutorService manages executors.",
+          "methods": [
+            {
+              "name": "ExecuteFunction",
+              "description": "Execute a specific function.",
+              "requestType": "ExecuteFunctionRequest",
+              "requestLongType": "ExecuteFunctionRequest",
+              "requestFullType": "agntcy.pyramid.v1alpha1.ExecuteFunctionRequest",
+              "requestStreaming": false,
+              "responseType": "ExecuteFunctionResponse",
+              "responseLongType": "ExecuteFunctionResponse",
+              "responseFullType": "agntcy.pyramid.v1alpha1.ExecuteFunctionResponse",
+              "responseStreaming": false,
+              "options": {
+                "google.api.http": {
+                  "rules": [
+                    {
+                      "method": "POST",
+                      "pattern": "/v1alpha1/executor/functions/{function_id}/execute",
+                      "body": "*"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "agntcy.pyramid/v1alpha1/iam_service.proto",
+      "description": "",
+      "package": "agntcy.pyramid.v1alpha1",
+      "hasEnums": false,
+      "hasExtensions": false,
+      "hasMessages": true,
+      "hasServices": true,
+      "enums": [],
+      "extensions": [],
+      "messages": [
+        {
+          "name": "CreateAuthorizationContextRequest",
+          "longName": "CreateAuthorizationContextRequest",
+          "fullName": "agntcy.pyramid.v1alpha1.CreateAuthorizationContextRequest",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "authorization_context",
+              "description": "The AuthorizationContext to create.",
+              "label": "",
+              "type": "AuthorizationContext",
+              "longType": "AuthorizationContext",
+              "fullType": "agntcy.pyramid.v1alpha1.AuthorizationContext",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "DeleteAuthorizationContextRequest",
+          "longName": "DeleteAuthorizationContextRequest",
+          "fullName": "agntcy.pyramid.v1alpha1.DeleteAuthorizationContextRequest",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "authorization_context_id",
+              "description": "AuthorizationContext Id to delete.",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "GetAuthorizationContextRequest",
+          "longName": "GetAuthorizationContextRequest",
+          "fullName": "agntcy.pyramid.v1alpha1.GetAuthorizationContextRequest",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "authorization_context_id",
+              "description": "AuthorizationContext Id to get.",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "ListAuthorizationContextsRequest",
+          "longName": "ListAuthorizationContextsRequest",
+          "fullName": "agntcy.pyramid.v1alpha1.ListAuthorizationContextsRequest",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": true,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "page",
+              "description": "The current page of the pagination",
+              "label": "optional",
+              "type": "int32",
+              "longType": "int32",
+              "fullType": "int32",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_page",
+              "defaultValue": ""
+            },
+            {
+              "name": "size",
+              "description": "The page size of the pagination",
+              "label": "optional",
+              "type": "int32",
+              "longType": "int32",
+              "fullType": "int32",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_size",
+              "defaultValue": ""
+            },
+            {
+              "name": "query",
+              "description": "The search query",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_query",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "ListAuthorizationContextsResponse",
+          "longName": "ListAuthorizationContextsResponse",
+          "fullName": "agntcy.pyramid.v1alpha1.ListAuthorizationContextsResponse",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": true,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "authorization_contexts",
+              "description": "A list of AuthorizationContexts.",
+              "label": "repeated",
+              "type": "AuthorizationContext",
+              "longType": "AuthorizationContext",
+              "fullType": "agntcy.pyramid.v1alpha1.AuthorizationContext",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "pagination",
+              "description": "Pagination response.",
+              "label": "optional",
+              "type": "PagedResponse",
+              "longType": "agntcy.pyramid.shared.v1alpha1.PagedResponse",
+              "fullType": "agntcy.pyramid.shared.v1alpha1.PagedResponse",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_pagination",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "SearchAuthorizationContextRequest",
+          "longName": "SearchAuthorizationContextRequest",
+          "fullName": "agntcy.pyramid.v1alpha1.SearchAuthorizationContextRequest",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "authorization_context_id",
+              "description": "AuthorizationContext Id to update.",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "starts_with",
+              "description": "Starts with",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "SearchAuthorizationContextResponse",
+          "longName": "SearchAuthorizationContextResponse",
+          "fullName": "agntcy.pyramid.v1alpha1.SearchAuthorizationContextResponse",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "groups",
+              "description": "AuthorizationContext groups result.",
+              "label": "repeated",
+              "type": "Group",
+              "longType": "Group",
+              "fullType": "agntcy.pyramid.v1alpha1.Group",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "TestAuthorizationContextRequest",
+          "longName": "TestAuthorizationContextRequest",
+          "fullName": "agntcy.pyramid.v1alpha1.TestAuthorizationContextRequest",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "authorization_context_id",
+              "description": "AuthorizationContext Id to update.",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "username",
+              "description": "Username to test.",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "TestAuthorizationContextResponse",
+          "longName": "TestAuthorizationContextResponse",
+          "fullName": "agntcy.pyramid.v1alpha1.TestAuthorizationContextResponse",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "result",
+              "description": "AuthorizationContext test result.",
+              "label": "",
+              "type": "bool",
+              "longType": "bool",
+              "fullType": "bool",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "UpdateAuthorizationContextRequest",
+          "longName": "UpdateAuthorizationContextRequest",
+          "fullName": "agntcy.pyramid.v1alpha1.UpdateAuthorizationContextRequest",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "authorization_context_id",
+              "description": "AuthorizationContext Id to update.",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "authorization_context",
+              "description": "AuthorizationContext parameters to update.",
+              "label": "",
+              "type": "AuthorizationContext",
+              "longType": "AuthorizationContext",
+              "fullType": "agntcy.pyramid.v1alpha1.AuthorizationContext",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        }
+      ],
+      "services": [
+        {
+          "name": "IamService",
+          "longName": "IamService",
+          "fullName": "agntcy.pyramid.v1alpha1.IamService",
+          "description": "IamService manages setting for a tenant like API Keys.",
+          "methods": [
+            {
+              "name": "ListAuthorizationContexts",
+              "description": "List AuthorizationContexts.",
+              "requestType": "ListAuthorizationContextsRequest",
+              "requestLongType": "ListAuthorizationContextsRequest",
+              "requestFullType": "agntcy.pyramid.v1alpha1.ListAuthorizationContextsRequest",
+              "requestStreaming": false,
+              "responseType": "ListAuthorizationContextsResponse",
+              "responseLongType": "ListAuthorizationContextsResponse",
+              "responseFullType": "agntcy.pyramid.v1alpha1.ListAuthorizationContextsResponse",
+              "responseStreaming": false,
+              "options": {
+                "google.api.http": {
+                  "rules": [
+                    {
+                      "method": "GET",
+                      "pattern": "/v1alpha1/iam/authorization-contexts"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "GetAuthorizationContext",
+              "description": "Get AuthorizationContext by id",
+              "requestType": "GetAuthorizationContextRequest",
+              "requestLongType": "GetAuthorizationContextRequest",
+              "requestFullType": "agntcy.pyramid.v1alpha1.GetAuthorizationContextRequest",
+              "requestStreaming": false,
+              "responseType": "AuthorizationContext",
+              "responseLongType": "AuthorizationContext",
+              "responseFullType": "agntcy.pyramid.v1alpha1.AuthorizationContext",
+              "responseStreaming": false,
+              "options": {
+                "google.api.http": {
+                  "rules": [
+                    {
+                      "method": "GET",
+                      "pattern": "/v1alpha1/iam/authorization-contexts/{authorization_context_id}"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "CreateAuthorizationContext",
+              "description": "Create a new AuthorizationContext.",
+              "requestType": "CreateAuthorizationContextRequest",
+              "requestLongType": "CreateAuthorizationContextRequest",
+              "requestFullType": "agntcy.pyramid.v1alpha1.CreateAuthorizationContextRequest",
+              "requestStreaming": false,
+              "responseType": "AuthorizationContext",
+              "responseLongType": "AuthorizationContext",
+              "responseFullType": "agntcy.pyramid.v1alpha1.AuthorizationContext",
+              "responseStreaming": false,
+              "options": {
+                "google.api.http": {
+                  "rules": [
+                    {
+                      "method": "POST",
+                      "pattern": "/v1alpha1/iam/authorization-contexts",
+                      "body": "authorization_context"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "UpdateAuthorizationContext",
+              "description": "Update an AuthorizationContext.",
+              "requestType": "UpdateAuthorizationContextRequest",
+              "requestLongType": "UpdateAuthorizationContextRequest",
+              "requestFullType": "agntcy.pyramid.v1alpha1.UpdateAuthorizationContextRequest",
+              "requestStreaming": false,
+              "responseType": "AuthorizationContext",
+              "responseLongType": "AuthorizationContext",
+              "responseFullType": "agntcy.pyramid.v1alpha1.AuthorizationContext",
+              "responseStreaming": false,
+              "options": {
+                "google.api.http": {
+                  "rules": [
+                    {
+                      "method": "PUT",
+                      "pattern": "/v1alpha1/iam/authorization-contexts/{authorization_context_id}",
+                      "body": "authorization_context"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "TestAuthorizationContext",
+              "description": "Test an AuthorizationContext.",
+              "requestType": "TestAuthorizationContextRequest",
+              "requestLongType": "TestAuthorizationContextRequest",
+              "requestFullType": "agntcy.pyramid.v1alpha1.TestAuthorizationContextRequest",
+              "requestStreaming": false,
+              "responseType": "TestAuthorizationContextResponse",
+              "responseLongType": "TestAuthorizationContextResponse",
+              "responseFullType": "agntcy.pyramid.v1alpha1.TestAuthorizationContextResponse",
+              "responseStreaming": false,
+              "options": {
+                "google.api.http": {
+                  "rules": [
+                    {
+                      "method": "GET",
+                      "pattern": "/v1alpha1/iam/authorization-contexts/{authorization_context_id}/test"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "SearchAuthorizationContext",
+              "description": "Search AuthorizationContext.",
+              "requestType": "SearchAuthorizationContextRequest",
+              "requestLongType": "SearchAuthorizationContextRequest",
+              "requestFullType": "agntcy.pyramid.v1alpha1.SearchAuthorizationContextRequest",
+              "requestStreaming": false,
+              "responseType": "SearchAuthorizationContextResponse",
+              "responseLongType": "SearchAuthorizationContextResponse",
+              "responseFullType": "agntcy.pyramid.v1alpha1.SearchAuthorizationContextResponse",
+              "responseStreaming": false,
+              "options": {
+                "google.api.http": {
+                  "rules": [
+                    {
+                      "method": "POST",
+                      "pattern": "/v1alpha1/iam/authorization-contexts/{authorization_context_id}/search",
+                      "body": "*"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "DeleteAuthorizationContext",
+              "description": "Delete an existing AuthorizationContext.",
+              "requestType": "DeleteAuthorizationContextRequest",
+              "requestLongType": "DeleteAuthorizationContextRequest",
+              "requestFullType": "agntcy.pyramid.v1alpha1.DeleteAuthorizationContextRequest",
+              "requestStreaming": false,
+              "responseType": "Empty",
+              "responseLongType": ".google.protobuf.Empty",
+              "responseFullType": "google.protobuf.Empty",
+              "responseStreaming": false,
+              "options": {
+                "google.api.http": {
+                  "rules": [
+                    {
+                      "method": "DELETE",
+                      "pattern": "/v1alpha1/iam/authorization-contexts/{authorization_context_id}"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "agntcy.pyramid/v1alpha1/openapi.proto",
+      "description": "",
+      "package": "agntcy.pyramid.v1alpha1",
+      "hasEnums": false,
+      "hasExtensions": false,
+      "hasMessages": false,
+      "hasServices": false,
+      "enums": [],
+      "extensions": [],
+      "messages": [],
+      "services": []
+    },
+    {
+      "name": "agntcy.pyramid/v1alpha1/source_service.proto",
+      "description": "",
+      "package": "agntcy.pyramid.v1alpha1",
+      "hasEnums": false,
+      "hasExtensions": false,
+      "hasMessages": true,
+      "hasServices": true,
+      "enums": [],
+      "extensions": [],
+      "messages": [
+        {
+          "name": "CreateSourceRequest",
+          "longName": "CreateSourceRequest",
+          "fullName": "agntcy.pyramid.v1alpha1.CreateSourceRequest",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": true,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "catalog_id",
+              "description": "Catalog Id to add the source to.",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "name",
+              "description": "A human-readable name for the Source.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_name",
+              "defaultValue": ""
+            },
+            {
+              "name": "description",
+              "description": "A human-readable description for the Source.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_description",
+              "defaultValue": ""
+            },
+            {
+              "name": "type",
+              "description": "Source type.",
+              "label": "",
+              "type": "SourceType",
+              "longType": "SourceType",
+              "fullType": "agntcy.pyramid.v1alpha1.SourceType",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "open_api_parameters",
+              "description": "OpenAPI source parameters",
+              "label": "",
+              "type": "OpenApiParameters",
+              "longType": "OpenApiParameters",
+              "fullType": "agntcy.pyramid.v1alpha1.OpenApiParameters",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "splunk_ent_parameters",
+              "description": "Splunk Enterprise source parameters",
+              "label": "",
+              "type": "SplunkEntParameters",
+              "longType": "SplunkEntParameters",
+              "fullType": "agntcy.pyramid.v1alpha1.SplunkEntParameters",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "salesforce_parameters",
+              "description": "Salesforce source parameters",
+              "label": "",
+              "type": "SalesforceParameters",
+              "longType": "SalesforceParameters",
+              "fullType": "agntcy.pyramid.v1alpha1.SalesforceParameters",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "CreateSourceResponse",
+          "longName": "CreateSourceResponse",
+          "fullName": "agntcy.pyramid.v1alpha1.CreateSourceResponse",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "source",
+              "description": "",
+              "label": "",
+              "type": "Source",
+              "longType": "Source",
+              "fullType": "agntcy.pyramid.v1alpha1.Source",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "DeleteSourceRequest",
+          "longName": "DeleteSourceRequest",
+          "fullName": "agntcy.pyramid.v1alpha1.DeleteSourceRequest",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "catalog_id",
+              "description": "Catalog Id to delete the source from.",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "source_id",
+              "description": "The id of the source to delete.",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "ListSourcesRequest",
+          "longName": "ListSourcesRequest",
+          "fullName": "agntcy.pyramid.v1alpha1.ListSourcesRequest",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "catalog_id",
+              "description": "Catalog Id.",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "ListSourcesResponse",
+          "longName": "ListSourcesResponse",
+          "fullName": "agntcy.pyramid.v1alpha1.ListSourcesResponse",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "sources",
+              "description": "A list of sources.",
+              "label": "repeated",
+              "type": "Source",
+              "longType": "Source",
+              "fullType": "agntcy.pyramid.v1alpha1.Source",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "UpdateSourceRequest",
+          "longName": "UpdateSourceRequest",
+          "fullName": "agntcy.pyramid.v1alpha1.UpdateSourceRequest",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "catalog_id",
+              "description": "Catalog Id to add the source to.",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "source_id",
+              "description": "The id of the source to update",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "open_api_parameters",
+              "description": "OpenAPI source parameters",
+              "label": "",
+              "type": "OpenApiParameters",
+              "longType": "OpenApiParameters",
+              "fullType": "agntcy.pyramid.v1alpha1.OpenApiParameters",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "splunk_ent_parameters",
+              "description": "Splunk Enterprise source parameters",
+              "label": "",
+              "type": "SplunkEntParameters",
+              "longType": "SplunkEntParameters",
+              "fullType": "agntcy.pyramid.v1alpha1.SplunkEntParameters",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "salesforce_parameters",
+              "description": "Salesforce source parameters",
+              "label": "",
+              "type": "SalesforceParameters",
+              "longType": "SalesforceParameters",
+              "fullType": "agntcy.pyramid.v1alpha1.SalesforceParameters",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "UpdateSourceResponse",
+          "longName": "UpdateSourceResponse",
+          "fullName": "agntcy.pyramid.v1alpha1.UpdateSourceResponse",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "source",
+              "description": "",
+              "label": "",
+              "type": "Source",
+              "longType": "Source",
+              "fullType": "agntcy.pyramid.v1alpha1.Source",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        }
+      ],
+      "services": [
+        {
+          "name": "SourceService",
+          "longName": "SourceService",
+          "fullName": "agntcy.pyramid.v1alpha1.SourceService",
+          "description": "SourceService manages sources.",
+          "methods": [
+            {
+              "name": "CreateSource",
+              "description": "Create a new source.",
+              "requestType": "CreateSourceRequest",
+              "requestLongType": "CreateSourceRequest",
+              "requestFullType": "agntcy.pyramid.v1alpha1.CreateSourceRequest",
+              "requestStreaming": false,
+              "responseType": "CreateSourceResponse",
+              "responseLongType": "CreateSourceResponse",
+              "responseFullType": "agntcy.pyramid.v1alpha1.CreateSourceResponse",
+              "responseStreaming": false,
+              "options": {
+                "google.api.http": {
+                  "rules": [
+                    {
+                      "method": "POST",
+                      "pattern": "/v1alpha1/catalogs/{catalog_id}/sources",
+                      "body": "*"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "UpdateSource",
+              "description": "Create a new source.",
+              "requestType": "UpdateSourceRequest",
+              "requestLongType": "UpdateSourceRequest",
+              "requestFullType": "agntcy.pyramid.v1alpha1.UpdateSourceRequest",
+              "requestStreaming": false,
+              "responseType": "UpdateSourceResponse",
+              "responseLongType": "UpdateSourceResponse",
+              "responseFullType": "agntcy.pyramid.v1alpha1.UpdateSourceResponse",
+              "responseStreaming": false,
+              "options": {
+                "google.api.http": {
+                  "rules": [
+                    {
+                      "method": "PUT",
+                      "pattern": "/v1alpha1/catalogs/{catalog_id}/sources/{source_id}",
+                      "body": "*"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "DeleteSource",
+              "description": "Delete an existing Catalog.",
+              "requestType": "DeleteSourceRequest",
+              "requestLongType": "DeleteSourceRequest",
+              "requestFullType": "agntcy.pyramid.v1alpha1.DeleteSourceRequest",
+              "requestStreaming": false,
+              "responseType": "Empty",
+              "responseLongType": ".google.protobuf.Empty",
+              "responseFullType": "google.protobuf.Empty",
+              "responseStreaming": false,
+              "options": {
+                "google.api.http": {
+                  "rules": [
+                    {
+                      "method": "DELETE",
+                      "pattern": "/v1alpha1/catalogs/{catalog_id}/sources/{source_id}"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "ListSources",
+              "description": "List Catalogs.",
+              "requestType": "ListSourcesRequest",
+              "requestLongType": "ListSourcesRequest",
+              "requestFullType": "agntcy.pyramid.v1alpha1.ListSourcesRequest",
+              "requestStreaming": false,
+              "responseType": "ListSourcesResponse",
+              "responseLongType": "ListSourcesResponse",
+              "responseFullType": "agntcy.pyramid.v1alpha1.ListSourcesResponse",
+              "responseStreaming": false,
+              "options": {
+                "google.api.http": {
+                  "rules": [
+                    {
+                      "method": "GET",
+                      "pattern": "/v1alpha1/catalogs/{catalog_id}/sources"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "scalarValueTypes": [
+    {
+      "protoType": "double",
+      "notes": "",
+      "cppType": "double",
+      "csType": "double",
+      "goType": "float64",
+      "javaType": "double",
+      "phpType": "float",
+      "pythonType": "float",
+      "rubyType": "Float"
+    },
+    {
+      "protoType": "float",
+      "notes": "",
+      "cppType": "float",
+      "csType": "float",
+      "goType": "float32",
+      "javaType": "float",
+      "phpType": "float",
+      "pythonType": "float",
+      "rubyType": "Float"
+    },
+    {
+      "protoType": "int32",
+      "notes": "Uses variable-length encoding. Inefficient for encoding negative numbers – if your field is likely to have negative values, use sint32 instead.",
+      "cppType": "int32",
+      "csType": "int",
+      "goType": "int32",
+      "javaType": "int",
+      "phpType": "integer",
+      "pythonType": "int",
+      "rubyType": "Bignum or Fixnum (as required)"
+    },
+    {
+      "protoType": "int64",
+      "notes": "Uses variable-length encoding. Inefficient for encoding negative numbers – if your field is likely to have negative values, use sint64 instead.",
+      "cppType": "int64",
+      "csType": "long",
+      "goType": "int64",
+      "javaType": "long",
+      "phpType": "integer/string",
+      "pythonType": "int/long",
+      "rubyType": "Bignum"
+    },
+    {
+      "protoType": "uint32",
+      "notes": "Uses variable-length encoding.",
+      "cppType": "uint32",
+      "csType": "uint",
+      "goType": "uint32",
+      "javaType": "int",
+      "phpType": "integer",
+      "pythonType": "int/long",
+      "rubyType": "Bignum or Fixnum (as required)"
+    },
+    {
+      "protoType": "uint64",
+      "notes": "Uses variable-length encoding.",
+      "cppType": "uint64",
+      "csType": "ulong",
+      "goType": "uint64",
+      "javaType": "long",
+      "phpType": "integer/string",
+      "pythonType": "int/long",
+      "rubyType": "Bignum or Fixnum (as required)"
+    },
+    {
+      "protoType": "sint32",
+      "notes": "Uses variable-length encoding. Signed int value. These more efficiently encode negative numbers than regular int32s.",
+      "cppType": "int32",
+      "csType": "int",
+      "goType": "int32",
+      "javaType": "int",
+      "phpType": "integer",
+      "pythonType": "int",
+      "rubyType": "Bignum or Fixnum (as required)"
+    },
+    {
+      "protoType": "sint64",
+      "notes": "Uses variable-length encoding. Signed int value. These more efficiently encode negative numbers than regular int64s.",
+      "cppType": "int64",
+      "csType": "long",
+      "goType": "int64",
+      "javaType": "long",
+      "phpType": "integer/string",
+      "pythonType": "int/long",
+      "rubyType": "Bignum"
+    },
+    {
+      "protoType": "fixed32",
+      "notes": "Always four bytes. More efficient than uint32 if values are often greater than 2^28.",
+      "cppType": "uint32",
+      "csType": "uint",
+      "goType": "uint32",
+      "javaType": "int",
+      "phpType": "integer",
+      "pythonType": "int",
+      "rubyType": "Bignum or Fixnum (as required)"
+    },
+    {
+      "protoType": "fixed64",
+      "notes": "Always eight bytes. More efficient than uint64 if values are often greater than 2^56.",
+      "cppType": "uint64",
+      "csType": "ulong",
+      "goType": "uint64",
+      "javaType": "long",
+      "phpType": "integer/string",
+      "pythonType": "int/long",
+      "rubyType": "Bignum"
+    },
+    {
+      "protoType": "sfixed32",
+      "notes": "Always four bytes.",
+      "cppType": "int32",
+      "csType": "int",
+      "goType": "int32",
+      "javaType": "int",
+      "phpType": "integer",
+      "pythonType": "int",
+      "rubyType": "Bignum or Fixnum (as required)"
+    },
+    {
+      "protoType": "sfixed64",
+      "notes": "Always eight bytes.",
+      "cppType": "int64",
+      "csType": "long",
+      "goType": "int64",
+      "javaType": "long",
+      "phpType": "integer/string",
+      "pythonType": "int/long",
+      "rubyType": "Bignum"
+    },
+    {
+      "protoType": "bool",
+      "notes": "",
+      "cppType": "bool",
+      "csType": "bool",
+      "goType": "bool",
+      "javaType": "boolean",
+      "phpType": "boolean",
+      "pythonType": "boolean",
+      "rubyType": "TrueClass/FalseClass"
+    },
+    {
+      "protoType": "string",
+      "notes": "A string must always contain UTF-8 encoded or 7-bit ASCII text.",
+      "cppType": "string",
+      "csType": "string",
+      "goType": "string",
+      "javaType": "String",
+      "phpType": "string",
+      "pythonType": "str/unicode",
+      "rubyType": "String (UTF-8)"
+    },
+    {
+      "protoType": "bytes",
+      "notes": "May contain any arbitrary sequence of bytes.",
+      "cppType": "string",
+      "csType": "ByteString",
+      "goType": "[]byte",
+      "javaType": "ByteString",
+      "phpType": "string",
+      "pythonType": "str",
+      "rubyType": "String (ASCII-8BIT)"
+    }
+  ]
+}

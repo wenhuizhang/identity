@@ -1,0 +1,8 @@
+syntax = "proto3";
+
+package data.data2;
+
+message Ignored {}
+
+message Enum2 {}
+
