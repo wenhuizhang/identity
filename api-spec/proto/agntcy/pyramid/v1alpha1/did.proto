@@ -26,20 +26,6 @@ message DidSubject {
   DidSubjectType type = 2;
 }
 
-// A PyramID Decentralized Identifier
-message Did {
-  // The DID {ID}
-  // A did could be represented as `did:agntcy:{ID}`
-  // The metadata below is related as claims to the {ID}
-  string id = 1;
-
-  // Issuer of the DID
-  agntcy.pyramid.v1alpha1.Issuer issuer = 2;
-
-  // The DID subject
-  DidSubject subject = 3;
-}
-
 // A PyramID Decentralized Identifier Document
 // A DID Document is a JSON-LD document that
 // contains cryptographic information about the DID
