@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+package agntcy.pyramid.v1alpha1;
+
+// Package-wide variables from generator "generated".
+option go_package = "github.com/agntcy/pyramid/internal/pkg/generated/agntcy/pyramid/v1alpha1;pyramid_sdk_go";
+
+// A PyramID JWK
+message Jwk {
+  // The key type
+  string kty = 1;
+
+  // The key use
+  string use = 2;
+
+  // The key algorithm
+  string alg = 3;
+
+  // The key id
+  string kid = 4;
+
+  // The key exponent
+  string e = 5;
+
+  // The key modulus
+  string n = 6;
+}
+
+
+// A PyramID Issuer
+message Issuer {
+  // The common name of the issuer
+  // Example: isuser.com
+  string common_name = 1;
+
+  // The keys of the issuer of the DID in JWK format
+  // This might contain the public and/or private keys
+  optional Jwk jwk = 2;
+}
+

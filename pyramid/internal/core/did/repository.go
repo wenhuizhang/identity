@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/agntcy/pyramid/internal/core/did/types"
-	"github.com/agntcy/pyramid/internal/core/pagination"
+	"github.com/agntcy/pyramid/internal/pkg/pagination"
 )
 
 type DidRepository interface {

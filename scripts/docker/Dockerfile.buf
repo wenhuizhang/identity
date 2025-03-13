@@ -3,7 +3,7 @@ FROM golang:1.23-alpine3.19 AS builder
 ARG BIN="/usr/local/bin"
 ARG BUF_VERSION="1.28.1"
 
-RUN apk update && apk add curl
+RUN apk update && apk add curl git
 
 WORKDIR /pyramid/protoc-gen-go-pyramid
 COPY api-spec/plugins/protoc-gen-go-srvreg .
@@ -42,7 +42,7 @@ ENV PyramID_ROOT="/pyramid"
 
 COPY scripts/docker/run.sh .
 COPY scripts/docker/protoc.sh .
-COPY backend ./local/github.com/agntcy/pyramid
+COPY pyramid ./local/github.com/agntcy/pyramid
 COPY scripts/docker/protos ./third_party/protos
 
 RUN chmod +x run.sh && \

@@ -8,10 +8,8 @@ import (
 	"os/signal"
 	"time"
 
-	grpcservices "github.com/agntcy/pyramid/internal/node/services/grpc"
 	app_grpc_register "github.com/agntcy/pyramid/internal/pkg/generated"
 	"github.com/agntcy/pyramid/internal/pkg/grpcutil"
-	"github.com/agntcy/pyramid/internal/pkg/healthz"
 	"github.com/agntcy/pyramid/pkg/cmd"
 	"github.com/agntcy/pyramid/pkg/grpcserver"
 	"github.com/agntcy/pyramid/pkg/log"
@@ -85,8 +83,6 @@ func main() {
 		}
 	}()
 
-	dbContext := mongoDbClient.Database("pyramid_test")
-
 	// Create a GRPC server
 	grpcsrv, err := grpcserver.New(
 		config.ServerGrpcHost,
@@ -103,26 +99,13 @@ func main() {
 	defer grpcsrv.Shutdown(ctx)
 
 	// Healthz
-	healthzChecker := healthz.NewChecker(dbContext)
-
-	// Add Observability Metrics
-
-	err = pyramidService.CreateAirIfNeeded(ctx)
-	if err != nil {
-		log.WithFields(logrus.Fields{log.ErrorField: err}).
-			Error("failed to bootstrap an PyramID config")
-	}
+	// healthzChecker := healthz.NewChecker()
 
 	register := app_grpc_register.GrpcServiceRegister{
-		DidServiceServer: grpcservices.NewDidService(),
+		// DidServiceServer: grpcservices.NewDidService(),
 	}
 
 	register.RegisterGrpcHandlers(grpcsrv.Server)
-
-	grpc_health_v1.RegisterHealthServer(
-		grpcsrv.Server,
-		grpcservices.NewHealthService(healthzChecker),
-	)
 
 	// Serve gRPC server
 	log.Info("Serving gRPC on:", config.ServerGrpcHost)

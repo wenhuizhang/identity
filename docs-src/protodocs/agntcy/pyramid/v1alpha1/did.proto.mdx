@@ -1,0 +1,41 @@
+---
+title: did.proto
+hide_title: true
+---
+
+import { ProtoMessage, ProtoServiceMethod, ProtoEnum } from '@theme/ProtoFile';
+
+# `did.proto`
+_**path** agntcy/pyramid/v1alpha1/did.proto_
+
+_**package** agntcy.pyramid.v1alpha1_
+
+
+
+---
+
+## Messages
+
+
+### `Did`
+<ProtoMessage key={0} message={{"name":"Did","longName":"Did","fullName":"agntcy.pyramid.v1alpha1.Did","description":"A PyramID Decentralized Identifier","hasExtensions":false,"hasFields":true,"hasOneofs":false,"extensions":[],"fields":[{"name":"id","description":"The DID {ID}\nA did could be represented as `did:agntcy:{ID}`\nThe metadata below is related as claims to the {ID}","label":"","type":"string","longType":"string","fullType":"string","ismap":false,"isoneof":false,"oneofdecl":"","defaultValue":""},{"name":"issuer","description":"Issuer of the DID","label":"","type":"Issuer","longType":"Issuer","fullType":"agntcy.pyramid.v1alpha1.Issuer","ismap":false,"isoneof":false,"oneofdecl":"","defaultValue":"","typeLink":"/protodocs/agntcy/pyramid/v1alpha1/issuer.proto#issuer"},{"name":"subject","description":"The DID subject","label":"","type":"DidSubject","longType":"DidSubject","fullType":"agntcy.pyramid.v1alpha1.DidSubject","ismap":false,"isoneof":false,"oneofdecl":"","defaultValue":"","typeLink":"/protodocs/agntcy/pyramid/v1alpha1/did.proto#didsubject"}]}} />
+
+
+### `DidDocument`
+<ProtoMessage key={1} message={{"name":"DidDocument","longName":"DidDocument","fullName":"agntcy.pyramid.v1alpha1.DidDocument","description":"A PyramID Decentralized Identifier Document\nA DID Document is a JSON-LD document that\ncontains cryptographic information about the DID","hasExtensions":false,"hasFields":true,"hasOneofs":false,"extensions":[],"fields":[{"name":"id","description":"A local unique id of the document","label":"","type":"string","longType":"string","fullType":"string","ismap":false,"isoneof":false,"oneofdecl":"","defaultValue":""},{"name":"did","description":"The DID that resolves to this document\nThis embeds the public JWK of the issuer","label":"","type":"Did","longType":"Did","fullType":"agntcy.pyramid.v1alpha1.Did","ismap":false,"isoneof":false,"oneofdecl":"","defaultValue":"","typeLink":"/protodocs/agntcy/pyramid/v1alpha1/did.proto#did"},{"name":"node","description":"The node that was used to publish the document","label":"","type":"string","longType":"string","fullType":"string","ismap":false,"isoneof":false,"oneofdecl":"","defaultValue":""}]}} />
+
+
+### `DidSubject`
+<ProtoMessage key={2} message={{"name":"DidSubject","longName":"DidSubject","fullName":"agntcy.pyramid.v1alpha1.DidSubject","description":"","hasExtensions":false,"hasFields":true,"hasOneofs":false,"extensions":[],"fields":[{"name":"id","description":"A local unique id of the subject","label":"","type":"string","longType":"string","fullType":"string","ismap":false,"isoneof":false,"oneofdecl":"","defaultValue":""},{"name":"type","description":"The type of the subject","label":"","type":"DidSubjectType","longType":"DidSubjectType","fullType":"agntcy.pyramid.v1alpha1.DidSubjectType","ismap":false,"isoneof":false,"oneofdecl":"","defaultValue":"","typeLink":"/protodocs/agntcy/pyramid/v1alpha1/did.proto#didsubjecttype"}]}} />
+
+---
+## Enums
+
+
+### `DidSubjectType`
+<ProtoEnum key={0} enumb={{"name":"DidSubjectType","longName":"DidSubjectType","fullName":"agntcy.pyramid.v1alpha1.DidSubjectType","description":"","values":[{"name":"DID_SUBJECT_TYPE_UNSPECIFIED","number":"0","description":"Unspecified Function Type."},{"name":"DID_SUBJECT_TYPE_AGENT","number":"1","description":"The DID subject is an agent"},{"name":"DID_SUBJECT_TYPE_AGENT_LOCATOR","number":"2","description":"The DID subject is an agent locator"}]}} />
+
+---
+
+
+  
