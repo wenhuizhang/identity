@@ -4,7 +4,8 @@ package agntcy.pyramid.v1alpha1;
 
 import "openapiv3/annotations.proto";
 
-option go_package = "github.com/agntcy/pyramid/internal/pkg/generated/agntcy.pyramid/pyramid/v1alpha1;pyramid_sdk_go";
+// Package-wide variables from generator "generated".
+option go_package = "github.com/agntcy/pyramid/internal/pkg/generated/agntcy/pyramid/v1alpha1;pyramid_sdk_go";
 
 option (openapi.v3.document) = {
     info: {
