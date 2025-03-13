@@ -1,8 +1,8 @@
 # PyramID
 
 <p align="center">
-  <a href="https://outshift.cisco.ai/">
-    <img src="img/_logo-Outshift_FullColor@2x.png" width="300"/>
+  <a href="https://agntcy.org">
+    <img src="img/_logo-Agntcy_FullColor@2x.png" width="300"/>
   </a>
   <br />
   <caption>Welcome to the <b>PyramID</b> repo</caption>
