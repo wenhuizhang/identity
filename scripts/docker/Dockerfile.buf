@@ -42,7 +42,7 @@ ENV PyramID_ROOT="/pyramid"
 
 COPY scripts/docker/run.sh .
 COPY scripts/docker/protoc.sh .
-COPY backend ./local/github.com/agntcy/pyramid
+COPY pyramid ./local/github.com/agntcy/pyramid
 COPY scripts/docker/protos ./third_party/protos
 
 RUN chmod +x run.sh && \
