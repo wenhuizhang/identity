@@ -5,7 +5,13 @@ set -o nounset
 set -o pipefail
 
 PROTO_PACKAGE_NAME="agntcy.pyramid.v1alpha1"
-PROTO_FILE_PATH="agntcy.pyramid/v1alpha1/"
+PROTO_FILE_PATH="agntcy/pyramid/v1alpha1/"
+
+# Openapi
+/usr/local/bin/buf generate --template buf.gen.openapi.yaml --output ../docs-src/static/api/openapi/v1alpha1 --path proto/$PROTO_FILE_PATH
+
+# Proto
+/usr/local/bin/buf generate --template buf.gen.doc.yaml --output ../docs-src/static/api/proto/v1alpha1 --path proto/$PROTO_FILE_PATH
 
 function get_module_name_from_package() {
   echo $(dirname "$1" | xargs basename)
@@ -107,12 +113,3 @@ cd "${PyramID_ROOT}/code/api-spec"
 
 # Go
 /usr/local/bin/buf generate --debug -v
-
-# Python
-/usr/local/bin/buf generate --include-imports --template buf.gen.python.yaml --debug -v
-
-# Openapi
-/usr/local/bin/buf generate --template buf.gen.openapi.yaml --output ../docs-src/static/api/openapi/v1alpha1 --path proto/agntcy.pyramid/v1alpha1
-
-# Proto
-/usr/local/bin/buf generate --template buf.gen.doc.yaml --output ../docs-src/static/api/proto/v1alpha1 --path proto/agntcy.pyramid/v1alpha1
