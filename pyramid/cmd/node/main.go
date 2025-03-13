@@ -9,7 +9,6 @@ import (
 	"time"
 
 	grpcservices "github.com/agntcy/pyramid/internal/node/services/grpc"
-	app_grpc_register "github.com/agntcy/pyramid/internal/pkg/generated"
 	"github.com/agntcy/pyramid/internal/pkg/grpcutil"
 	"github.com/agntcy/pyramid/internal/pkg/healthz"
 	"github.com/agntcy/pyramid/pkg/cmd"
