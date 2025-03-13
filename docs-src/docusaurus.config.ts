@@ -7,7 +7,7 @@ import type { ScalarOptions } from '@scalar/docusaurus'
 
 const config: Config = {
   title: 'PyramID',
-  tagline: 'Agentic Information Retrieval',
+  tagline: 'Decentralized Identity Management',
   favicon: 'img/favicon.svg',
 
   // Set the production url of your site here
@@ -18,7 +18,7 @@ const config: Config = {
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
-  organizationName: 'Cisco', // Usually your GitHub org/user name.
+  organizationName: 'Agntcy', // Usually your GitHub org/user name.
   projectName: 'PyramID', // Usually your repo name.
 
   onBrokenLinks: 'throw',
@@ -90,7 +90,7 @@ const config: Config = {
           label: 'Docs',
         },
         {
-          to: 'protodocs/agntcy/pyramid/v1alpha1/pyramid.proto',
+          to: 'protodocs/agntcy/pyramid/v1alpha1/did.proto',
           activeBasePath: 'protodocs',
           label: 'Protodocs',
           position: 'left',

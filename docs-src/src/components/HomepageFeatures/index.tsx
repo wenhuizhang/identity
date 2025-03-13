@@ -10,10 +10,13 @@ type FeatureItem = {
 
 const FeatureList: FeatureItem[] = [
   {
-    title: "Dynamic Access Management",
+    title: "Decentralized Identity Management",
     description: (
       <>
-        PyramID-Engine is crafted to seamlessly integrate with various IDPs, dynamically adjusting agent tool access based on user permissions. This ensures that agents only see and use the tools authorized for the user they are working for, enhancing security and operational efficiency.
+        PyramID is crafted to seamlessly manage decentralized identities across
+        multiple platforms. Our system ensures secure and efficient identity
+        management, allowing users to access services and applications with
+        ease.
       </>
     ),
   },
@@ -21,7 +24,10 @@ const FeatureList: FeatureItem[] = [
     title: "Effortless Integration",
     description: (
       <>
-        Connect your existing platforms effortlessly with PyramID-Engine's support for custom sources like Splunk, Meraki, Jira, Salesforce, and Stripe. Our system uses OpenAPI specifications to ensure smooth data source integration without hassle.
+        Connect your existing platforms effortlessly with PyramID-Engine's
+        support for custom sources like Splunk, Meraki, Jira, Salesforce, and
+        Stripe. Our system uses OpenAPI specifications to ensure smooth data
+        source integration without hassle.
       </>
     ),
   },
@@ -29,7 +35,10 @@ const FeatureList: FeatureItem[] = [
     title: "Customizable and Extensible",
     description: (
       <>
-        With the "Bring your own tool" functionality, PyramID-Engine allows administrators to add custom tools and extend existing source capabilities. Tailor your environment to meet specific needs with ease, ensuring maximum utility and flexibility.
+        With the "Bring your own tool" functionality, PyramID-Engine allows
+        administrators to add custom tools and extend existing source
+        capabilities. Tailor your environment to meet specific needs with ease,
+        ensuring maximum utility and flexibility.
       </>
     ),
   },

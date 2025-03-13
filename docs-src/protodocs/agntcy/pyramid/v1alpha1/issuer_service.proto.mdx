@@ -1,0 +1,55 @@
+---
+title: issuer_service.proto
+hide_title: true
+---
+
+import { ProtoMessage, ProtoServiceMethod, ProtoEnum } from '@theme/ProtoFile';
+
+# `issuer_service.proto`
+_**path** agntcy/pyramid/v1alpha1/issuer_service.proto_
+
+_**package** agntcy.pyramid.v1alpha1_
+
+
+
+---
+
+## Messages
+
+
+### `RegisterIssuerRequest`
+<ProtoMessage key={0} message={{"name":"RegisterIssuerRequest","longName":"RegisterIssuerRequest","fullName":"agntcy.pyramid.v1alpha1.RegisterIssuerRequest","description":"","hasExtensions":false,"hasFields":true,"hasOneofs":false,"extensions":[],"fields":[{"name":"issuer","description":"The Issuer to register.","label":"","type":"Issuer","longType":"Issuer","fullType":"agntcy.pyramid.v1alpha1.Issuer","ismap":false,"isoneof":false,"oneofdecl":"","defaultValue":"","typeLink":"/protodocs/agntcy/pyramid/v1alpha1/issuer.proto#issuer"}]}} />
+
+
+### `RegisterIssuerResponse`
+<ProtoMessage key={1} message={{"name":"RegisterIssuerResponse","longName":"RegisterIssuerResponse","fullName":"agntcy.pyramid.v1alpha1.RegisterIssuerResponse","description":"","hasExtensions":false,"hasFields":true,"hasOneofs":false,"extensions":[],"fields":[{"name":"proof","description":"The proof of the registration.\nThis could be added as a TXT record in the DNS","label":"","type":"string","longType":"string","fullType":"string","ismap":false,"isoneof":false,"oneofdecl":"","defaultValue":""}]}} />
+
+
+### `WellKnownRequest`
+<ProtoMessage key={2} message={{"name":"WellKnownRequest","longName":"WellKnownRequest","fullName":"agntcy.pyramid.v1alpha1.WellKnownRequest","description":"","hasExtensions":false,"hasFields":true,"hasOneofs":false,"extensions":[],"fields":[{"name":"issuer_common_name","description":"The common name of the issuer","label":"","type":"string","longType":"string","fullType":"string","ismap":false,"isoneof":false,"oneofdecl":"","defaultValue":""}]}} />
+
+---
+## Services
+
+
+### `IssuerService`
+
+IssuerService is the service that provides ISSUER operations.
+
+
+#### `RegisterIssuer`
+<ProtoServiceMethod key={'RegisterIssuer-0'} method={{"name":"RegisterIssuer","description":"Register a Issuer","requestType":"RegisterIssuerRequest","requestLongType":"RegisterIssuerRequest","requestFullType":"agntcy.pyramid.v1alpha1.RegisterIssuerRequest","requestStreaming":false,"responseType":"RegisterIssuerResponse","responseLongType":"RegisterIssuerResponse","responseFullType":"agntcy.pyramid.v1alpha1.RegisterIssuerResponse","responseStreaming":false,"options":{"google.api.http":{"rules":[{"method":"POST","pattern":"/v1alpha1/issuers/register","body":"issuer"}]}},"requestTypeLink":"/protodocs/agntcy/pyramid/v1alpha1/issuer_service.proto#registerissuerrequest","responseTypeLink":"/protodocs/agntcy/pyramid/v1alpha1/issuer_service.proto#registerissuerresponse"}} />
+
+
+#### `KeyGen`
+<ProtoServiceMethod key={'KeyGen-1'} method={{"name":"KeyGen","description":"Generate a keypair in JWK format","requestType":"Empty","requestLongType":".google.protobuf.Empty","requestFullType":"google.protobuf.Empty","requestStreaming":false,"responseType":"Jwk","responseLongType":"Jwk","responseFullType":"agntcy.pyramid.v1alpha1.Jwk","responseStreaming":false,"options":{"google.api.http":{"rules":[{"method":"GET","pattern":"/v1alpha1/issuers/keygen"}]}},"responseTypeLink":"/protodocs/agntcy/pyramid/v1alpha1/issuer.proto#jwk"}} />
+
+
+#### `WellKnown`
+<ProtoServiceMethod key={'WellKnown-2'} method={{"name":"WellKnown","description":"Resolve a web DID document to the well-known DID document","requestType":"WellKnownRequest","requestLongType":"WellKnownRequest","requestFullType":"agntcy.pyramid.v1alpha1.WellKnownRequest","requestStreaming":false,"responseType":"Jwk","responseLongType":"Jwk","responseFullType":"agntcy.pyramid.v1alpha1.Jwk","responseStreaming":false,"options":{"google.api.http":{"rules":[{"method":"GET","pattern":"/v1alpha1/{issuer_common_name}/.well-known/did.json"}]}},"requestTypeLink":"/protodocs/agntcy/pyramid/v1alpha1/issuer_service.proto#wellknownrequest","responseTypeLink":"/protodocs/agntcy/pyramid/v1alpha1/issuer.proto#jwk"}} />
+
+
+---
+
+
+  
