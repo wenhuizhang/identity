@@ -2,7 +2,7 @@ FROM golang:1.22.5-alpine AS builder
 
 # Build the package
 WORKDIR /build
-COPY ./backend .
+COPY ./pyramid .
 RUN go mod download
 RUN cd ./cmd/node && go build -o ../../pyramid-node
 
