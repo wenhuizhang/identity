@@ -135,3 +135,5 @@ dmypy.json
 pyramid/pyramid
 
 !ui/src/lib
+
+pyramid/pkg/assets/web

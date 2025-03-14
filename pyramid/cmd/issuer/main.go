@@ -8,6 +8,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// We use go generate to copy the web assets into the correct location for the local web server
+// This needs to be rerun whenever the web assets are updated
+//go:generate cp -r ../../../ui/dist ../../pkg/assets/web
+
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use: "pyramid",
@@ -48,4 +52,5 @@ func init() {
 	rootCmd.AddCommand(commands.NetworkCmd)
 	rootCmd.AddCommand(commands.AgentCmd)
 	rootCmd.AddCommand(commands.VerifyCmd)
+	rootCmd.AddCommand(commands.WebCmd)
 }
