@@ -32,7 +32,7 @@ const (
 // DidService is the service that provides DID operations.
 type DidServiceClient interface {
 	// Generate a Did
-	GenerateDid(ctx context.Context, in *GenerateDidRequest, opts ...grpc.CallOption) (*Did, error)
+	GenerateDid(ctx context.Context, in *GenerateDidRequest, opts ...grpc.CallOption) (*DidDocument, error)
 	// Resolve a Did
 	ResolveDid(ctx context.Context, in *ResolveDidRequest, opts ...grpc.CallOption) (*DidDocument, error)
 	// List Dids.
@@ -49,9 +49,9 @@ func NewDidServiceClient(cc grpc.ClientConnInterface) DidServiceClient {
 	return &didServiceClient{cc}
 }
 
-func (c *didServiceClient) GenerateDid(ctx context.Context, in *GenerateDidRequest, opts ...grpc.CallOption) (*Did, error) {
+func (c *didServiceClient) GenerateDid(ctx context.Context, in *GenerateDidRequest, opts ...grpc.CallOption) (*DidDocument, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(Did)
+	out := new(DidDocument)
 	err := c.cc.Invoke(ctx, DidService_GenerateDid_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -96,7 +96,7 @@ func (c *didServiceClient) PublishDid(ctx context.Context, in *PublishDidRequest
 // DidService is the service that provides DID operations.
 type DidServiceServer interface {
 	// Generate a Did
-	GenerateDid(context.Context, *GenerateDidRequest) (*Did, error)
+	GenerateDid(context.Context, *GenerateDidRequest) (*DidDocument, error)
 	// Resolve a Did
 	ResolveDid(context.Context, *ResolveDidRequest) (*DidDocument, error)
 	// List Dids.
@@ -112,7 +112,7 @@ type DidServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedDidServiceServer struct{}
 
-func (UnimplementedDidServiceServer) GenerateDid(context.Context, *GenerateDidRequest) (*Did, error) {
+func (UnimplementedDidServiceServer) GenerateDid(context.Context, *GenerateDidRequest) (*DidDocument, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GenerateDid not implemented")
 }
 func (UnimplementedDidServiceServer) ResolveDid(context.Context, *ResolveDidRequest) (*DidDocument, error) {

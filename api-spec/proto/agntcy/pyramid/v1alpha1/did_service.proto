@@ -4,6 +4,7 @@ package agntcy.pyramid.v1alpha1;
 
 import "agntcy/pyramid/shared/v1alpha1/pagination.proto";
 import "agntcy/pyramid/v1alpha1/did.proto";
+import "agntcy/pyramid/v1alpha1/issuer.proto";
 import "google/api/annotations.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
 
