@@ -33,10 +33,6 @@ message DidDocument {
   // A local unique id of the document
   string id = 1;
 
-  // The DID that resolves to this document
-  // This embeds the public JWK of the issuer
-  Did did = 2;
-
   // The node that was used to publish the document
-  string node = 3;
+  string node = 2;
 }

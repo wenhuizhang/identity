@@ -1,6 +1,6 @@
 # API spec
 
-Schema of the external API types that are served by the PyramID backend.
+Schema of the external API types that are served by the PyramID apps.
 
 ## Generate gRPC code
 
@@ -10,7 +10,7 @@ To generate the gRPC code from the API spec, run the following command from the 
 cd scripts && ./buf-generate.sh
 ```
 
-This will generate the Golang code in the `backend/internal/pkg/generated` directory and the Python code in the `sdk/python/internal/generated` directory.
+This will generate the Golang code in the `pyramid/internal/pkg/generated` directory and the Python code in the `sdk/python/internal/generated` directory.
 
 ## OpenAPI Client and Proto Documentation
 
