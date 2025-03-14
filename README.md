@@ -1,7 +1,7 @@
 # PyramID
 
-![Agntcy](img/_logo-Agntcy_FullColor@2x.png#gh-dark-mode-only)
-![Agntcy logo](img/_logo-Agntcy_Whiter@2x.png#gh-light-mode-only)
+![Agntcy](img/_logo-Agntcy_FullColor@2x.png#gh-light-mode-only)
+![Agntcy logo](img/_logo-Agntcy_Whiter@2x.png#gh-dark-mode-only)
 
 <p align="center">
   <a href="https://agntcy.org" width="300">
