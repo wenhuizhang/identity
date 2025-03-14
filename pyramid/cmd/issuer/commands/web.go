@@ -14,7 +14,6 @@ import (
 
 	"github.com/agntcy/pyramid/pkg/assets"
 
-	"github.com/gin-gonic/gin"
 	"github.com/spf13/cobra"
 )
 
@@ -23,7 +22,6 @@ var WebCmd = &cobra.Command{
 	Short: "Starts the Web UI and keeps CLI active until Ctrl+C is pressed",
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-
 		// Check if the port is a valid number
 		port := args[0]
 		if _, err := strconv.Atoi(port); err != nil {
@@ -46,14 +44,14 @@ var WebCmd = &cobra.Command{
 
 		fmt.Println("Starting Web UI...")
 
-		// Create Gin server instance and serve the static web files
-		r := gin.Default()
-		r.StaticFS("/", http.FS(assets.StaticFiles))
+		// Create HTTP server with static file handler
+		mux := http.NewServeMux()
+		mux.Handle("/", http.FileServer(http.FS(assets.StaticFiles)))
 
 		// Create an HTTP server with context
 		srv := &http.Server{
 			Addr:    ":" + port,
-			Handler: r,
+			Handler: mux,
 		}
 
 		// Channel to listen for OS signals (Ctrl+C)
