@@ -1,9 +1,11 @@
 # PyramID
 
-![Agntcy](img/_logo-Agntcy_FullColor@2x.png#gh-light-mode-only)
-![Agntcy](img/_logo-Agntcy_Whiter@2x.png#gh-dark-mode-only)
-
-<p align="center" width="300">
+<p align="center">
+  <a href="https://agntcy.org">
+    <img src="img/_logo-Agntcy_FullColor@2x.png#gh-light-mode-only" width="300"/>
+    <img src="img/@_logo-Agntcy_Whiter2x.png#gh-light-mode-only" width="300"/>
+  </a>
+  <br />
   <caption>Welcome to the <b>PyramID</b> repo</caption>
 </p>
 
