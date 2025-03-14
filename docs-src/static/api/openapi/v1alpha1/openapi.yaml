@@ -60,7 +60,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/Did'
+                            $ref: '#/components/schemas/GenerateDidRequest'
                 required: true
             responses:
                 "200":
@@ -68,7 +68,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/Did'
+                                $ref: '#/components/schemas/DidDocument'
                 default:
                     description: Default error response
                     content:
@@ -85,7 +85,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/Did'
+                            $ref: '#/components/schemas/DidDocument'
                 required: true
             responses:
                 "200":
@@ -100,16 +100,18 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /v1alpha1/dids/{didId}:
+    /v1alpha1/dids/{id}:
         get:
             tags:
                 - DidService
             description: Resolve a Did
             operationId: DidService_ResolveDid
             parameters:
-                - name: didId
+                - name: id
                   in: path
-                  description: Did Id to get.
+                  description: |-
+                    The DID URI for a particular DID subject,
+                     expressed using the id property in the DID document.
                   required: true
                   schema:
                     type: string
@@ -198,7 +200,7 @@ paths:
                                 $ref: '#/components/schemas/Status'
 components:
     schemas:
-        Did:
+        DidDocument:
             type: object
             properties:
                 id:
@@ -207,27 +209,6 @@ components:
                         The DID {ID}
                          A did could be represented as `did:agntcy:{ID}`
                          The metadata below is related as claims to the {ID}
-                issuer:
-                    allOf:
-                        - $ref: '#/components/schemas/Issuer'
-                    description: Issuer of the DID
-                subject:
-                    allOf:
-                        - $ref: '#/components/schemas/DidSubject'
-                    description: The DID subject
-            description: A PyramID Decentralized Identifier
-        DidDocument:
-            type: object
-            properties:
-                id:
-                    type: string
-                    description: A local unique id of the document
-                did:
-                    allOf:
-                        - $ref: '#/components/schemas/Did'
-                    description: |-
-                        The DID that resolves to this document
-                         This embeds the public JWK of the issuer
                 node:
                     type: string
                     description: The node that was used to publish the document
@@ -240,15 +221,30 @@ components:
             properties:
                 id:
                     type: string
-                    description: A local unique id of the subject
+                    description: A local unique id of the subject.
                 type:
                     enum:
                         - DID_SUBJECT_TYPE_UNSPECIFIED
                         - DID_SUBJECT_TYPE_AGENT
                         - DID_SUBJECT_TYPE_AGENT_LOCATOR
                     type: string
-                    description: The type of the subject
+                    description: |-
+                        Type specifies the type of the subject, as defined by the DidSubjectType enum.
+                         This indicates the role or nature of the subject in the decentralized identity system,
+                         such as whether it is an agent or an agent locator.
                     format: enum
+            description: DidSubject represents a subject within a decentralized identity framework.
+        GenerateDidRequest:
+            type: object
+            properties:
+                issuer:
+                    allOf:
+                        - $ref: '#/components/schemas/Issuer'
+                    description: Issuer of the DID
+                subject:
+                    allOf:
+                        - $ref: '#/components/schemas/DidSubject'
+                    description: The DID subject
         GoogleProtobufAny:
             type: object
             properties:
@@ -297,11 +293,11 @@ components:
         ListDidsResponse:
             type: object
             properties:
-                dids:
+                documents:
                     type: array
                     items:
-                        $ref: '#/components/schemas/Did'
-                    description: A list of Dids.
+                        $ref: '#/components/schemas/DidDocument'
+                    description: A list of Did documents.
                 pagination:
                     allOf:
                         - $ref: '#/components/schemas/PagedResponse'
