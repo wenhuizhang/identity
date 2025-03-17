@@ -3,6 +3,7 @@ syntax = "proto3";
 package agntcy.pyramid.v1alpha1;
 
 import "agntcy/pyramid/v1alpha1/issuer.proto";
+import "agntcy/pyramid/v1alpha1/did.proto";
 import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
@@ -30,7 +31,7 @@ service IssuerService {
   }
 
   // Generate a keypair in JWK format
-  rpc KeyGen(google.protobuf.Empty) returns (Jwk) {
+  rpc KeyGen(google.protobuf.Empty) returns (JWK) {
     option (google.api.http) = {
             get: "/v1alpha1/issuers/keygen"
         };
@@ -42,7 +43,7 @@ service IssuerService {
   }
 
   // Resolve a web DID document to the well-known DID document
-  rpc WellKnown(WellKnownRequest) returns (Jwk) {
+  rpc WellKnown(WellKnownRequest) returns (JWK) {
     option (google.api.http) = {
             get: "/v1alpha1/{issuer_common_name}/.well-known/did.json"
         };

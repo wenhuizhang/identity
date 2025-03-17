@@ -41,7 +41,6 @@ packages=$(echo "$packages" | sed 's/\s$//' | sed 's/^\s//')
 cd "${PyramID_ROOT}/local/github.com/agntcy/pyramid"
 
 go get github.com/gogo/protobuf/proto
-go mod tidy
 
 packages_comma_separated=$(echo "$packages" | tr ' ' ',')
 
