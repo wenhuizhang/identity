@@ -18,9 +18,7 @@
     /* Paths */
     "baseUrl": ".",
     "paths": {
-      "@/*": [
-        "./src/*"
-      ]
+      "@/*": ["./src/*"]
     },
 
     /* Linting */
@@ -30,5 +28,7 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["src"]
+  "typeRoots": ["./node_modules/@types", "./src/types"],
+  "include": ["src/**/*", "**/*.d.ts"],
+  "exclude": ["./node_modules"]
 }
