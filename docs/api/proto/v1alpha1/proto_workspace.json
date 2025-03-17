@@ -1,6 +1,200 @@
 {
   "files": [
     {
+      "name": "agntcy/pyramid/v1alpha1/did.proto",
+      "description": "",
+      "package": "agntcy.pyramid.v1alpha1",
+      "hasEnums": true,
+      "hasExtensions": false,
+      "hasMessages": true,
+      "hasServices": false,
+      "enums": [
+        {
+          "name": "DidSubjectType",
+          "longName": "DidSubjectType",
+          "fullName": "agntcy.pyramid.v1alpha1.DidSubjectType",
+          "description": "DidSubjectType defines the types of subjects that a Decentralized Identifier (DID) can represent.\nIt categorizes the role or nature of the subject within a decentralized identity framework.",
+          "values": [
+            {
+              "name": "DID_SUBJECT_TYPE_UNSPECIFIED",
+              "number": "0",
+              "description": "Unspecified Function Type."
+            },
+            {
+              "name": "DID_SUBJECT_TYPE_AGENT",
+              "number": "1",
+              "description": "The DID subject is an agent"
+            },
+            {
+              "name": "DID_SUBJECT_TYPE_AGENT_LOCATOR",
+              "number": "2",
+              "description": "The DID subject is an agent locator"
+            }
+          ]
+        }
+      ],
+      "extensions": [],
+      "messages": [
+        {
+          "name": "DidDocument",
+          "longName": "DidDocument",
+          "fullName": "agntcy.pyramid.v1alpha1.DidDocument",
+          "description": "DidDocument represents a Decentralized Identifier (DID) document.",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": true,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "document",
+              "description": "",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_document",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "DidSubject",
+          "longName": "DidSubject",
+          "fullName": "agntcy.pyramid.v1alpha1.DidSubject",
+          "description": "DidSubject represents a subject within a decentralized identity framework.",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": true,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "id",
+              "description": "A local unique id of the subject.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_id",
+              "defaultValue": ""
+            },
+            {
+              "name": "type",
+              "description": "Type specifies the type of the subject, as defined by the DidSubjectType enum.\nThis indicates the role or nature of the subject in the decentralized identity system,\nsuch as whether it is an agent or an agent locator.",
+              "label": "optional",
+              "type": "DidSubjectType",
+              "longType": "DidSubjectType",
+              "fullType": "agntcy.pyramid.v1alpha1.DidSubjectType",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_type",
+              "defaultValue": ""
+            },
+            {
+              "name": "publicKeyJwk",
+              "description": "",
+              "label": "optional",
+              "type": "JWK",
+              "longType": "JWK",
+              "fullType": "agntcy.pyramid.v1alpha1.JWK",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_publicKeyJwk",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "JWK",
+          "longName": "JWK",
+          "fullName": "agntcy.pyramid.v1alpha1.JWK",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": true,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "alg",
+              "description": "",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_alg",
+              "defaultValue": ""
+            },
+            {
+              "name": "kty",
+              "description": "",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_kty",
+              "defaultValue": ""
+            },
+            {
+              "name": "crv",
+              "description": "",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_crv",
+              "defaultValue": ""
+            },
+            {
+              "name": "d",
+              "description": "",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_d",
+              "defaultValue": ""
+            },
+            {
+              "name": "x",
+              "description": "",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_x",
+              "defaultValue": ""
+            },
+            {
+              "name": "y",
+              "description": "",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_y",
+              "defaultValue": ""
+            }
+          ]
+        }
+      ],
+      "services": []
+    },
+    {
       "name": "agntcy/pyramid/v1alpha1/issuer.proto",
       "description": "",
       "package": "agntcy.pyramid.v1alpha1",
@@ -135,176 +329,6 @@
       "services": []
     },
     {
-      "name": "agntcy/pyramid/v1alpha1/did.proto",
-      "description": "",
-      "package": "agntcy.pyramid.v1alpha1",
-      "hasEnums": true,
-      "hasExtensions": false,
-      "hasMessages": true,
-      "hasServices": false,
-      "enums": [
-        {
-          "name": "DidSubjectType",
-          "longName": "DidSubjectType",
-          "fullName": "agntcy.pyramid.v1alpha1.DidSubjectType",
-          "description": "",
-          "values": [
-            {
-              "name": "DID_SUBJECT_TYPE_UNSPECIFIED",
-              "number": "0",
-              "description": "Unspecified Function Type."
-            },
-            {
-              "name": "DID_SUBJECT_TYPE_AGENT",
-              "number": "1",
-              "description": "The DID subject is an agent"
-            },
-            {
-              "name": "DID_SUBJECT_TYPE_AGENT_LOCATOR",
-              "number": "2",
-              "description": "The DID subject is an agent locator"
-            }
-          ]
-        }
-      ],
-      "extensions": [],
-      "messages": [
-        {
-          "name": "Did",
-          "longName": "Did",
-          "fullName": "agntcy.pyramid.v1alpha1.Did",
-          "description": "A PyramID Decentralized Identifier",
-          "hasExtensions": false,
-          "hasFields": true,
-          "hasOneofs": false,
-          "extensions": [],
-          "fields": [
-            {
-              "name": "id",
-              "description": "The DID {ID}\nA did could be represented as `did:agntcy:{ID}`\nThe metadata below is related as claims to the {ID}",
-              "label": "",
-              "type": "string",
-              "longType": "string",
-              "fullType": "string",
-              "ismap": false,
-              "isoneof": false,
-              "oneofdecl": "",
-              "defaultValue": ""
-            },
-            {
-              "name": "issuer",
-              "description": "Issuer of the DID",
-              "label": "",
-              "type": "Issuer",
-              "longType": "Issuer",
-              "fullType": "agntcy.pyramid.v1alpha1.Issuer",
-              "ismap": false,
-              "isoneof": false,
-              "oneofdecl": "",
-              "defaultValue": ""
-            },
-            {
-              "name": "subject",
-              "description": "The DID subject",
-              "label": "",
-              "type": "DidSubject",
-              "longType": "DidSubject",
-              "fullType": "agntcy.pyramid.v1alpha1.DidSubject",
-              "ismap": false,
-              "isoneof": false,
-              "oneofdecl": "",
-              "defaultValue": ""
-            }
-          ]
-        },
-        {
-          "name": "DidDocument",
-          "longName": "DidDocument",
-          "fullName": "agntcy.pyramid.v1alpha1.DidDocument",
-          "description": "A PyramID Decentralized Identifier Document\nA DID Document is a JSON-LD document that\ncontains cryptographic information about the DID",
-          "hasExtensions": false,
-          "hasFields": true,
-          "hasOneofs": false,
-          "extensions": [],
-          "fields": [
-            {
-              "name": "id",
-              "description": "A local unique id of the document",
-              "label": "",
-              "type": "string",
-              "longType": "string",
-              "fullType": "string",
-              "ismap": false,
-              "isoneof": false,
-              "oneofdecl": "",
-              "defaultValue": ""
-            },
-            {
-              "name": "did",
-              "description": "The DID that resolves to this document\nThis embeds the public JWK of the issuer",
-              "label": "",
-              "type": "Did",
-              "longType": "Did",
-              "fullType": "agntcy.pyramid.v1alpha1.Did",
-              "ismap": false,
-              "isoneof": false,
-              "oneofdecl": "",
-              "defaultValue": ""
-            },
-            {
-              "name": "node",
-              "description": "The node that was used to publish the document",
-              "label": "",
-              "type": "string",
-              "longType": "string",
-              "fullType": "string",
-              "ismap": false,
-              "isoneof": false,
-              "oneofdecl": "",
-              "defaultValue": ""
-            }
-          ]
-        },
-        {
-          "name": "DidSubject",
-          "longName": "DidSubject",
-          "fullName": "agntcy.pyramid.v1alpha1.DidSubject",
-          "description": "",
-          "hasExtensions": false,
-          "hasFields": true,
-          "hasOneofs": false,
-          "extensions": [],
-          "fields": [
-            {
-              "name": "id",
-              "description": "A local unique id of the subject",
-              "label": "",
-              "type": "string",
-              "longType": "string",
-              "fullType": "string",
-              "ismap": false,
-              "isoneof": false,
-              "oneofdecl": "",
-              "defaultValue": ""
-            },
-            {
-              "name": "type",
-              "description": "The type of the subject",
-              "label": "",
-              "type": "DidSubjectType",
-              "longType": "DidSubjectType",
-              "fullType": "agntcy.pyramid.v1alpha1.DidSubjectType",
-              "ismap": false,
-              "isoneof": false,
-              "oneofdecl": "",
-              "defaultValue": ""
-            }
-          ]
-        }
-      ],
-      "services": []
-    },
-    {
       "name": "agntcy/pyramid/v1alpha1/did_service.proto",
       "description": "",
       "package": "agntcy.pyramid.v1alpha1",
@@ -326,12 +350,24 @@
           "extensions": [],
           "fields": [
             {
-              "name": "did",
-              "description": "The Did to generate.",
+              "name": "issuer",
+              "description": "Issuer of the DID",
               "label": "",
-              "type": "Did",
-              "longType": "Did",
-              "fullType": "agntcy.pyramid.v1alpha1.Did",
+              "type": "Issuer",
+              "longType": "Issuer",
+              "fullType": "agntcy.pyramid.v1alpha1.Issuer",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "subject",
+              "description": "The DID subject",
+              "label": "",
+              "type": "DidSubject",
+              "longType": "DidSubject",
+              "fullType": "agntcy.pyramid.v1alpha1.DidSubject",
               "ismap": false,
               "isoneof": false,
               "oneofdecl": "",
@@ -398,12 +434,12 @@
           "extensions": [],
           "fields": [
             {
-              "name": "dids",
-              "description": "A list of Dids.",
+              "name": "documents",
+              "description": "A list of Did documents.",
               "label": "repeated",
-              "type": "Did",
-              "longType": "Did",
-              "fullType": "agntcy.pyramid.v1alpha1.Did",
+              "type": "DidDocument",
+              "longType": "DidDocument",
+              "fullType": "agntcy.pyramid.v1alpha1.DidDocument",
               "ismap": false,
               "isoneof": false,
               "oneofdecl": "",
@@ -434,12 +470,12 @@
           "extensions": [],
           "fields": [
             {
-              "name": "did",
-              "description": "The Did to publish.",
+              "name": "document",
+              "description": "",
               "label": "",
-              "type": "Did",
-              "longType": "Did",
-              "fullType": "agntcy.pyramid.v1alpha1.Did",
+              "type": "DidDocument",
+              "longType": "DidDocument",
+              "fullType": "agntcy.pyramid.v1alpha1.DidDocument",
               "ismap": false,
               "isoneof": false,
               "oneofdecl": "",
@@ -458,8 +494,8 @@
           "extensions": [],
           "fields": [
             {
-              "name": "did_id",
-              "description": "Did Id to get.",
+              "name": "id",
+              "description": "The DID URI for a particular DID subject,\nexpressed using the id property in the DID document.",
               "label": "",
               "type": "string",
               "longType": "string",
@@ -486,9 +522,9 @@
               "requestLongType": "GenerateDidRequest",
               "requestFullType": "agntcy.pyramid.v1alpha1.GenerateDidRequest",
               "requestStreaming": false,
-              "responseType": "Did",
-              "responseLongType": "Did",
-              "responseFullType": "agntcy.pyramid.v1alpha1.Did",
+              "responseType": "DidDocument",
+              "responseLongType": "DidDocument",
+              "responseFullType": "agntcy.pyramid.v1alpha1.DidDocument",
               "responseStreaming": false,
               "options": {
                 "google.api.http": {
@@ -496,7 +532,7 @@
                     {
                       "method": "POST",
                       "pattern": "/v1alpha1/dids",
-                      "body": "did"
+                      "body": "*"
                     }
                   ]
                 }
@@ -518,7 +554,7 @@
                   "rules": [
                     {
                       "method": "GET",
-                      "pattern": "/v1alpha1/dids/{did_id}"
+                      "pattern": "/v1alpha1/dids/{id}"
                     }
                   ]
                 }
@@ -563,7 +599,7 @@
                     {
                       "method": "POST",
                       "pattern": "/v1alpha1/dids/publish",
-                      "body": "did"
+                      "body": "document"
                     }
                   ]
                 }

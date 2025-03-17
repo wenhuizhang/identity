@@ -18,7 +18,7 @@ _**package** agntcy.pyramid.v1alpha1_
 
 
 ### `GenerateDidRequest`
-<ProtoMessage key={0} message={{"name":"GenerateDidRequest","longName":"GenerateDidRequest","fullName":"agntcy.pyramid.v1alpha1.GenerateDidRequest","description":"","hasExtensions":false,"hasFields":true,"hasOneofs":false,"extensions":[],"fields":[{"name":"did","description":"The Did to generate.","label":"","type":"Did","longType":"Did","fullType":"agntcy.pyramid.v1alpha1.Did","ismap":false,"isoneof":false,"oneofdecl":"","defaultValue":"","typeLink":"/protodocs/agntcy/pyramid/v1alpha1/did.proto#did"}]}} />
+<ProtoMessage key={0} message={{"name":"GenerateDidRequest","longName":"GenerateDidRequest","fullName":"agntcy.pyramid.v1alpha1.GenerateDidRequest","description":"","hasExtensions":false,"hasFields":true,"hasOneofs":false,"extensions":[],"fields":[{"name":"issuer","description":"Issuer of the DID","label":"","type":"Issuer","longType":"Issuer","fullType":"agntcy.pyramid.v1alpha1.Issuer","ismap":false,"isoneof":false,"oneofdecl":"","defaultValue":"","typeLink":"/protodocs/agntcy/pyramid/v1alpha1/issuer.proto#issuer"},{"name":"subject","description":"The DID subject","label":"","type":"DidSubject","longType":"DidSubject","fullType":"agntcy.pyramid.v1alpha1.DidSubject","ismap":false,"isoneof":false,"oneofdecl":"","defaultValue":"","typeLink":"/protodocs/agntcy/pyramid/v1alpha1/did.proto#didsubject"}]}} />
 
 
 ### `ListDidsRequest`
@@ -26,15 +26,15 @@ _**package** agntcy.pyramid.v1alpha1_
 
 
 ### `ListDidsResponse`
-<ProtoMessage key={2} message={{"name":"ListDidsResponse","longName":"ListDidsResponse","fullName":"agntcy.pyramid.v1alpha1.ListDidsResponse","description":"","hasExtensions":false,"hasFields":true,"hasOneofs":true,"extensions":[],"fields":[{"name":"dids","description":"A list of Dids.","label":"repeated","type":"Did","longType":"Did","fullType":"agntcy.pyramid.v1alpha1.Did","ismap":false,"isoneof":false,"oneofdecl":"","defaultValue":"","typeLink":"/protodocs/agntcy/pyramid/v1alpha1/did.proto#did"},{"name":"pagination","description":"Pagination response.","label":"optional","type":"PagedResponse","longType":"agntcy.pyramid.shared.v1alpha1.PagedResponse","fullType":"agntcy.pyramid.shared.v1alpha1.PagedResponse","ismap":false,"isoneof":true,"oneofdecl":"_pagination","defaultValue":""}]}} />
+<ProtoMessage key={2} message={{"name":"ListDidsResponse","longName":"ListDidsResponse","fullName":"agntcy.pyramid.v1alpha1.ListDidsResponse","description":"","hasExtensions":false,"hasFields":true,"hasOneofs":true,"extensions":[],"fields":[{"name":"documents","description":"A list of Did documents.","label":"repeated","type":"DidDocument","longType":"DidDocument","fullType":"agntcy.pyramid.v1alpha1.DidDocument","ismap":false,"isoneof":false,"oneofdecl":"","defaultValue":"","typeLink":"/protodocs/agntcy/pyramid/v1alpha1/did.proto#diddocument"},{"name":"pagination","description":"Pagination response.","label":"optional","type":"PagedResponse","longType":"agntcy.pyramid.shared.v1alpha1.PagedResponse","fullType":"agntcy.pyramid.shared.v1alpha1.PagedResponse","ismap":false,"isoneof":true,"oneofdecl":"_pagination","defaultValue":""}]}} />
 
 
 ### `PublishDidRequest`
-<ProtoMessage key={3} message={{"name":"PublishDidRequest","longName":"PublishDidRequest","fullName":"agntcy.pyramid.v1alpha1.PublishDidRequest","description":"","hasExtensions":false,"hasFields":true,"hasOneofs":false,"extensions":[],"fields":[{"name":"did","description":"The Did to publish.","label":"","type":"Did","longType":"Did","fullType":"agntcy.pyramid.v1alpha1.Did","ismap":false,"isoneof":false,"oneofdecl":"","defaultValue":"","typeLink":"/protodocs/agntcy/pyramid/v1alpha1/did.proto#did"}]}} />
+<ProtoMessage key={3} message={{"name":"PublishDidRequest","longName":"PublishDidRequest","fullName":"agntcy.pyramid.v1alpha1.PublishDidRequest","description":"","hasExtensions":false,"hasFields":true,"hasOneofs":false,"extensions":[],"fields":[{"name":"document","description":"","label":"","type":"DidDocument","longType":"DidDocument","fullType":"agntcy.pyramid.v1alpha1.DidDocument","ismap":false,"isoneof":false,"oneofdecl":"","defaultValue":"","typeLink":"/protodocs/agntcy/pyramid/v1alpha1/did.proto#diddocument"}]}} />
 
 
 ### `ResolveDidRequest`
-<ProtoMessage key={4} message={{"name":"ResolveDidRequest","longName":"ResolveDidRequest","fullName":"agntcy.pyramid.v1alpha1.ResolveDidRequest","description":"","hasExtensions":false,"hasFields":true,"hasOneofs":false,"extensions":[],"fields":[{"name":"did_id","description":"Did Id to get.","label":"","type":"string","longType":"string","fullType":"string","ismap":false,"isoneof":false,"oneofdecl":"","defaultValue":""}]}} />
+<ProtoMessage key={4} message={{"name":"ResolveDidRequest","longName":"ResolveDidRequest","fullName":"agntcy.pyramid.v1alpha1.ResolveDidRequest","description":"","hasExtensions":false,"hasFields":true,"hasOneofs":false,"extensions":[],"fields":[{"name":"id","description":"The DID URI for a particular DID subject,\nexpressed using the id property in the DID document.","label":"","type":"string","longType":"string","fullType":"string","ismap":false,"isoneof":false,"oneofdecl":"","defaultValue":""}]}} />
 
 ---
 ## Services
@@ -46,11 +46,11 @@ DidService is the service that provides DID operations.
 
 
 #### `GenerateDid`
-<ProtoServiceMethod key={'GenerateDid-0'} method={{"name":"GenerateDid","description":"Generate a Did","requestType":"GenerateDidRequest","requestLongType":"GenerateDidRequest","requestFullType":"agntcy.pyramid.v1alpha1.GenerateDidRequest","requestStreaming":false,"responseType":"Did","responseLongType":"Did","responseFullType":"agntcy.pyramid.v1alpha1.Did","responseStreaming":false,"options":{"google.api.http":{"rules":[{"method":"POST","pattern":"/v1alpha1/dids","body":"did"}]}},"requestTypeLink":"/protodocs/agntcy/pyramid/v1alpha1/did_service.proto#generatedidrequest","responseTypeLink":"/protodocs/agntcy/pyramid/v1alpha1/did.proto#did"}} />
+<ProtoServiceMethod key={'GenerateDid-0'} method={{"name":"GenerateDid","description":"Generate a Did","requestType":"GenerateDidRequest","requestLongType":"GenerateDidRequest","requestFullType":"agntcy.pyramid.v1alpha1.GenerateDidRequest","requestStreaming":false,"responseType":"DidDocument","responseLongType":"DidDocument","responseFullType":"agntcy.pyramid.v1alpha1.DidDocument","responseStreaming":false,"options":{"google.api.http":{"rules":[{"method":"POST","pattern":"/v1alpha1/dids","body":"*"}]}},"requestTypeLink":"/protodocs/agntcy/pyramid/v1alpha1/did_service.proto#generatedidrequest","responseTypeLink":"/protodocs/agntcy/pyramid/v1alpha1/did.proto#diddocument"}} />
 
 
 #### `ResolveDid`
-<ProtoServiceMethod key={'ResolveDid-1'} method={{"name":"ResolveDid","description":"Resolve a Did","requestType":"ResolveDidRequest","requestLongType":"ResolveDidRequest","requestFullType":"agntcy.pyramid.v1alpha1.ResolveDidRequest","requestStreaming":false,"responseType":"DidDocument","responseLongType":"DidDocument","responseFullType":"agntcy.pyramid.v1alpha1.DidDocument","responseStreaming":false,"options":{"google.api.http":{"rules":[{"method":"GET","pattern":"/v1alpha1/dids/{did_id}"}]}},"requestTypeLink":"/protodocs/agntcy/pyramid/v1alpha1/did_service.proto#resolvedidrequest","responseTypeLink":"/protodocs/agntcy/pyramid/v1alpha1/did.proto#diddocument"}} />
+<ProtoServiceMethod key={'ResolveDid-1'} method={{"name":"ResolveDid","description":"Resolve a Did","requestType":"ResolveDidRequest","requestLongType":"ResolveDidRequest","requestFullType":"agntcy.pyramid.v1alpha1.ResolveDidRequest","requestStreaming":false,"responseType":"DidDocument","responseLongType":"DidDocument","responseFullType":"agntcy.pyramid.v1alpha1.DidDocument","responseStreaming":false,"options":{"google.api.http":{"rules":[{"method":"GET","pattern":"/v1alpha1/dids/{id}"}]}},"requestTypeLink":"/protodocs/agntcy/pyramid/v1alpha1/did_service.proto#resolvedidrequest","responseTypeLink":"/protodocs/agntcy/pyramid/v1alpha1/did.proto#diddocument"}} />
 
 
 #### `ListDids`
@@ -58,7 +58,7 @@ DidService is the service that provides DID operations.
 
 
 #### `PublishDid`
-<ProtoServiceMethod key={'PublishDid-3'} method={{"name":"PublishDid","description":"Publish a Did","requestType":"PublishDidRequest","requestLongType":"PublishDidRequest","requestFullType":"agntcy.pyramid.v1alpha1.PublishDidRequest","requestStreaming":false,"responseType":"DidDocument","responseLongType":"DidDocument","responseFullType":"agntcy.pyramid.v1alpha1.DidDocument","responseStreaming":false,"options":{"google.api.http":{"rules":[{"method":"POST","pattern":"/v1alpha1/dids/publish","body":"did"}]}},"requestTypeLink":"/protodocs/agntcy/pyramid/v1alpha1/did_service.proto#publishdidrequest","responseTypeLink":"/protodocs/agntcy/pyramid/v1alpha1/did.proto#diddocument"}} />
+<ProtoServiceMethod key={'PublishDid-3'} method={{"name":"PublishDid","description":"Publish a Did","requestType":"PublishDidRequest","requestLongType":"PublishDidRequest","requestFullType":"agntcy.pyramid.v1alpha1.PublishDidRequest","requestStreaming":false,"responseType":"DidDocument","responseLongType":"DidDocument","responseFullType":"agntcy.pyramid.v1alpha1.DidDocument","responseStreaming":false,"options":{"google.api.http":{"rules":[{"method":"POST","pattern":"/v1alpha1/dids/publish","body":"document"}]}},"requestTypeLink":"/protodocs/agntcy/pyramid/v1alpha1/did_service.proto#publishdidrequest","responseTypeLink":"/protodocs/agntcy/pyramid/v1alpha1/did.proto#diddocument"}} />
 
 
 ---
