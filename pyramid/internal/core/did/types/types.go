@@ -1,5 +1,9 @@
 package types
 
+import (
+	"github.com/decentralized-identity/web5-go/dids/didcore"
+)
+
 // DidSubjectType defines the types of subjects that a Decentralized Identifier (DID) can represent.
 // It categorizes the role or nature of the subject within a decentralized identity framework.
 type DidSubjectType int
@@ -27,8 +31,6 @@ type DidSubject struct {
 }
 
 // A PyramID Decentralized Identifier Document
-// A DID Document is a JSON-LD document that
-// contains cryptographic information about the DID
 type DidDocument struct {
 	// The DID {ID}
 	// A did could be represented as `did:agntcy:{ID}`
@@ -37,6 +39,8 @@ type DidDocument struct {
 
 	// The node that was used to publish the document
 	Node string `json:"node,omitempty"`
-}
 
-type Did struct{}
+	// A DID Document is a JSON-LD document that
+	// contains cryptographic information about the DID
+	Content *didcore.Document `json:"content,omitempty"`
+}
