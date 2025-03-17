@@ -42,11 +42,11 @@ IssuerService is the service that provides ISSUER operations.
 
 
 #### `KeyGen`
-<ProtoServiceMethod key={'KeyGen-1'} method={{"name":"KeyGen","description":"Generate a keypair in JWK format","requestType":"Empty","requestLongType":".google.protobuf.Empty","requestFullType":"google.protobuf.Empty","requestStreaming":false,"responseType":"Jwk","responseLongType":"Jwk","responseFullType":"agntcy.pyramid.v1alpha1.Jwk","responseStreaming":false,"options":{"google.api.http":{"rules":[{"method":"GET","pattern":"/v1alpha1/issuers/keygen"}]}},"responseTypeLink":"/protodocs/agntcy/pyramid/v1alpha1/issuer.proto#jwk"}} />
+<ProtoServiceMethod key={'KeyGen-1'} method={{"name":"KeyGen","description":"Generate a keypair in JWK format","requestType":"Empty","requestLongType":".google.protobuf.Empty","requestFullType":"google.protobuf.Empty","requestStreaming":false,"responseType":"JWK","responseLongType":"JWK","responseFullType":"agntcy.pyramid.v1alpha1.JWK","responseStreaming":false,"options":{"google.api.http":{"rules":[{"method":"GET","pattern":"/v1alpha1/issuers/keygen"}]}},"responseTypeLink":"/protodocs/agntcy/pyramid/v1alpha1/did.proto#jwk"}} />
 
 
 #### `WellKnown`
-<ProtoServiceMethod key={'WellKnown-2'} method={{"name":"WellKnown","description":"Resolve a web DID document to the well-known DID document","requestType":"WellKnownRequest","requestLongType":"WellKnownRequest","requestFullType":"agntcy.pyramid.v1alpha1.WellKnownRequest","requestStreaming":false,"responseType":"Jwk","responseLongType":"Jwk","responseFullType":"agntcy.pyramid.v1alpha1.Jwk","responseStreaming":false,"options":{"google.api.http":{"rules":[{"method":"GET","pattern":"/v1alpha1/{issuer_common_name}/.well-known/did.json"}]}},"requestTypeLink":"/protodocs/agntcy/pyramid/v1alpha1/issuer_service.proto#wellknownrequest","responseTypeLink":"/protodocs/agntcy/pyramid/v1alpha1/issuer.proto#jwk"}} />
+<ProtoServiceMethod key={'WellKnown-2'} method={{"name":"WellKnown","description":"Resolve a web DID document to the well-known DID document","requestType":"WellKnownRequest","requestLongType":"WellKnownRequest","requestFullType":"agntcy.pyramid.v1alpha1.WellKnownRequest","requestStreaming":false,"responseType":"JWK","responseLongType":"JWK","responseFullType":"agntcy.pyramid.v1alpha1.JWK","responseStreaming":false,"options":{"google.api.http":{"rules":[{"method":"GET","pattern":"/v1alpha1/{issuer_common_name}/.well-known/did.json"}]}},"requestTypeLink":"/protodocs/agntcy/pyramid/v1alpha1/issuer_service.proto#wellknownrequest","responseTypeLink":"/protodocs/agntcy/pyramid/v1alpha1/did.proto#jwk"}} />
 
 
 ---
