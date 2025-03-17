@@ -4,34 +4,22 @@ syntax = "proto3";
 
 package agntcy.pyramid.v1alpha1;
 
+import "agntcy/pyramid/v1alpha1/did.proto";
+
 // Package-wide variables from generator "generated".
 option go_package = "github.com/agntcy/pyramid/internal/pkg/generated/agntcy/pyramid/v1alpha1;pyramid_sdk_go";
-
-message JWK {
-  optional string alg = 1;
-
-  optional string kty = 2;
-
-  optional string crv = 3;
-
-  optional string d = 4;
-
-  optional string x = 5;
-
-  optional string y = 6;
-}
 
 // A PyramID Issuer
 message Issuer {
   // The common name of the issuer
   // Example: isuser.com
-  optional string commonName = 1;
+  optional string common_name = 1;
 
   // The keys of the issuer of the DID in JWK format
   // The public key is used to verify the signature of the DID
-  optional JWK publicKey = 2;
+  optional .agntcy.pyramid.v1alpha1.JWK public_key = 2;
 
   // The private key of the issuer of the DID in JWK format
-  optional JWK privateKey = 3;
+  optional .agntcy.pyramid.v1alpha1.JWK private_key = 3;
 }
 

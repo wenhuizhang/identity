@@ -36,25 +36,96 @@
       "extensions": [],
       "messages": [
         {
+          "name": "Did",
+          "longName": "Did",
+          "fullName": "agntcy.pyramid.v1alpha1.Did",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": false,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": []
+        },
+        {
           "name": "DidDocument",
           "longName": "DidDocument",
           "fullName": "agntcy.pyramid.v1alpha1.DidDocument",
-          "description": "DidDocument represents a Decentralized Identifier (DID) document.",
+          "description": "A PyramID Decentralized Identifier Document represents a set of data describing the DID subject including mechanisms such as:\n  - cryptographic public keys - used to authenticate itself and prove\n    association with the DID\n  - services - means of communicating or interacting with the DID subject or\n    associated entities via one or more service endpoints.\n    Examples include discovery services, agent services,\n    social networking services, file storage services,\n    and verifiable credential repository services.\n\nA DID Document can be retrieved by resolving a DID URI.",
           "hasExtensions": false,
           "hasFields": true,
           "hasOneofs": true,
           "extensions": [],
           "fields": [
             {
-              "name": "document",
-              "description": "",
+              "name": "id",
+              "description": "The DID {ID}\nA did could be represented as `did:agntcy:{ID}`\nThe metadata below is related as claims to the {ID}",
               "label": "optional",
               "type": "string",
               "longType": "string",
               "fullType": "string",
               "ismap": false,
               "isoneof": true,
-              "oneofdecl": "_document",
+              "oneofdecl": "_id",
+              "defaultValue": ""
+            },
+            {
+              "name": "node",
+              "description": "The node that was used to publish the document",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_node",
+              "defaultValue": ""
+            },
+            {
+              "name": "controller",
+              "description": "Controller defines an entity that is authorized to make changes to a DID document.\nThe process of authorizing a DID controller is defined by the DID method.\nIt can be a string or a list of strings.",
+              "label": "repeated",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "verification_method",
+              "description": "VerificationMethod is a list of cryptographic public keys, which can be used to authenticate or authorize\ninteractions with the DID subject or associated parties.",
+              "label": "repeated",
+              "type": "VerificationMethod",
+              "longType": "VerificationMethod",
+              "fullType": "agntcy.pyramid.v1alpha1.VerificationMethod",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "service",
+              "description": "Service expresses ways of communicating with the DID subject or associated entities.\nA service can be any type of service the DID subject wants to advertise.\nspec reference: https://www.w3.org/TR/did-core/#verification-methods",
+              "label": "repeated",
+              "type": "Service",
+              "longType": "Service",
+              "fullType": "agntcy.pyramid.v1alpha1.Service",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "assertion_method",
+              "description": "AssertionMethod is used to specify how the DID subject is expected to express claims,\nsuch as for the purposes of issuing a Verifiable Credential.",
+              "label": "repeated",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
               "defaultValue": ""
             }
           ]
@@ -92,18 +163,6 @@
               "isoneof": true,
               "oneofdecl": "_type",
               "defaultValue": ""
-            },
-            {
-              "name": "publicKeyJwk",
-              "description": "",
-              "label": "optional",
-              "type": "JWK",
-              "longType": "JWK",
-              "fullType": "agntcy.pyramid.v1alpha1.JWK",
-              "ismap": false,
-              "isoneof": true,
-              "oneofdecl": "_publicKeyJwk",
-              "defaultValue": ""
             }
           ]
         },
@@ -111,7 +170,7 @@
           "name": "JWK",
           "longName": "JWK",
           "fullName": "agntcy.pyramid.v1alpha1.JWK",
-          "description": "",
+          "description": "JWK represents a JSON Web Key as per RFC7517 (https://tools.ietf.org/html/rfc7517)\nNote that this is a subset of the spec. There are a handful of properties that the\nspec allows for that are not represented here at the moment. This is because we\nonly need a subset of the spec for our purposes.",
           "hasExtensions": false,
           "hasFields": true,
           "hasOneofs": true,
@@ -119,7 +178,7 @@
           "fields": [
             {
               "name": "alg",
-              "description": "",
+              "description": "ALG represents the algorithm intended for use with the key.",
               "label": "optional",
               "type": "string",
               "longType": "string",
@@ -131,7 +190,7 @@
             },
             {
               "name": "kty",
-              "description": "",
+              "description": "KTY represents the key type parameter.\nIt specifies the family of cryptographic algorithms used with the key,\nsuch as \"RSA\" or \"EC\" for elliptic curve keys.",
               "label": "optional",
               "type": "string",
               "longType": "string",
@@ -143,7 +202,7 @@
             },
             {
               "name": "crv",
-              "description": "",
+              "description": "CRV represents the curve parameter for elliptic curve keys.\nIt specifies the cryptographic curve used with the key, such as \"P-256\" or \"P-384\".",
               "label": "optional",
               "type": "string",
               "longType": "string",
@@ -155,7 +214,7 @@
             },
             {
               "name": "d",
-              "description": "",
+              "description": "D represents the private key parameter.\nThis field is used to store the private key material for asymmetric keys.",
               "label": "optional",
               "type": "string",
               "longType": "string",
@@ -167,7 +226,7 @@
             },
             {
               "name": "x",
-              "description": "",
+              "description": "X represents the x-coordinate for elliptic curve keys.\nThis field is part of the public key material for elliptic curve cryptography (ECC).",
               "label": "optional",
               "type": "string",
               "longType": "string",
@@ -179,7 +238,7 @@
             },
             {
               "name": "y",
-              "description": "",
+              "description": "Y represents the y-coordinate for elliptic curve keys.\nThis field is part of the public key material for elliptic curve cryptography (ECC)",
               "label": "optional",
               "type": "string",
               "longType": "string",
@@ -187,6 +246,114 @@
               "ismap": false,
               "isoneof": true,
               "oneofdecl": "_y",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "Service",
+          "longName": "Service",
+          "fullName": "agntcy.pyramid.v1alpha1.Service",
+          "description": "Service is used in DID documents to express ways of communicating with\nthe DID subject or associated entities.\nA service can be any type of service the DID subject wants to advertise.\n\nSpecification Reference: https://www.w3.org/TR/did-core/#services",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": true,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "id",
+              "description": "Id is the value of the id property and MUST be a URI conforming to RFC3986.\nA conforming producer MUST NOT produce multiple service entries with\nthe same id. A conforming consumer MUST produce an error if it detects\nmultiple service entries with the same id.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_id",
+              "defaultValue": ""
+            },
+            {
+              "name": "type",
+              "description": "Type is an example of registered types which can be found\nhere: https://www.w3.org/TR/did-spec-registries/#service-types",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_type",
+              "defaultValue": ""
+            },
+            {
+              "name": "service_endpoint",
+              "description": "ServiceEndpoint is a network address, such as an HTTP URL, at which services\noperate on behalf of a DID subject.",
+              "label": "repeated",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "VerificationMethod",
+          "longName": "VerificationMethod",
+          "fullName": "agntcy.pyramid.v1alpha1.VerificationMethod",
+          "description": "VerificationMethod expresses verification methods, such as cryptographic\npublic keys, which can be used to authenticate or authorize interactions\nwith the DID subject or associated parties. For example,\na cryptographic public key can be used as a verification method with\nrespect to a digital signature; in such usage, it verifies that the\nsigner could use the associated cryptographic private key.\n\nSpecification Reference: https://www.w3.org/TR/did-core/#verification-methods",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": true,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "id",
+              "description": "A unique id of the verification method.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_id",
+              "defaultValue": ""
+            },
+            {
+              "name": "type",
+              "description": "references exactly one verification method type. In order to maximize global\ninteroperability, the verification method type SHOULD be registered in the\nDID Specification Registries: https://www.w3.org/TR/did-spec-registries/",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_type",
+              "defaultValue": ""
+            },
+            {
+              "name": "controller",
+              "description": "a value that conforms to the rules in DID Syntax: https://www.w3.org/TR/did-core/#did-syntax",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_controller",
+              "defaultValue": ""
+            },
+            {
+              "name": "public_key_jwk",
+              "description": "specification reference: https://www.w3.org/TR/did-core/#dfn-publickeyjwk",
+              "label": "optional",
+              "type": "JWK",
+              "longType": "JWK",
+              "fullType": "agntcy.pyramid.v1alpha1.JWK",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_public_key_jwk",
               "defaultValue": ""
             }
           ]
@@ -218,109 +385,37 @@
             {
               "name": "common_name",
               "description": "The common name of the issuer\nExample: isuser.com",
-              "label": "",
+              "label": "optional",
               "type": "string",
               "longType": "string",
               "fullType": "string",
-              "ismap": false,
-              "isoneof": false,
-              "oneofdecl": "",
-              "defaultValue": ""
-            },
-            {
-              "name": "jwk",
-              "description": "The keys of the issuer of the DID in JWK format\nThis might contain the public and/or private keys",
-              "label": "optional",
-              "type": "Jwk",
-              "longType": "Jwk",
-              "fullType": "agntcy.pyramid.v1alpha1.Jwk",
               "ismap": false,
               "isoneof": true,
-              "oneofdecl": "_jwk",
-              "defaultValue": ""
-            }
-          ]
-        },
-        {
-          "name": "Jwk",
-          "longName": "Jwk",
-          "fullName": "agntcy.pyramid.v1alpha1.Jwk",
-          "description": "A PyramID JWK",
-          "hasExtensions": false,
-          "hasFields": true,
-          "hasOneofs": false,
-          "extensions": [],
-          "fields": [
-            {
-              "name": "kty",
-              "description": "The key type",
-              "label": "",
-              "type": "string",
-              "longType": "string",
-              "fullType": "string",
-              "ismap": false,
-              "isoneof": false,
-              "oneofdecl": "",
+              "oneofdecl": "_common_name",
               "defaultValue": ""
             },
             {
-              "name": "use",
-              "description": "The key use",
-              "label": "",
-              "type": "string",
-              "longType": "string",
-              "fullType": "string",
+              "name": "public_key",
+              "description": "The keys of the issuer of the DID in JWK format\nThe public key is used to verify the signature of the DID",
+              "label": "optional",
+              "type": "JWK",
+              "longType": "JWK",
+              "fullType": "agntcy.pyramid.v1alpha1.JWK",
               "ismap": false,
-              "isoneof": false,
-              "oneofdecl": "",
+              "isoneof": true,
+              "oneofdecl": "_public_key",
               "defaultValue": ""
             },
             {
-              "name": "alg",
-              "description": "The key algorithm",
-              "label": "",
-              "type": "string",
-              "longType": "string",
-              "fullType": "string",
+              "name": "private_key",
+              "description": "The private key of the issuer of the DID in JWK format",
+              "label": "optional",
+              "type": "JWK",
+              "longType": "JWK",
+              "fullType": "agntcy.pyramid.v1alpha1.JWK",
               "ismap": false,
-              "isoneof": false,
-              "oneofdecl": "",
-              "defaultValue": ""
-            },
-            {
-              "name": "kid",
-              "description": "The key id",
-              "label": "",
-              "type": "string",
-              "longType": "string",
-              "fullType": "string",
-              "ismap": false,
-              "isoneof": false,
-              "oneofdecl": "",
-              "defaultValue": ""
-            },
-            {
-              "name": "e",
-              "description": "The key exponent",
-              "label": "",
-              "type": "string",
-              "longType": "string",
-              "fullType": "string",
-              "ismap": false,
-              "isoneof": false,
-              "oneofdecl": "",
-              "defaultValue": ""
-            },
-            {
-              "name": "n",
-              "description": "The key modulus",
-              "label": "",
-              "type": "string",
-              "longType": "string",
-              "fullType": "string",
-              "ismap": false,
-              "isoneof": false,
-              "oneofdecl": "",
+              "isoneof": true,
+              "oneofdecl": "_private_key",
               "defaultValue": ""
             }
           ]
@@ -730,9 +825,9 @@
               "requestLongType": ".google.protobuf.Empty",
               "requestFullType": "google.protobuf.Empty",
               "requestStreaming": false,
-              "responseType": "Jwk",
-              "responseLongType": "Jwk",
-              "responseFullType": "agntcy.pyramid.v1alpha1.Jwk",
+              "responseType": "JWK",
+              "responseLongType": "JWK",
+              "responseFullType": "agntcy.pyramid.v1alpha1.JWK",
               "responseStreaming": false,
               "options": {
                 "google.api.http": {
@@ -752,9 +847,9 @@
               "requestLongType": "WellKnownRequest",
               "requestFullType": "agntcy.pyramid.v1alpha1.WellKnownRequest",
               "requestStreaming": false,
-              "responseType": "Jwk",
-              "responseLongType": "Jwk",
-              "responseFullType": "agntcy.pyramid.v1alpha1.Jwk",
+              "responseType": "JWK",
+              "responseLongType": "JWK",
+              "responseFullType": "agntcy.pyramid.v1alpha1.JWK",
               "responseStreaming": false,
               "options": {
                 "google.api.http": {
