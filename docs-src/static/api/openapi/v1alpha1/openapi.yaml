@@ -203,19 +203,9 @@ components:
         DidDocument:
             type: object
             properties:
-                id:
+                document:
                     type: string
-                    description: |-
-                        The DID {ID}
-                         A did could be represented as `did:agntcy:{ID}`
-                         The metadata below is related as claims to the {ID}
-                node:
-                    type: string
-                    description: The node that was used to publish the document
-            description: |-
-                A PyramID Decentralized Identifier Document
-                 A DID Document is a JSON-LD document that
-                 contains cryptographic information about the DID
+            description: DidDocument represents a Decentralized Identifier (DID) document.
         DidSubject:
             type: object
             properties:
@@ -233,6 +223,8 @@ components:
                          This indicates the role or nature of the subject in the decentralized identity system,
                          such as whether it is an agent or an agent locator.
                     format: enum
+                publicKeyJwk:
+                    $ref: '#/components/schemas/JWK'
             description: DidSubject represents a subject within a decentralized identity framework.
         GenerateDidRequest:
             type: object
@@ -268,6 +260,21 @@ components:
                         The keys of the issuer of the DID in JWK format
                          This might contain the public and/or private keys
             description: A PyramID Issuer
+        JWK:
+            type: object
+            properties:
+                alg:
+                    type: string
+                kty:
+                    type: string
+                crv:
+                    type: string
+                d:
+                    type: string
+                x:
+                    type: string
+                y:
+                    type: string
         Jwk:
             type: object
             properties:

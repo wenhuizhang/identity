@@ -1,3 +1,0 @@
-# Issuer stuff
-
-TO DELETE

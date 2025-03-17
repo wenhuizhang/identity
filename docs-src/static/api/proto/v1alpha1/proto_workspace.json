@@ -36,48 +36,25 @@
       "extensions": [],
       "messages": [
         {
-          "name": "Did",
-          "longName": "Did",
-          "fullName": "agntcy.pyramid.v1alpha1.Did",
-          "description": "",
-          "hasExtensions": false,
-          "hasFields": false,
-          "hasOneofs": false,
-          "extensions": [],
-          "fields": []
-        },
-        {
           "name": "DidDocument",
           "longName": "DidDocument",
           "fullName": "agntcy.pyramid.v1alpha1.DidDocument",
-          "description": "A PyramID Decentralized Identifier Document\nA DID Document is a JSON-LD document that\ncontains cryptographic information about the DID",
+          "description": "DidDocument represents a Decentralized Identifier (DID) document.",
           "hasExtensions": false,
           "hasFields": true,
           "hasOneofs": true,
           "extensions": [],
           "fields": [
             {
-              "name": "id",
-              "description": "The DID {ID}\nA did could be represented as `did:agntcy:{ID}`\nThe metadata below is related as claims to the {ID}",
+              "name": "document",
+              "description": "",
               "label": "optional",
               "type": "string",
               "longType": "string",
               "fullType": "string",
               "ismap": false,
               "isoneof": true,
-              "oneofdecl": "_id",
-              "defaultValue": ""
-            },
-            {
-              "name": "node",
-              "description": "The node that was used to publish the document",
-              "label": "optional",
-              "type": "string",
-              "longType": "string",
-              "fullType": "string",
-              "ismap": false,
-              "isoneof": true,
-              "oneofdecl": "_node",
+              "oneofdecl": "_document",
               "defaultValue": ""
             }
           ]
@@ -114,6 +91,102 @@
               "ismap": false,
               "isoneof": true,
               "oneofdecl": "_type",
+              "defaultValue": ""
+            },
+            {
+              "name": "publicKeyJwk",
+              "description": "",
+              "label": "optional",
+              "type": "JWK",
+              "longType": "JWK",
+              "fullType": "agntcy.pyramid.v1alpha1.JWK",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_publicKeyJwk",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "JWK",
+          "longName": "JWK",
+          "fullName": "agntcy.pyramid.v1alpha1.JWK",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": true,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "alg",
+              "description": "",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_alg",
+              "defaultValue": ""
+            },
+            {
+              "name": "kty",
+              "description": "",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_kty",
+              "defaultValue": ""
+            },
+            {
+              "name": "crv",
+              "description": "",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_crv",
+              "defaultValue": ""
+            },
+            {
+              "name": "d",
+              "description": "",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_d",
+              "defaultValue": ""
+            },
+            {
+              "name": "x",
+              "description": "",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_x",
+              "defaultValue": ""
+            },
+            {
+              "name": "y",
+              "description": "",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_y",
               "defaultValue": ""
             }
           ]
