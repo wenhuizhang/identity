@@ -12,7 +12,7 @@ const Breadcrumbs: React.FC<BreadcrumbsProps> = ({breadcrumbs}) => {
           <HomeIcon />
         </div>
       ),
-      href: PATHS.dashboard
+      href: PATHS.basePath
     }
   ];
 
