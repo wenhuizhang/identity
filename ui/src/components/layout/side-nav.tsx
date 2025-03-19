@@ -1,7 +1,7 @@
 import {ReactNode, useMemo} from 'react';
 import {Link, useLocation} from 'react-router-dom';
 import {Tooltip, TooltipContent, TooltipTrigger} from '@/components/ui/tooltip';
-import {BookIcon, FileLock2Icon, GitForkIcon, LayoutDashboardIcon, WalletMinimalIcon} from 'lucide-react';
+import {BookIcon, FileLock2Icon, GitForkIcon, WalletMinimalIcon} from 'lucide-react';
 import {cn} from '@/lib/utils';
 import {PATHS} from '@/router/paths';
 import AgntcyLogo from '@/assets/agntcy-logo.svg?react';
@@ -17,12 +17,6 @@ export const SideNav: React.FC<{isCollapsed?: boolean}> = ({isCollapsed}) => {
     onClick?: () => void;
   }[] = useMemo(() => {
     return [
-      {
-        href: PATHS.dashboard,
-        label: 'Dashboard',
-        icon: <LayoutDashboardIcon className="w-4 h-4" />,
-        description: 'View your dashboard.'
-      },
       {
         href: PATHS.wallets,
         label: 'Wallets',
@@ -60,7 +54,7 @@ export const SideNav: React.FC<{isCollapsed?: boolean}> = ({isCollapsed}) => {
   return (
     <nav className="flex relative flex-col justify-between gap-1 px-2 group-[[data-collapsed=true]]:justify-center group-[[data-collapsed=true]]:px-2 bg-side-nav-background h-full text-white">
       <div className="flex flex-col gap-1">
-        <Link to={PATHS.dashboard}>
+        <Link to={PATHS.wallets}>
           <button className={cn('flex justify-center items-center py-6 rounded w-full px-3', isCollapsed && 'px-1')}>
             {!isCollapsed ? (
               <div className="space-y-2">

@@ -4,11 +4,9 @@ import {PATHS} from './paths';
 import {NodeRoute} from '@/components/router/node-route';
 import NotFound from '@/components/router/404';
 import Layout from '@/components/layout/layout';
-import PlaceholderPageContent from '@/components/ui/placeholder-page-content';
 import {Navigate} from 'react-router-dom';
 import React from 'react';
 
-const Dashboard = React.lazy(() => import('@/pages/dashboard/dashboard'));
 const Wallets = React.lazy(() => import('@/pages/wallets/wallets'));
 const IdentityNetwork = React.lazy(() => import('@/pages/identity-network/identity-network'));
 const AgentLineages = React.lazy(() => import('@/pages/agent-lineages/agent-lineages'));
@@ -26,7 +24,7 @@ export const generateRoutes = (routes: Route[]): Route[] => {
       children: [
         {
           index: true,
-          element: <Navigate to={PATHS.dashboard} replace />
+          element: <Navigate to={PATHS.wallets} replace />
         },
         ...routes,
         {
@@ -41,10 +39,6 @@ export const generateRoutes = (routes: Route[]): Route[] => {
 export const useRoutes = () => {
   const routes = useMemo<Route[]>(() => {
     return [
-      {
-        path: PATHS.dashboard,
-        element: <Dashboard />
-      },
       {
         path: PATHS.wallets,
         element: <Wallets />

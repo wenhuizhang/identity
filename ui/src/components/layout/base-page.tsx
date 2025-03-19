@@ -12,7 +12,7 @@ export const BasePage: React.FC<BasePageProps> = ({children, breadcrumbs, parent
     <>
       <div className="flex justify-between px-5 py-2 items-center bg-background-secondary dark:bg-background max-w-screen overflow-hidden border-b sticky top-0 z-40">
         <Breadcrumbs breadcrumbs={breadcrumbs} />
-        <div className="h-[35px]" />
+        <div className="h-[30px]" />
       </div>
       <div>
         {showHeader && (
@@ -20,7 +20,7 @@ export const BasePage: React.FC<BasePageProps> = ({children, breadcrumbs, parent
             <div className="flex items-center justify-between border-b w-full flex-wrap pb-2 gap-2">
               <div>
                 <h1 className="text-2xl flex items-center gap-2 mb-1 font-semibold">{parentTitle || title}</h1>
-                <div className="text-muted-foreground min-h-4 font-light">{description}</div>
+                <div className="text-muted-foreground min-h-4">{description}</div>
               </div>
               <div className="flex items-center gap-2">{rightSideItems}</div>
             </div>

@@ -4,10 +4,11 @@ import {Toaster} from './components/ui/sonner';
 import {cn} from './lib/utils';
 import {TooltipProvider} from './components/ui/tooltip';
 import {Router} from './router/router';
+import {ErrorPage} from './components/router/error-page';
 
 const App = () => {
   return (
-    <ErrorBoundary fallbackRender={() => null}>
+    <ErrorBoundary fallbackRender={(props) => <ErrorPage {...props} />}>
       <HelmetProvider>
         <Toaster
           expand

@@ -1,8 +1,6 @@
 @import "tailwindcss";
 @plugin "tailwindcss-animate";
 
-/* @custom-variant dark (&:is(.dark *)); */
-
 :root {
   font-family: barlow, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -26,8 +24,8 @@
   --side-nav-selected: #424d66;
   --side-nav-selected-hover: #424d66;
 
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
+  --card: #004A8C;
+  --card-foreground: #F5A035;
 
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
