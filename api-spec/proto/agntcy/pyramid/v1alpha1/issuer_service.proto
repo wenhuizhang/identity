@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package agntcy.pyramid.v1alpha1;
 
+import "agntcy/pyramid/v1alpha1/id.proto";
 import "agntcy/pyramid/v1alpha1/issuer.proto";
-import "agntcy/pyramid/v1alpha1/did.proto";
 import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
@@ -17,10 +17,22 @@ service IssuerService {
     name: "IssuerService";
   };
 
-  // Register a Issuer
-  rpc RegisterIssuer(RegisterIssuerRequest) returns (RegisterIssuerResponse) {
+  // Generate a keypair in JWK format
+  rpc KeyGen(google.protobuf.Empty) returns (JWK) {
     option (google.api.http) = {
-            post: "/v1alpha1/issuers/register"
+            get: "/v1alpha1/issuer/keygen"
+        };
+
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      operation_id: "KeyGen";
+      summary: "Generate a keypair in JWK format";
+    };
+  }
+
+  // Register
+  rpc Register(RegisterRequest) returns (RegisterResponse) {
+    option (google.api.http) = {
+            post: "/v1alpha1/issuer/register"
             body: "issuer"
         };
 
@@ -30,42 +42,31 @@ service IssuerService {
     };
   }
 
-  // Generate a keypair in JWK format
-  rpc KeyGen(google.protobuf.Empty) returns (JWK) {
-    option (google.api.http) = {
-            get: "/v1alpha1/issuers/keygen"
-        };
 
-    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      operation_id: "KeyGen";
-      summary: "Generate a keypair in JWK format";
-    };
-  }
-
-  // Resolve a web DID document to the well-known DID document
+  // WellKnown endpoint
   rpc WellKnown(WellKnownRequest) returns (JWK) {
     option (google.api.http) = {
-            get: "/v1alpha1/{issuer_common_name}/.well-known/did.json"
+            get: "/v1alpha1/issuer/{common_name}/.well-known/id.json"
         };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       operation_id: "WellKnown";
-      summary: "Return the well-known DID document from a web DID";
+      summary: "Returns the well-known ID document for an issuer";
     };
   }
 }
 
+// RegisterRequest is the request to register an issuer
 message RegisterIssuerRequest {
   // The Issuer to register.
   Issuer issuer = 1;
 }
 
 message RegisterIssuerResponse {
-  // The proof of the registration.
-  // This could be added as a TXT record in the DNS
-  string proof = 1;
+  // A uri indicating an action to take to complete the registration.
+  string uri = 1;
 }
 
 message WellKnownRequest {
   // The common name of the issuer
-  string issuer_common_name = 1;
+  string common_name = 1;
 }

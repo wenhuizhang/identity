@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+package agntcy.pyramid.v1alpha1;
+
+import "google/api/annotations.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+// Package-wide variables from generator "generated".
+option go_package = "github.com/agntcy/pyramid/internal/pkg/generated/agntcy/pyramid/v1alpha1;pyramid_sdk_go";
+
+// IdService is the service that provides ID operations.
+service IdService {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_tag) = {
+    name: "IdService";
+  };
+
+  // Generate an Id
+  rpc Generate(GenerateRequest) returns (Agent) {
+    option (google.api.http) = {
+            post: "/v1alpha1/id/generate"
+            body: "agent"
+        };
+
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      operation_id: "GenerateId";
+      summary: "Generate Id for an Agent";
+    };
+  }
+
+  // Resolve an Id
+  rpc Resolve(ResolveRequest) returns (AgentPassport) {
+    option (google.api.http) = {
+            get: "/v1alpha1/id/resolve"
+        };
+
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      operation_id: "ResolveId";
+      summary: "Resolve Id";
+    };
+  }
+
+}
+
+// Generate an Id based on the agent
+message GenerateRequest {
+  // The OASF representation of an agent
+  // The Digest of the agent is not necessarily provided
+  Agent agent = 1;
+}
+
+message ResolveRequest {
+  // The OASF representation of an agent
+  // The Digest of the agent must be provided
+  Agent agent = 1;
+}
+
+
+

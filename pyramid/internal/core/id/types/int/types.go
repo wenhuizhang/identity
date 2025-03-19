@@ -1,31 +1,5 @@
 package types
 
-// DidSubjectType defines the types of subjects that a Decentralized Identifier (DID) can represent.
-// It categorizes the role or nature of the subject within a decentralized identity framework.
-type DidSubjectType int
-
-const (
-	// Unspecified Function Type.
-	DID_SUBJECT_TYPE_UNSPECIFIED DidSubjectType = iota
-
-	// The DID subject is an agent
-	DID_SUBJECT_TYPE_AGENT
-
-	// The DID subject is an agent locator
-	DID_SUBJECT_TYPE_AGENT_LOCATOR
-)
-
-// DidSubject represents a subject within a decentralized identity framework.
-type DidSubject struct {
-	// A local unique id of the subject.
-	ID string `json:"id,omitempty"`
-
-	// Type specifies the type of the subject, as defined by the DidSubjectType enum.
-	// This indicates the role or nature of the subject in the decentralized identity system,
-	// such as whether it is an agent or an agent locator.
-	Type DidSubjectType `json:"type,omitempty"`
-}
-
 // VerificationMethod expresses verification methods, such as cryptographic
 // public keys, which can be used to authenticate or authorize interactions
 // with the DID subject or associated parties. For example,
@@ -71,7 +45,24 @@ type Service struct {
 	ServiceEndpoint []string `json:"service_endpoint"`
 }
 
-// A PyramID Decentralized Identifier Document represents a set of data describing the DID subject including mechanisms such as:
+// Did provides a way to parse and handle Decentralized Identifier (DID) URIs
+// according to the W3C DID Core specification (https://www.w3.org/TR/did-core/).
+type Did struct {
+	// URI represents the complete Decentralized Identifier (DID) URI.
+	// Spec: https://www.w3.org/TR/did-core/#did-syntax
+	URI string `json:"uri"`
+
+	// Method specifies the DID method in the URI, which indicates the underlying
+	// method-specific identifier scheme (e.g., jwk, dht, key, etc.).
+	// Spec: https://www.w3.org/TR/did-core/#method-schemes
+	Method string `json:"method"`
+
+	// ID is the method-specific identifier in the DID URI.
+	// Spec: https://www.w3.org/TR/did-core/#method-specific-id
+	ID string `json:"id"`
+}
+
+// DidDocument represents a set of data describing the DID subject including mechanisms such as:
 //   - cryptographic public keys - used to authenticate itself and prove
 //     association with the DID
 //   - services - means of communicating or interacting with the DID subject or
@@ -108,35 +99,3 @@ type DidDocument struct {
 	// such as for the purposes of issuing a Verifiable Credential.
 	AssertionMethod []string `json:"assertion_method,omitempty"`
 }
-
-// JWK represents a JSON Web Key as per RFC7517 (https://tools.ietf.org/html/rfc7517)
-// Note that this is a subset of the spec. There are a handful of properties that the
-// spec allows for that are not represented here at the moment. This is because we
-// only need a subset of the spec for our purposes.
-type JWK struct {
-	// ALG represents the algorithm intended for use with the key.
-	ALG string `json:"alg,omitempty"`
-
-	// KTY represents the key type parameter.
-	// It specifies the family of cryptographic algorithms used with the key,
-	// such as "RSA" or "EC" for elliptic curve keys.
-	KTY string `json:"kty,omitempty"`
-
-	// CRV represents the curve parameter for elliptic curve keys.
-	// It specifies the cryptographic curve used with the key, such as "P-256" or "P-384".
-	CRV string `json:"crv,omitempty"`
-
-	// D represents the private key parameter.
-	// This field is used to store the private key material for asymmetric keys.
-	D string `json:"d,omitempty"`
-
-	// X represents the x-coordinate for elliptic curve keys.
-	// This field is part of the public key material for elliptic curve cryptography (ECC).
-	X string `json:"x,omitempty"`
-
-	// Y represents the y-coordinate for elliptic curve keys.
-	// This field is part of the public key material for elliptic curve cryptography (ECC)
-	Y string `json:"y,omitempty"`
-}
-
-type Did struct{}
