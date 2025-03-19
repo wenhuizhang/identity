@@ -3,7 +3,7 @@ import PlaceholderPageContent from '@/components/ui/placeholder-page-content';
 
 const IdentityNetwork: React.FC = () => {
   return (
-    <BasePage title="Identity Network" description="View your identity network.">
+    <BasePage title="Identity Network" description="View your identity network." breadcrumbs={[{text: 'Identity Network'}]}>
       <PlaceholderPageContent />
     </BasePage>
   );

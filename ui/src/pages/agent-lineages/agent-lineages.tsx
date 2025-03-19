@@ -3,7 +3,7 @@ import PlaceholderPageContent from '@/components/ui/placeholder-page-content';
 
 const AgentLineages: React.FC = () => {
   return (
-    <BasePage title="Agent Lineages" description="View your agent lineages.">
+    <BasePage title="Agent Lineages" description="View your agent lineages." breadcrumbs={[{text: 'Agent Lineages'}]}>
       <PlaceholderPageContent />
     </BasePage>
   );

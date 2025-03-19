@@ -3,7 +3,7 @@ import PlaceholderPageContent from '@/components/ui/placeholder-page-content';
 
 const VerifyAgentPassport: React.FC = () => {
   return (
-    <BasePage title="Verify Agent Passport" description="Verify an agent's passport.">
+    <BasePage title="Verify Agent Passport" description="Verify an agent's passport." breadcrumbs={[{text: 'Verify Agent Passport'}]}>
       <PlaceholderPageContent />
     </BasePage>
   );
