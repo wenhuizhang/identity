@@ -31,7 +31,7 @@ export const ErrorPage = ({error, className, resetErrorBoundary}: ErrorPageProps
       <Card className={cn('p-6', className)}>
         <div className="mb-6">
           <div className="p-3 inline-flex items-center align-center rounded-full bg-primary">
-            <ExclamationTriangleIcon className="w-10 h-10" />
+            <ExclamationTriangleIcon className="w-10 h-10 text-muted" />
           </div>
         </div>
         <h1 className="text-lg font-bold">Something went wrong</h1>
