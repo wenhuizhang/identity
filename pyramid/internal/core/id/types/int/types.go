@@ -1,5 +1,7 @@
 package types
 
+import "google.golang.org/protobuf/types/known/structpb"
+
 // VerificationMethod expresses verification methods, such as cryptographic
 // public keys, which can be used to authenticate or authorize interactions
 // with the DID subject or associated parties. For example,
@@ -98,4 +100,137 @@ type DidDocument struct {
 	// AssertionMethod is used to specify how the DID subject is expected to express claims,
 	// such as for the purposes of issuing a Verifiable Credential.
 	AssertionMethod []string `json:"assertion_method,omitempty"`
+}
+
+type AlgorithmType int
+
+const (
+	// Unspecified Algorithm Type.
+	ALGORITHM_TYPE_UNSPECIFIED AlgorithmType = iota
+
+	// SHA-512 Algorithm Type.
+	ALGORITHM_TYPE_SHA_512
+
+	// SLH-DSA Algorithm Type.
+	ALGORITHM_TYPE_SLH_DSA
+
+	// Other Algorithm Type.
+	ALGORITHM_TYPE_OTHER = 99
+)
+
+// The digest of the targeted content, conforming to the requirements. Retrieved
+// content SHOULD be verified against this digest when consumed via untrusted
+// sources. The digest property acts as a content identifier, enabling content
+// addressability. It uniquely identifies content by taking a collision-resistant
+// hash of the bytes. If the digest can be communicated in a secure manner, one
+// can verify content from an insecure source by recalculating the digest
+// independently, ensuring the content has not been modified. The value of
+// the digest property is a string consisting of an algorithm portion and an
+// encoded portion. The algorithm specifies the cryptographic hash function
+// and encoding used for the digest; the encoded portion contains the encoded
+// result of the hash function. A digest MUST be calculated for all properties
+// except the digest itself which MUST be ignored during the calculation.
+// The model SHOULD then be updated with the calculated digest.
+type Digest struct {
+	// The hash algorithm used to create the digital fingerprint, normalized
+	// to the caption of algorithm_id. In the case of Other, it is defined by
+	// the event source.
+	Algorithm string `json:"algorithm,omitempty"`
+
+	// The identifier of the normalized hash algorithm, which was used to create the digital fingerprint.
+	AlgorithmID AlgorithmType `json:"algorithm_id,omitempty"`
+
+	// The digital fingerprint value.
+	Value string `json:"value,omitempty"`
+}
+
+// OASF Agent definition
+// Specs: https://schema.oasf.agntcy.org/schema/objects/agent
+type Agent struct {
+	Digest *Digest `json:"digest,omitempty"`
+
+	// Name of the agent.
+	Name string `json:"name,omitempty"`
+
+	// Version of the agent.
+	Version string `json:"version,omitempty"`
+
+	// List of agent’s authors in the form of `author-name <author-email>`.
+	Authors []string `json:"authors,omitempty"`
+
+	// Creation timestamp of the agent in the RFC3339 format.
+	// Specs: https://www.rfc-editor.org/rfc/rfc3339.html
+	CreatedAt string `json:"created_at,omitempty"`
+
+	// Additional metadata associated with this agent.
+	Annotations map[string]string `json:"annotations,omitempty"`
+
+	// List of skills that this agent can perform.
+	Skills []Skill `json:"skills,omitempty"`
+
+	// List of source locators where this agent can be found or used from.
+	Locators []Locator `json:"locators,omitempty"`
+
+	// List of extensions that describe this agent and its capabilities
+	// and constraints more in depth.
+	Extensions []Extension `json:"extensions,omitempty"`
+}
+
+// OASF Skill definition
+// Specs: https://schema.oasf.agntcy.org/schema/objects/skill
+type Skill struct {
+	// Schema/object version.
+	Version string `json:"version,omitempty"`
+
+	// UID of the category.
+	CategoryUid string `json:"category_uid,omitempty"`
+
+	// UID of the class.
+	ClassUid string `json:"class_uid,omitempty"`
+
+	// Additional metadata for this skill.
+	Annotations map[string]string `json:"annotations,omitempty"`
+
+	// Optional human-readable name of the category.
+	CategoryName *string `json:"category_name,omitempty"`
+
+	// Optional human-readable name of the class.
+	ClassName *string `json:"class_name,omitempty"`
+}
+
+// OASF Locator definition
+// Specs: https://schema.oasf.agntcy.org/schema/objects/locator
+type Locator struct {
+	// Type of the locator. Can be custom or native LocatorType.
+	Type string `json:"type,omitempty"`
+
+	// Location URI where this source can be found/accessed.
+	// Specs: https://datatracker.ietf.org/doc/html/rfc1738
+	Url string `json:"url,omitempty"`
+
+	// Metadata associated with this locator.
+	Annotations map[string]string `json:"annotations,omitempty"`
+
+	// Size of the source in bytes pointed by the {url} property.
+	Size *uint64 `json:"size,omitempty"`
+
+	// Digest of the source pointed by the {url} property.
+	// Specs: https://github.com/opencontainers/image-spec/blob/maindescriptor.md#digests
+	Digest *string `json:"digest,omitempty"`
+}
+
+// OASF Extension definition
+// Specs: https://schema.oasf.agntcy.org/schema/objects/extension
+type Extension struct {
+	// Name of the extension attached to an agent.
+	Name string `json:"name,omitempty"`
+
+	// Version of the extension attached to an agent.
+	Version string `json:"version,omitempty"`
+
+	// Metadata associated with this extension.
+	Annotations map[string]string `json:"annotations,omitempty"`
+
+	// Value of the data.
+	Data *structpb.Struct `json:"data,omitempty"`
 }
