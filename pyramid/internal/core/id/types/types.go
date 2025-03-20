@@ -30,6 +30,8 @@ type JWK struct {
 	Y string `json:"y,omitempty"`
 }
 
+// The Envelope Type of the Agent Passport.
+// Multiple envelope types can be supported: JOSE, COSE etc.
 type AgentPassportEnvelopeType int
 
 const (

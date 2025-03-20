@@ -11,10 +11,12 @@ lint:
     - STANDARD
   ignore_only:
     RPC_REQUEST_RESPONSE_UNIQUE:
-      - agntcy/pyramid/v1alpha1/did_service.proto
+      - agntcy/pyramid/v1alpha1/id_service.proto
       - agntcy/pyramid/v1alpha1/issuer_service.proto
+      - agntcy/pyramid/v1alpha1/claims_service.proto
     RPC_RESPONSE_STANDARD_NAME:
-      - agntcy/pyramid/v1alpha1/did_service.proto
+      - agntcy/pyramid/v1alpha1/id_service.proto
       - agntcy/pyramid/v1alpha1/issuer_service.proto
+      - agntcy/pyramid/v1alpha1/claims_service.proto
     RPC_REQUEST_STANDARD_NAME:
       - agntcy/pyramid/v1alpha1/issuer_service.proto

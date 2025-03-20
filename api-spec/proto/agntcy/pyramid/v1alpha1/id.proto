@@ -7,36 +7,11 @@ package agntcy.pyramid.v1alpha1;
 // Package-wide variables from generator "generated".
 option go_package = "github.com/agntcy/pyramid/internal/pkg/generated/agntcy/pyramid/v1alpha1;pyramid_sdk_go";
 
-// OASF Agent definition
+// The Agent definition following OASF schema
 // Specs: https://schema.oasf.agntcy.org/schema/objects/agent
-message Agent {
-  optional Digest digest = 1;
-
-  // Name of the agent.
-  optional string name = 2;
-
-  // Version of the agent.
-  optional string version = 3;
-
-  // List of agent’s authors in the form of `author-name <author-email>`.
-  repeated string authors = 4;
-
-  // Creation timestamp of the agent in the RFC3339 format.
-  // Specs: https://www.rfc-editor.org/rfc/rfc3339.html
-  optional string created_at = 5;
-
-  // Additional metadata associated with this agent.
-  map<string, string> annotations = 6;
-
-  // List of skills that this agent can perform.
-  repeated Skill skills = 7;
-
-  // List of source locators where this agent can be found or used from.
-  repeated Locator locators = 8;
-
-  // List of extensions that describe this agent and its capabilities
-  // and constraints more in depth.
-  repeated Extension extensions = 9;
+message AgentClaims {
+  // The OASF in json format
+  optional string value = 1;
 }
 
 // AgentPassport represents an identity passport for an agent.
@@ -48,46 +23,6 @@ message AgentPassport {
   optional string value = 2;
 }
 
-
-
-// The digest of the targeted content, conforming to the requirements. Retrieved
-// content SHOULD be verified against this digest when consumed via untrusted
-// sources. The digest property acts as a content identifier, enabling content
-// addressability. It uniquely identifies content by taking a collision-resistant
-// hash of the bytes. If the digest can be communicated in a secure manner, one
-// can verify content from an insecure source by recalculating the digest
-// independently, ensuring the content has not been modified. The value of
-// the digest property is a string consisting of an algorithm portion and an
-// encoded portion. The algorithm specifies the cryptographic hash function
-// and encoding used for the digest; the encoded portion contains the encoded
-// result of the hash function. A digest MUST be calculated for all properties
-// except the digest itself which MUST be ignored during the calculation.
-// The model SHOULD then be updated with the calculated digest.
-message Digest {
-  // The hash algorithm used to create the digital fingerprint, normalized
-  // to the caption of algorithm_id. In the case of Other, it is defined by
-  // the event source.
-  optional string algorithm = 1;
-
-  // The identifier of the normalized hash algorithm, which was used to create the digital fingerprint.
-  optional AlgorithmType algorithm_id = 2;
-
-  // The digital fingerprint value.
-  optional string value = 3;
-}
-
-// OASF Extension definition
-// Specs: https://schema.oasf.agntcy.org/schema/objects/extension
-message Extension {
-  // Name of the extension attached to an agent.
-  optional string name = 1;
-
-  // Version of the extension attached to an agent.
-  optional string version = 2;
-
-  // Metadata associated with this extension.
-  map<string, string> annotations = 3;
-}
 
 // JWK represents a JSON Web Key as per RFC7517 (https://tools.ietf.org/html/rfc7517)
 // Note that this is a subset of the spec. There are a handful of properties that the
@@ -119,62 +54,12 @@ message JWK {
   optional string y = 6;
 }
 
-// OASF Locator definition
-// Specs: https://schema.oasf.agntcy.org/schema/objects/locator
-message Locator {
-  // Type of the locator. Can be custom or native LocatorType.
-  optional string type = 1;
-
-  // Location URI where this source can be found/accessed.
-  // Specs: https://datatracker.ietf.org/doc/html/rfc1738
-  optional string url = 2;
-
-  // Metadata associated with this locator.
-  map<string, string> annotations = 3;
-
-  // Size of the source in bytes pointed by the {url} property.
-  optional uint64 size = 4;
-
-  // Digest of the source pointed by the {url} property.
-  // Specs: https://github.com/opencontainers/image-spec/blob/maindescriptor.md#digests
-  optional string digest = 5;
-}
-
-// OASF Skill definition
-// Specs: https://schema.oasf.agntcy.org/schema/objects/skill
-message Skill {
-  // Schema/object version.
-  optional string version = 1;
-
-  // UID of the category.
-  optional string category_uid = 2;
-
-  // UID of the class.
-  optional string class_uid = 3;
-
-  // Additional metadata for this skill.
-  map<string, string> annotations = 4;
-
-  // Optional human-readable name of the category.
-  optional string category_name = 5;
-
-  // Optional human-readable name of the class.
-  optional string class_name = 6;
-}
-
+// The Envelope Type of the Agent Passport.
+// Multiple envelope types can be supported: JOSE, COSE etc.
 enum AgentPassportEnvelopeType {
   // Unspecified Envelope Type.
   AGENT_PASSPORT_ENVELOPE_TYPE_UNSPECIFIED = 0;
   // JOSE Envelope Type.
   AGENT_PASSPORT_ENVELOPE_TYPE_JOSE = 1;
-}
-
-enum AlgorithmType {
-  // Unspecified Algorithm Type.
-  ALGORITHM_TYPE_UNSPECIFIED = 0;
-  // SHA-512 Algorithm Type.
-  ALGORITHM_TYPE_SHA_512 = 1;
-  // SLH-DSA Algorithm Type.
-  ALGORITHM_TYPE_SLH_DSA = 2;
 }
 

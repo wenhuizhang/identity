@@ -56,12 +56,12 @@ service IssuerService {
 }
 
 // RegisterRequest is the request to register an issuer
-message RegisterIssuerRequest {
+message RegisterRequest {
   // The Issuer to register.
   Issuer issuer = 1;
 }
 
-message RegisterIssuerResponse {
+message RegisterResponse {
   // A uri indicating an action to take to complete the registration.
   string uri = 1;
 }
