@@ -53,7 +53,7 @@ export const SideNav: React.FC<{isCollapsed?: boolean}> = ({isCollapsed}) => {
 
   return (
     <nav className="flex relative flex-col justify-between gap-1 px-2 group-[[data-collapsed=true]]:justify-center group-[[data-collapsed=true]]:px-2 bg-side-nav-background h-full text-white">
-      <div className="flex flex-col gap-1">
+      <div className="flex flex-col gap-4">
         <Link to={PATHS.basePath}>
           <button className={cn('flex justify-center items-center py-6 rounded w-full px-3', isCollapsed && 'px-1')}>
             {!isCollapsed ? (

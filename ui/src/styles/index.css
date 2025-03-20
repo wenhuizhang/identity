@@ -98,10 +98,27 @@
   }
   body {
     @apply bg-background text-foreground;
-    word-break: break-all;
+    /* word-break: break-all; */
+  }
+  .inline-link {
+    @apply hover:text-primary cursor-pointer hover:decoration-primary font-semibold hover:underline;
   }
 }
 
 .layout {
   background-image: linear-gradient(to right bottom, #004a8c, #00417b, #00396a, #00305a, #01284a);
+}
+
+.card-group {
+  align-items: stretch;
+  display: flex;
+  flex: 0 1 auto;
+  flex-flow: wrap;
+  gap: 12px;
+  justify-content: flex-start;
+}
+
+.card-flex-group {
+  flex: 1 1 20%;
+  max-width: unset;
 }
