@@ -1,0 +1,41 @@
+---
+title: id.proto
+hide_title: true
+---
+
+import { ProtoMessage, ProtoServiceMethod, ProtoEnum } from '@theme/ProtoFile';
+
+# `id.proto`
+_**path** agntcy/pyramid/v1alpha1/id.proto_
+
+_**package** agntcy.pyramid.v1alpha1_
+
+
+
+---
+
+## Messages
+
+
+### `AgentClaims`
+<ProtoMessage key={0} message={{"name":"AgentClaims","longName":"AgentClaims","fullName":"agntcy.pyramid.v1alpha1.AgentClaims","description":"The Agent definition following OASF schema\nSpecs: https://schema.oasf.agntcy.org/schema/objects/agent","hasExtensions":false,"hasFields":true,"hasOneofs":true,"extensions":[],"fields":[{"name":"value","description":"The OASF in json format","label":"optional","type":"string","longType":"string","fullType":"string","ismap":false,"isoneof":true,"oneofdecl":"_value","defaultValue":""}]}} />
+
+
+### `AgentPassport`
+<ProtoMessage key={1} message={{"name":"AgentPassport","longName":"AgentPassport","fullName":"agntcy.pyramid.v1alpha1.AgentPassport","description":"AgentPassport represents an identity passport for an agent.","hasExtensions":false,"hasFields":true,"hasOneofs":true,"extensions":[],"fields":[{"name":"envelope_type","description":"EnvelopeType specifies the type of the envelope used to store the passport.","label":"optional","type":"AgentPassportEnvelopeType","longType":"AgentPassportEnvelopeType","fullType":"agntcy.pyramid.v1alpha1.AgentPassportEnvelopeType","ismap":false,"isoneof":true,"oneofdecl":"_envelope_type","defaultValue":"","typeLink":"/protodocs/agntcy/pyramid/v1alpha1/id.proto#agentpassportenvelopetype"},{"name":"value","description":"Value is the value of the passport.","label":"optional","type":"string","longType":"string","fullType":"string","ismap":false,"isoneof":true,"oneofdecl":"_value","defaultValue":""}]}} />
+
+
+### `JWK`
+<ProtoMessage key={2} message={{"name":"JWK","longName":"JWK","fullName":"agntcy.pyramid.v1alpha1.JWK","description":"JWK represents a JSON Web Key as per RFC7517 (https://tools.ietf.org/html/rfc7517)\nNote that this is a subset of the spec. There are a handful of properties that the\nspec allows for that are not represented here at the moment. This is because we\nonly need a subset of the spec for our purposes.","hasExtensions":false,"hasFields":true,"hasOneofs":true,"extensions":[],"fields":[{"name":"alg","description":"ALG represents the algorithm intended for use with the key.","label":"optional","type":"string","longType":"string","fullType":"string","ismap":false,"isoneof":true,"oneofdecl":"_alg","defaultValue":""},{"name":"kty","description":"KTY represents the key type parameter.\nIt specifies the family of cryptographic algorithms used with the key,\nsuch as \"RSA\" or \"EC\" for elliptic curve keys.","label":"optional","type":"string","longType":"string","fullType":"string","ismap":false,"isoneof":true,"oneofdecl":"_kty","defaultValue":""},{"name":"crv","description":"CRV represents the curve parameter for elliptic curve keys.\nIt specifies the cryptographic curve used with the key, such as \"P-256\" or \"P-384\".","label":"optional","type":"string","longType":"string","fullType":"string","ismap":false,"isoneof":true,"oneofdecl":"_crv","defaultValue":""},{"name":"d","description":"D represents the private key parameter.\nThis field is used to store the private key material for asymmetric keys.","label":"optional","type":"string","longType":"string","fullType":"string","ismap":false,"isoneof":true,"oneofdecl":"_d","defaultValue":""},{"name":"x","description":"X represents the x-coordinate for elliptic curve keys.\nThis field is part of the public key material for elliptic curve cryptography (ECC).","label":"optional","type":"string","longType":"string","fullType":"string","ismap":false,"isoneof":true,"oneofdecl":"_x","defaultValue":""},{"name":"y","description":"Y represents the y-coordinate for elliptic curve keys.\nThis field is part of the public key material for elliptic curve cryptography (ECC)","label":"optional","type":"string","longType":"string","fullType":"string","ismap":false,"isoneof":true,"oneofdecl":"_y","defaultValue":""}]}} />
+
+---
+## Enums
+
+
+### `AgentPassportEnvelopeType`
+<ProtoEnum key={0} enumb={{"name":"AgentPassportEnvelopeType","longName":"AgentPassportEnvelopeType","fullName":"agntcy.pyramid.v1alpha1.AgentPassportEnvelopeType","description":"The Envelope Type of the Agent Passport.\nMultiple envelope types can be supported: JOSE, COSE etc.","values":[{"name":"AGENT_PASSPORT_ENVELOPE_TYPE_UNSPECIFIED","number":"0","description":"Unspecified Envelope Type."},{"name":"AGENT_PASSPORT_ENVELOPE_TYPE_JOSE","number":"1","description":"JOSE Envelope Type."}]}} />
+
+---
+
+
+  

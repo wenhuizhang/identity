@@ -20,9 +20,9 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	IssuerService_RegisterIssuer_FullMethodName = "/agntcy.pyramid.v1alpha1.IssuerService/RegisterIssuer"
-	IssuerService_KeyGen_FullMethodName         = "/agntcy.pyramid.v1alpha1.IssuerService/KeyGen"
-	IssuerService_WellKnown_FullMethodName      = "/agntcy.pyramid.v1alpha1.IssuerService/WellKnown"
+	IssuerService_KeyGen_FullMethodName    = "/agntcy.pyramid.v1alpha1.IssuerService/KeyGen"
+	IssuerService_Register_FullMethodName  = "/agntcy.pyramid.v1alpha1.IssuerService/Register"
+	IssuerService_WellKnown_FullMethodName = "/agntcy.pyramid.v1alpha1.IssuerService/WellKnown"
 )
 
 // IssuerServiceClient is the client API for IssuerService service.
@@ -31,11 +31,11 @@ const (
 //
 // IssuerService is the service that provides ISSUER operations.
 type IssuerServiceClient interface {
-	// Register a Issuer
-	RegisterIssuer(ctx context.Context, in *RegisterIssuerRequest, opts ...grpc.CallOption) (*RegisterIssuerResponse, error)
 	// Generate a keypair in JWK format
 	KeyGen(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*JWK, error)
-	// Resolve a web DID document to the well-known DID document
+	// Register
+	Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterResponse, error)
+	// WellKnown endpoint
 	WellKnown(ctx context.Context, in *WellKnownRequest, opts ...grpc.CallOption) (*JWK, error)
 }
 
@@ -47,20 +47,20 @@ func NewIssuerServiceClient(cc grpc.ClientConnInterface) IssuerServiceClient {
 	return &issuerServiceClient{cc}
 }
 
-func (c *issuerServiceClient) RegisterIssuer(ctx context.Context, in *RegisterIssuerRequest, opts ...grpc.CallOption) (*RegisterIssuerResponse, error) {
+func (c *issuerServiceClient) KeyGen(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*JWK, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(RegisterIssuerResponse)
-	err := c.cc.Invoke(ctx, IssuerService_RegisterIssuer_FullMethodName, in, out, cOpts...)
+	out := new(JWK)
+	err := c.cc.Invoke(ctx, IssuerService_KeyGen_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *issuerServiceClient) KeyGen(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*JWK, error) {
+func (c *issuerServiceClient) Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(JWK)
-	err := c.cc.Invoke(ctx, IssuerService_KeyGen_FullMethodName, in, out, cOpts...)
+	out := new(RegisterResponse)
+	err := c.cc.Invoke(ctx, IssuerService_Register_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -83,11 +83,11 @@ func (c *issuerServiceClient) WellKnown(ctx context.Context, in *WellKnownReques
 //
 // IssuerService is the service that provides ISSUER operations.
 type IssuerServiceServer interface {
-	// Register a Issuer
-	RegisterIssuer(context.Context, *RegisterIssuerRequest) (*RegisterIssuerResponse, error)
 	// Generate a keypair in JWK format
 	KeyGen(context.Context, *emptypb.Empty) (*JWK, error)
-	// Resolve a web DID document to the well-known DID document
+	// Register
+	Register(context.Context, *RegisterRequest) (*RegisterResponse, error)
+	// WellKnown endpoint
 	WellKnown(context.Context, *WellKnownRequest) (*JWK, error)
 }
 
@@ -98,11 +98,11 @@ type IssuerServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedIssuerServiceServer struct{}
 
-func (UnimplementedIssuerServiceServer) RegisterIssuer(context.Context, *RegisterIssuerRequest) (*RegisterIssuerResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RegisterIssuer not implemented")
-}
 func (UnimplementedIssuerServiceServer) KeyGen(context.Context, *emptypb.Empty) (*JWK, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method KeyGen not implemented")
+}
+func (UnimplementedIssuerServiceServer) Register(context.Context, *RegisterRequest) (*RegisterResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Register not implemented")
 }
 func (UnimplementedIssuerServiceServer) WellKnown(context.Context, *WellKnownRequest) (*JWK, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method WellKnown not implemented")
@@ -127,24 +127,6 @@ func RegisterIssuerServiceServer(s grpc.ServiceRegistrar, srv IssuerServiceServe
 	s.RegisterService(&IssuerService_ServiceDesc, srv)
 }
 
-func _IssuerService_RegisterIssuer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(RegisterIssuerRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(IssuerServiceServer).RegisterIssuer(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: IssuerService_RegisterIssuer_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(IssuerServiceServer).RegisterIssuer(ctx, req.(*RegisterIssuerRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _IssuerService_KeyGen_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(emptypb.Empty)
 	if err := dec(in); err != nil {
@@ -159,6 +141,24 @@ func _IssuerService_KeyGen_Handler(srv interface{}, ctx context.Context, dec fun
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(IssuerServiceServer).KeyGen(ctx, req.(*emptypb.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _IssuerService_Register_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RegisterRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IssuerServiceServer).Register(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IssuerService_Register_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IssuerServiceServer).Register(ctx, req.(*RegisterRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -189,12 +189,12 @@ var IssuerService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*IssuerServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "RegisterIssuer",
-			Handler:    _IssuerService_RegisterIssuer_Handler,
-		},
-		{
 			MethodName: "KeyGen",
 			Handler:    _IssuerService_KeyGen_Handler,
+		},
+		{
+			MethodName: "Register",
+			Handler:    _IssuerService_Register_Handler,
 		},
 		{
 			MethodName: "WellKnown",

@@ -1,19 +1,25 @@
 package types
 
 import (
-	didtypes "github.com/agntcy/pyramid/internal/core/did/types"
+	idtypes "github.com/agntcy/pyramid/internal/core/id/types"
 )
 
 // A PyramID Issuer
 type Issuer struct {
+	// The organization of the issuer
+	Organization string `json:"organization,omitempty"`
+
+	// The sub organization of the issuer
+	SubOrganization string `json:"sub_organization,omitempty"`
+
 	// The common name of the issuer
-	// Example: isuser.com
+	// Could be a FQDN or a FQDA
 	CommonName string `json:"common_name,omitempty"`
 
-	// The keys of the issuer of the DID in JWK format
-	// The public key is used to verify the signature of the DID
-	PublicKey *didtypes.JWK `json:"public_key,omitempty"`
+	// The keys of the issuer in JWK format
+	// The public key is used to verify the signature of the different claims
+	PublicKey *idtypes.JWK `json:"public_key,omitempty"`
 
-	// The private key of the issuer of the DID in JWK format
-	PrivateKey *didtypes.JWK `json:"private_key,omitempty"`
+	// The private key of the issuer in JWK format
+	PrivateKey *idtypes.JWK `json:"private_key,omitempty"`
 }

@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+package agntcy.pyramid.v1alpha1;
+
+import "agntcy/pyramid/v1alpha1/id.proto";
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+// Package-wide variables from generator "generated".
+option go_package = "github.com/agntcy/pyramid/internal/pkg/generated/agntcy/pyramid/v1alpha1;pyramid_sdk_go";
+
+// ClaimsService is the service that provides VC operations.
+service ClaimsService {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_tag) = {
+    name: "ClaimsService";
+  };
+
+  // Publish
+  rpc Publish(PublishRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+            post: "/v1alpha1/claims/publish"
+            body: "passport"
+        };
+
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      operation_id: "PublishClaims";
+      summary: "Publish claims";
+    };
+  }
+}
+
+// PublishRequest is the request to publish VCs on identity nodes
+message PublishRequest {
+  // Publish an agent passport as a VC
+  AgentPassport passport = 1;
+}

@@ -36,30 +36,6 @@ var (
 	_ = metadata.Join
 )
 
-func request_IssuerService_RegisterIssuer_0(ctx context.Context, marshaler runtime.Marshaler, client IssuerServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq RegisterIssuerRequest
-		metadata runtime.ServerMetadata
-	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.Issuer); err != nil && !errors.Is(err, io.EOF) {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	msg, err := client.RegisterIssuer(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
-	return msg, metadata, err
-}
-
-func local_request_IssuerService_RegisterIssuer_0(ctx context.Context, marshaler runtime.Marshaler, server IssuerServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq RegisterIssuerRequest
-		metadata runtime.ServerMetadata
-	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.Issuer); err != nil && !errors.Is(err, io.EOF) {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	msg, err := server.RegisterIssuer(ctx, &protoReq)
-	return msg, metadata, err
-}
-
 func request_IssuerService_KeyGen_0(ctx context.Context, marshaler runtime.Marshaler, client IssuerServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
 		protoReq emptypb.Empty
@@ -79,6 +55,30 @@ func local_request_IssuerService_KeyGen_0(ctx context.Context, marshaler runtime
 	return msg, metadata, err
 }
 
+func request_IssuerService_Register_0(ctx context.Context, marshaler runtime.Marshaler, client IssuerServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq RegisterRequest
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.Issuer); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	msg, err := client.Register(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+}
+
+func local_request_IssuerService_Register_0(ctx context.Context, marshaler runtime.Marshaler, server IssuerServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq RegisterRequest
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.Issuer); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	msg, err := server.Register(ctx, &protoReq)
+	return msg, metadata, err
+}
+
 func request_IssuerService_WellKnown_0(ctx context.Context, marshaler runtime.Marshaler, client IssuerServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
 		protoReq WellKnownRequest
@@ -86,13 +86,13 @@ func request_IssuerService_WellKnown_0(ctx context.Context, marshaler runtime.Ma
 		err      error
 	)
 	io.Copy(io.Discard, req.Body)
-	val, ok := pathParams["issuer_common_name"]
+	val, ok := pathParams["common_name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "issuer_common_name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "common_name")
 	}
-	protoReq.IssuerCommonName, err = runtime.String(val)
+	protoReq.CommonName, err = runtime.String(val)
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "issuer_common_name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "common_name", err)
 	}
 	msg, err := client.WellKnown(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
@@ -104,13 +104,13 @@ func local_request_IssuerService_WellKnown_0(ctx context.Context, marshaler runt
 		metadata runtime.ServerMetadata
 		err      error
 	)
-	val, ok := pathParams["issuer_common_name"]
+	val, ok := pathParams["common_name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "issuer_common_name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "common_name")
 	}
-	protoReq.IssuerCommonName, err = runtime.String(val)
+	protoReq.CommonName, err = runtime.String(val)
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "issuer_common_name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "common_name", err)
 	}
 	msg, err := server.WellKnown(ctx, &protoReq)
 	return msg, metadata, err
@@ -122,33 +122,13 @@ func local_request_IssuerService_WellKnown_0(ctx context.Context, marshaler runt
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterIssuerServiceHandlerFromEndpoint instead.
 // GRPC interceptors will not work for this type of registration. To use interceptors, you must use the "runtime.WithMiddlewares" option in the "runtime.NewServeMux" call.
 func RegisterIssuerServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server IssuerServiceServer) error {
-	mux.Handle(http.MethodPost, pattern_IssuerService_RegisterIssuer_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
-		ctx, cancel := context.WithCancel(req.Context())
-		defer cancel()
-		var stream runtime.ServerTransportStream
-		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/agntcy.pyramid.v1alpha1.IssuerService/RegisterIssuer", runtime.WithHTTPPathPattern("/v1alpha1/issuers/register"))
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-		resp, md, err := local_request_IssuerService_RegisterIssuer_0(annotatedContext, inboundMarshaler, server, req, pathParams)
-		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
-		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
-		if err != nil {
-			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
-			return
-		}
-		forward_IssuerService_RegisterIssuer_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-	})
 	mux.Handle(http.MethodGet, pattern_IssuerService_KeyGen_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/agntcy.pyramid.v1alpha1.IssuerService/KeyGen", runtime.WithHTTPPathPattern("/v1alpha1/issuers/keygen"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/agntcy.pyramid.v1alpha1.IssuerService/KeyGen", runtime.WithHTTPPathPattern("/v1alpha1/issuer/keygen"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -162,13 +142,33 @@ func RegisterIssuerServiceHandlerServer(ctx context.Context, mux *runtime.ServeM
 		}
 		forward_IssuerService_KeyGen_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
+	mux.Handle(http.MethodPost, pattern_IssuerService_Register_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/agntcy.pyramid.v1alpha1.IssuerService/Register", runtime.WithHTTPPathPattern("/v1alpha1/issuer/register"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_IssuerService_Register_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_IssuerService_Register_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
 	mux.Handle(http.MethodGet, pattern_IssuerService_WellKnown_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/agntcy.pyramid.v1alpha1.IssuerService/WellKnown", runtime.WithHTTPPathPattern("/v1alpha1/{issuer_common_name}/.well-known/did.json"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/agntcy.pyramid.v1alpha1.IssuerService/WellKnown", runtime.WithHTTPPathPattern("/v1alpha1/issuer/{common_name}/.well-known/id.json"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -222,28 +222,11 @@ func RegisterIssuerServiceHandler(ctx context.Context, mux *runtime.ServeMux, co
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
 // "IssuerServiceClient" to call the correct interceptors. This client ignores the HTTP middlewares.
 func RegisterIssuerServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client IssuerServiceClient) error {
-	mux.Handle(http.MethodPost, pattern_IssuerService_RegisterIssuer_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
-		ctx, cancel := context.WithCancel(req.Context())
-		defer cancel()
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/agntcy.pyramid.v1alpha1.IssuerService/RegisterIssuer", runtime.WithHTTPPathPattern("/v1alpha1/issuers/register"))
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-		resp, md, err := request_IssuerService_RegisterIssuer_0(annotatedContext, inboundMarshaler, client, req, pathParams)
-		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
-		if err != nil {
-			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
-			return
-		}
-		forward_IssuerService_RegisterIssuer_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-	})
 	mux.Handle(http.MethodGet, pattern_IssuerService_KeyGen_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/agntcy.pyramid.v1alpha1.IssuerService/KeyGen", runtime.WithHTTPPathPattern("/v1alpha1/issuers/keygen"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/agntcy.pyramid.v1alpha1.IssuerService/KeyGen", runtime.WithHTTPPathPattern("/v1alpha1/issuer/keygen"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -256,11 +239,28 @@ func RegisterIssuerServiceHandlerClient(ctx context.Context, mux *runtime.ServeM
 		}
 		forward_IssuerService_KeyGen_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
+	mux.Handle(http.MethodPost, pattern_IssuerService_Register_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/agntcy.pyramid.v1alpha1.IssuerService/Register", runtime.WithHTTPPathPattern("/v1alpha1/issuer/register"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_IssuerService_Register_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_IssuerService_Register_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
 	mux.Handle(http.MethodGet, pattern_IssuerService_WellKnown_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/agntcy.pyramid.v1alpha1.IssuerService/WellKnown", runtime.WithHTTPPathPattern("/v1alpha1/{issuer_common_name}/.well-known/did.json"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/agntcy.pyramid.v1alpha1.IssuerService/WellKnown", runtime.WithHTTPPathPattern("/v1alpha1/issuer/{common_name}/.well-known/id.json"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -277,13 +277,13 @@ func RegisterIssuerServiceHandlerClient(ctx context.Context, mux *runtime.ServeM
 }
 
 var (
-	pattern_IssuerService_RegisterIssuer_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1alpha1", "issuers", "register"}, ""))
-	pattern_IssuerService_KeyGen_0         = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1alpha1", "issuers", "keygen"}, ""))
-	pattern_IssuerService_WellKnown_0      = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 1, 0, 4, 1, 5, 1, 2, 2, 2, 3}, []string{"v1alpha1", "issuer_common_name", ".well-known", "did.json"}, ""))
+	pattern_IssuerService_KeyGen_0    = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1alpha1", "issuer", "keygen"}, ""))
+	pattern_IssuerService_Register_0  = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1alpha1", "issuer", "register"}, ""))
+	pattern_IssuerService_WellKnown_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3, 2, 4}, []string{"v1alpha1", "issuer", "common_name", ".well-known", "id.json"}, ""))
 )
 
 var (
-	forward_IssuerService_RegisterIssuer_0 = runtime.ForwardResponseMessage
-	forward_IssuerService_KeyGen_0         = runtime.ForwardResponseMessage
-	forward_IssuerService_WellKnown_0      = runtime.ForwardResponseMessage
+	forward_IssuerService_KeyGen_0    = runtime.ForwardResponseMessage
+	forward_IssuerService_Register_0  = runtime.ForwardResponseMessage
+	forward_IssuerService_WellKnown_0 = runtime.ForwardResponseMessage
 )
