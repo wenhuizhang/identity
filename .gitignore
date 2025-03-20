@@ -136,4 +136,6 @@ pyramid/pyramid
 
 !ui/src/lib
 
-pyramid/pkg/assets/web
+pyramid/cmd/issuer/web
+
+.vscode

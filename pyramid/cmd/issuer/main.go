@@ -10,7 +10,7 @@ import (
 
 // We use go generate to copy the web assets into the correct location for the local web server
 // This needs to be rerun whenever the web assets are updated
-//go:generate cp -r ../../../ui/dist ../../pkg/assets/web
+//go:generate cp -r ../../../ui/dist ./web
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
