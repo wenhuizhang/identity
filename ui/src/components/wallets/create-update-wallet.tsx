@@ -1,4 +1,4 @@
-import {useCallback, useMemo, useState} from 'react';
+import {useCallback, useEffect, useMemo, useState} from 'react';
 import {
   StepperControls,
   StepperDescription,
@@ -22,23 +22,33 @@ import {SelectWallet} from './steps/select-wallet';
 import {GenerateStoreKeys} from './steps/generate-store-keys';
 import {validateForm} from '@/lib/utils';
 import {WalletProviderFormValues, WalletProviderSchema} from '@/schemas/wallet-schemas';
+import {useShallow} from 'zustand/react/shallow';
+import {useStore} from '@/store';
+import {WalletProviders} from '@/types/wallet-providers';
+import {toast} from 'sonner';
+import {useNavigate} from 'react-router-dom';
+import {PATHS} from '@/router/paths';
 
-interface CreateUpdateWalletContentProps {
-  mode?: 'create' | 'update';
-}
-
-export const CreateUpdateWalletContent: React.FC<CreateUpdateWalletContentProps> = ({mode = 'create'}) => {
+export const CreateUpdateWalletContent: React.FC = () => {
   return (
     <StepperProvider variant="vertical" className="space-y-4">
-      <FormStepperComponent mode={mode} />
+      <FormStepperComponent />
     </StepperProvider>
   );
 };
 
-const FormStepperComponent: React.FC<CreateUpdateWalletContentProps> = ({mode = 'create'}) => {
+const FormStepperComponent: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const methods = useStepper();
+  const navigate = useNavigate();
+
+  const {walletProvider, setWalletProvider} = useStore(
+    useShallow((store) => ({
+      walletProvider: store.walletProvider,
+      setWalletProvider: store.setWalletProvider
+    }))
+  );
 
   const form = useForm<z.infer<typeof methods.current.schema>>({
     // @ts-expect-error zodResolver expects a zod schema
@@ -87,14 +97,32 @@ const FormStepperComponent: React.FC<CreateUpdateWalletContentProps> = ({mode = 
     methods.next();
   }, [form, methods]);
 
+  const handleSave = useCallback(() => {
+    setIsLoading(true);
+    const walletProvider = methods.getMetadata('connectWallet')?.provider as WalletProviders;
+    setTimeout(() => {
+      setWalletProvider(walletProvider);
+      toast.success('Wallet provider connected successfully');
+      void navigate(PATHS.identityNetwork, {replace: true});
+      setIsLoading(false);
+    }, 2500);
+  }, [methods, navigate, setWalletProvider]);
+
   const onSubmit = () => {
     if (methods.current.id === 'connectWallet') {
       return handleSelectProvider();
     }
     if (methods.current.id === 'generateAndStoreKeys') {
-      return alert('Generate and store keys');
+      return handleSave();
     }
   };
+
+  useEffect(() => {
+    if (walletProvider) {
+      methods.setMetadata('connectWallet', {...methods.getMetadata('connectWallet'), provider: walletProvider});
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [walletProvider]);
 
   return (
     <>

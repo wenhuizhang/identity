@@ -1,4 +1,4 @@
-import {useCallback, useMemo, useState} from 'react';
+import {useCallback, useEffect, useMemo, useState} from 'react';
 import {
   StepperControls,
   StepperDescription,
@@ -21,23 +21,32 @@ import {ConnectIdentiyURL} from './steps/connect-identity-url';
 import {VerifyConnection} from './steps/verify-connection';
 import {ConnectIdentityNetworFormValues, ConnectIdentityNetworkSchema} from '@/schemas/identity-network-schema';
 import {validateForm} from '@/lib/utils';
+import {useStore} from '@/store';
+import {useShallow} from 'zustand/react/shallow';
+import {toast} from 'sonner';
+import {PATHS} from '@/router/paths';
+import {useNavigate} from 'react-router-dom';
 
-interface CreateUpdateIdentityNetworkContentProps {
-  mode?: 'create' | 'update';
-}
-
-export const CreateUpdateIdentityNetworkContent: React.FC<CreateUpdateIdentityNetworkContentProps> = ({mode = 'create'}) => {
+export const CreateUpdateIdentityNetworkContent: React.FC = () => {
   return (
     <StepperProvider variant="vertical" className="space-y-4">
-      <FormStepperComponent mode={mode} />
+      <FormStepperComponent />
     </StepperProvider>
   );
 };
 
-const FormStepperComponent: React.FC<CreateUpdateIdentityNetworkContentProps> = ({mode = 'create'}) => {
+const FormStepperComponent: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const methods = useStepper();
+  const navigate = useNavigate();
+
+  const {nodeUrl, setNodeUrl} = useStore(
+    useShallow((store) => ({
+      nodeUrl: store.nodeUrl,
+      setNodeUrl: store.setNodeUrl
+    }))
+  );
 
   const form = useForm<z.infer<typeof methods.current.schema>>({
     resolver: zodResolver(methods.current.schema),
@@ -75,8 +84,15 @@ const FormStepperComponent: React.FC<CreateUpdateIdentityNetworkContentProps> = 
   }, [form, methods]);
 
   const handleVerify = useCallback(() => {
-    alert('Connection verified');
-  }, []);
+    setIsLoading(true);
+    const nodeUrl = methods.getMetadata('connectIdentityNetwork')?.nodeUrl as string;
+    setTimeout(() => {
+      setNodeUrl(nodeUrl);
+      toast.success('Successfully connected to the Identity Network');
+      void navigate(PATHS.agentLineages, {replace: true});
+      setIsLoading(false);
+    }, 2500);
+  }, [methods, navigate, setNodeUrl]);
 
   const onSubmit = () => {
     if (methods.current.id === 'connectIdentityNetwork') {
@@ -86,6 +102,13 @@ const FormStepperComponent: React.FC<CreateUpdateIdentityNetworkContentProps> = 
       return handleVerify();
     }
   };
+
+  useEffect(() => {
+    if (nodeUrl) {
+      methods.setMetadata('connectIdentityNetwork', {...methods.getMetadata('connectIdentityNetwork'), nodeUrl: nodeUrl});
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [nodeUrl]);
 
   return (
     <>
