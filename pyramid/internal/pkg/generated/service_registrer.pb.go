@@ -12,7 +12,7 @@ import (
 )
 
 type GrpcServiceRegister struct {
-	ClaimsServiceServer v1alpha1.ClaimsServiceServer
+	CredentialsServiceServer v1alpha1.CredentialsServiceServer
 
 	IdServiceServer v1alpha1.IdServiceServer
 
@@ -21,8 +21,8 @@ type GrpcServiceRegister struct {
 
 func (r GrpcServiceRegister) RegisterGrpcHandlers(grpcServer *grpc.Server) {
 
-	if r.ClaimsServiceServer != nil {
-		v1alpha1.RegisterClaimsServiceServer(grpcServer, r.ClaimsServiceServer)
+	if r.CredentialsServiceServer != nil {
+		v1alpha1.RegisterCredentialsServiceServer(grpcServer, r.CredentialsServiceServer)
 	}
 
 	if r.IdServiceServer != nil {
@@ -37,8 +37,8 @@ func (r GrpcServiceRegister) RegisterGrpcHandlers(grpcServer *grpc.Server) {
 
 func (r GrpcServiceRegister) RegisterHttpHandlers(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
 
-	if r.ClaimsServiceServer != nil {
-		err := v1alpha1.RegisterClaimsServiceHandler(ctx, mux, conn)
+	if r.CredentialsServiceServer != nil {
+		err := v1alpha1.RegisterCredentialsServiceHandler(ctx, mux, conn)
 		if err != nil {
 			return err
 		}
