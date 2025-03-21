@@ -12,7 +12,7 @@ const App = () => {
       <HelmetProvider>
         <Toaster
           expand
-          position="top-right"
+          position="bottom-right"
           richColors
           closeButton
           visibleToasts={3}

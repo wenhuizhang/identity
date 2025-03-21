@@ -19,7 +19,7 @@ export const useStore = create<Store>(
       setWalletProvider: (provider: WalletProviders) => set(() => ({walletProvider: provider})),
       nodeUrl: undefined,
       setNodeUrl: (url: string) => set(() => ({nodeUrl: url})),
-      cleanStore: () => set(() => ({walletProvider: undefined}))
+      cleanStore: () => set(() => ({walletProvider: undefined, nodeUrl: undefined}))
     }),
     {
       name: 'pyramd-ui-store',

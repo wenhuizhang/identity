@@ -73,11 +73,9 @@ export const SelectWallet = () => {
   const provider = methods.getMetadata('connectWallet')?.provider as WalletProviders;
 
   useEffect(() => {
-    if (provider) {
-      reset({
-        provider: provider
-      });
-    }
+    reset({
+      provider: provider
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [provider]);
 

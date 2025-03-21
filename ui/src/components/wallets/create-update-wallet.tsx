@@ -118,9 +118,7 @@ const FormStepperComponent: React.FC = () => {
   };
 
   useEffect(() => {
-    if (walletProvider) {
-      methods.setMetadata('connectWallet', {...methods.getMetadata('connectWallet'), provider: walletProvider});
-    }
+    methods.setMetadata('connectWallet', {...methods.getMetadata('connectWallet'), provider: walletProvider});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [walletProvider]);
 

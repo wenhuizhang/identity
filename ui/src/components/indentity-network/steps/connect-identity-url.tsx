@@ -13,11 +13,9 @@ export const ConnectIdentiyURL = () => {
   const nodeUrl = methods.getMetadata('connectIdentityNetwork')?.nodeUrl as string;
 
   useEffect(() => {
-    if (nodeUrl) {
-      reset({
-        nodeUrl: nodeUrl
-      });
-    }
+    reset({
+      nodeUrl: nodeUrl
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [nodeUrl]);
 

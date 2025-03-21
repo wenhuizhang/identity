@@ -1,18 +1,48 @@
 import type {ReactNode} from 'react';
-import React from 'react';
+import React, {useCallback} from 'react';
 import {Tabs, TabsList, TabsTrigger} from '@/components/ui/tabs';
 import Breadcrumbs, {BreadcrumbsProps} from '@/components/ui/breadcrumbs';
 import {Link} from 'react-router-dom';
+import {Tooltip, TooltipContent, TooltipTrigger} from '../ui/tooltip';
+import {Button} from '../ui/button';
+import {EraserIcon} from 'lucide-react';
+import {TooltipArrow} from '@radix-ui/react-tooltip';
+import {useStore} from '@/store';
+import {useShallow} from 'zustand/react/shallow';
+import {toast} from 'sonner';
 
 export const BasePage: React.FC<BasePageProps> = ({children, breadcrumbs, parentTitle, title, description, rightSideItems, subNav}) => {
   const hideHeader = !title && !description && !rightSideItems;
   const showHeader = !hideHeader;
 
+  const {cleanStore} = useStore(
+    useShallow((store) => ({
+      cleanStore: store.cleanStore
+    }))
+  );
+
+  const handleOnClean = useCallback(() => {
+    cleanStore();
+    toast.success('CLI tool cleaned');
+  }, [cleanStore]);
+
   return (
     <>
       <div className="flex justify-between px-5 py-2 items-center layout max-w-screen overflow-hidden border-b sticky top-0 z-40">
         <Breadcrumbs breadcrumbs={breadcrumbs} />
-        <div className="h-[30px]" />
+        <div className="flex items-center gap-2 flex-shrink-0">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button onClick={handleOnClean} variant="ghost" size="icon" className="px-2 relative">
+                <EraserIcon className="w-5 h-5" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="bottom">
+              <TooltipArrow />
+              Clean CLI tool
+            </TooltipContent>
+          </Tooltip>
+        </div>
       </div>
       <div>
         {showHeader && (

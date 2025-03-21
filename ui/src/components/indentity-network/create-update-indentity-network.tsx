@@ -104,9 +104,7 @@ const FormStepperComponent: React.FC = () => {
   };
 
   useEffect(() => {
-    if (nodeUrl) {
-      methods.setMetadata('connectIdentityNetwork', {...methods.getMetadata('connectIdentityNetwork'), nodeUrl: nodeUrl});
-    }
+    methods.setMetadata('connectIdentityNetwork', {...methods.getMetadata('connectIdentityNetwork'), nodeUrl: nodeUrl});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [nodeUrl]);
 
