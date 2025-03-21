@@ -10,7 +10,7 @@ export const BasePage: React.FC<BasePageProps> = ({children, breadcrumbs, parent
 
   return (
     <>
-      <div className="flex justify-between px-5 py-2 items-center bg-background-secondary dark:bg-background max-w-screen overflow-hidden border-b sticky top-0 z-40">
+      <div className="flex justify-between px-5 py-2 items-center layout max-w-screen overflow-hidden border-b sticky top-0 z-40">
         <Breadcrumbs breadcrumbs={breadcrumbs} />
         <div className="h-[30px]" />
       </div>

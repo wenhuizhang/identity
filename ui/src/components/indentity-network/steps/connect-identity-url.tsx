@@ -10,7 +10,7 @@ export const ConnectIdentiyURL = () => {
   const {control, reset} = useFormContext<ConnectIdentityNetworFormValues>();
   const methods = useStepper();
 
-  const nodeUrl = methods.getMetadata('verifyTheConnection')?.nodeUrl as string;
+  const nodeUrl = methods.getMetadata('connectIdentityNetwork')?.nodeUrl as string;
 
   useEffect(() => {
     if (nodeUrl) {
