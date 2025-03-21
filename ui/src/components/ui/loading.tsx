@@ -9,7 +9,7 @@ export interface LoadingProps {
 export const Loading = ({style, classNameLoader}: LoadingProps) => {
   return (
     <div
-      className="bg-background flex flex-col justify-center items-center h-full w-full absolute top-[50%] left-[50%] z-[1000] -translate-x-[50%] -translate-y-[50%]"
+      className="layout flex flex-col justify-center items-center h-full w-full absolute top-[50%] left-[50%] z-[1000] -translate-x-[50%] -translate-y-[50%]"
       style={style}
     >
       <LoaderPinwheelIcon className={cn('w-20 h-20 animate-spin', classNameLoader)} />
