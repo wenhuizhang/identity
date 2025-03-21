@@ -14,12 +14,12 @@ servers:
     - url: http://0.0.0.0:4000
       description: Local environment
 paths:
-    /v1alpha1/claims/publish:
+    /v1alpha1/credentials/publish:
         post:
             tags:
-                - ClaimsService
+                - CredentialsService
             description: Publish
-            operationId: ClaimsService_Publish
+            operationId: CredentialsService_Publish
             requestBody:
                 content:
                     application/json:
@@ -279,8 +279,8 @@ components:
 security:
     - {}
 tags:
-    - name: ClaimsService
-      description: ClaimsService is the service that provides VC operations.
+    - name: CredentialsService
+      description: CredentialsService is the service that provides VC operations.
     - name: IdService
       description: IdService is the service that provides ID operations.
     - name: IssuerService

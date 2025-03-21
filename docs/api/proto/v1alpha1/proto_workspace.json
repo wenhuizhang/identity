@@ -178,7 +178,7 @@
       "services": []
     },
     {
-      "name": "agntcy/pyramid/v1alpha1/claims_service.proto",
+      "name": "agntcy/pyramid/v1alpha1/credentials_service.proto",
       "description": "",
       "package": "agntcy.pyramid.v1alpha1",
       "hasEnums": false,
@@ -215,10 +215,10 @@
       ],
       "services": [
         {
-          "name": "ClaimsService",
-          "longName": "ClaimsService",
-          "fullName": "agntcy.pyramid.v1alpha1.ClaimsService",
-          "description": "ClaimsService is the service that provides VC operations.",
+          "name": "CredentialsService",
+          "longName": "CredentialsService",
+          "fullName": "agntcy.pyramid.v1alpha1.CredentialsService",
+          "description": "CredentialsService is the service that provides VC operations.",
           "methods": [
             {
               "name": "Publish",
@@ -236,7 +236,7 @@
                   "rules": [
                     {
                       "method": "POST",
-                      "pattern": "/v1alpha1/claims/publish",
+                      "pattern": "/v1alpha1/credentials/publish",
                       "body": "passport"
                     }
                   ]
