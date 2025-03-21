@@ -1,10 +1,14 @@
+import {CreateUpdateIdentityNetworkContent} from '@/components/indentity-network/create-update-indentity-network';
 import {BasePage} from '@/components/layout/base-page';
-import PlaceholderPageContent from '@/components/ui/placeholder-page-content';
 
 const IdentityNetwork: React.FC = () => {
   return (
-    <BasePage title="Identity Network" description="View your identity network." breadcrumbs={[{text: 'Identity Network'}]}>
-      <PlaceholderPageContent />
+    <BasePage
+      title="Identity Network"
+      description="The agent passport data is stored in the decentralised ID Nodes"
+      breadcrumbs={[{text: 'Identity Network'}]}
+    >
+      <CreateUpdateIdentityNetworkContent />
     </BasePage>
   );
 };

@@ -47,40 +47,31 @@ const FormStepperComponent: React.FC<CreateUpdateWalletContentProps> = ({mode = 
   });
 
   const instructions = useMemo(() => {
-    if (methods.current.id === 'connectWallet') {
-      return [
-        <div key={1}>The keys used to sign your agent are stored in your local wallet.</div>,
-        <div key={2}>
-          The <strong>AGNTCY</strong> Agent Identity Management tool does not store or share any keys that are used to provide identity to your
-          agents.
-        </div>,
-        <div key={3}>The tool connects to popoular password management applications or crypto wallets to handle the keys.</div>,
-        <div key={4}>
-          The keys are generated via this tool use quantum-resistant algorithms, and you can find more information on these{' '}
-          <a href="#" target="_blank" className="inline-link">
-            here
-          </a>
-          .
-        </div>
-      ];
-    }
-    if (methods.current.id === 'generateAndStoreKeys') {
-      return [
-        <div key={1}>
-          In order for others users to use and verify the indentity of agents you publish, you will have to also publish your{' '}
-          <strong>public key</strong> in one of the supported <strong>Trust Anchors</strong>.
-        </div>,
-        <div key={2}>
-          You can find out more about trust anchors and how to publish the public key{' '}
-          <a href="#" target="_blank" className="inline-link">
-            here
-          </a>
-          .
-        </div>
-      ];
-    }
-    return undefined;
-  }, [methods]);
+    return [
+      <div key={1}>
+        The <strong>AGNTCY</strong> Agent Identity Management tool does not store or share any keys that are used to provide identity to your agents.
+      </div>,
+      <div key={2}>The tool connects to popoular password management applications or crypto wallets to handle the keys.</div>,
+      <div key={3}>
+        The keys are generated via this tool use quantum-resistant algorithms, and you can find more information on these{' '}
+        <a href="#" target="_blank" className="inline-link">
+          here
+        </a>
+        .
+      </div>,
+      <div key={4}>
+        In order for others users to use and verify the indentity of agents you publish, you will have to also publish your{' '}
+        <strong>public key</strong> in one of the supported <strong>Trust Anchors</strong>.
+      </div>,
+      <div key={5}>
+        You can find out more about trust anchors and how to publish the public key{' '}
+        <a href="#" target="_blank" className="inline-link">
+          here
+        </a>
+        .
+      </div>
+    ];
+  }, []);
 
   const handleSelectProvider = useCallback(() => {
     const values = form.getValues() as WalletProviderFormValues;

@@ -3,7 +3,7 @@ import {CreateUpdateWalletContent} from '@/components/wallets/create-update-wall
 
 const Wallets: React.FC = () => {
   return (
-    <BasePage title="Wallets" description="Explore the wallet connections" breadcrumbs={[{text: 'Wallets'}]}>
+    <BasePage title="Wallets" description="The keys used to sign your agent are stored in your local wallet." breadcrumbs={[{text: 'Wallets'}]}>
       <CreateUpdateWalletContent />
     </BasePage>
   );
