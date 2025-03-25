@@ -68,5 +68,8 @@ message RegisterResponse {
 
 message WellKnownRequest {
   // The common name of the issuer
-  string common_name = 1;
+  optional string common_name = 1;
+
+  // The id of the agent
+  optional string id = 2;
 }

@@ -23,13 +23,13 @@ type Qjwk struct {
 	// h represents the public key.
 	H string `json:"h,omitempty"`
 
-	// f represents the private key.
+	// f represents the polynomial for the private key.
 	F string `json:"f,omitempty"`
 
-	// fp represents the private key.
+	// fp represents the f inverse modulo p.
 	FP string `json:"fp,omitempty"`
 
-	// g represents the public key.
+	// g represents the polynomial for the private key.
 	G string `json:"g,omitempty"`
 }
 

@@ -47,13 +47,13 @@ message Qjwk {
   // h represents the public key.
   optional string h = 5;
 
-  // f represents the private key.
+  // f represents the polynomial for the private key.
   optional string f = 6;
 
-  // fp represents the private key.
+  // fp represents the f inverse modulo p.
   optional string fp = 7;
 
-  // g represents the public key.
+  // g represents the polynomial for the private key.
   optional string g = 8;
 }
 
