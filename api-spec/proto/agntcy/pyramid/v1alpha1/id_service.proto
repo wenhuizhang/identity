@@ -19,7 +19,7 @@ service IdService {
   rpc Generate(GenerateRequest) returns (AgentPassport) {
     option (google.api.http) = {
             post: "/v1alpha1/id/generate"
-            body: "claims"
+            body: "content"
         };
 
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
@@ -32,7 +32,7 @@ service IdService {
   rpc Resolve(ResolveRequest) returns (AgentPassport) {
     option (google.api.http) = {
             post: "/v1alpha1/id/resolve"
-            body: "claims"
+            body: "*"
         };
 
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
@@ -44,13 +44,13 @@ service IdService {
 
 // Generate an Id based on the agent
 message GenerateRequest {
-  // The full OASF representation of an agent including the digest
-  AgentClaims claims = 1;
+  // The content of the OASF representation of an agent including the digest
+  AgentContent content = 1;
 }
 
 message ResolveRequest {
-  // The full OASF representation of an agent including the digest
-  AgentClaims claims = 1;
+  // The id of the agent
+  string id = 1;
 }
 
 
