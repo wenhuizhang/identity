@@ -46,7 +46,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/AgentClaims'
+                            $ref: '#/components/schemas/AgentContent'
                 required: true
             responses:
                 "200":
@@ -71,7 +71,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/AgentClaims'
+                            $ref: '#/components/schemas/ResolveRequest'
                 required: true
             responses:
                 "200":
@@ -90,7 +90,7 @@ paths:
         get:
             tags:
                 - IssuerService
-            description: Generate a keypair in JWK format
+            description: Generate a keypair in QJWK format
             operationId: IssuerService_KeyGen
             responses:
                 "200":
@@ -98,7 +98,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/JWK'
+                                $ref: '#/components/schemas/QJWK'
                 default:
                     description: Default error response
                     content:
@@ -149,7 +149,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/JWK'
+                                $ref: '#/components/schemas/QJWKS'
                 default:
                     description: Default error response
                     content:
@@ -158,14 +158,14 @@ paths:
                                 $ref: '#/components/schemas/Status'
 components:
     schemas:
-        AgentClaims:
+        AgentContent:
             type: object
             properties:
                 value:
                     type: string
                     description: The OASF in json format
             description: |-
-                The Agent definition following OASF schema
+                The Agent content representation following OASF schema
                  Specs: https://schema.oasf.agntcy.org/schema/objects/agent
         AgentPassport:
             type: object
@@ -205,58 +205,75 @@ components:
                          Could be a FQDN or a FQDA
                 publicKey:
                     allOf:
-                        - $ref: '#/components/schemas/JWK'
+                        - $ref: '#/components/schemas/QJWK'
                     description: |-
-                        The keys of the issuer in JWK format
+                        The keys of the issuer in QJWK format
                          The public key is used to verify the signature of the different claims
                 privateKey:
                     allOf:
-                        - $ref: '#/components/schemas/JWK'
+                        - $ref: '#/components/schemas/QJWK'
                     description: The private key of the issuer in JWK format
             description: A PyramID Issuer
-        JWK:
+        QJWK:
             type: object
             properties:
                 alg:
                     type: string
-                    description: ALG represents the algorithm intended for use with the key.
+                    description: |-
+                        ALG represents the algorithm intended for use with the key.
+                         Some example algorithms are "Falcon" family: "Falcon-512", "Falcon-1024"
                 kty:
                     type: string
                     description: |-
                         KTY represents the key type parameter.
-                         It specifies the family of cryptographic algorithms used with the key,
-                         such as "RSA" or "EC" for elliptic curve keys.
-                crv:
+                         It specifies the family of quantum algorithms used with the key,
+                         such as "NTRU"
+                use:
                     type: string
                     description: |-
-                        CRV represents the curve parameter for elliptic curve keys.
-                         It specifies the cryptographic curve used with the key, such as "P-256" or "P-384".
-                d:
+                        Use represents the intended use of the key.
+                         Some example values are "enc" and "sig".
+                kid:
                     type: string
                     description: |-
-                        D represents the private key parameter.
-                         This field is used to store the private key material for asymmetric keys.
-                x:
+                        KID represents the key ID.
+                         It is used to match a specific key.
+                h:
                     type: string
-                    description: |-
-                        X represents the x-coordinate for elliptic curve keys.
-                         This field is part of the public key material for elliptic curve cryptography (ECC).
-                y:
+                    description: h represents the public key.
+                f:
                     type: string
-                    description: |-
-                        Y represents the y-coordinate for elliptic curve keys.
-                         This field is part of the public key material for elliptic curve cryptography (ECC)
+                    description: f represents the private key.
+                fp:
+                    type: string
+                    description: fp represents the private key.
+                g:
+                    type: string
+                    description: g represents the public key.
             description: |-
-                JWK represents a JSON Web Key as per RFC7517 (https://tools.ietf.org/html/rfc7517)
-                 Note that this is a subset of the spec. There are a handful of properties that the
-                 spec allows for that are not represented here at the moment. This is because we
-                 only need a subset of the spec for our purposes.
+                QJWK represents a Quantum JSON Web Key (JWK) with the following fields specific to NTRU algorithms.
+                 This could be an extension of the JWK type.
+        QJWKS:
+            type: object
+            properties:
+                keys:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/QJWK'
+                    description: Keys represents the list of Quantum JSON Web Keys.
+            description: QJWKS represents a set of Quantum JSON Web Keys (JWKs).
         RegisterResponse:
             type: object
             properties:
                 uri:
                     type: string
                     description: A uri indicating an action to take to complete the registration.
+        ResolveRequest:
+            type: object
+            properties:
+                id:
+                    type: string
+                    description: The id of the agent
         Status:
             type: object
             properties:

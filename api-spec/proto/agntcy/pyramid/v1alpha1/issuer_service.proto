@@ -17,8 +17,8 @@ service IssuerService {
     name: "IssuerService";
   };
 
-  // Generate a keypair in JWK format
-  rpc KeyGen(google.protobuf.Empty) returns (JWK) {
+  // Generate a keypair in QJWK format
+  rpc KeyGen(google.protobuf.Empty) returns (Qjwk) {
     option (google.api.http) = {
             get: "/v1alpha1/issuer/keygen"
         };
@@ -44,7 +44,7 @@ service IssuerService {
 
 
   // WellKnown endpoint
-  rpc WellKnown(WellKnownRequest) returns (JWK) {
+  rpc WellKnown(WellKnownRequest) returns (Qjwks) {
     option (google.api.http) = {
             get: "/v1alpha1/issuer/{common_name}/.well-known/id.json"
         };

@@ -1,33 +1,42 @@
 package types
 
-// JWK represents a JSON Web Key as per RFC7517 (https://tools.ietf.org/html/rfc7517)
-// Note that this is a subset of the spec. There are a handful of properties that the
-// spec allows for that are not represented here at the moment. This is because we
-// only need a subset of the spec for our purposes.
-type JWK struct {
+// QJWK represents a Quantum JSON Web Key (JWK) with the following fields specific to NTRU algorithms.
+// This could be an extension of the JWK type.
+type Qjwk struct {
 	// ALG represents the algorithm intended for use with the key.
+	// Some example algorithms are "Falcon" family: "Falcon-512", "Falcon-1024"
 	ALG string `json:"alg,omitempty"`
 
 	// KTY represents the key type parameter.
-	// It specifies the family of cryptographic algorithms used with the key,
-	// such as "RSA" or "EC" for elliptic curve keys.
+	// It specifies the family of quantum algorithms used with the key,
+	// such as "NTRU"
 	KTY string `json:"kty,omitempty"`
 
-	// CRV represents the curve parameter for elliptic curve keys.
-	// It specifies the cryptographic curve used with the key, such as "P-256" or "P-384".
-	CRV string `json:"crv,omitempty"`
+	// Use represents the intended use of the key.
+	// Some example values are "enc" and "sig".
+	USE string `json:"use,omitempty"`
 
-	// D represents the private key parameter.
-	// This field is used to store the private key material for asymmetric keys.
-	D string `json:"d,omitempty"`
+	// KID represents the key ID.
+	// It is used to match a specific key.
+	KID string `json:"kid,omitempty"`
 
-	// X represents the x-coordinate for elliptic curve keys.
-	// This field is part of the public key material for elliptic curve cryptography (ECC).
-	X string `json:"x,omitempty"`
+	// h represents the public key.
+	H string `json:"h,omitempty"`
 
-	// Y represents the y-coordinate for elliptic curve keys.
-	// This field is part of the public key material for elliptic curve cryptography (ECC)
-	Y string `json:"y,omitempty"`
+	// f represents the private key.
+	F string `json:"f,omitempty"`
+
+	// fp represents the private key.
+	FP string `json:"fp,omitempty"`
+
+	// g represents the public key.
+	G string `json:"g,omitempty"`
+}
+
+// QJWKS represents a set of Quantum JSON Web Keys (JWKs).
+type Qjwks struct {
+	// Keys represents the list of Quantum JSON Web Keys.
+	Keys []Qjwk `json:"keys"`
 }
 
 // The Envelope Type of the Agent Passport.
@@ -51,9 +60,9 @@ type AgentPassport struct {
 	Value string `json:"value,omitempty"`
 }
 
-// The Agent definition following OASF schema
+// The Agent content representation following OASF schema
 // Specs: https://schema.oasf.agntcy.org/schema/objects/agent
-type AgentClaims struct {
+type AgentContent struct {
 	// The OASF in json format
 	Value string `json:"value,omitempty"`
 }

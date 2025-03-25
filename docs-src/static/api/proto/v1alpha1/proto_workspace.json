@@ -31,10 +31,10 @@
       "extensions": [],
       "messages": [
         {
-          "name": "AgentClaims",
-          "longName": "AgentClaims",
-          "fullName": "agntcy.pyramid.v1alpha1.AgentClaims",
-          "description": "The Agent definition following OASF schema\nSpecs: https://schema.oasf.agntcy.org/schema/objects/agent",
+          "name": "AgentContent",
+          "longName": "AgentContent",
+          "fullName": "agntcy.pyramid.v1alpha1.AgentContent",
+          "description": "The Agent content representation following OASF schema\nSpecs: https://schema.oasf.agntcy.org/schema/objects/agent",
           "hasExtensions": false,
           "hasFields": true,
           "hasOneofs": true,
@@ -91,10 +91,10 @@
           ]
         },
         {
-          "name": "JWK",
-          "longName": "JWK",
-          "fullName": "agntcy.pyramid.v1alpha1.JWK",
-          "description": "JWK represents a JSON Web Key as per RFC7517 (https://tools.ietf.org/html/rfc7517)\nNote that this is a subset of the spec. There are a handful of properties that the\nspec allows for that are not represented here at the moment. This is because we\nonly need a subset of the spec for our purposes.",
+          "name": "QJWK",
+          "longName": "QJWK",
+          "fullName": "agntcy.pyramid.v1alpha1.QJWK",
+          "description": "QJWK represents a Quantum JSON Web Key (JWK) with the following fields specific to NTRU algorithms.\nThis could be an extension of the JWK type.",
           "hasExtensions": false,
           "hasFields": true,
           "hasOneofs": true,
@@ -102,7 +102,7 @@
           "fields": [
             {
               "name": "alg",
-              "description": "ALG represents the algorithm intended for use with the key.",
+              "description": "ALG represents the algorithm intended for use with the key.\nSome example algorithms are \"Falcon\" family: \"Falcon-512\", \"Falcon-1024\"",
               "label": "optional",
               "type": "string",
               "longType": "string",
@@ -114,7 +114,7 @@
             },
             {
               "name": "kty",
-              "description": "KTY represents the key type parameter.\nIt specifies the family of cryptographic algorithms used with the key,\nsuch as \"RSA\" or \"EC\" for elliptic curve keys.",
+              "description": "KTY represents the key type parameter.\nIt specifies the family of quantum algorithms used with the key,\nsuch as \"NTRU\"",
               "label": "optional",
               "type": "string",
               "longType": "string",
@@ -125,51 +125,99 @@
               "defaultValue": ""
             },
             {
-              "name": "crv",
-              "description": "CRV represents the curve parameter for elliptic curve keys.\nIt specifies the cryptographic curve used with the key, such as \"P-256\" or \"P-384\".",
+              "name": "use",
+              "description": "Use represents the intended use of the key.\nSome example values are \"enc\" and \"sig\".",
               "label": "optional",
               "type": "string",
               "longType": "string",
               "fullType": "string",
               "ismap": false,
               "isoneof": true,
-              "oneofdecl": "_crv",
+              "oneofdecl": "_use",
               "defaultValue": ""
             },
             {
-              "name": "d",
-              "description": "D represents the private key parameter.\nThis field is used to store the private key material for asymmetric keys.",
+              "name": "kid",
+              "description": "KID represents the key ID.\nIt is used to match a specific key.",
               "label": "optional",
               "type": "string",
               "longType": "string",
               "fullType": "string",
               "ismap": false,
               "isoneof": true,
-              "oneofdecl": "_d",
+              "oneofdecl": "_kid",
               "defaultValue": ""
             },
             {
-              "name": "x",
-              "description": "X represents the x-coordinate for elliptic curve keys.\nThis field is part of the public key material for elliptic curve cryptography (ECC).",
+              "name": "h",
+              "description": "h represents the public key.",
               "label": "optional",
               "type": "string",
               "longType": "string",
               "fullType": "string",
               "ismap": false,
               "isoneof": true,
-              "oneofdecl": "_x",
+              "oneofdecl": "_h",
               "defaultValue": ""
             },
             {
-              "name": "y",
-              "description": "Y represents the y-coordinate for elliptic curve keys.\nThis field is part of the public key material for elliptic curve cryptography (ECC)",
+              "name": "f",
+              "description": "f represents the private key.",
               "label": "optional",
               "type": "string",
               "longType": "string",
               "fullType": "string",
               "ismap": false,
               "isoneof": true,
-              "oneofdecl": "_y",
+              "oneofdecl": "_f",
+              "defaultValue": ""
+            },
+            {
+              "name": "fp",
+              "description": "fp represents the private key.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_fp",
+              "defaultValue": ""
+            },
+            {
+              "name": "g",
+              "description": "g represents the public key.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_g",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "QJWKS",
+          "longName": "QJWKS",
+          "fullName": "agntcy.pyramid.v1alpha1.QJWKS",
+          "description": "QJWKS represents a set of Quantum JSON Web Keys (JWKs).",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "keys",
+              "description": "Keys represents the list of Quantum JSON Web Keys.",
+              "label": "repeated",
+              "type": "QJWK",
+              "longType": "QJWK",
+              "fullType": "agntcy.pyramid.v1alpha1.QJWK",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
               "defaultValue": ""
             }
           ]
@@ -269,12 +317,12 @@
           "extensions": [],
           "fields": [
             {
-              "name": "claims",
-              "description": "The full OASF representation of an agent including the digest",
+              "name": "content",
+              "description": "The content of the OASF representation of an agent including the digest",
               "label": "",
-              "type": "AgentClaims",
-              "longType": "AgentClaims",
-              "fullType": "agntcy.pyramid.v1alpha1.AgentClaims",
+              "type": "AgentContent",
+              "longType": "AgentContent",
+              "fullType": "agntcy.pyramid.v1alpha1.AgentContent",
               "ismap": false,
               "isoneof": false,
               "oneofdecl": "",
@@ -293,12 +341,12 @@
           "extensions": [],
           "fields": [
             {
-              "name": "claims",
-              "description": "The full OASF representation of an agent including the digest",
+              "name": "id",
+              "description": "The id of the agent",
               "label": "",
-              "type": "AgentClaims",
-              "longType": "AgentClaims",
-              "fullType": "agntcy.pyramid.v1alpha1.AgentClaims",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
               "ismap": false,
               "isoneof": false,
               "oneofdecl": "",
@@ -331,7 +379,7 @@
                     {
                       "method": "POST",
                       "pattern": "/v1alpha1/id/generate",
-                      "body": "claims"
+                      "body": "content"
                     }
                   ]
                 }
@@ -354,7 +402,7 @@
                     {
                       "method": "POST",
                       "pattern": "/v1alpha1/id/resolve",
-                      "body": "claims"
+                      "body": "*"
                     }
                   ]
                 }
@@ -423,11 +471,11 @@
             },
             {
               "name": "public_key",
-              "description": "The keys of the issuer in JWK format\nThe public key is used to verify the signature of the different claims",
+              "description": "The keys of the issuer in QJWK format\nThe public key is used to verify the signature of the different claims",
               "label": "optional",
-              "type": "JWK",
-              "longType": "JWK",
-              "fullType": "agntcy.pyramid.v1alpha1.JWK",
+              "type": "QJWK",
+              "longType": "QJWK",
+              "fullType": "agntcy.pyramid.v1alpha1.QJWK",
               "ismap": false,
               "isoneof": true,
               "oneofdecl": "_public_key",
@@ -437,9 +485,9 @@
               "name": "private_key",
               "description": "The private key of the issuer in JWK format",
               "label": "optional",
-              "type": "JWK",
-              "longType": "JWK",
-              "fullType": "agntcy.pyramid.v1alpha1.JWK",
+              "type": "QJWK",
+              "longType": "QJWK",
+              "fullType": "agntcy.pyramid.v1alpha1.QJWK",
               "ismap": false,
               "isoneof": true,
               "oneofdecl": "_private_key",
@@ -543,14 +591,14 @@
           "methods": [
             {
               "name": "KeyGen",
-              "description": "Generate a keypair in JWK format",
+              "description": "Generate a keypair in QJWK format",
               "requestType": "Empty",
               "requestLongType": ".google.protobuf.Empty",
               "requestFullType": "google.protobuf.Empty",
               "requestStreaming": false,
-              "responseType": "JWK",
-              "responseLongType": "JWK",
-              "responseFullType": "agntcy.pyramid.v1alpha1.JWK",
+              "responseType": "QJWK",
+              "responseLongType": "QJWK",
+              "responseFullType": "agntcy.pyramid.v1alpha1.QJWK",
               "responseStreaming": false,
               "options": {
                 "google.api.http": {
@@ -593,9 +641,9 @@
               "requestLongType": "WellKnownRequest",
               "requestFullType": "agntcy.pyramid.v1alpha1.WellKnownRequest",
               "requestStreaming": false,
-              "responseType": "JWK",
-              "responseLongType": "JWK",
-              "responseFullType": "agntcy.pyramid.v1alpha1.JWK",
+              "responseType": "QJWKS",
+              "responseLongType": "QJWKS",
+              "responseFullType": "agntcy.pyramid.v1alpha1.QJWKS",
               "responseStreaming": false,
               "options": {
                 "google.api.http": {

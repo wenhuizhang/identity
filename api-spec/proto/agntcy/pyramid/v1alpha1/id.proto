@@ -7,9 +7,9 @@ package agntcy.pyramid.v1alpha1;
 // Package-wide variables from generator "generated".
 option go_package = "github.com/agntcy/pyramid/internal/pkg/generated/agntcy/pyramid/v1alpha1;pyramid_sdk_go";
 
-// The Agent definition following OASF schema
+// The Agent content representation following OASF schema
 // Specs: https://schema.oasf.agntcy.org/schema/objects/agent
-message AgentClaims {
+message AgentContent {
   // The OASF in json format
   optional string value = 1;
 }
@@ -24,34 +24,43 @@ message AgentPassport {
 }
 
 
-// JWK represents a JSON Web Key as per RFC7517 (https://tools.ietf.org/html/rfc7517)
-// Note that this is a subset of the spec. There are a handful of properties that the
-// spec allows for that are not represented here at the moment. This is because we
-// only need a subset of the spec for our purposes.
-message JWK {
+// QJWK represents a Quantum JSON Web Key (JWK) with the following fields specific to NTRU algorithms.
+// This could be an extension of the JWK type.
+message Qjwk {
   // ALG represents the algorithm intended for use with the key.
+  // Some example algorithms are "Falcon" family: "Falcon-512", "Falcon-1024"
   optional string alg = 1;
 
   // KTY represents the key type parameter.
-  // It specifies the family of cryptographic algorithms used with the key,
-  // such as "RSA" or "EC" for elliptic curve keys.
+  // It specifies the family of quantum algorithms used with the key,
+  // such as "NTRU"
   optional string kty = 2;
 
-  // CRV represents the curve parameter for elliptic curve keys.
-  // It specifies the cryptographic curve used with the key, such as "P-256" or "P-384".
-  optional string crv = 3;
+  // Use represents the intended use of the key.
+  // Some example values are "enc" and "sig".
+  optional string use = 3;
 
-  // D represents the private key parameter.
-  // This field is used to store the private key material for asymmetric keys.
-  optional string d = 4;
+  // KID represents the key ID.
+  // It is used to match a specific key.
+  optional string kid = 4;
 
-  // X represents the x-coordinate for elliptic curve keys.
-  // This field is part of the public key material for elliptic curve cryptography (ECC).
-  optional string x = 5;
+  // h represents the public key.
+  optional string h = 5;
 
-  // Y represents the y-coordinate for elliptic curve keys.
-  // This field is part of the public key material for elliptic curve cryptography (ECC)
-  optional string y = 6;
+  // f represents the private key.
+  optional string f = 6;
+
+  // fp represents the private key.
+  optional string fp = 7;
+
+  // g represents the public key.
+  optional string g = 8;
+}
+
+// QJWKS represents a set of Quantum JSON Web Keys (JWKs).
+message Qjwks {
+  // Keys represents the list of Quantum JSON Web Keys.
+  repeated Qjwk keys = 1;
 }
 
 // The Envelope Type of the Agent Passport.

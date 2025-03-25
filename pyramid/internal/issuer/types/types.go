@@ -16,10 +16,10 @@ type Issuer struct {
 	// Could be a FQDN or a FQDA
 	CommonName string `json:"common_name,omitempty"`
 
-	// The keys of the issuer in JWK format
+	// The keys of the issuer in QJWK format
 	// The public key is used to verify the signature of the different claims
-	PublicKey *idtypes.JWK `json:"public_key,omitempty"`
+	PublicKey *idtypes.Qjwk `json:"public_key,omitempty"`
 
 	// The private key of the issuer in JWK format
-	PrivateKey *idtypes.JWK `json:"private_key,omitempty"`
+	PrivateKey *idtypes.Qjwk `json:"private_key,omitempty"`
 }

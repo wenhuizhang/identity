@@ -23,7 +23,7 @@ type VerificationMethod struct {
 	Controller string `json:"controller"`
 
 	// specification reference: https://www.w3.org/TR/did-core/#dfn-publickeyjwk
-	PublicKeyJwk *JWK `json:"public_key_jwk,omitempty"`
+	PublicKeyJwk *QJWK `json:"public_key_jwk,omitempty"`
 }
 
 // Service is used in DID documents to express ways of communicating with
