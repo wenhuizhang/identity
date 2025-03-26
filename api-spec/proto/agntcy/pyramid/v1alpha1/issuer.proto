@@ -4,7 +4,7 @@ syntax = "proto3";
 
 package agntcy.pyramid.v1alpha1;
 
-import "agntcy/pyramid/v1alpha1/id.proto";
+import "agntcy/pyramid/v1alpha1/did.proto";
 
 // Package-wide variables from generator "generated".
 option go_package = "github.com/agntcy/pyramid/internal/pkg/generated/agntcy/pyramid/v1alpha1;pyramid_sdk_go";

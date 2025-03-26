@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package agntcy.pyramid.v1alpha1;
 
-import "agntcy/pyramid/v1alpha1/id.proto";
+import "agntcy/pyramid/v1alpha1/did.proto";
 import "agntcy/pyramid/v1alpha1/issuer.proto";
 import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
@@ -43,14 +43,14 @@ service IssuerService {
   }
 
 
-  // WellKnown endpoint
+  // WellKnown endpoint resolved by did:web:{NODE}:{common_name} method
   rpc WellKnown(WellKnownRequest) returns (Qjwks) {
     option (google.api.http) = {
-            get: "/v1alpha1/issuer/{common_name}/.well-known/id.json"
+            get: "/v1alpha1/issuer/{common_name}/.well-known/did.json"
         };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       operation_id: "WellKnown";
-      summary: "Returns the well-known ID document for an issuer";
+      summary: "Returns the well-known document for an issuer";
     };
   }
 }
@@ -69,7 +69,4 @@ message RegisterResponse {
 message WellKnownRequest {
   // The common name of the issuer
   optional string common_name = 1;
-
-  // The id of the agent
-  optional string id = 2;
 }
