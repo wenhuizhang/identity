@@ -1,7 +1,7 @@
 package types
 
 import (
-	idtypes "github.com/agntcy/pyramid/internal/core/id/types"
+	didtypes "github.com/agntcy/pyramid/internal/core/did/types"
 )
 
 // A PyramID Issuer
@@ -18,8 +18,8 @@ type Issuer struct {
 
 	// The keys of the issuer in QJWK format
 	// The public key is used to verify the signature of the different claims
-	PublicKey *idtypes.Qjwk `json:"public_key,omitempty"`
+	PublicKey *didtypes.Qjwk `json:"public_key,omitempty"`
 
 	// The private key of the issuer in JWK format
-	PrivateKey *idtypes.Qjwk `json:"private_key,omitempty"`
+	PrivateKey *didtypes.Qjwk `json:"private_key,omitempty"`
 }

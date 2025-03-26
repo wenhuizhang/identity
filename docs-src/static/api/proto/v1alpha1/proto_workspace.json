@@ -1,99 +1,104 @@
 {
   "files": [
     {
-      "name": "agntcy/pyramid/v1alpha1/id.proto",
+      "name": "agntcy/pyramid/v1alpha1/did.proto",
       "description": "",
       "package": "agntcy.pyramid.v1alpha1",
-      "hasEnums": true,
+      "hasEnums": false,
       "hasExtensions": false,
       "hasMessages": true,
       "hasServices": false,
-      "enums": [
-        {
-          "name": "AgentPassportEnvelopeType",
-          "longName": "AgentPassportEnvelopeType",
-          "fullName": "agntcy.pyramid.v1alpha1.AgentPassportEnvelopeType",
-          "description": "The Envelope Type of the Agent Passport.\nMultiple envelope types can be supported: JOSE, COSE etc.",
-          "values": [
-            {
-              "name": "AGENT_PASSPORT_ENVELOPE_TYPE_UNSPECIFIED",
-              "number": "0",
-              "description": "Unspecified Envelope Type."
-            },
-            {
-              "name": "AGENT_PASSPORT_ENVELOPE_TYPE_JOSE",
-              "number": "1",
-              "description": "JOSE Envelope Type."
-            }
-          ]
-        }
-      ],
+      "enums": [],
       "extensions": [],
       "messages": [
         {
-          "name": "AgentContent",
-          "longName": "AgentContent",
-          "fullName": "agntcy.pyramid.v1alpha1.AgentContent",
-          "description": "The Agent content representation following OASF schema\nSpecs: https://schema.oasf.agntcy.org/schema/objects/agent",
+          "name": "DidDocument",
+          "longName": "DidDocument",
+          "fullName": "agntcy.pyramid.v1alpha1.DidDocument",
+          "description": "DidDocument represents a set of data describing the DID subject including mechanisms such as:\n  - cryptographic public keys - used to authenticate itself and prove\n    association with the DID\n  - services - means of communicating or interacting with the DID subject or\n    associated entities via one or more service endpoints.\n    Examples include discovery services, agent services,\n    social networking services, file storage services,\n    and verifiable credential repository services.\n\nA DID Document can be retrieved by resolving a DID URI.",
           "hasExtensions": false,
           "hasFields": true,
           "hasOneofs": true,
           "extensions": [],
           "fields": [
             {
-              "name": "value",
-              "description": "The OASF in json format",
+              "name": "id",
+              "description": "The DID {ID}\nA did could be represented as `did:agntcy:{ID}`\nThe metadata below is related as claims to the {ID}",
               "label": "optional",
               "type": "string",
               "longType": "string",
               "fullType": "string",
               "ismap": false,
               "isoneof": true,
-              "oneofdecl": "_value",
-              "defaultValue": ""
-            }
-          ]
-        },
-        {
-          "name": "AgentPassport",
-          "longName": "AgentPassport",
-          "fullName": "agntcy.pyramid.v1alpha1.AgentPassport",
-          "description": "AgentPassport represents an identity passport for an agent.",
-          "hasExtensions": false,
-          "hasFields": true,
-          "hasOneofs": true,
-          "extensions": [],
-          "fields": [
-            {
-              "name": "envelope_type",
-              "description": "EnvelopeType specifies the type of the envelope used to store the passport.",
-              "label": "optional",
-              "type": "AgentPassportEnvelopeType",
-              "longType": "AgentPassportEnvelopeType",
-              "fullType": "agntcy.pyramid.v1alpha1.AgentPassportEnvelopeType",
-              "ismap": false,
-              "isoneof": true,
-              "oneofdecl": "_envelope_type",
+              "oneofdecl": "_id",
               "defaultValue": ""
             },
             {
-              "name": "value",
-              "description": "Value is the value of the passport.",
+              "name": "node",
+              "description": "The node that was used to publish the document",
               "label": "optional",
               "type": "string",
               "longType": "string",
               "fullType": "string",
               "ismap": false,
               "isoneof": true,
-              "oneofdecl": "_value",
+              "oneofdecl": "_node",
+              "defaultValue": ""
+            },
+            {
+              "name": "controller",
+              "description": "Controller defines an entity that is authorized to make changes to a DID document.\nThe process of authorizing a DID controller is defined by the DID method.\nIt can be a string or a list of strings.",
+              "label": "repeated",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "verification_method",
+              "description": "VerificationMethod is a list of cryptographic public keys, which can be used to authenticate or authorize\ninteractions with the DID subject or associated parties.",
+              "label": "repeated",
+              "type": "VerificationMethod",
+              "longType": "VerificationMethod",
+              "fullType": "agntcy.pyramid.v1alpha1.VerificationMethod",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "service",
+              "description": "Service expresses ways of communicating with the DID subject or associated entities.\nA service can be any type of service the DID subject wants to advertise.\nspec reference: https://www.w3.org/TR/did-core/#verification-methods",
+              "label": "repeated",
+              "type": "Service",
+              "longType": "Service",
+              "fullType": "agntcy.pyramid.v1alpha1.Service",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "assertion_method",
+              "description": "AssertionMethod is used to specify how the DID subject is expected to express claims,\nsuch as for the purposes of issuing a Verifiable Credential.",
+              "label": "repeated",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
               "defaultValue": ""
             }
           ]
         },
         {
-          "name": "QJWK",
-          "longName": "QJWK",
-          "fullName": "agntcy.pyramid.v1alpha1.QJWK",
+          "name": "Qjwk",
+          "longName": "Qjwk",
+          "fullName": "agntcy.pyramid.v1alpha1.Qjwk",
           "description": "QJWK represents a Quantum JSON Web Key (JWK) with the following fields specific to NTRU algorithms.\nThis could be an extension of the JWK type.",
           "hasExtensions": false,
           "hasFields": true,
@@ -162,7 +167,7 @@
             },
             {
               "name": "f",
-              "description": "f represents the private key.",
+              "description": "f represents the polynomial for the private key.",
               "label": "optional",
               "type": "string",
               "longType": "string",
@@ -174,7 +179,7 @@
             },
             {
               "name": "fp",
-              "description": "fp represents the private key.",
+              "description": "fp represents the f inverse modulo p.",
               "label": "optional",
               "type": "string",
               "longType": "string",
@@ -186,7 +191,7 @@
             },
             {
               "name": "g",
-              "description": "g represents the public key.",
+              "description": "g represents the polynomial for the private key.",
               "label": "optional",
               "type": "string",
               "longType": "string",
@@ -199,9 +204,9 @@
           ]
         },
         {
-          "name": "QJWKS",
-          "longName": "QJWKS",
-          "fullName": "agntcy.pyramid.v1alpha1.QJWKS",
+          "name": "Qjwks",
+          "longName": "Qjwks",
+          "fullName": "agntcy.pyramid.v1alpha1.Qjwks",
           "description": "QJWKS represents a set of Quantum JSON Web Keys (JWKs).",
           "hasExtensions": false,
           "hasFields": true,
@@ -212,117 +217,9 @@
               "name": "keys",
               "description": "Keys represents the list of Quantum JSON Web Keys.",
               "label": "repeated",
-              "type": "QJWK",
-              "longType": "QJWK",
-              "fullType": "agntcy.pyramid.v1alpha1.QJWK",
-              "ismap": false,
-              "isoneof": false,
-              "oneofdecl": "",
-              "defaultValue": ""
-            }
-          ]
-        }
-      ],
-      "services": []
-    },
-    {
-      "name": "agntcy/pyramid/v1alpha1/credentials_service.proto",
-      "description": "",
-      "package": "agntcy.pyramid.v1alpha1",
-      "hasEnums": false,
-      "hasExtensions": false,
-      "hasMessages": true,
-      "hasServices": true,
-      "enums": [],
-      "extensions": [],
-      "messages": [
-        {
-          "name": "PublishRequest",
-          "longName": "PublishRequest",
-          "fullName": "agntcy.pyramid.v1alpha1.PublishRequest",
-          "description": "PublishRequest is the request to publish VCs on identity nodes",
-          "hasExtensions": false,
-          "hasFields": true,
-          "hasOneofs": false,
-          "extensions": [],
-          "fields": [
-            {
-              "name": "passport",
-              "description": "Publish an agent passport as a VC",
-              "label": "",
-              "type": "AgentPassport",
-              "longType": "AgentPassport",
-              "fullType": "agntcy.pyramid.v1alpha1.AgentPassport",
-              "ismap": false,
-              "isoneof": false,
-              "oneofdecl": "",
-              "defaultValue": ""
-            }
-          ]
-        }
-      ],
-      "services": [
-        {
-          "name": "CredentialsService",
-          "longName": "CredentialsService",
-          "fullName": "agntcy.pyramid.v1alpha1.CredentialsService",
-          "description": "CredentialsService is the service that provides VC operations.",
-          "methods": [
-            {
-              "name": "Publish",
-              "description": "Publish",
-              "requestType": "PublishRequest",
-              "requestLongType": "PublishRequest",
-              "requestFullType": "agntcy.pyramid.v1alpha1.PublishRequest",
-              "requestStreaming": false,
-              "responseType": "Empty",
-              "responseLongType": ".google.protobuf.Empty",
-              "responseFullType": "google.protobuf.Empty",
-              "responseStreaming": false,
-              "options": {
-                "google.api.http": {
-                  "rules": [
-                    {
-                      "method": "POST",
-                      "pattern": "/v1alpha1/credentials/publish",
-                      "body": "passport"
-                    }
-                  ]
-                }
-              }
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "name": "agntcy/pyramid/v1alpha1/id_service.proto",
-      "description": "",
-      "package": "agntcy.pyramid.v1alpha1",
-      "hasEnums": false,
-      "hasExtensions": false,
-      "hasMessages": true,
-      "hasServices": true,
-      "enums": [],
-      "extensions": [],
-      "messages": [
-        {
-          "name": "GenerateRequest",
-          "longName": "GenerateRequest",
-          "fullName": "agntcy.pyramid.v1alpha1.GenerateRequest",
-          "description": "Generate an Id based on the agent",
-          "hasExtensions": false,
-          "hasFields": true,
-          "hasOneofs": false,
-          "extensions": [],
-          "fields": [
-            {
-              "name": "content",
-              "description": "The content of the OASF representation of an agent including the digest",
-              "label": "",
-              "type": "AgentContent",
-              "longType": "AgentContent",
-              "fullType": "agntcy.pyramid.v1alpha1.AgentContent",
+              "type": "Qjwk",
+              "longType": "Qjwk",
+              "fullType": "agntcy.pyramid.v1alpha1.Qjwk",
               "ismap": false,
               "isoneof": false,
               "oneofdecl": "",
@@ -331,19 +228,43 @@
           ]
         },
         {
-          "name": "ResolveRequest",
-          "longName": "ResolveRequest",
-          "fullName": "agntcy.pyramid.v1alpha1.ResolveRequest",
-          "description": "",
+          "name": "Service",
+          "longName": "Service",
+          "fullName": "agntcy.pyramid.v1alpha1.Service",
+          "description": "Service is used in DID documents to express ways of communicating with\nthe DID subject or associated entities.\nA service can be any type of service the DID subject wants to advertise.\n\nSpecification Reference: https://www.w3.org/TR/did-core/#services",
           "hasExtensions": false,
           "hasFields": true,
-          "hasOneofs": false,
+          "hasOneofs": true,
           "extensions": [],
           "fields": [
             {
               "name": "id",
-              "description": "The id of the agent",
-              "label": "",
+              "description": "Id is the value of the id property and MUST be a URI conforming to RFC3986.\nA conforming producer MUST NOT produce multiple service entries with\nthe same id. A conforming consumer MUST produce an error if it detects\nmultiple service entries with the same id.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_id",
+              "defaultValue": ""
+            },
+            {
+              "name": "type",
+              "description": "Type is an example of registered types which can be found\nhere: https://www.w3.org/TR/did-spec-registries/#service-types",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_type",
+              "defaultValue": ""
+            },
+            {
+              "name": "service_endpoint",
+              "description": "ServiceEndpoint is a network address, such as an HTTP URL, at which services\noperate on behalf of a DID subject.",
+              "label": "repeated",
               "type": "string",
               "longType": "string",
               "fullType": "string",
@@ -353,64 +274,69 @@
               "defaultValue": ""
             }
           ]
-        }
-      ],
-      "services": [
+        },
         {
-          "name": "IdService",
-          "longName": "IdService",
-          "fullName": "agntcy.pyramid.v1alpha1.IdService",
-          "description": "IdService is the service that provides ID operations.",
-          "methods": [
+          "name": "VerificationMethod",
+          "longName": "VerificationMethod",
+          "fullName": "agntcy.pyramid.v1alpha1.VerificationMethod",
+          "description": "VerificationMethod expresses verification methods, such as cryptographic\npublic keys, which can be used to authenticate or authorize interactions\nwith the DID subject or associated parties. For example,\na cryptographic public key can be used as a verification method with\nrespect to a digital signature; in such usage, it verifies that the\nsigner could use the associated cryptographic private key.\n\nSpecification Reference: https://www.w3.org/TR/did-core/#verification-methods",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": true,
+          "extensions": [],
+          "fields": [
             {
-              "name": "Generate",
-              "description": "Generate an Id",
-              "requestType": "GenerateRequest",
-              "requestLongType": "GenerateRequest",
-              "requestFullType": "agntcy.pyramid.v1alpha1.GenerateRequest",
-              "requestStreaming": false,
-              "responseType": "AgentPassport",
-              "responseLongType": "AgentPassport",
-              "responseFullType": "agntcy.pyramid.v1alpha1.AgentPassport",
-              "responseStreaming": false,
-              "options": {
-                "google.api.http": {
-                  "rules": [
-                    {
-                      "method": "POST",
-                      "pattern": "/v1alpha1/id/generate",
-                      "body": "content"
-                    }
-                  ]
-                }
-              }
+              "name": "id",
+              "description": "A unique id of the verification method.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_id",
+              "defaultValue": ""
             },
             {
-              "name": "Resolve",
-              "description": "Resolve an Id",
-              "requestType": "ResolveRequest",
-              "requestLongType": "ResolveRequest",
-              "requestFullType": "agntcy.pyramid.v1alpha1.ResolveRequest",
-              "requestStreaming": false,
-              "responseType": "AgentPassport",
-              "responseLongType": "AgentPassport",
-              "responseFullType": "agntcy.pyramid.v1alpha1.AgentPassport",
-              "responseStreaming": false,
-              "options": {
-                "google.api.http": {
-                  "rules": [
-                    {
-                      "method": "POST",
-                      "pattern": "/v1alpha1/id/resolve",
-                      "body": "*"
-                    }
-                  ]
-                }
-              }
+              "name": "type",
+              "description": "references exactly one verification method type. In order to maximize global\ninteroperability, the verification method type SHOULD be registered in the\nDID Specification Registries: https://www.w3.org/TR/did-spec-registries/",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_type",
+              "defaultValue": ""
+            },
+            {
+              "name": "controller",
+              "description": "a value that conforms to the rules in DID Syntax: https://www.w3.org/TR/did-core/#did-syntax",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_controller",
+              "defaultValue": ""
+            },
+            {
+              "name": "public_key_jwk",
+              "description": "specification reference: https://www.w3.org/TR/did-core/#dfn-publickeyjwk",
+              "label": "optional",
+              "type": "Qjwk",
+              "longType": "Qjwk",
+              "fullType": "agntcy.pyramid.v1alpha1.Qjwk",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_public_key_jwk",
+              "defaultValue": ""
             }
           ]
         }
-      ]
+      ],
+      "services": []
     },
     {
       "name": "agntcy/pyramid/v1alpha1/issuer.proto",
@@ -473,9 +399,9 @@
               "name": "public_key",
               "description": "The keys of the issuer in QJWK format\nThe public key is used to verify the signature of the different claims",
               "label": "optional",
-              "type": "QJWK",
-              "longType": "QJWK",
-              "fullType": "agntcy.pyramid.v1alpha1.QJWK",
+              "type": "Qjwk",
+              "longType": "Qjwk",
+              "fullType": "agntcy.pyramid.v1alpha1.Qjwk",
               "ismap": false,
               "isoneof": true,
               "oneofdecl": "_public_key",
@@ -485,9 +411,9 @@
               "name": "private_key",
               "description": "The private key of the issuer in JWK format",
               "label": "optional",
-              "type": "QJWK",
-              "longType": "QJWK",
-              "fullType": "agntcy.pyramid.v1alpha1.QJWK",
+              "type": "Qjwk",
+              "longType": "Qjwk",
+              "fullType": "agntcy.pyramid.v1alpha1.Qjwk",
               "ismap": false,
               "isoneof": true,
               "oneofdecl": "_private_key",
@@ -497,6 +423,123 @@
         }
       ],
       "services": []
+    },
+    {
+      "name": "agntcy/pyramid/v1alpha1/did_service.proto",
+      "description": "",
+      "package": "agntcy.pyramid.v1alpha1",
+      "hasEnums": false,
+      "hasExtensions": false,
+      "hasMessages": true,
+      "hasServices": true,
+      "enums": [],
+      "extensions": [],
+      "messages": [
+        {
+          "name": "GenerateRequest",
+          "longName": "GenerateRequest",
+          "fullName": "agntcy.pyramid.v1alpha1.GenerateRequest",
+          "description": "Generate an Did for an issuer",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "issuer",
+              "description": "The issuer details",
+              "label": "",
+              "type": "Issuer",
+              "longType": "Issuer",
+              "fullType": "agntcy.pyramid.v1alpha1.Issuer",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "ResolveRequest",
+          "longName": "ResolveRequest",
+          "fullName": "agntcy.pyramid.v1alpha1.ResolveRequest",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "id",
+              "description": "ID is the method-specific identifier in the DID URI.\nSpec: https://www.w3.org/TR/did-core/#method-specific-id\nAgntcy DID has the following format: did:agntcy:{id}",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        }
+      ],
+      "services": [
+        {
+          "name": "DidService",
+          "longName": "DidService",
+          "fullName": "agntcy.pyramid.v1alpha1.DidService",
+          "description": "DidService is the service that provides DID operations.",
+          "methods": [
+            {
+              "name": "Generate",
+              "description": "Generate a Did",
+              "requestType": "GenerateRequest",
+              "requestLongType": "GenerateRequest",
+              "requestFullType": "agntcy.pyramid.v1alpha1.GenerateRequest",
+              "requestStreaming": false,
+              "responseType": "DidDocument",
+              "responseLongType": "DidDocument",
+              "responseFullType": "agntcy.pyramid.v1alpha1.DidDocument",
+              "responseStreaming": false,
+              "options": {
+                "google.api.http": {
+                  "rules": [
+                    {
+                      "method": "POST",
+                      "pattern": "/v1alpha1/did/generate",
+                      "body": "issuer"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Resolve",
+              "description": "Resolve an Did",
+              "requestType": "ResolveRequest",
+              "requestLongType": "ResolveRequest",
+              "requestFullType": "agntcy.pyramid.v1alpha1.ResolveRequest",
+              "requestStreaming": false,
+              "responseType": "DidDocument",
+              "responseLongType": "DidDocument",
+              "responseFullType": "agntcy.pyramid.v1alpha1.DidDocument",
+              "responseStreaming": false,
+              "options": {
+                "google.api.http": {
+                  "rules": [
+                    {
+                      "method": "POST",
+                      "pattern": "/v1alpha1/did/resolve",
+                      "body": "*"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      ]
     },
     {
       "name": "agntcy/pyramid/v1alpha1/issuer_service.proto",
@@ -596,9 +639,9 @@
               "requestLongType": ".google.protobuf.Empty",
               "requestFullType": "google.protobuf.Empty",
               "requestStreaming": false,
-              "responseType": "QJWK",
-              "responseLongType": "QJWK",
-              "responseFullType": "agntcy.pyramid.v1alpha1.QJWK",
+              "responseType": "Qjwk",
+              "responseLongType": "Qjwk",
+              "responseFullType": "agntcy.pyramid.v1alpha1.Qjwk",
               "responseStreaming": false,
               "options": {
                 "google.api.http": {
@@ -636,21 +679,21 @@
             },
             {
               "name": "WellKnown",
-              "description": "WellKnown endpoint",
+              "description": "WellKnown endpoint resolved by did:web:{NODE}:{common_name} method",
               "requestType": "WellKnownRequest",
               "requestLongType": "WellKnownRequest",
               "requestFullType": "agntcy.pyramid.v1alpha1.WellKnownRequest",
               "requestStreaming": false,
-              "responseType": "QJWKS",
-              "responseLongType": "QJWKS",
-              "responseFullType": "agntcy.pyramid.v1alpha1.QJWKS",
+              "responseType": "Qjwks",
+              "responseLongType": "Qjwks",
+              "responseFullType": "agntcy.pyramid.v1alpha1.Qjwks",
               "responseStreaming": false,
               "options": {
                 "google.api.http": {
                   "rules": [
                     {
                       "method": "GET",
-                      "pattern": "/v1alpha1/issuer/{common_name}/.well-known/id.json"
+                      "pattern": "/v1alpha1/issuer/{common_name}/.well-known/did.json"
                     }
                   ]
                 }
@@ -672,6 +715,413 @@
       "extensions": [],
       "messages": [],
       "services": []
+    },
+    {
+      "name": "agntcy/pyramid/v1alpha1/vc.proto",
+      "description": "",
+      "package": "agntcy.pyramid.v1alpha1",
+      "hasEnums": true,
+      "hasExtensions": false,
+      "hasMessages": true,
+      "hasServices": false,
+      "enums": [
+        {
+          "name": "CredentialContentType",
+          "longName": "CredentialContentType",
+          "fullName": "agntcy.pyramid.v1alpha1.CredentialContentType",
+          "description": "The content of the Credential.\nMultiple content types can be supported: AgentPassport, etc.",
+          "values": [
+            {
+              "name": "CREDENTIAL_CONTENT_TYPE_UNSPECIFIED",
+              "number": "0",
+              "description": "Unspecified Content Type."
+            },
+            {
+              "name": "CREDENTIAL_CONTENT_TYPE_AGENT_PASSPORT",
+              "number": "1",
+              "description": "AgentPassport Content Type.\nThe Agent content representation following OASF schema\nSpecs: https://schema.oasf.agntcy.org/schema/objects/agent"
+            }
+          ]
+        },
+        {
+          "name": "VerifiableCredentialEnvelopeType",
+          "longName": "VerifiableCredentialEnvelopeType",
+          "fullName": "agntcy.pyramid.v1alpha1.VerifiableCredentialEnvelopeType",
+          "description": "The Envelope Type of the Verifiable Credential.\nMultiple envelope types can be supported: JOSE, COSE etc.",
+          "values": [
+            {
+              "name": "VERIFIABLE_CREDENTIAL_ENVELOPE_TYPE_UNSPECIFIED",
+              "number": "0",
+              "description": "Unspecified Envelope Type."
+            },
+            {
+              "name": "VERIFIABLE_CREDENTIAL_ENVELOPE_TYPE_JOSE",
+              "number": "1",
+              "description": "JOSE Envelope Type."
+            }
+          ]
+        }
+      ],
+      "extensions": [],
+      "messages": [
+        {
+          "name": "CredentialContent",
+          "longName": "CredentialContent",
+          "fullName": "agntcy.pyramid.v1alpha1.CredentialContent",
+          "description": "CredentialContent represents the content of a Verifiable Credential.",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": true,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "content_type",
+              "description": "Type specifies the type of the content of the credential.",
+              "label": "optional",
+              "type": "CredentialContentType",
+              "longType": "CredentialContentType",
+              "fullType": "agntcy.pyramid.v1alpha1.CredentialContentType",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_content_type",
+              "defaultValue": ""
+            },
+            {
+              "name": "content",
+              "description": "The content representation in JSON-LD format.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_content",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "CredentialSchema",
+          "longName": "CredentialSchema",
+          "fullName": "agntcy.pyramid.v1alpha1.CredentialSchema",
+          "description": "CredentialSchema represents the credentialSchema property of a Verifiable Credential.\nmore information can be found [here]\n\n[here]: https://www.w3.org/TR/vc-data-model-2.0/#data-schemas",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": true,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "type",
+              "description": "Type specifies the type of the file",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_type",
+              "defaultValue": ""
+            },
+            {
+              "name": "id",
+              "description": "The URL identifying the schema file",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_id",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "EnveloppedVerifiableCredential",
+          "longName": "EnveloppedVerifiableCredential",
+          "fullName": "agntcy.pyramid.v1alpha1.EnveloppedVerifiableCredential",
+          "description": "EnveloppedVerifiableCredential represents a Verifiable Credential envelopped in a specific format.",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": true,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "envelope_type",
+              "description": "EnvelopeType specifies the type of the envelope used to store the credential.",
+              "label": "optional",
+              "type": "VerifiableCredentialEnvelopeType",
+              "longType": "VerifiableCredentialEnvelopeType",
+              "fullType": "agntcy.pyramid.v1alpha1.VerifiableCredentialEnvelopeType",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_envelope_type",
+              "defaultValue": ""
+            },
+            {
+              "name": "value",
+              "description": "Value is the envelopped credential in the specified format.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_value",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "VerifiableCredential",
+          "longName": "VerifiableCredential",
+          "fullName": "agntcy.pyramid.v1alpha1.VerifiableCredential",
+          "description": "DataModel represents the W3C Verifiable Credential Data Model defined [here]\n\n[here]: https://www.w3.org/TR/vc-data-model/",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": true,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "context",
+              "description": "https://www.w3.org/TR/vc-data-model/#contexts",
+              "label": "repeated",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "type",
+              "description": "https://www.w3.org/TR/vc-data-model/#dfn-type",
+              "label": "repeated",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "issuer",
+              "description": "https://www.w3.org/TR/vc-data-model/#issuer",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_issuer",
+              "defaultValue": ""
+            },
+            {
+              "name": "credential_subject",
+              "description": "https://www.w3.org/TR/vc-data-model/#credential-subject",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_credential_subject",
+              "defaultValue": ""
+            },
+            {
+              "name": "id",
+              "description": "https://www.w3.org/TR/vc-data-model/#identifiers",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_id",
+              "defaultValue": ""
+            },
+            {
+              "name": "issuance_date",
+              "description": "https://www.w3.org/TR/vc-data-model/#issuance-date",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_issuance_date",
+              "defaultValue": ""
+            },
+            {
+              "name": "expiration_date",
+              "description": "https://www.w3.org/TR/vc-data-model/#expiration",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_expiration_date",
+              "defaultValue": ""
+            },
+            {
+              "name": "credential_schema",
+              "description": "https://www.w3.org/TR/vc-data-model-2.0/#data-schemas",
+              "label": "repeated",
+              "type": "CredentialSchema",
+              "longType": "CredentialSchema",
+              "fullType": "agntcy.pyramid.v1alpha1.CredentialSchema",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        }
+      ],
+      "services": []
+    },
+    {
+      "name": "agntcy/pyramid/v1alpha1/vc_service.proto",
+      "description": "",
+      "package": "agntcy.pyramid.v1alpha1",
+      "hasEnums": false,
+      "hasExtensions": false,
+      "hasMessages": true,
+      "hasServices": true,
+      "enums": [],
+      "extensions": [],
+      "messages": [
+        {
+          "name": "IssueRequest",
+          "longName": "IssueRequest",
+          "fullName": "agntcy.pyramid.v1alpha1.IssueRequest",
+          "description": "IssueRequest is a request to issue a VC",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "id",
+              "description": "ID is the method-specific identifier in the DID URI.\nSpec: https://www.w3.org/TR/did-core/#method-specific-id\nAgntcy DID has the following format: did:agntcy:{id}",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "content",
+              "description": "Content of the VC",
+              "label": "",
+              "type": "CredentialContent",
+              "longType": "CredentialContent",
+              "fullType": "agntcy.pyramid.v1alpha1.CredentialContent",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "envelope_type",
+              "description": "Envelope type",
+              "label": "",
+              "type": "VerifiableCredentialEnvelopeType",
+              "longType": "VerifiableCredentialEnvelopeType",
+              "fullType": "agntcy.pyramid.v1alpha1.VerifiableCredentialEnvelopeType",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        }
+      ],
+      "services": [
+        {
+          "name": "VcService",
+          "longName": "VcService",
+          "fullName": "agntcy.pyramid.v1alpha1.VcService",
+          "description": "VC is the service that provides VC operations.",
+          "methods": [
+            {
+              "name": "Issue",
+              "description": "Issue",
+              "requestType": "IssueRequest",
+              "requestLongType": "IssueRequest",
+              "requestFullType": "agntcy.pyramid.v1alpha1.IssueRequest",
+              "requestStreaming": false,
+              "responseType": "EnveloppedVerifiableCredential",
+              "responseLongType": "EnveloppedVerifiableCredential",
+              "responseFullType": "agntcy.pyramid.v1alpha1.EnveloppedVerifiableCredential",
+              "responseStreaming": false,
+              "options": {
+                "google.api.http": {
+                  "rules": [
+                    {
+                      "method": "POST",
+                      "pattern": "/v1alpha1/vc/issue",
+                      "body": "*"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Publish",
+              "description": "Publish",
+              "requestType": "EnveloppedVerifiableCredential",
+              "requestLongType": "EnveloppedVerifiableCredential",
+              "requestFullType": "agntcy.pyramid.v1alpha1.EnveloppedVerifiableCredential",
+              "requestStreaming": false,
+              "responseType": "Empty",
+              "responseLongType": ".google.protobuf.Empty",
+              "responseFullType": "google.protobuf.Empty",
+              "responseStreaming": false,
+              "options": {
+                "google.api.http": {
+                  "rules": [
+                    {
+                      "method": "POST",
+                      "pattern": "/v1alpha1/vc/publish",
+                      "body": "*"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Verify",
+              "description": "Verify",
+              "requestType": "EnveloppedVerifiableCredential",
+              "requestLongType": "EnveloppedVerifiableCredential",
+              "requestFullType": "agntcy.pyramid.v1alpha1.EnveloppedVerifiableCredential",
+              "requestStreaming": false,
+              "responseType": "Empty",
+              "responseLongType": ".google.protobuf.Empty",
+              "responseFullType": "google.protobuf.Empty",
+              "responseStreaming": false,
+              "options": {
+                "google.api.http": {
+                  "rules": [
+                    {
+                      "method": "POST",
+                      "pattern": "/v1alpha1/credentials/publish",
+                      "body": "*"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      ]
     }
   ],
   "scalarValueTypes": [

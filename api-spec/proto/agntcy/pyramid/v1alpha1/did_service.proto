@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+package agntcy.pyramid.v1alpha1;
+
+import "agntcy/pyramid/v1alpha1/did.proto";
+import "agntcy/pyramid/v1alpha1/issuer.proto";
+import "google/api/annotations.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+// Package-wide variables from generator "generated".
+option go_package = "github.com/agntcy/pyramid/internal/pkg/generated/agntcy/pyramid/v1alpha1;pyramid_sdk_go";
+
+// DidService is the service that provides DID operations.
+service DidService {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_tag) = {
+    name: "DidService";
+  };
+
+  // Generate a Did
+  rpc Generate(GenerateRequest) returns (DidDocument) {
+    option (google.api.http) = {
+            post: "/v1alpha1/did/generate"
+            body: "issuer"
+        };
+
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      operation_id: "GenerateDid";
+      summary: "Generate Did for an Agent";
+    };
+  }
+
+  // Resolve an Did
+  rpc Resolve(ResolveRequest) returns (DidDocument) {
+    option (google.api.http) = {
+            post: "/v1alpha1/did/resolve"
+            body: "*"
+        };
+
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      operation_id: "ResolveDid";
+      summary: "Resolve Did";
+    };
+  }
+}
+
+// Generate an Did for an issuer
+message GenerateRequest {
+  // The issuer details
+  Issuer issuer = 1;
+}
+
+message ResolveRequest {
+  // ID is the method-specific identifier in the DID URI.
+  // Spec: https://www.w3.org/TR/did-core/#method-specific-id
+  // Agntcy DID has the following format: did:agntcy:{id}
+  string id = 1;
+}
+
