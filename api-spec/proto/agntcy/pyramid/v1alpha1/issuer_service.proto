@@ -68,5 +68,5 @@ message RegisterResponse {
 
 message WellKnownRequest {
   // The common name of the issuer
-  optional string common_name = 1;
+  string common_name = 1;
 }
