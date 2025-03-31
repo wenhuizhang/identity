@@ -409,7 +409,7 @@
             },
             {
               "name": "private_key",
-              "description": "The private key of the issuer in JWK format",
+              "description": "The private key of the issuer in QJWK format",
               "label": "optional",
               "type": "Qjwk",
               "longType": "Qjwk",

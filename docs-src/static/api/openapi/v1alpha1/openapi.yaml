@@ -338,7 +338,7 @@ components:
                 privateKey:
                     allOf:
                         - $ref: '#/components/schemas/Qjwk'
-                    description: The private key of the issuer in JWK format
+                    description: The private key of the issuer in QJWK format
             description: A PyramID Issuer
         Qjwk:
             type: object

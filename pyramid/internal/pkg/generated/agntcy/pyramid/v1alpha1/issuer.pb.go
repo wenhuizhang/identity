@@ -36,7 +36,7 @@ type Issuer struct {
 	// The keys of the issuer in QJWK format
 	// The public key is used to verify the signature of the different claims
 	PublicKey *Qjwk `protobuf:"bytes,4,opt,name=public_key,json=publicKey,proto3,oneof" json:"public_key,omitempty"`
-	// The private key of the issuer in JWK format
+	// The private key of the issuer in QJWK format
 	PrivateKey    *Qjwk `protobuf:"bytes,5,opt,name=private_key,json=privateKey,proto3,oneof" json:"private_key,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache

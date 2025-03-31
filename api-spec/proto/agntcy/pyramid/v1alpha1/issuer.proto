@@ -25,7 +25,7 @@ message Issuer {
   // The public key is used to verify the signature of the different claims
   optional .agntcy.pyramid.v1alpha1.Qjwk public_key = 4;
 
-  // The private key of the issuer in JWK format
+  // The private key of the issuer in QJWK format
   optional .agntcy.pyramid.v1alpha1.Qjwk private_key = 5;
 }
 

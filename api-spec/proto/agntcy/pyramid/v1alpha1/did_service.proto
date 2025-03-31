@@ -25,7 +25,7 @@ service DidService {
 
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       operation_id: "GenerateDid";
-      summary: "Generate Did for an Agent";
+      summary: "Generate Did";
     };
   }
 

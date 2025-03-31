@@ -124,10 +124,10 @@ const file_agntcy_pyramid_v1alpha1_did_service_proto_rawDesc = "" +
 	"\x0fGenerateRequest\x127\n" +
 	"\x06issuer\x18\x01 \x01(\v2\x1f.agntcy.pyramid.v1alpha1.IssuerR\x06issuer\" \n" +
 	"\x0eResolveRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id2\xe6\x02\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id2\xd9\x02\n" +
 	"\n" +
-	"DidService\x12\xad\x01\n" +
-	"\bGenerate\x12(.agntcy.pyramid.v1alpha1.GenerateRequest\x1a$.agntcy.pyramid.v1alpha1.DidDocument\"Q\x92A(\x12\x19Generate Did for an Agent*\vGenerateDid\x82\xd3\xe4\x93\x02 :\x06issuer\"\x16/v1alpha1/did/generate\x12\x96\x01\n" +
+	"DidService\x12\xa0\x01\n" +
+	"\bGenerate\x12(.agntcy.pyramid.v1alpha1.GenerateRequest\x1a$.agntcy.pyramid.v1alpha1.DidDocument\"D\x92A\x1b\x12\fGenerate Did*\vGenerateDid\x82\xd3\xe4\x93\x02 :\x06issuer\"\x16/v1alpha1/did/generate\x12\x96\x01\n" +
 	"\aResolve\x12'.agntcy.pyramid.v1alpha1.ResolveRequest\x1a$.agntcy.pyramid.v1alpha1.DidDocument\"<\x92A\x19\x12\vResolve Did*\n" +
 	"ResolveDid\x82\xd3\xe4\x93\x02\x1a:\x01*\"\x15/v1alpha1/did/resolve\x1a\x0f\x92A\f\n" +
 	"\n" +

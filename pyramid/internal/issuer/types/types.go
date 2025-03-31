@@ -20,6 +20,6 @@ type Issuer struct {
 	// The public key is used to verify the signature of the different claims
 	PublicKey *didtypes.Qjwk `json:"public_key,omitempty"`
 
-	// The private key of the issuer in JWK format
+	// The private key of the issuer in QJWK format
 	PrivateKey *didtypes.Qjwk `json:"private_key,omitempty"`
 }

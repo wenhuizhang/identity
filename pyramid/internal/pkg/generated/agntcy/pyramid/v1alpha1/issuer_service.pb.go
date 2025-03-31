@@ -171,9 +171,9 @@ const file_agntcy_pyramid_v1alpha1_issuer_service_proto_rawDesc = "" +
 	"\x03uri\x18\x01 \x01(\tR\x03uri\"3\n" +
 	"\x10WellKnownRequest\x12\x1f\n" +
 	"\vcommon_name\x18\x01 \x01(\tR\n" +
-	"commonName2\xb9\x04\n" +
-	"\rIssuerService\x12\x8d\x01\n" +
-	"\x06KeyGen\x12\x16.google.protobuf.Empty\x1a\x1d.agntcy.pyramid.v1alpha1.Qjwk\"L\x92A*\x12 Generate a keypair in JWK format*\x06KeyGen\x82\xd3\xe4\x93\x02\x19\x12\x17/v1alpha1/issuer/keygen\x12\xb0\x01\n" +
+	"commonName2\xba\x04\n" +
+	"\rIssuerService\x12\x8e\x01\n" +
+	"\x06KeyGen\x12\x16.google.protobuf.Empty\x1a\x1d.agntcy.pyramid.v1alpha1.Qjwk\"M\x92A+\x12!Generate a keypair in QJWK format*\x06KeyGen\x82\xd3\xe4\x93\x02\x19\x12\x17/v1alpha1/issuer/keygen\x12\xb0\x01\n" +
 	"\bRegister\x12(.agntcy.pyramid.v1alpha1.RegisterRequest\x1a).agntcy.pyramid.v1alpha1.RegisterResponse\"O\x92A#\x12\x11Register a issuer*\x0eRegisterIssuer\x82\xd3\xe4\x93\x02#:\x06issuer\"\x19/v1alpha1/issuer/register\x12\xd0\x01\n" +
 	"\tWellKnown\x12).agntcy.pyramid.v1alpha1.WellKnownRequest\x1a\x1e.agntcy.pyramid.v1alpha1.Qjwks\"x\x92A:\x12-Returns the well-known document for an issuer*\tWellKnown\x82\xd3\xe4\x93\x025\x123/v1alpha1/issuer/{common_name}/.well-known/did.json\x1a\x12\x92A\x0f\n" +
 	"\rIssuerServiceBYZWgithub.com/agntcy/pyramid/internal/pkg/generated/agntcy/pyramid/v1alpha1;pyramid_sdk_gob\x06proto3"
