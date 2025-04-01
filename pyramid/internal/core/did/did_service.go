@@ -8,5 +8,5 @@ import (
 
 type DidService interface {
 	// Get a Did by id
-	Get(ctx context.Context, id string) (*types.Did, error)
+	Get(ctx context.Context, id string) (*types.DidDocument, error)
 }

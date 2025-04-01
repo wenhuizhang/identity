@@ -3,32 +3,32 @@ package id
 import (
 	"context"
 
-	"github.com/agntcy/pyramid/internal/core/id/types"
+	"github.com/agntcy/pyramid/internal/core/did/types"
 	"github.com/agntcy/pyramid/internal/pkg/pagination"
 )
 
-type IdRepository interface {
-	GetIds(
+type DidRepository interface {
+	GetDids(
 		ctx context.Context,
 		paginationFilter pagination.PaginationFilter,
 		query *string,
-	) (*pagination.Pageable[types.Id], error)
-	CreateId(
+	) (*pagination.Pageable[types.DidDocument], error)
+	CreateDid(
 		ctx context.Context,
-		pyramid *types.Id,
-	) (*types.Id, error)
-	GetId(
+		pyramid *types.DidDocument,
+	) (*types.DidDocument, error)
+	GetDid(
 		ctx context.Context,
 		id string,
 		withFields ...string,
-	) (*types.Id, error)
-	GetIdByCatalogID(
+	) (*types.DidDocument, error)
+	GetDidByCatalogID(
 		ctx context.Context,
 		catalogID string,
-	) (*types.Id, error)
-	UpdateId(
+	) (*types.DidDocument, error)
+	UpdateDid(
 		ctx context.Context,
-		pyramid *types.Id,
-	) (*types.Id, error)
-	DeleteId(ctx context.Context, id string) error
+		pyramid *types.DidDocument,
+	) (*types.DidDocument, error)
+	DeleteDid(ctx context.Context, id string) error
 }
