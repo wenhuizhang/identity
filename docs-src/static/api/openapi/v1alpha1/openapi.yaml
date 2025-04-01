@@ -24,7 +24,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/EnveloppedVerifiableCredential'
+                            $ref: '#/components/schemas/EnvelopedVerifiableCredential'
                 required: true
             responses:
                 "200":
@@ -90,7 +90,7 @@ paths:
         get:
             tags:
                 - IssuerService
-            description: Generate a keypair in QJWK format
+            description: Generate a keypair in JWK format
             operationId: IssuerService_KeyGen
             responses:
                 "200":
@@ -98,7 +98,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/Qjwk'
+                                $ref: '#/components/schemas/Jwk'
                 default:
                     description: Default error response
                     content:
@@ -149,7 +149,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/Qjwks'
+                                $ref: '#/components/schemas/Jwks'
                 default:
                     description: Default error response
                     content:
@@ -174,7 +174,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/EnveloppedVerifiableCredential'
+                                $ref: '#/components/schemas/EnvelopedVerifiableCredential'
                 default:
                     description: Default error response
                     content:
@@ -191,7 +191,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/EnveloppedVerifiableCredential'
+                            $ref: '#/components/schemas/EnvelopedVerifiableCredential'
                 required: true
             responses:
                 "200":
@@ -272,7 +272,7 @@ components:
                      and verifiable credential repository services.
 
                  A DID Document can be retrieved by resolving a DID URI.
-        EnveloppedVerifiableCredential:
+        EnvelopedVerifiableCredential:
             type: object
             properties:
                 envelopeType:
@@ -284,8 +284,8 @@ components:
                     format: enum
                 value:
                     type: string
-                    description: Value is the envelopped credential in the specified format.
-            description: EnveloppedVerifiableCredential represents a Verifiable Credential envelopped in a specific format.
+                    description: Value is the enveloped credential in the specified format.
+            description: EnvelopedVerifiableCredential represents a Verifiable Credential enveloped in a specific format.
         GoogleProtobufAny:
             type: object
             properties:
@@ -331,29 +331,30 @@ components:
                          Could be a FQDN or a FQDA
                 publicKey:
                     allOf:
-                        - $ref: '#/components/schemas/Qjwk'
+                        - $ref: '#/components/schemas/Jwk'
                     description: |-
-                        The keys of the issuer in QJWK format
+                        The keys of the issuer in JWK format
                          The public key is used to verify the signature of the different claims
                 privateKey:
                     allOf:
-                        - $ref: '#/components/schemas/Qjwk'
-                    description: The private key of the issuer in QJWK format
+                        - $ref: '#/components/schemas/Jwk'
+                    description: The private key of the issuer in JWK format
             description: A PyramID Issuer
-        Qjwk:
+        Jwk:
             type: object
             properties:
                 alg:
                     type: string
                     description: |-
                         ALG represents the algorithm intended for use with the key.
-                         Some example algorithms are "Falcon" family: "Falcon-512", "Falcon-1024"
+                         Some example algorithms are "Falcon" family: "Falcon-512", "Falcon-1024" for Quantum algorithms.
+                         Some example algorithms are "RS256", "RS384", "RS512" for RSA algorithms.
                 kty:
                     type: string
                     description: |-
                         KTY represents the key type parameter.
                          It specifies the family of quantum algorithms used with the key,
-                         such as "NTRU"
+                         such as "NTRU" or "RSA" for non quantum algorithms.
                 use:
                     type: string
                     description: |-
@@ -364,30 +365,55 @@ components:
                     description: |-
                         KID represents the key ID.
                          It is used to match a specific key.
+                e:
+                    type: string
+                    description: The exponent for the RSA public key.
+                n:
+                    type: string
+                    description: The modulus for the RSA public key.
+                d:
+                    type: string
+                    description: The private exponent for the RSA private key.
+                p:
+                    type: string
+                    description: The first prime factor for the RSA private key.
+                q:
+                    type: string
+                    description: The second prime factor for the RSA private key.
+                dp:
+                    type: string
+                    description: The first factor CRT exponent for the RSA private key.
+                dq:
+                    type: string
+                    description: The second factor CRT exponent for the RSA private key.
+                qi:
+                    type: string
+                    description: The first CRT coefficient for the RSA private key.
                 h:
                     type: string
-                    description: h represents the public key.
+                    description: The public key for the NTRU public key.
                 f:
                     type: string
-                    description: f represents the polynomial for the private key.
+                    description: The polynomial for the NTRU private key.
                 fp:
                     type: string
-                    description: fp represents the f inverse modulo p.
+                    description: The f inverse modulo p for the NTRU private key.
                 g:
                     type: string
-                    description: g represents the polynomial for the private key.
+                    description: The polynomial for the NTRU private key.
             description: |-
-                QJWK represents a Quantum JSON Web Key (JWK) with the following fields specific to NTRU algorithms.
-                 This could be an extension of the JWK type.
-        Qjwks:
+                JWK represents:
+                 - a JSON Web Key (JWK) with the respective fields specific to RSA algorithms.
+                 - a Quantum JSON Web Key (QJWK) with the respective fields specific to NTRU algorithms.
+        Jwks:
             type: object
             properties:
                 keys:
                     type: array
                     items:
-                        $ref: '#/components/schemas/Qjwk'
-                    description: Keys represents the list of Quantum JSON Web Keys.
-            description: QJWKS represents a set of Quantum JSON Web Keys (JWKs).
+                        $ref: '#/components/schemas/Jwk'
+                    description: Keys represents the list of JSON Web Keys.
+            description: JWKS represents a set of JSON Web Keys (JWKs).
         RegisterResponse:
             type: object
             properties:
@@ -464,7 +490,7 @@ components:
                     description: 'a value that conforms to the rules in DID Syntax: https://www.w3.org/TR/did-core/#did-syntax'
                 publicKeyJwk:
                     allOf:
-                        - $ref: '#/components/schemas/Qjwk'
+                        - $ref: '#/components/schemas/Jwk'
                     description: 'specification reference: https://www.w3.org/TR/did-core/#dfn-publickeyjwk'
             description: |-
                 VerificationMethod expresses verification methods, such as cryptographic

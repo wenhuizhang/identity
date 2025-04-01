@@ -46,8 +46,8 @@ message DidDocument {
 }
 
 // JWK represents:
-// - a JSON Web Key (JWK) with the following fields specific to RSA algorithms.
-// - a Quantum JSON Web Key (QJWK) with the following fields specific to NTRU algorithms.
+// - a JSON Web Key (JWK) with the respective fields specific to RSA algorithms.
+// - a Quantum JSON Web Key (QJWK) with the respective fields specific to NTRU algorithms.
 message Jwk {
   // ALG represents the algorithm intended for use with the key.
   // Some example algorithms are "Falcon" family: "Falcon-512", "Falcon-1024" for Quantum algorithms.

@@ -38,7 +38,7 @@ IssuerService is the service that provides ISSUER operations.
 
 
 #### `KeyGen`
-<ProtoServiceMethod key={'KeyGen-0'} method={{"name":"KeyGen","description":"Generate a keypair in QJWK format","requestType":"Empty","requestLongType":".google.protobuf.Empty","requestFullType":"google.protobuf.Empty","requestStreaming":false,"responseType":"Qjwk","responseLongType":"Qjwk","responseFullType":"agntcy.pyramid.v1alpha1.Qjwk","responseStreaming":false,"options":{"google.api.http":{"rules":[{"method":"GET","pattern":"/v1alpha1/issuer/keygen"}]}},"responseTypeLink":"/protodocs/agntcy/pyramid/v1alpha1/did.proto#qjwk"}} />
+<ProtoServiceMethod key={'KeyGen-0'} method={{"name":"KeyGen","description":"Generate a keypair in JWK format","requestType":"Empty","requestLongType":".google.protobuf.Empty","requestFullType":"google.protobuf.Empty","requestStreaming":false,"responseType":"Jwk","responseLongType":"Jwk","responseFullType":"agntcy.pyramid.v1alpha1.Jwk","responseStreaming":false,"options":{"google.api.http":{"rules":[{"method":"GET","pattern":"/v1alpha1/issuer/keygen"}]}},"responseTypeLink":"/protodocs/agntcy/pyramid/v1alpha1/did.proto#jwk"}} />
 
 
 #### `Register`
@@ -46,7 +46,7 @@ IssuerService is the service that provides ISSUER operations.
 
 
 #### `WellKnown`
-<ProtoServiceMethod key={'WellKnown-2'} method={{"name":"WellKnown","description":"WellKnown endpoint resolved by did:web:{NODE}:{common_name} method","requestType":"WellKnownRequest","requestLongType":"WellKnownRequest","requestFullType":"agntcy.pyramid.v1alpha1.WellKnownRequest","requestStreaming":false,"responseType":"Qjwks","responseLongType":"Qjwks","responseFullType":"agntcy.pyramid.v1alpha1.Qjwks","responseStreaming":false,"options":{"google.api.http":{"rules":[{"method":"GET","pattern":"/v1alpha1/issuer/{common_name}/.well-known/did.json"}]}},"requestTypeLink":"/protodocs/agntcy/pyramid/v1alpha1/issuer_service.proto#wellknownrequest","responseTypeLink":"/protodocs/agntcy/pyramid/v1alpha1/did.proto#qjwks"}} />
+<ProtoServiceMethod key={'WellKnown-2'} method={{"name":"WellKnown","description":"WellKnown endpoint resolved by did:web:{NODE}:{common_name} method","requestType":"WellKnownRequest","requestLongType":"WellKnownRequest","requestFullType":"agntcy.pyramid.v1alpha1.WellKnownRequest","requestStreaming":false,"responseType":"Jwks","responseLongType":"Jwks","responseFullType":"agntcy.pyramid.v1alpha1.Jwks","responseStreaming":false,"options":{"google.api.http":{"rules":[{"method":"GET","pattern":"/v1alpha1/issuer/{common_name}/.well-known/did.json"}]}},"requestTypeLink":"/protodocs/agntcy/pyramid/v1alpha1/issuer_service.proto#wellknownrequest","responseTypeLink":"/protodocs/agntcy/pyramid/v1alpha1/did.proto#jwks"}} />
 
 
 ---
