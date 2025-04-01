@@ -17,15 +17,15 @@ service IssuerService {
     name: "IssuerService";
   };
 
-  // Generate a keypair in QJWK format
-  rpc KeyGen(google.protobuf.Empty) returns (Qjwk) {
+  // Generate a keypair in JWK format
+  rpc KeyGen(google.protobuf.Empty) returns (Jwk) {
     option (google.api.http) = {
             get: "/v1alpha1/issuer/keygen"
         };
 
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       operation_id: "KeyGen";
-      summary: "Generate a keypair in QJWK format";
+      summary: "Generate a keypair in JWK format";
     };
   }
 
@@ -44,7 +44,7 @@ service IssuerService {
 
 
   // WellKnown endpoint resolved by did:web:{NODE}:{common_name} method
-  rpc WellKnown(WellKnownRequest) returns (Qjwks) {
+  rpc WellKnown(WellKnownRequest) returns (Jwks) {
     option (google.api.http) = {
             get: "/v1alpha1/issuer/{common_name}/.well-known/did.json"
         };

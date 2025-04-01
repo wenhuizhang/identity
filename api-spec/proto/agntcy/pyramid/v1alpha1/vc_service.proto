@@ -17,7 +17,7 @@ service VcService {
   };
 
   // Issue
-  rpc Issue(IssueRequest) returns (EnveloppedVerifiableCredential) {
+  rpc Issue(IssueRequest) returns (EnvelopedVerifiableCredential) {
     option (google.api.http) = {
             post: "/v1alpha1/vc/issue"
             body: "*"
@@ -30,7 +30,7 @@ service VcService {
   }
 
   // Publish
-  rpc Publish(EnveloppedVerifiableCredential) returns (google.protobuf.Empty) {
+  rpc Publish(EnvelopedVerifiableCredential) returns (google.protobuf.Empty) {
     option (google.api.http) = {
             post: "/v1alpha1/vc/publish"
             body: "*"
@@ -43,7 +43,7 @@ service VcService {
   }
 
   // Verify
-  rpc Verify(EnveloppedVerifiableCredential) returns (google.protobuf.Empty) {
+  rpc Verify(EnvelopedVerifiableCredential) returns (google.protobuf.Empty) {
     option (google.api.http) = {
             post: "/v1alpha1/credentials/publish"
             body: "*"

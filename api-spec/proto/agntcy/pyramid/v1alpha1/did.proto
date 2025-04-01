@@ -45,16 +45,18 @@ message DidDocument {
   repeated string assertion_method = 6;
 }
 
-// QJWK represents a Quantum JSON Web Key (JWK) with the following fields specific to NTRU algorithms.
-// This could be an extension of the JWK type.
-message Qjwk {
+// JWK represents:
+// - a JSON Web Key (JWK) with the following fields specific to RSA algorithms.
+// - a Quantum JSON Web Key (QJWK) with the following fields specific to NTRU algorithms.
+message Jwk {
   // ALG represents the algorithm intended for use with the key.
-  // Some example algorithms are "Falcon" family: "Falcon-512", "Falcon-1024"
+  // Some example algorithms are "Falcon" family: "Falcon-512", "Falcon-1024" for Quantum algorithms.
+  // Some example algorithms are "RS256", "RS384", "RS512" for RSA algorithms.
   optional string alg = 1;
 
   // KTY represents the key type parameter.
   // It specifies the family of quantum algorithms used with the key,
-  // such as "NTRU"
+  // such as "NTRU" or "RSA" for non quantum algorithms.
   optional string kty = 2;
 
   // Use represents the intended use of the key.
@@ -65,23 +67,47 @@ message Qjwk {
   // It is used to match a specific key.
   optional string kid = 4;
 
-  // h represents the public key.
-  optional string h = 5;
+  // The exponent for the RSA public key.
+  optional string e = 5;
 
-  // f represents the polynomial for the private key.
-  optional string f = 6;
+  // The modulus for the RSA public key.
+  optional string n = 6;
 
-  // fp represents the f inverse modulo p.
-  optional string fp = 7;
+  // The private exponent for the RSA private key.
+  optional string d = 7;
 
-  // g represents the polynomial for the private key.
-  optional string g = 8;
+  // The first prime factor for the RSA private key.
+  optional string p = 8;
+
+  // The second prime factor for the RSA private key.
+  optional string q = 9;
+
+  // The first factor CRT exponent for the RSA private key.
+  optional string dp = 10;
+
+  // The second factor CRT exponent for the RSA private key.
+  optional string dq = 11;
+
+  // The first CRT coefficient for the RSA private key.
+  optional string qi = 12;
+
+  // The public key for the NTRU public key.
+  optional string h = 13;
+
+  // The polynomial for the NTRU private key.
+  optional string f = 14;
+
+  // The f inverse modulo p for the NTRU private key.
+  optional string fp = 15;
+
+  // The polynomial for the NTRU private key.
+  optional string g = 16;
 }
 
-// QJWKS represents a set of Quantum JSON Web Keys (JWKs).
-message Qjwks {
-  // Keys represents the list of Quantum JSON Web Keys.
-  repeated Qjwk keys = 1;
+// JWKS represents a set of JSON Web Keys (JWKs).
+message Jwks {
+  // Keys represents the list of JSON Web Keys.
+  repeated Jwk keys = 1;
 }
 
 // Service is used in DID documents to express ways of communicating with
@@ -126,6 +152,6 @@ message VerificationMethod {
   optional string controller = 3;
 
   // specification reference: https://www.w3.org/TR/did-core/#dfn-publickeyjwk
-  optional Qjwk public_key_jwk = 4;
+  optional Jwk public_key_jwk = 4;
 }
 
