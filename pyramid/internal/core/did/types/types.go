@@ -21,7 +21,7 @@ type VerificationMethod struct {
 	Controller string `json:"controller"`
 
 	// specification reference: https://www.w3.org/TR/did-core/#dfn-publickeyjwk
-	PublicKeyJwk *Qjwk `json:"public_key_jwk,omitempty"`
+	PublicKeyJwk *Jwk `json:"public_key_jwk,omitempty"`
 }
 
 // Service is used in DID documents to express ways of communicating with
@@ -83,16 +83,18 @@ type DidDocument struct {
 	AssertionMethod []string `json:"assertion_method,omitempty"`
 }
 
-// QJWK represents a Quantum JSON Web Key (JWK) with the following fields specific to NTRU algorithms.
-// This could be an extension of the JWK type.
-type Qjwk struct {
+// JWK represents:
+// - a JSON Web Key (JWK) with the respective fields specific to RSA algorithms.
+// - a Quantum JSON Web Key (QJWK) with the respective fields specific to NTRU algorithms.
+type Jwk struct {
 	// ALG represents the algorithm intended for use with the key.
-	// Some example algorithms are "Falcon" family: "Falcon-512", "Falcon-1024"
+	// Some example algorithms are "Falcon" family: "Falcon-512", "Falcon-1024" for Quantum algorithms.
+	// Some example algorithms are "RS256", "RS384", "RS512" for RSA algorithms.
 	ALG string `json:"alg,omitempty"`
 
 	// KTY represents the key type parameter.
 	// It specifies the family of quantum algorithms used with the key,
-	// such as "NTRU"
+	// such as "NTRU" or "RSA" for non quantum algorithms.
 	KTY string `json:"kty,omitempty"`
 
 	// Use represents the intended use of the key.
@@ -103,21 +105,45 @@ type Qjwk struct {
 	// It is used to match a specific key.
 	KID string `json:"kid,omitempty"`
 
-	// h represents the public key.
+	// The exponent for the RSA public key.
+	E string `json:"e,omitempty"`
+
+	// The modulus for the RSA public key.
+	N string `json:"n,omitempty"`
+
+	// The private exponent for the RSA private key.
+	D string `json:"d,omitempty"`
+
+	// The first prime factor for the RSA private key.
+	P string `json:"p,omitempty"`
+
+	// The second prime factor for the RSA private key.
+	Q string `json:"q,omitempty"`
+
+	// The first factor CRT exponent for the RSA private key.
+	DP string `json:"dp,omitempty"`
+
+	// The second factor CRT exponent for the RSA private key.
+	DQ string `json:"dq,omitempty"`
+
+	// The first CRT coefficient for the RSA private key.
+	QI string `json:"qi,omitempty"`
+
+	// The public key for the NTRU public key.
 	H string `json:"h,omitempty"`
 
-	// f represents the polynomial for the private key.
+	// The polynomial for the NTRU private key.
 	F string `json:"f,omitempty"`
 
-	// fp represents the f inverse modulo p.
+	// The f inverse modulo p for the NTRU private key.
 	FP string `json:"fp,omitempty"`
 
-	// g represents the polynomial for the private key.
+	// The polynomial for the NTRU private key.
 	G string `json:"g,omitempty"`
 }
 
-// QJWKS represents a set of Quantum JSON Web Keys (JWKs).
-type Qjwks struct {
-	// Keys represents the list of Quantum JSON Web Keys.
-	Keys []Qjwk `json:"keys"`
+// JWKS represents a set of JSON Web Keys (JWKs).
+type Jwks struct {
+	// Keys represents the list of JSON Web Keys.
+	Keys []Jwk `json:"keys"`
 }

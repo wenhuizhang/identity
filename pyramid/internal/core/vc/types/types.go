@@ -76,11 +76,11 @@ type VerifiableCredential struct {
 	CredentialSchema []CredentialSchema `json:"credential_schema,omitempty"`
 }
 
-// EnveloppedVerifiableCredential represents a Verifiable Credential envelopped in a specific format.
-type EnveloppedVerifiableCredential struct {
+// EnvelopedVerifiableCredential represents a Verifiable Credential enveloped in a specific format.
+type EnvelopedVerifiableCredential struct {
 	// EnvelopeType specifies the type of the envelope used to store the credential.
 	EnvelopeType VerifiableCredentialEnvelopeType `json:"envelope_type,omitempty"`
 
-	// Value is the envelopped credential in the specified format.
+	// Value is the enveloped credential in the specified format.
 	Value string `json:"value,omitempty"`
 }

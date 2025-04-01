@@ -21,11 +21,11 @@ message Issuer {
   // Could be a FQDN or a FQDA
   optional string common_name = 3;
 
-  // The keys of the issuer in QJWK format
+  // The keys of the issuer in JWK format
   // The public key is used to verify the signature of the different claims
-  optional .agntcy.pyramid.v1alpha1.Qjwk public_key = 4;
+  optional .agntcy.pyramid.v1alpha1.Jwk public_key = 4;
 
-  // The private key of the issuer in QJWK format
-  optional .agntcy.pyramid.v1alpha1.Qjwk private_key = 5;
+  // The private key of the issuer in JWK format
+  optional .agntcy.pyramid.v1alpha1.Jwk private_key = 5;
 }
 
