@@ -39,7 +39,7 @@ jobs:
           username: ${{ secrets.GHCR_USERNAME }}
           password: ${{ secrets.GHCR_TOKEN }}
 
-      - name: Build PyramID Node
+      - name: Build Identity Node
         uses: docker/build-push-action@v2
         with:
           context: .

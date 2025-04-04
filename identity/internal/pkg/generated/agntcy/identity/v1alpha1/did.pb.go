@@ -525,15 +525,15 @@ var File_agntcy_identity_v1alpha1_did_proto protoreflect.FileDescriptor
 
 const file_agntcy_identity_v1alpha1_did_proto_rawDesc = "" +
 	"\n" +
-	"!agntcy/identity/v1alpha1/did.proto\x12\x17agntcy.identity.v1alpha1\"\xb0\x02\n" +
+	"\"agntcy/identity/v1alpha1/did.proto\x12\x18agntcy.identity.v1alpha1\"\xb2\x02\n" +
 	"\vDidDocument\x12\x13\n" +
 	"\x02id\x18\x01 \x01(\tH\x00R\x02id\x88\x01\x01\x12\x17\n" +
 	"\x04node\x18\x02 \x01(\tH\x01R\x04node\x88\x01\x01\x12\x1e\n" +
 	"\n" +
 	"controller\x18\x03 \x03(\tR\n" +
-	"controller\x12\\\n" +
-	"\x13verification_method\x18\x04 \x03(\v2+.agntcy.identity.v1alpha1.VerificationMethodR\x12verificationMethod\x12:\n" +
-	"\aservice\x18\x05 \x03(\v2 .agntcy.identity.v1alpha1.ServiceR\aservice\x12)\n" +
+	"controller\x12]\n" +
+	"\x13verification_method\x18\x04 \x03(\v2,.agntcy.identity.v1alpha1.VerificationMethodR\x12verificationMethod\x12;\n" +
+	"\aservice\x18\x05 \x03(\v2!.agntcy.identity.v1alpha1.ServiceR\aservice\x12)\n" +
 	"\x10assertion_method\x18\x06 \x03(\tR\x0fassertionMethodB\x05\n" +
 	"\x03_idB\a\n" +
 	"\x05_node\"\xb9\x03\n" +
@@ -571,26 +571,26 @@ const file_agntcy_identity_v1alpha1_did_proto_rawDesc = "" +
 	"\x02_hB\x04\n" +
 	"\x02_fB\x05\n" +
 	"\x03_fpB\x04\n" +
-	"\x02_g\"8\n" +
-	"\x04Jwks\x120\n" +
-	"\x04keys\x18\x01 \x03(\v2\x1c.agntcy.identity.v1alpha1.JwkR\x04keys\"r\n" +
+	"\x02_g\"9\n" +
+	"\x04Jwks\x121\n" +
+	"\x04keys\x18\x01 \x03(\v2\x1d.agntcy.identity.v1alpha1.JwkR\x04keys\"r\n" +
 	"\aService\x12\x13\n" +
 	"\x02id\x18\x01 \x01(\tH\x00R\x02id\x88\x01\x01\x12\x17\n" +
 	"\x04type\x18\x02 \x01(\tH\x01R\x04type\x88\x01\x01\x12)\n" +
 	"\x10service_endpoint\x18\x03 \x03(\tR\x0fserviceEndpointB\x05\n" +
 	"\x03_idB\a\n" +
-	"\x05_type\"\xe2\x01\n" +
+	"\x05_type\"\xe3\x01\n" +
 	"\x12VerificationMethod\x12\x13\n" +
 	"\x02id\x18\x01 \x01(\tH\x00R\x02id\x88\x01\x01\x12\x17\n" +
 	"\x04type\x18\x02 \x01(\tH\x01R\x04type\x88\x01\x01\x12#\n" +
 	"\n" +
 	"controller\x18\x03 \x01(\tH\x02R\n" +
-	"controller\x88\x01\x01\x12G\n" +
-	"\x0epublic_key_jwk\x18\x04 \x01(\v2\x1c.agntcy.identity.v1alpha1.JwkH\x03R\fpublicKeyJwk\x88\x01\x01B\x05\n" +
+	"controller\x88\x01\x01\x12H\n" +
+	"\x0epublic_key_jwk\x18\x04 \x01(\v2\x1d.agntcy.identity.v1alpha1.JwkH\x03R\fpublicKeyJwk\x88\x01\x01B\x05\n" +
 	"\x03_idB\a\n" +
 	"\x05_typeB\r\n" +
 	"\v_controllerB\x11\n" +
-	"\x0f_public_key_jwkBYZWgithub.com/agntcy/identity/internal/pkg/generated/agntcy/identity/v1alpha1;identity_sdk_gob\x06proto3"
+	"\x0f_public_key_jwkB\\ZZgithub.com/agntcy/identity/internal/pkg/generated/agntcy/identity/v1alpha1;identity_sdk_gob\x06proto3"
 
 var (
 	file_agntcy_identity_v1alpha1_did_proto_rawDescOnce sync.Once

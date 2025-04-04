@@ -4,7 +4,7 @@ import (
 	didtypes "github.com/agntcy/identity/internal/core/did/types"
 )
 
-// A PyramID Issuer
+// A Identity Issuer
 type Issuer struct {
 	// The organization of the issuer
 	Organization string `json:"organization,omitempty"`

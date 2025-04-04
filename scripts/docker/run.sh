@@ -20,12 +20,12 @@ echo "| |_\ \ (_) |   | | (_) | | |  | | | (_) | || (_) |"
 echo " \____/\___/    \_/\___/  \_|  |_|  \___/ \__\___/ "
 echo ""
 
-source "${PyramID_ROOT}/protoc.sh"
-cd ${PyramID_ROOT}
+source "${Identity_ROOT}/protoc.sh"
+cd ${Identity_ROOT}
 
 protoc_install
 
-cd "${PyramID_ROOT}/local"
+cd "${Identity_ROOT}/local"
 
 type_files=$(find . -path "*/internal/*/types/types.go")
 packages=""
@@ -38,7 +38,7 @@ done
 
 packages=$(echo "$packages" | sed 's/\s$//' | sed 's/^\s//')
 
-cd "${PyramID_ROOT}/local/github.com/agntcy/identity"
+cd "${Identity_ROOT}/local/github.com/agntcy/identity"
 
 go get github.com/gogo/protobuf/proto
 
@@ -48,24 +48,24 @@ if [ ! -z "${packages_comma_separated}" ]; then
   # Detect GO enums
   go-enum-to-proto \
     --packages="${packages_comma_separated}" \
-    --output-dir="${PyramID_ROOT}/local"
+    --output-dir="${Identity_ROOT}/local"
 
   # Tag the GO enums by changing them to structs so that go-to-protobuf
   # can reference them by name and not by the underlying type (ex: int)
-  go-enum-patch --patch="${PyramID_ROOT}/local/enums.json" --type=go
+  go-enum-patch --patch="${Identity_ROOT}/local/enums.json" --type=go
 
   go-to-protobuf \
     --apimachinery-packages="" \
-    --proto-import="${PyramID_ROOT}/third_party/protos" \
-    --output-dir="${PyramID_ROOT}/local" \
+    --proto-import="${Identity_ROOT}/third_party/protos" \
+    --output-dir="${Identity_ROOT}/local" \
     --packages="${packages_comma_separated}" \
     --keep-gogoproto=false \
     -v=8
 
   # Change the enums detected earlier from proto messages to actual proto enums
-  go-enum-patch --patch="${PyramID_ROOT}/local/enums.json" --type=proto
+  go-enum-patch --patch="${Identity_ROOT}/local/enums.json" --type=proto
 
-  cd "${PyramID_ROOT}"
+  cd "${Identity_ROOT}"
 
   for package in $packages; do
     mkdir -p "local/output"
@@ -90,7 +90,7 @@ if [ ! -z "${packages_comma_separated}" ]; then
     done
   done
 
-  cp -r "${PyramID_ROOT}/local/output/." "${PyramID_ROOT}/code/api-spec/proto/agntcy/identity/v1alpha1"
+  cp -r "${Identity_ROOT}/local/output/." "${Identity_ROOT}/code/api-spec/proto/agntcy/identity/v1alpha1"
 fi
 
 echo ""
@@ -102,9 +102,9 @@ echo "| |_/ / |_| | |     | |_\ \  __/ | | |  __/ | | (_| | ||  __/"
 echo "\____/ \___/\_|      \____/\___|_| |_|\___|_|  \__,_|\__\___|"
 echo ""
 
-rm -rvf ${PyramID_ROOT}/code/identity/internal/pkg/generated 2>&1 || true
+rm -rvf ${Identity_ROOT}/code/identity/internal/pkg/generated 2>&1 || true
 
-cd "${PyramID_ROOT}/code/api-spec"
+cd "${Identity_ROOT}/code/api-spec"
 
 # Go
 /usr/local/bin/buf generate --debug -v

@@ -408,9 +408,9 @@ var File_agntcy_identity_v1alpha1_vc_proto protoreflect.FileDescriptor
 
 const file_agntcy_identity_v1alpha1_vc_proto_rawDesc = "" +
 	"\n" +
-	" agntcy/identity/v1alpha1/vc.proto\x12\x17agntcy.identity.v1alpha1\"\xa7\x01\n" +
-	"\x11CredentialContent\x12V\n" +
-	"\fcontent_type\x18\x01 \x01(\x0e2..agntcy.identity.v1alpha1.CredentialContentTypeH\x00R\vcontentType\x88\x01\x01\x12\x1d\n" +
+	"!agntcy/identity/v1alpha1/vc.proto\x12\x18agntcy.identity.v1alpha1\"\xa8\x01\n" +
+	"\x11CredentialContent\x12W\n" +
+	"\fcontent_type\x18\x01 \x01(\x0e2/.agntcy.identity.v1alpha1.CredentialContentTypeH\x00R\vcontentType\x88\x01\x01\x12\x1d\n" +
 	"\acontent\x18\x02 \x01(\tH\x01R\acontent\x88\x01\x01B\x0f\n" +
 	"\r_content_typeB\n" +
 	"\n" +
@@ -419,12 +419,12 @@ const file_agntcy_identity_v1alpha1_vc_proto_rawDesc = "" +
 	"\x04type\x18\x01 \x01(\tH\x00R\x04type\x88\x01\x01\x12\x13\n" +
 	"\x02id\x18\x02 \x01(\tH\x01R\x02id\x88\x01\x01B\a\n" +
 	"\x05_typeB\x05\n" +
-	"\x03_id\"\xbb\x01\n" +
-	"\x1dEnvelopedVerifiableCredential\x12c\n" +
-	"\renvelope_type\x18\x01 \x01(\x0e29.agntcy.identity.v1alpha1.VerifiableCredentialEnvelopeTypeH\x00R\fenvelopeType\x88\x01\x01\x12\x19\n" +
+	"\x03_id\"\xbc\x01\n" +
+	"\x1dEnvelopedVerifiableCredential\x12d\n" +
+	"\renvelope_type\x18\x01 \x01(\x0e2:.agntcy.identity.v1alpha1.VerifiableCredentialEnvelopeTypeH\x00R\fenvelopeType\x88\x01\x01\x12\x19\n" +
 	"\x05value\x18\x02 \x01(\tH\x01R\x05value\x88\x01\x01B\x10\n" +
 	"\x0e_envelope_typeB\b\n" +
-	"\x06_value\"\xa9\x03\n" +
+	"\x06_value\"\xaa\x03\n" +
 	"\x14VerifiableCredential\x12\x18\n" +
 	"\acontext\x18\x01 \x03(\tR\acontext\x12\x12\n" +
 	"\x04type\x18\x02 \x03(\tR\x04type\x12\x1b\n" +
@@ -432,8 +432,8 @@ const file_agntcy_identity_v1alpha1_vc_proto_rawDesc = "" +
 	"\x12credential_subject\x18\x04 \x01(\tH\x01R\x11credentialSubject\x88\x01\x01\x12\x13\n" +
 	"\x02id\x18\x05 \x01(\tH\x02R\x02id\x88\x01\x01\x12(\n" +
 	"\rissuance_date\x18\x06 \x01(\tH\x03R\fissuanceDate\x88\x01\x01\x12,\n" +
-	"\x0fexpiration_date\x18\a \x01(\tH\x04R\x0eexpirationDate\x88\x01\x01\x12V\n" +
-	"\x11credential_schema\x18\b \x03(\v2).agntcy.identity.v1alpha1.CredentialSchemaR\x10credentialSchemaB\t\n" +
+	"\x0fexpiration_date\x18\a \x01(\tH\x04R\x0eexpirationDate\x88\x01\x01\x12W\n" +
+	"\x11credential_schema\x18\b \x03(\v2*.agntcy.identity.v1alpha1.CredentialSchemaR\x10credentialSchemaB\t\n" +
 	"\a_issuerB\x15\n" +
 	"\x13_credential_subjectB\x05\n" +
 	"\x03_idB\x10\n" +
@@ -444,7 +444,7 @@ const file_agntcy_identity_v1alpha1_vc_proto_rawDesc = "" +
 	"&CREDENTIAL_CONTENT_TYPE_AGENT_PASSPORT\x10\x01*\x85\x01\n" +
 	" VerifiableCredentialEnvelopeType\x123\n" +
 	"/VERIFIABLE_CREDENTIAL_ENVELOPE_TYPE_UNSPECIFIED\x10\x00\x12,\n" +
-	"(VERIFIABLE_CREDENTIAL_ENVELOPE_TYPE_JOSE\x10\x01BYZWgithub.com/agntcy/identity/internal/pkg/generated/agntcy/identity/v1alpha1;identity_sdk_gob\x06proto3"
+	"(VERIFIABLE_CREDENTIAL_ENVELOPE_TYPE_JOSE\x10\x01B\\ZZgithub.com/agntcy/identity/internal/pkg/generated/agntcy/identity/v1alpha1;identity_sdk_gob\x06proto3"
 
 var (
 	file_agntcy_identity_v1alpha1_vc_proto_rawDescOnce sync.Once

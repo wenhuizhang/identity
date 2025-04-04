@@ -1,3 +1,3 @@
 # Backend
 
-This repository contains all components of PyramID Backend.
+This repository contains all components of Identity Backend.

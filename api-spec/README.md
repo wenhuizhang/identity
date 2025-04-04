@@ -1,6 +1,6 @@
 # API spec
 
-Schema of the external API types that are served by the PyramID apps.
+Schema of the external API types that are served by the Identity apps.
 
 ## Generate gRPC code
 

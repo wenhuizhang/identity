@@ -64,7 +64,7 @@ function protoc_install() {
     folder="protoc-${PROTOC_VERSION}-${os}-${arch}"
     file="${folder}.zip"
 
-    cd "${PyramID_ROOT}/third_party" || return 1
+    cd "${Identity_ROOT}/third_party" || return 1
 
     wget -O "${file}" "https://github.com/protocolbuffers/protobuf/releases/download/v${PROTOC_VERSION}/${file}"
     unzip -d "${folder}" -o "${file}"

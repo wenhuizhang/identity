@@ -98,7 +98,7 @@ var File_agntcy_identity_shared_v1alpha1_pagination_proto protoreflect.FileDescr
 
 const file_agntcy_identity_shared_v1alpha1_pagination_proto_rawDesc = "" +
 	"\n" +
-	"/agntcy/identity/shared/v1alpha1/pagination.proto\x12\x1eagntcy.identity.shared.v1alpha1\"\xa4\x01\n" +
+	"0agntcy/identity/shared/v1alpha1/pagination.proto\x12\x1fagntcy.identity.shared.v1alpha1\"\xa4\x01\n" +
 	"\rPagedResponse\x12 \n" +
 	"\tnext_page\x18\x01 \x01(\x05H\x00R\bnextPage\x88\x01\x01\x12'\n" +
 	"\rhas_next_page\x18\x02 \x01(\bH\x01R\vhasNextPage\x88\x01\x01\x12\x14\n" +
@@ -106,7 +106,7 @@ const file_agntcy_identity_shared_v1alpha1_pagination_proto_rawDesc = "" +
 	"\x04size\x18\x04 \x01(\x05R\x04sizeB\f\n" +
 	"\n" +
 	"_next_pageB\x10\n" +
-	"\x0e_has_next_pageBQZOgithub.com/agntcy/identity/internal/pkg/generated/agntcy/identity/shared/v1alpha1b\x06proto3"
+	"\x0e_has_next_pageBSZQgithub.com/agntcy/identity/internal/pkg/generated/agntcy/identity/shared/v1alpha1b\x06proto3"
 
 var (
 	file_agntcy_identity_shared_v1alpha1_pagination_proto_rawDescOnce sync.Once

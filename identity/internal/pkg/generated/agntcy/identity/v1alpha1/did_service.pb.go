@@ -120,18 +120,18 @@ var File_agntcy_identity_v1alpha1_did_service_proto protoreflect.FileDescriptor
 
 const file_agntcy_identity_v1alpha1_did_service_proto_rawDesc = "" +
 	"\n" +
-	")agntcy/identity/v1alpha1/did_service.proto\x12\x17agntcy.identity.v1alpha1\x1a!agntcy/identity/v1alpha1/did.proto\x1a$agntcy/identity/v1alpha1/issuer.proto\x1a\x1cgoogle/api/annotations.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\"J\n" +
-	"\x0fGenerateRequest\x127\n" +
-	"\x06issuer\x18\x01 \x01(\v2\x1f.agntcy.identity.v1alpha1.IssuerR\x06issuer\" \n" +
+	"*agntcy/identity/v1alpha1/did_service.proto\x12\x18agntcy.identity.v1alpha1\x1a\"agntcy/identity/v1alpha1/did.proto\x1a%agntcy/identity/v1alpha1/issuer.proto\x1a\x1cgoogle/api/annotations.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\"K\n" +
+	"\x0fGenerateRequest\x128\n" +
+	"\x06issuer\x18\x01 \x01(\v2 .agntcy.identity.v1alpha1.IssuerR\x06issuer\" \n" +
 	"\x0eResolveRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id2\xd9\x02\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id2\xdd\x02\n" +
 	"\n" +
-	"DidService\x12\xa0\x01\n" +
-	"\bGenerate\x12(.agntcy.identity.v1alpha1.GenerateRequest\x1a$.agntcy.identity.v1alpha1.DidDocument\"D\x92A\x1b\x12\fGenerate Did*\vGenerateDid\x82\xd3\xe4\x93\x02 :\x06issuer\"\x16/v1alpha1/did/generate\x12\x96\x01\n" +
-	"\aResolve\x12'.agntcy.identity.v1alpha1.ResolveRequest\x1a$.agntcy.identity.v1alpha1.DidDocument\"<\x92A\x19\x12\vResolve Did*\n" +
+	"DidService\x12\xa2\x01\n" +
+	"\bGenerate\x12).agntcy.identity.v1alpha1.GenerateRequest\x1a%.agntcy.identity.v1alpha1.DidDocument\"D\x92A\x1b\x12\fGenerate Did*\vGenerateDid\x82\xd3\xe4\x93\x02 :\x06issuer\"\x16/v1alpha1/did/generate\x12\x98\x01\n" +
+	"\aResolve\x12(.agntcy.identity.v1alpha1.ResolveRequest\x1a%.agntcy.identity.v1alpha1.DidDocument\"<\x92A\x19\x12\vResolve Did*\n" +
 	"ResolveDid\x82\xd3\xe4\x93\x02\x1a:\x01*\"\x15/v1alpha1/did/resolve\x1a\x0f\x92A\f\n" +
 	"\n" +
-	"DidServiceBYZWgithub.com/agntcy/identity/internal/pkg/generated/agntcy/identity/v1alpha1;identity_sdk_gob\x06proto3"
+	"DidServiceB\\ZZgithub.com/agntcy/identity/internal/pkg/generated/agntcy/identity/v1alpha1;identity_sdk_gob\x06proto3"
 
 var (
 	file_agntcy_identity_v1alpha1_did_service_proto_rawDescOnce sync.Once

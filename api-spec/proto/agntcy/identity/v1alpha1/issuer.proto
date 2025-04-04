@@ -9,7 +9,7 @@ import "agntcy/identity/v1alpha1/did.proto";
 // Package-wide variables from generator "generated".
 option go_package = "github.com/agntcy/identity/internal/pkg/generated/agntcy/identity/v1alpha1;identity_sdk_go";
 
-// A PyramID Issuer
+// A Identity Issuer
 message Issuer {
   // The organization of the issuer
   optional string organization = 1;

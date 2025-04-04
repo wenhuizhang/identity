@@ -38,7 +38,7 @@ RUN cd /identity/proto-enum-generator/cmd/go-enum-patch && go install .
 WORKDIR /identity
 
 ENV PATH="$PATH:/identity/bin"
-ENV PyramID_ROOT="/identity"
+ENV Identity_ROOT="/identity"
 
 COPY scripts/docker/run.sh .
 COPY scripts/docker/protoc.sh .

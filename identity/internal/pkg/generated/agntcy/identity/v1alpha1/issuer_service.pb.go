@@ -164,19 +164,19 @@ var File_agntcy_identity_v1alpha1_issuer_service_proto protoreflect.FileDescript
 
 const file_agntcy_identity_v1alpha1_issuer_service_proto_rawDesc = "" +
 	"\n" +
-	",agntcy/identity/v1alpha1/issuer_service.proto\x12\x17agntcy.identity.v1alpha1\x1a!agntcy/identity/v1alpha1/did.proto\x1a$agntcy/identity/v1alpha1/issuer.proto\x1a\x1cgoogle/api/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\"J\n" +
-	"\x0fRegisterRequest\x127\n" +
-	"\x06issuer\x18\x01 \x01(\v2\x1f.agntcy.identity.v1alpha1.IssuerR\x06issuer\"$\n" +
+	"-agntcy/identity/v1alpha1/issuer_service.proto\x12\x18agntcy.identity.v1alpha1\x1a\"agntcy/identity/v1alpha1/did.proto\x1a%agntcy/identity/v1alpha1/issuer.proto\x1a\x1cgoogle/api/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\"K\n" +
+	"\x0fRegisterRequest\x128\n" +
+	"\x06issuer\x18\x01 \x01(\v2 .agntcy.identity.v1alpha1.IssuerR\x06issuer\"$\n" +
 	"\x10RegisterResponse\x12\x10\n" +
 	"\x03uri\x18\x01 \x01(\tR\x03uri\"3\n" +
 	"\x10WellKnownRequest\x12\x1f\n" +
 	"\vcommon_name\x18\x01 \x01(\tR\n" +
-	"commonName2\xb7\x04\n" +
-	"\rIssuerService\x12\x8c\x01\n" +
-	"\x06KeyGen\x12\x16.google.protobuf.Empty\x1a\x1c.agntcy.identity.v1alpha1.Jwk\"L\x92A*\x12 Generate a keypair in JWK format*\x06KeyGen\x82\xd3\xe4\x93\x02\x19\x12\x17/v1alpha1/issuer/keygen\x12\xb0\x01\n" +
-	"\bRegister\x12(.agntcy.identity.v1alpha1.RegisterRequest\x1a).agntcy.identity.v1alpha1.RegisterResponse\"O\x92A#\x12\x11Register a issuer*\x0eRegisterIssuer\x82\xd3\xe4\x93\x02#:\x06issuer\"\x19/v1alpha1/issuer/register\x12\xcf\x01\n" +
-	"\tWellKnown\x12).agntcy.identity.v1alpha1.WellKnownRequest\x1a\x1d.agntcy.identity.v1alpha1.Jwks\"x\x92A:\x12-Returns the well-known document for an issuer*\tWellKnown\x82\xd3\xe4\x93\x025\x123/v1alpha1/issuer/{common_name}/.well-known/did.json\x1a\x12\x92A\x0f\n" +
-	"\rIssuerServiceBYZWgithub.com/agntcy/identity/internal/pkg/generated/agntcy/identity/v1alpha1;identity_sdk_gob\x06proto3"
+	"commonName2\xbc\x04\n" +
+	"\rIssuerService\x12\x8d\x01\n" +
+	"\x06KeyGen\x12\x16.google.protobuf.Empty\x1a\x1d.agntcy.identity.v1alpha1.Jwk\"L\x92A*\x12 Generate a keypair in JWK format*\x06KeyGen\x82\xd3\xe4\x93\x02\x19\x12\x17/v1alpha1/issuer/keygen\x12\xb2\x01\n" +
+	"\bRegister\x12).agntcy.identity.v1alpha1.RegisterRequest\x1a*.agntcy.identity.v1alpha1.RegisterResponse\"O\x92A#\x12\x11Register a issuer*\x0eRegisterIssuer\x82\xd3\xe4\x93\x02#:\x06issuer\"\x19/v1alpha1/issuer/register\x12\xd1\x01\n" +
+	"\tWellKnown\x12*.agntcy.identity.v1alpha1.WellKnownRequest\x1a\x1e.agntcy.identity.v1alpha1.Jwks\"x\x92A:\x12-Returns the well-known document for an issuer*\tWellKnown\x82\xd3\xe4\x93\x025\x123/v1alpha1/issuer/{common_name}/.well-known/did.json\x1a\x12\x92A\x0f\n" +
+	"\rIssuerServiceB\\ZZgithub.com/agntcy/identity/internal/pkg/generated/agntcy/identity/v1alpha1;identity_sdk_gob\x06proto3"
 
 var (
 	file_agntcy_identity_v1alpha1_issuer_service_proto_rawDescOnce sync.Once

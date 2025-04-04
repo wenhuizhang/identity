@@ -1,4 +1,4 @@
-# PyramID
+# Identity
 
 <p align="center">
   <a href="https://agntcy.org">
@@ -8,12 +8,12 @@
     </picture>
   </a>
   <br />
-  <caption>Welcome to the <b>PyramID</b> repo</caption>
+  <caption>Welcome to the <b>Identity</b> repo</caption>
 </p>
 
 ---
 
-This repository contains all components of PyramID.
+This repository contains all components of Identity.
 
 ## Getting Started
 

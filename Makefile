@@ -14,11 +14,11 @@ do_start_mongo:
 
 do_stop_network:
 	./deployments/scripts/network/stop_identity_network.sh
-	@echo "PyramID network stopped"
+	@echo "Identity network stopped"
 
 do_start_network:
 	./deployments/scripts/network/launch_identity_network.sh
-	@echo "PyramID network started"
+	@echo "Identity network started"
 
 do_start_node:
 	./deployments/scripts/identity/launch_node.sh

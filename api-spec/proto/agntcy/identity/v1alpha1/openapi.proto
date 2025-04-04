@@ -9,8 +9,8 @@ option go_package = "github.com/agntcy/identity/internal/pkg/generated/agntcy/id
 
 option (openapi.v3.document) = {
     info: {
-        title: "PyramID";
-        description: "PyramID";
+        title: "Identity";
+        description: "Identity";
         version: "v1alpha1";
         contact: {
             name: "Agntcy Team";

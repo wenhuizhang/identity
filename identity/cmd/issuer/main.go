@@ -25,7 +25,7 @@ var rootCmd = &cobra.Command{
         __/ /
        |___/
 
-The PyramID CLI tool is a command line interface for generating and publishing identities within the Internet of Agents.
+The Identity CLI tool is a command line interface for generating and publishing identities within the Internet of Agents.
 
 With it you can:
 - Connect to a local wallet, generate and store quantum-resistant cryptographic keys

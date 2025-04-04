@@ -10,7 +10,7 @@ var WalletCmd = &cobra.Command{
 	Use:   "wallet",
 	Short: "Manage your wallet and generate quantum-resistant cryptographic keys",
 	Long: `
-The PyramID tool does not store or share any keys that are used to provide identity to your agents. The tool connects to popular password management applications or crypto wallets to handle the keys. 
+The Identity tool does not store or share any keys that are used to provide identity to your agents. The tool connects to popular password management applications or crypto wallets to handle the keys. 
 
 The keys that are generated via this tool use quantum safe algorithms, and you can find more information on these in our documentation.
 `,

@@ -449,7 +449,7 @@
           "name": "Issuer",
           "longName": "Issuer",
           "fullName": "agntcy.identity.v1alpha1.Issuer",
-          "description": "A PyramID Issuer",
+          "description": "A Identity Issuer",
           "hasExtensions": false,
           "hasFields": true,
           "hasOneofs": true,

@@ -94,16 +94,16 @@ var File_agntcy_identity_v1alpha1_vc_service_proto protoreflect.FileDescriptor
 
 const file_agntcy_identity_v1alpha1_vc_service_proto_rawDesc = "" +
 	"\n" +
-	"(agntcy/identity/v1alpha1/vc_service.proto\x12\x17agntcy.identity.v1alpha1\x1a agntcy/identity/v1alpha1/vc.proto\x1a\x1cgoogle/api/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\"\xc4\x01\n" +
+	")agntcy/identity/v1alpha1/vc_service.proto\x12\x18agntcy.identity.v1alpha1\x1a!agntcy/identity/v1alpha1/vc.proto\x1a\x1cgoogle/api/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\"\xc6\x01\n" +
 	"\fIssueRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\x12D\n" +
-	"\acontent\x18\x02 \x01(\v2*.agntcy.identity.v1alpha1.CredentialContentR\acontent\x12^\n" +
-	"\renvelope_type\x18\x03 \x01(\x0e29.agntcy.identity.v1alpha1.VerifiableCredentialEnvelopeTypeR\fenvelopeType2\xe2\x04\n" +
-	"\tVcService\x12\xc2\x01\n" +
-	"\x05Issue\x12%.agntcy.identity.v1alpha1.IssueRequest\x1a6.agntcy.identity.v1alpha1.EnvelopedVerifiableCredential\"Z\x92A:\x12\x1dIssue a Verifiable Credential*\x19IssueVerifiableCredential\x82\xd3\xe4\x93\x02\x17:\x01*\"\x12/v1alpha1/vc/issue\x12\xbb\x01\n" +
-	"\aPublish\x126.agntcy.identity.v1alpha1.EnvelopedVerifiableCredential\x1a\x16.google.protobuf.Empty\"`\x92A>\x12\x1fPublish a Verifiable Credential*\x1bPublishVerifiableCredential\x82\xd3\xe4\x93\x02\x19:\x01*\"\x14/v1alpha1/vc/publish\x12\xc1\x01\n" +
-	"\x06Verify\x126.agntcy.identity.v1alpha1.EnvelopedVerifiableCredential\x1a\x16.google.protobuf.Empty\"g\x92A<\x12\x1eVerify a Verifiable Credential*\x1aVerifyVerifiableCredential\x82\xd3\xe4\x93\x02\":\x01*\"\x1d/v1alpha1/credentials/publish\x1a\x0e\x92A\v\n" +
-	"\tVcServiceBYZWgithub.com/agntcy/identity/internal/pkg/generated/agntcy/identity/v1alpha1;identity_sdk_gob\x06proto3"
+	"\x02id\x18\x01 \x01(\tR\x02id\x12E\n" +
+	"\acontent\x18\x02 \x01(\v2+.agntcy.identity.v1alpha1.CredentialContentR\acontent\x12_\n" +
+	"\renvelope_type\x18\x03 \x01(\x0e2:.agntcy.identity.v1alpha1.VerifiableCredentialEnvelopeTypeR\fenvelopeType2\xe6\x04\n" +
+	"\tVcService\x12\xc4\x01\n" +
+	"\x05Issue\x12&.agntcy.identity.v1alpha1.IssueRequest\x1a7.agntcy.identity.v1alpha1.EnvelopedVerifiableCredential\"Z\x92A:\x12\x1dIssue a Verifiable Credential*\x19IssueVerifiableCredential\x82\xd3\xe4\x93\x02\x17:\x01*\"\x12/v1alpha1/vc/issue\x12\xbc\x01\n" +
+	"\aPublish\x127.agntcy.identity.v1alpha1.EnvelopedVerifiableCredential\x1a\x16.google.protobuf.Empty\"`\x92A>\x12\x1fPublish a Verifiable Credential*\x1bPublishVerifiableCredential\x82\xd3\xe4\x93\x02\x19:\x01*\"\x14/v1alpha1/vc/publish\x12\xc2\x01\n" +
+	"\x06Verify\x127.agntcy.identity.v1alpha1.EnvelopedVerifiableCredential\x1a\x16.google.protobuf.Empty\"g\x92A<\x12\x1eVerify a Verifiable Credential*\x1aVerifyVerifiableCredential\x82\xd3\xe4\x93\x02\":\x01*\"\x1d/v1alpha1/credentials/publish\x1a\x0e\x92A\v\n" +
+	"\tVcServiceB\\ZZgithub.com/agntcy/identity/internal/pkg/generated/agntcy/identity/v1alpha1;identity_sdk_gob\x06proto3"
 
 var (
 	file_agntcy_identity_v1alpha1_vc_service_proto_rawDescOnce sync.Once

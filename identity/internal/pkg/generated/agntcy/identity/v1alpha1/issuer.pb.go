@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// A PyramID Issuer
+// A Identity Issuer
 type Issuer struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The organization of the issuer
@@ -111,21 +111,21 @@ var File_agntcy_identity_v1alpha1_issuer_proto protoreflect.FileDescriptor
 
 const file_agntcy_identity_v1alpha1_issuer_proto_rawDesc = "" +
 	"\n" +
-	"$agntcy/identity/v1alpha1/issuer.proto\x12\x17agntcy.identity.v1alpha1\x1a!agntcy/identity/v1alpha1/did.proto\"\xe2\x02\n" +
+	"%agntcy/identity/v1alpha1/issuer.proto\x12\x18agntcy.identity.v1alpha1\x1a\"agntcy/identity/v1alpha1/did.proto\"\xe4\x02\n" +
 	"\x06Issuer\x12'\n" +
 	"\forganization\x18\x01 \x01(\tH\x00R\forganization\x88\x01\x01\x12.\n" +
 	"\x10sub_organization\x18\x02 \x01(\tH\x01R\x0fsubOrganization\x88\x01\x01\x12$\n" +
 	"\vcommon_name\x18\x03 \x01(\tH\x02R\n" +
-	"commonName\x88\x01\x01\x12@\n" +
+	"commonName\x88\x01\x01\x12A\n" +
 	"\n" +
-	"public_key\x18\x04 \x01(\v2\x1c.agntcy.identity.v1alpha1.JwkH\x03R\tpublicKey\x88\x01\x01\x12B\n" +
-	"\vprivate_key\x18\x05 \x01(\v2\x1c.agntcy.identity.v1alpha1.JwkH\x04R\n" +
+	"public_key\x18\x04 \x01(\v2\x1d.agntcy.identity.v1alpha1.JwkH\x03R\tpublicKey\x88\x01\x01\x12C\n" +
+	"\vprivate_key\x18\x05 \x01(\v2\x1d.agntcy.identity.v1alpha1.JwkH\x04R\n" +
 	"privateKey\x88\x01\x01B\x0f\n" +
 	"\r_organizationB\x13\n" +
 	"\x11_sub_organizationB\x0e\n" +
 	"\f_common_nameB\r\n" +
 	"\v_public_keyB\x0e\n" +
-	"\f_private_keyBYZWgithub.com/agntcy/identity/internal/pkg/generated/agntcy/identity/v1alpha1;identity_sdk_gob\x06proto3"
+	"\f_private_keyB\\ZZgithub.com/agntcy/identity/internal/pkg/generated/agntcy/identity/v1alpha1;identity_sdk_gob\x06proto3"
 
 var (
 	file_agntcy_identity_v1alpha1_issuer_proto_rawDescOnce sync.Once
