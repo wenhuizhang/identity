@@ -7,8 +7,8 @@ info:
     description: PyramID
     contact:
         name: Agntcy Team
-        url: https://github.com/agntcy/pyramid
-        email: pyramid@agntcy.org
+        url: https://github.com/agntcy/identity
+        email: identity@agntcy.org
     version: v1alpha1
 servers:
     - url: http://0.0.0.0:4000

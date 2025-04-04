@@ -1,4 +1,4 @@
-module github.com/pyramid/protoc-gen-go-srvreg
+module github.com/identity/protoc-gen-go-srvreg
 
 go 1.23.1
 

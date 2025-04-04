@@ -4,8 +4,8 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-PROTO_PACKAGE_NAME="agntcy.pyramid.v1alpha1"
-PROTO_FILE_PATH="agntcy/pyramid/v1alpha1/"
+PROTO_PACKAGE_NAME="agntcy.identity.v1alpha1"
+PROTO_FILE_PATH="agntcy/identity/v1alpha1/"
 
 function get_module_name_from_package() {
   echo $(dirname "$1" | xargs basename)
@@ -38,7 +38,7 @@ done
 
 packages=$(echo "$packages" | sed 's/\s$//' | sed 's/^\s//')
 
-cd "${PyramID_ROOT}/local/github.com/agntcy/pyramid"
+cd "${PyramID_ROOT}/local/github.com/agntcy/identity"
 
 go get github.com/gogo/protobuf/proto
 
@@ -77,7 +77,7 @@ if [ ! -z "${packages_comma_separated}" ]; then
 
   for m in $protos; do
     sed -i 's/syntax = "proto2";/syntax = "proto3";/g' "${m}"
-    sed -i 's|go_package = [^ ]\+|go_package = "github.com/agntcy/pyramid/internal/pkg/generated/agntcy/pyramid/v1alpha1;pyramid_sdk_go";|g' "${m}"
+    sed -i 's|go_package = [^ ]\+|go_package = "github.com/agntcy/identity/internal/pkg/generated/agntcy/identity/v1alpha1;identity_sdk_go";|g' "${m}"
   done
 
   for package in $packages; do
@@ -90,7 +90,7 @@ if [ ! -z "${packages_comma_separated}" ]; then
     done
   done
 
-  cp -r "${PyramID_ROOT}/local/output/." "${PyramID_ROOT}/code/api-spec/proto/agntcy/pyramid/v1alpha1"
+  cp -r "${PyramID_ROOT}/local/output/." "${PyramID_ROOT}/code/api-spec/proto/agntcy/identity/v1alpha1"
 fi
 
 echo ""
@@ -102,7 +102,7 @@ echo "| |_/ / |_| | |     | |_\ \  __/ | | |  __/ | | (_| | ||  __/"
 echo "\____/ \___/\_|      \____/\___|_| |_|\___|_|  \__,_|\__\___|"
 echo ""
 
-rm -rvf ${PyramID_ROOT}/code/pyramid/internal/pkg/generated 2>&1 || true
+rm -rvf ${PyramID_ROOT}/code/identity/internal/pkg/generated 2>&1 || true
 
 cd "${PyramID_ROOT}/code/api-spec"
 

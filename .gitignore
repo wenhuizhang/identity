@@ -132,11 +132,11 @@ dmypy.json
 .venv
 
 .scratchpad
-pyramid/pyramid
+identity/identity
 
 !ui/src/lib
 
-pyramid/cmd/issuer/web
-pyramid/pkg/assets/web
+identity/cmd/issuer/web
+identity/pkg/assets/web
 
 .vscode

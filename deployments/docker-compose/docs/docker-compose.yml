@@ -1,7 +1,7 @@
-name: pyramid-docs
+name: identity-docs
 services:
-  pyramid-docs:
-    container_name: pyramid-docs
+  identity-docs:
+    container_name: identity-docs
     pull_policy: always
     build:
       context: ../../../
@@ -10,8 +10,8 @@ services:
     ports:
       - 3000:80
     networks:
-      - pyramid-network
+      - identity-network
 
 networks:
-  pyramid-network:
+  identity-network:
     external: true

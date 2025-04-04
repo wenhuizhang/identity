@@ -1,7 +1,7 @@
 #!/bin/bash -e
 # Syntax build-docker.sh [-i|--image imagename]
 
-PROJECT=pyramid
+PROJECT=identity
 DOCKER_IMAGE=${PROJECT}:latest
 DOCKER_FILE=Dockerfile
 
@@ -34,7 +34,7 @@ done
 
 case $DOCKER_IMAGE in
     $PROJECT-node*)
-        DOCKER_FILE=./deployments/docker/pyramid/node/Dockerfile.node
+        DOCKER_FILE=./deployments/docker/identity/node/Dockerfile.node
         ;;
     $PROJECT-docs*)
         DOCKER_FILE=./deployments/docker/docs/Dockerfile

@@ -5,10 +5,10 @@ ARG BUF_VERSION="1.28.1"
 
 RUN apk update && apk add curl git
 
-WORKDIR /pyramid/protoc-gen-go-pyramid
+WORKDIR /identity/protoc-gen-go-identity
 COPY api-spec/plugins/protoc-gen-go-srvreg .
 RUN go mod download
-RUN go build -o /pyramid/bin/protoc-gen-go-srvreg .
+RUN go build -o /identity/bin/protoc-gen-go-srvreg .
 
 RUN curl -sSL \
     "https://github.com/bufbuild/buf/releases/download/v${BUF_VERSION}/buf-$(uname -s)-$(uname -m)" \
@@ -29,20 +29,20 @@ RUN go install golang.org/x/tools/cmd/goimports@latest
 RUN go get k8s.io/apimachinery
 
 # Custom tools
-WORKDIR /pyramid/proto-enum-generator
+WORKDIR /identity/proto-enum-generator
 COPY scripts/proto-enum-generator .
 RUN go mod download
-RUN cd /pyramid/proto-enum-generator/cmd/go-enum-to-proto && go install .
-RUN cd /pyramid/proto-enum-generator/cmd/go-enum-patch && go install .
+RUN cd /identity/proto-enum-generator/cmd/go-enum-to-proto && go install .
+RUN cd /identity/proto-enum-generator/cmd/go-enum-patch && go install .
 
-WORKDIR /pyramid
+WORKDIR /identity
 
-ENV PATH="$PATH:/pyramid/bin"
-ENV PyramID_ROOT="/pyramid"
+ENV PATH="$PATH:/identity/bin"
+ENV PyramID_ROOT="/identity"
 
 COPY scripts/docker/run.sh .
 COPY scripts/docker/protoc.sh .
-COPY pyramid ./local/github.com/agntcy/pyramid
+COPY identity ./local/github.com/agntcy/identity
 COPY scripts/docker/protos ./third_party/protos
 
 RUN chmod +x run.sh && \

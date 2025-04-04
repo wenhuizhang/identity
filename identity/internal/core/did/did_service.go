@@ -1,0 +1,12 @@
+package id
+
+import (
+	"context"
+
+	"github.com/agntcy/identity/internal/core/did/types"
+)
+
+type DidService interface {
+	// Get a Did by id
+	Get(ctx context.Context, id string) (*types.DidDocument, error)
+}

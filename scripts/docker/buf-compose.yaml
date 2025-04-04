@@ -4,4 +4,4 @@ services:
       context: ../../
       dockerfile: scripts/docker/Dockerfile.buf
     volumes:
-      - ../../:/pyramid/code
+      - ../../:/identity/code

@@ -2,4 +2,4 @@
 
 set -Eeuo pipefail
 
-docker network create pyramid-network || echo "Network already exists"
+docker network create identity-network || echo "Network already exists"

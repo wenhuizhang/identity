@@ -1,0 +1,19 @@
+name: identity-node
+services:
+  identity-api:
+    container_name: identity-node
+    build:
+      context: ../../../
+      dockerfile: deployments/docker/backend/node/Dockerfile
+    restart: always
+    ports:
+      - "4000:4000"
+      - "4001:4001"
+    env_file:
+      - .env
+    networks:
+      - identity-network
+
+networks:
+  identity-network:
+    external: true

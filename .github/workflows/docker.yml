@@ -43,8 +43,8 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          tags: ghcr.io/pyramid/backend:latest
-          file: ./deployments/docker/pyramid/Dockerfile.node
+          tags: ghcr.io/identity/backend:latest
+          file: ./deployments/docker/identity/Dockerfile.node
           push: false
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache

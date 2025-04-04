@@ -2,4 +2,4 @@
 
 set -Eeuo pipefail
 
-docker network rm pyramid-network || echo "Network does not exist"
+docker network rm identity-network || echo "Network does not exist"

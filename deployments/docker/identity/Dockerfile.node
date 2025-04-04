@@ -1,0 +1,34 @@
+FROM golang:1.22.5-alpine AS builder
+
+# Build the package
+WORKDIR /build
+COPY ./identity .
+RUN go mod download
+RUN cd ./cmd/node && go build -o ../../identity-node
+
+RUN apk update \
+    &&  apk add ca-certificates wget \
+    &&  update-ca-certificates
+
+FROM golang:1.22.5-alpine
+
+# Create a group and user
+RUN addgroup -S web && adduser -u 1999 -S -G web web
+
+# Set workdir
+WORKDIR /home/web
+
+COPY --from=builder /build/identity-node .
+
+# Install ffmpeg
+RUN apk update
+RUN apk upgrade
+RUN apk add ffmpeg
+
+# Give permissions
+RUN chmod +x identity-webapi && \
+    chown -R web:web .
+
+USER web
+
+ENTRYPOINT ["./identity-node"]
