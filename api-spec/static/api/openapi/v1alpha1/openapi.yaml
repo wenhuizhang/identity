@@ -14,28 +14,6 @@ servers:
     - url: http://0.0.0.0:4000
       description: Local environment
 paths:
-    /v1alpha1/credentials/publish:
-        post:
-            tags:
-                - VcService
-            description: Verify
-            operationId: VcService_Verify
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/EnvelopedVerifiableCredential'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content: {}
-                default:
-                    description: Default error response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Status'
     /v1alpha1/did/generate:
         post:
             tags:
@@ -203,6 +181,53 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+    /v1alpha1/vc/search:
+        post:
+            tags:
+                - VcService
+            description: Search
+            operationId: VcService_Search
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/SearchRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/SearchResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1alpha1/vc/verify:
+        post:
+            tags:
+                - VcService
+            description: Verify
+            operationId: VcService_Verify
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/EnvelopedVerifiableCredential'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
 components:
     schemas:
         CredentialContent:
@@ -219,6 +244,20 @@ components:
                     type: string
                     description: The content representation in JSON-LD format.
             description: CredentialContent represents the content of a Verifiable Credential.
+        CredentialSchema:
+            type: object
+            properties:
+                type:
+                    type: string
+                    description: Type specifies the type of the file
+                id:
+                    type: string
+                    description: The URL identifying the schema file
+            description: |-
+                CredentialSchema represents the credentialSchema property of a Verifiable Credential.
+                 more information can be found [here]
+
+                 [here]: https://www.w3.org/TR/vc-data-model-2.0/#data-schemas
         DidDocument:
             type: object
             properties:
@@ -428,6 +467,31 @@ components:
                         ID is the method-specific identifier in the DID URI.
                          Spec: https://www.w3.org/TR/did-core/#method-specific-id
                          Agntcy DID has the following format: did:agntcy:{id}
+        SearchRequest:
+            type: object
+            properties:
+                id:
+                    type: string
+                    description: |-
+                        ID is the method-specific identifier in the DID URI.
+                         Spec: https://www.w3.org/TR/did-core/#method-specific-id
+                         Agntcy DID has the following format: did:agntcy:{id}
+                schema:
+                    allOf:
+                        - $ref: '#/components/schemas/CredentialSchema'
+                    description: Schema is the schema of the credential contained in the VC
+                content:
+                    type: string
+                    description: The credential content representation in JSON-LD format
+            description: SearchRequest is a request to seach for VCs
+        SearchResponse:
+            type: object
+            properties:
+                credentials:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/EnvelopedVerifiableCredential'
+                    description: The list of VCs that match the search criteria
         Service:
             type: object
             properties:

@@ -90,6 +90,117 @@ func (x *IssueRequest) GetEnvelopeType() VerifiableCredentialEnvelopeType {
 	return VerifiableCredentialEnvelopeType_VERIFIABLE_CREDENTIAL_ENVELOPE_TYPE_UNSPECIFIED
 }
 
+// SearchRequest is a request to seach for VCs
+type SearchRequest struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// ID is the method-specific identifier in the DID URI.
+	// Spec: https://www.w3.org/TR/did-core/#method-specific-id
+	// Agntcy DID has the following format: did:agntcy:{id}
+	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	// Schema is the schema of the credential contained in the VC
+	Schema *CredentialSchema `protobuf:"bytes,2,opt,name=schema,proto3" json:"schema,omitempty"`
+	// The credential content representation in JSON-LD format
+	Content       string `protobuf:"bytes,3,opt,name=content,proto3" json:"content,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SearchRequest) Reset() {
+	*x = SearchRequest{}
+	mi := &file_agntcy_identity_v1alpha1_vc_service_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SearchRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SearchRequest) ProtoMessage() {}
+
+func (x *SearchRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_agntcy_identity_v1alpha1_vc_service_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SearchRequest.ProtoReflect.Descriptor instead.
+func (*SearchRequest) Descriptor() ([]byte, []int) {
+	return file_agntcy_identity_v1alpha1_vc_service_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *SearchRequest) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *SearchRequest) GetSchema() *CredentialSchema {
+	if x != nil {
+		return x.Schema
+	}
+	return nil
+}
+
+func (x *SearchRequest) GetContent() string {
+	if x != nil {
+		return x.Content
+	}
+	return ""
+}
+
+type SearchResponse struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The list of VCs that match the search criteria
+	Credentials   []*EnvelopedVerifiableCredential `protobuf:"bytes,1,rep,name=credentials,proto3" json:"credentials,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SearchResponse) Reset() {
+	*x = SearchResponse{}
+	mi := &file_agntcy_identity_v1alpha1_vc_service_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SearchResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SearchResponse) ProtoMessage() {}
+
+func (x *SearchResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_agntcy_identity_v1alpha1_vc_service_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SearchResponse.ProtoReflect.Descriptor instead.
+func (*SearchResponse) Descriptor() ([]byte, []int) {
+	return file_agntcy_identity_v1alpha1_vc_service_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *SearchResponse) GetCredentials() []*EnvelopedVerifiableCredential {
+	if x != nil {
+		return x.Credentials
+	}
+	return nil
+}
+
 var File_agntcy_identity_v1alpha1_vc_service_proto protoreflect.FileDescriptor
 
 const file_agntcy_identity_v1alpha1_vc_service_proto_rawDesc = "" +
@@ -98,11 +209,18 @@ const file_agntcy_identity_v1alpha1_vc_service_proto_rawDesc = "" +
 	"\fIssueRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12E\n" +
 	"\acontent\x18\x02 \x01(\v2+.agntcy.identity.v1alpha1.CredentialContentR\acontent\x12_\n" +
-	"\renvelope_type\x18\x03 \x01(\x0e2:.agntcy.identity.v1alpha1.VerifiableCredentialEnvelopeTypeR\fenvelopeType2\xe6\x04\n" +
+	"\renvelope_type\x18\x03 \x01(\x0e2:.agntcy.identity.v1alpha1.VerifiableCredentialEnvelopeTypeR\fenvelopeType\"}\n" +
+	"\rSearchRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12B\n" +
+	"\x06schema\x18\x02 \x01(\v2*.agntcy.identity.v1alpha1.CredentialSchemaR\x06schema\x12\x18\n" +
+	"\acontent\x18\x03 \x01(\tR\acontent\"k\n" +
+	"\x0eSearchResponse\x12Y\n" +
+	"\vcredentials\x18\x01 \x03(\v27.agntcy.identity.v1alpha1.EnvelopedVerifiableCredentialR\vcredentials2\x99\x06\n" +
 	"\tVcService\x12\xc4\x01\n" +
 	"\x05Issue\x12&.agntcy.identity.v1alpha1.IssueRequest\x1a7.agntcy.identity.v1alpha1.EnvelopedVerifiableCredential\"Z\x92A:\x12\x1dIssue a Verifiable Credential*\x19IssueVerifiableCredential\x82\xd3\xe4\x93\x02\x17:\x01*\"\x12/v1alpha1/vc/issue\x12\xbc\x01\n" +
-	"\aPublish\x127.agntcy.identity.v1alpha1.EnvelopedVerifiableCredential\x1a\x16.google.protobuf.Empty\"`\x92A>\x12\x1fPublish a Verifiable Credential*\x1bPublishVerifiableCredential\x82\xd3\xe4\x93\x02\x19:\x01*\"\x14/v1alpha1/vc/publish\x12\xc2\x01\n" +
-	"\x06Verify\x127.agntcy.identity.v1alpha1.EnvelopedVerifiableCredential\x1a\x16.google.protobuf.Empty\"g\x92A<\x12\x1eVerify a Verifiable Credential*\x1aVerifyVerifiableCredential\x82\xd3\xe4\x93\x02\":\x01*\"\x1d/v1alpha1/credentials/publish\x1a\x0e\x92A\v\n" +
+	"\aPublish\x127.agntcy.identity.v1alpha1.EnvelopedVerifiableCredential\x1a\x16.google.protobuf.Empty\"`\x92A>\x12\x1fPublish a Verifiable Credential*\x1bPublishVerifiableCredential\x82\xd3\xe4\x93\x02\x19:\x01*\"\x14/v1alpha1/vc/publish\x12\xb8\x01\n" +
+	"\x06Verify\x127.agntcy.identity.v1alpha1.EnvelopedVerifiableCredential\x1a\x16.google.protobuf.Empty\"]\x92A<\x12\x1eVerify a Verifiable Credential*\x1aVerifyVerifiableCredential\x82\xd3\xe4\x93\x02\x18:\x01*\"\x13/v1alpha1/vc/verify\x12\xba\x01\n" +
+	"\x06Search\x12'.agntcy.identity.v1alpha1.SearchRequest\x1a(.agntcy.identity.v1alpha1.SearchResponse\"]\x92A<\x12\x1dSearch Verifiable Credentials*\x1bSearchVerifiableCredentials\x82\xd3\xe4\x93\x02\x18:\x01*\"\x13/v1alpha1/vc/search\x1a\x0e\x92A\v\n" +
 	"\tVcServiceB\\ZZgithub.com/agntcy/identity/internal/pkg/generated/agntcy/identity/v1alpha1;identity_sdk_gob\x06proto3"
 
 var (
@@ -117,28 +235,35 @@ func file_agntcy_identity_v1alpha1_vc_service_proto_rawDescGZIP() []byte {
 	return file_agntcy_identity_v1alpha1_vc_service_proto_rawDescData
 }
 
-var file_agntcy_identity_v1alpha1_vc_service_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
+var file_agntcy_identity_v1alpha1_vc_service_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_agntcy_identity_v1alpha1_vc_service_proto_goTypes = []any{
 	(*IssueRequest)(nil),                  // 0: agntcy.identity.v1alpha1.IssueRequest
-	(*CredentialContent)(nil),             // 1: agntcy.identity.v1alpha1.CredentialContent
-	(VerifiableCredentialEnvelopeType)(0), // 2: agntcy.identity.v1alpha1.VerifiableCredentialEnvelopeType
-	(*EnvelopedVerifiableCredential)(nil), // 3: agntcy.identity.v1alpha1.EnvelopedVerifiableCredential
-	(*emptypb.Empty)(nil),                 // 4: google.protobuf.Empty
+	(*SearchRequest)(nil),                 // 1: agntcy.identity.v1alpha1.SearchRequest
+	(*SearchResponse)(nil),                // 2: agntcy.identity.v1alpha1.SearchResponse
+	(*CredentialContent)(nil),             // 3: agntcy.identity.v1alpha1.CredentialContent
+	(VerifiableCredentialEnvelopeType)(0), // 4: agntcy.identity.v1alpha1.VerifiableCredentialEnvelopeType
+	(*CredentialSchema)(nil),              // 5: agntcy.identity.v1alpha1.CredentialSchema
+	(*EnvelopedVerifiableCredential)(nil), // 6: agntcy.identity.v1alpha1.EnvelopedVerifiableCredential
+	(*emptypb.Empty)(nil),                 // 7: google.protobuf.Empty
 }
 var file_agntcy_identity_v1alpha1_vc_service_proto_depIdxs = []int32{
-	1, // 0: agntcy.identity.v1alpha1.IssueRequest.content:type_name -> agntcy.identity.v1alpha1.CredentialContent
-	2, // 1: agntcy.identity.v1alpha1.IssueRequest.envelope_type:type_name -> agntcy.identity.v1alpha1.VerifiableCredentialEnvelopeType
-	0, // 2: agntcy.identity.v1alpha1.VcService.Issue:input_type -> agntcy.identity.v1alpha1.IssueRequest
-	3, // 3: agntcy.identity.v1alpha1.VcService.Publish:input_type -> agntcy.identity.v1alpha1.EnvelopedVerifiableCredential
-	3, // 4: agntcy.identity.v1alpha1.VcService.Verify:input_type -> agntcy.identity.v1alpha1.EnvelopedVerifiableCredential
-	3, // 5: agntcy.identity.v1alpha1.VcService.Issue:output_type -> agntcy.identity.v1alpha1.EnvelopedVerifiableCredential
-	4, // 6: agntcy.identity.v1alpha1.VcService.Publish:output_type -> google.protobuf.Empty
-	4, // 7: agntcy.identity.v1alpha1.VcService.Verify:output_type -> google.protobuf.Empty
-	5, // [5:8] is the sub-list for method output_type
-	2, // [2:5] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	3, // 0: agntcy.identity.v1alpha1.IssueRequest.content:type_name -> agntcy.identity.v1alpha1.CredentialContent
+	4, // 1: agntcy.identity.v1alpha1.IssueRequest.envelope_type:type_name -> agntcy.identity.v1alpha1.VerifiableCredentialEnvelopeType
+	5, // 2: agntcy.identity.v1alpha1.SearchRequest.schema:type_name -> agntcy.identity.v1alpha1.CredentialSchema
+	6, // 3: agntcy.identity.v1alpha1.SearchResponse.credentials:type_name -> agntcy.identity.v1alpha1.EnvelopedVerifiableCredential
+	0, // 4: agntcy.identity.v1alpha1.VcService.Issue:input_type -> agntcy.identity.v1alpha1.IssueRequest
+	6, // 5: agntcy.identity.v1alpha1.VcService.Publish:input_type -> agntcy.identity.v1alpha1.EnvelopedVerifiableCredential
+	6, // 6: agntcy.identity.v1alpha1.VcService.Verify:input_type -> agntcy.identity.v1alpha1.EnvelopedVerifiableCredential
+	1, // 7: agntcy.identity.v1alpha1.VcService.Search:input_type -> agntcy.identity.v1alpha1.SearchRequest
+	6, // 8: agntcy.identity.v1alpha1.VcService.Issue:output_type -> agntcy.identity.v1alpha1.EnvelopedVerifiableCredential
+	7, // 9: agntcy.identity.v1alpha1.VcService.Publish:output_type -> google.protobuf.Empty
+	7, // 10: agntcy.identity.v1alpha1.VcService.Verify:output_type -> google.protobuf.Empty
+	2, // 11: agntcy.identity.v1alpha1.VcService.Search:output_type -> agntcy.identity.v1alpha1.SearchResponse
+	8, // [8:12] is the sub-list for method output_type
+	4, // [4:8] is the sub-list for method input_type
+	4, // [4:4] is the sub-list for extension type_name
+	4, // [4:4] is the sub-list for extension extendee
+	0, // [0:4] is the sub-list for field type_name
 }
 
 func init() { file_agntcy_identity_v1alpha1_vc_service_proto_init() }
@@ -153,7 +278,7 @@ func file_agntcy_identity_v1alpha1_vc_service_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_agntcy_identity_v1alpha1_vc_service_proto_rawDesc), len(file_agntcy_identity_v1alpha1_vc_service_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   1,
+			NumMessages:   3,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
