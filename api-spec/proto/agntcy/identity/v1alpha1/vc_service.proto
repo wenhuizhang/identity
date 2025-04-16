@@ -45,13 +45,26 @@ service VcService {
   // Verify
   rpc Verify(EnvelopedVerifiableCredential) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-            post: "/v1alpha1/credentials/publish"
+            post: "/v1alpha1/vc/verify"
             body: "*"
         };
 
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       operation_id: "VerifyVerifiableCredential";
       summary: "Verify a Verifiable Credential";
+    };
+  }
+
+  // Search
+  rpc Search(SearchRequest) returns (SearchResponse) {
+    option (google.api.http) = {
+            post: "/v1alpha1/vc/search"
+            body: "*"
+        };
+
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      operation_id: "SearchVerifiableCredentials";
+      summary: "Search Verifiable Credentials";
     };
   }
 }
@@ -68,5 +81,24 @@ message IssueRequest {
 
   // Envelope type
   VerifiableCredentialEnvelopeType envelope_type = 3;
+}
+
+// SearchRequest is a request to seach for VCs
+message SearchRequest {
+  // ID is the method-specific identifier in the DID URI.
+  // Spec: https://www.w3.org/TR/did-core/#method-specific-id
+  // Agntcy DID has the following format: did:agntcy:{id}
+  string id = 1;
+
+  // Schema is the schema of the credential contained in the VC
+  CredentialSchema schema = 2;
+
+  // The credential content representation in JSON-LD format
+  string content = 3;
+}
+
+message SearchResponse {
+  // The list of VCs that match the search criteria
+  repeated EnvelopedVerifiableCredential credentials = 1;
 }
 

@@ -23,6 +23,7 @@ const (
 	VcService_Issue_FullMethodName   = "/agntcy.identity.v1alpha1.VcService/Issue"
 	VcService_Publish_FullMethodName = "/agntcy.identity.v1alpha1.VcService/Publish"
 	VcService_Verify_FullMethodName  = "/agntcy.identity.v1alpha1.VcService/Verify"
+	VcService_Search_FullMethodName  = "/agntcy.identity.v1alpha1.VcService/Search"
 )
 
 // VcServiceClient is the client API for VcService service.
@@ -37,6 +38,8 @@ type VcServiceClient interface {
 	Publish(ctx context.Context, in *EnvelopedVerifiableCredential, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Verify
 	Verify(ctx context.Context, in *EnvelopedVerifiableCredential, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// Search
+	Search(ctx context.Context, in *SearchRequest, opts ...grpc.CallOption) (*SearchResponse, error)
 }
 
 type vcServiceClient struct {
@@ -77,6 +80,16 @@ func (c *vcServiceClient) Verify(ctx context.Context, in *EnvelopedVerifiableCre
 	return out, nil
 }
 
+func (c *vcServiceClient) Search(ctx context.Context, in *SearchRequest, opts ...grpc.CallOption) (*SearchResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(SearchResponse)
+	err := c.cc.Invoke(ctx, VcService_Search_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // VcServiceServer is the server API for VcService service.
 // All implementations should embed UnimplementedVcServiceServer
 // for forward compatibility.
@@ -89,6 +102,8 @@ type VcServiceServer interface {
 	Publish(context.Context, *EnvelopedVerifiableCredential) (*emptypb.Empty, error)
 	// Verify
 	Verify(context.Context, *EnvelopedVerifiableCredential) (*emptypb.Empty, error)
+	// Search
+	Search(context.Context, *SearchRequest) (*SearchResponse, error)
 }
 
 // UnimplementedVcServiceServer should be embedded to have
@@ -106,6 +121,9 @@ func (UnimplementedVcServiceServer) Publish(context.Context, *EnvelopedVerifiabl
 }
 func (UnimplementedVcServiceServer) Verify(context.Context, *EnvelopedVerifiableCredential) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Verify not implemented")
+}
+func (UnimplementedVcServiceServer) Search(context.Context, *SearchRequest) (*SearchResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Search not implemented")
 }
 func (UnimplementedVcServiceServer) testEmbeddedByValue() {}
 
@@ -181,6 +199,24 @@ func _VcService_Verify_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
+func _VcService_Search_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SearchRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VcServiceServer).Search(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: VcService_Search_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VcServiceServer).Search(ctx, req.(*SearchRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // VcService_ServiceDesc is the grpc.ServiceDesc for VcService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -199,6 +235,10 @@ var VcService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Verify",
 			Handler:    _VcService_Verify_Handler,
+		},
+		{
+			MethodName: "Search",
+			Handler:    _VcService_Search_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
