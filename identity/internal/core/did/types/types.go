@@ -85,7 +85,7 @@ type DidDocument struct {
 
 // JWK represents:
 // - a JSON Web Key (JWK) with the respective fields specific to RSA algorithms.
-// - a Quantum JSON Web Key (QJWK) with the respective fields specific to NTRU and LWE algorithms.
+// - a Quantum JSON Web Key (QJWK) with the respective fields specific to AKP algorithms.
 type Jwk struct {
 	// ALG represents the algorithm intended for use with the key.
 	// Example algorithms for Post-Quantum ML-DSA family:

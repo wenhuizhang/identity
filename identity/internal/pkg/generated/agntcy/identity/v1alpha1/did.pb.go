@@ -133,7 +133,7 @@ func (x *DidDocument) GetAssertionMethod() []string {
 
 // JWK represents:
 // - a JSON Web Key (JWK) with the respective fields specific to RSA algorithms.
-// - a Quantum JSON Web Key (QJWK) with the respective fields specific to NTRU and LWE algorithms.
+// - a Quantum JSON Web Key (QJWK) with the respective fields specific to AKP algorithms.
 type Jwk struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// ALG represents the algorithm intended for use with the key.
