@@ -137,15 +137,13 @@ func (x *DidDocument) GetAssertionMethod() []string {
 type Jwk struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// ALG represents the algorithm intended for use with the key.
-	// Example algorithms for "Falcon" family: "FALCON512", "FALCON1024" for
-	// NTRU Post-Quantum algorithms.
-	// Example algorithms for "CRYSTALS-Dilithium" family: "CRYDI2", "CRYDI3",
-	// "CRYDI4" for LWE Post-Quantum algorithms.
+	// Example algorithms for Post-Quantum ML-DSA family:
+	// "ML-DSA-44", "ML-DSA-65", "ML-DSA-87".
 	// Some example algorithms are "RS256", "RS384", "RS512" for RSA algorithms.
 	Alg *string `protobuf:"bytes,1,opt,name=alg,proto3,oneof" json:"alg,omitempty"`
 	// KTY represents the key type parameter.
 	// It specifies the family of quantum algorithms used with the key,
-	// such as "NTRU" or "LWE" for post quantum algorithms
+	// such as "AKP" for post quantum algorithms
 	// or "RSA" for non quantum algorithms.
 	Kty *string `protobuf:"bytes,2,opt,name=kty,proto3,oneof" json:"kty,omitempty"`
 	// Use represents the intended use of the key.
@@ -154,25 +152,28 @@ type Jwk struct {
 	// KID represents the key ID.
 	// It is used to match a specific key.
 	Kid *string `protobuf:"bytes,4,opt,name=kid,proto3,oneof" json:"kid,omitempty"`
-	// The public key for the NTRU and LWE kty.
-	X *string `protobuf:"bytes,5,opt,name=x,proto3,oneof" json:"x,omitempty"`
+	// The public key for the AKP kty.
+	Pub *string `protobuf:"bytes,5,opt,name=pub,proto3,oneof" json:"pub,omitempty"`
+	// The private key for the AKP kty.
+	Priv *string `protobuf:"bytes,6,opt,name=priv,proto3,oneof" json:"priv,omitempty"`
+	// Seed used to derive keys for ML-DSA alg.
+	Seed *string `protobuf:"bytes,7,opt,name=seed,proto3,oneof" json:"seed,omitempty"`
 	// The exponent for the RSA public key.
-	E *string `protobuf:"bytes,6,opt,name=e,proto3,oneof" json:"e,omitempty"`
+	E *string `protobuf:"bytes,8,opt,name=e,proto3,oneof" json:"e,omitempty"`
 	// The modulus for the RSA public key.
-	N *string `protobuf:"bytes,7,opt,name=n,proto3,oneof" json:"n,omitempty"`
+	N *string `protobuf:"bytes,9,opt,name=n,proto3,oneof" json:"n,omitempty"`
 	// The private exponent for the RSA kty.
-	// The private key for the NTRU or LWE kty.
-	D *string `protobuf:"bytes,8,opt,name=d,proto3,oneof" json:"d,omitempty"`
+	D *string `protobuf:"bytes,10,opt,name=d,proto3,oneof" json:"d,omitempty"`
 	// The first prime factor for the RSA private key.
-	P *string `protobuf:"bytes,9,opt,name=p,proto3,oneof" json:"p,omitempty"`
+	P *string `protobuf:"bytes,11,opt,name=p,proto3,oneof" json:"p,omitempty"`
 	// The second prime factor for the RSA private key.
-	Q *string `protobuf:"bytes,10,opt,name=q,proto3,oneof" json:"q,omitempty"`
+	Q *string `protobuf:"bytes,12,opt,name=q,proto3,oneof" json:"q,omitempty"`
 	// The first factor CRT exponent for the RSA private key.
-	Dp *string `protobuf:"bytes,11,opt,name=dp,proto3,oneof" json:"dp,omitempty"`
+	Dp *string `protobuf:"bytes,13,opt,name=dp,proto3,oneof" json:"dp,omitempty"`
 	// The second factor CRT exponent for the RSA private key.
-	Dq *string `protobuf:"bytes,12,opt,name=dq,proto3,oneof" json:"dq,omitempty"`
+	Dq *string `protobuf:"bytes,14,opt,name=dq,proto3,oneof" json:"dq,omitempty"`
 	// The first CRT coefficient for the RSA private key.
-	Qi            *string `protobuf:"bytes,13,opt,name=qi,proto3,oneof" json:"qi,omitempty"`
+	Qi            *string `protobuf:"bytes,15,opt,name=qi,proto3,oneof" json:"qi,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -235,9 +236,23 @@ func (x *Jwk) GetKid() string {
 	return ""
 }
 
-func (x *Jwk) GetX() string {
-	if x != nil && x.X != nil {
-		return *x.X
+func (x *Jwk) GetPub() string {
+	if x != nil && x.Pub != nil {
+		return *x.Pub
+	}
+	return ""
+}
+
+func (x *Jwk) GetPriv() string {
+	if x != nil && x.Priv != nil {
+		return *x.Priv
+	}
+	return ""
+}
+
+func (x *Jwk) GetSeed() string {
+	if x != nil && x.Seed != nil {
+		return *x.Seed
 	}
 	return ""
 }
@@ -514,28 +529,32 @@ const file_agntcy_identity_v1alpha1_did_proto_rawDesc = "" +
 	"\aservice\x18\x05 \x03(\v2!.agntcy.identity.v1alpha1.ServiceR\aservice\x12)\n" +
 	"\x10assertion_method\x18\x06 \x03(\tR\x0fassertionMethodB\x05\n" +
 	"\x03_idB\a\n" +
-	"\x05_node\"\xeb\x02\n" +
+	"\x05_node\"\xb5\x03\n" +
 	"\x03Jwk\x12\x15\n" +
 	"\x03alg\x18\x01 \x01(\tH\x00R\x03alg\x88\x01\x01\x12\x15\n" +
 	"\x03kty\x18\x02 \x01(\tH\x01R\x03kty\x88\x01\x01\x12\x15\n" +
 	"\x03use\x18\x03 \x01(\tH\x02R\x03use\x88\x01\x01\x12\x15\n" +
-	"\x03kid\x18\x04 \x01(\tH\x03R\x03kid\x88\x01\x01\x12\x11\n" +
-	"\x01x\x18\x05 \x01(\tH\x04R\x01x\x88\x01\x01\x12\x11\n" +
-	"\x01e\x18\x06 \x01(\tH\x05R\x01e\x88\x01\x01\x12\x11\n" +
-	"\x01n\x18\a \x01(\tH\x06R\x01n\x88\x01\x01\x12\x11\n" +
-	"\x01d\x18\b \x01(\tH\aR\x01d\x88\x01\x01\x12\x11\n" +
-	"\x01p\x18\t \x01(\tH\bR\x01p\x88\x01\x01\x12\x11\n" +
-	"\x01q\x18\n" +
-	" \x01(\tH\tR\x01q\x88\x01\x01\x12\x13\n" +
-	"\x02dp\x18\v \x01(\tH\n" +
-	"R\x02dp\x88\x01\x01\x12\x13\n" +
-	"\x02dq\x18\f \x01(\tH\vR\x02dq\x88\x01\x01\x12\x13\n" +
-	"\x02qi\x18\r \x01(\tH\fR\x02qi\x88\x01\x01B\x06\n" +
+	"\x03kid\x18\x04 \x01(\tH\x03R\x03kid\x88\x01\x01\x12\x15\n" +
+	"\x03pub\x18\x05 \x01(\tH\x04R\x03pub\x88\x01\x01\x12\x17\n" +
+	"\x04priv\x18\x06 \x01(\tH\x05R\x04priv\x88\x01\x01\x12\x17\n" +
+	"\x04seed\x18\a \x01(\tH\x06R\x04seed\x88\x01\x01\x12\x11\n" +
+	"\x01e\x18\b \x01(\tH\aR\x01e\x88\x01\x01\x12\x11\n" +
+	"\x01n\x18\t \x01(\tH\bR\x01n\x88\x01\x01\x12\x11\n" +
+	"\x01d\x18\n" +
+	" \x01(\tH\tR\x01d\x88\x01\x01\x12\x11\n" +
+	"\x01p\x18\v \x01(\tH\n" +
+	"R\x01p\x88\x01\x01\x12\x11\n" +
+	"\x01q\x18\f \x01(\tH\vR\x01q\x88\x01\x01\x12\x13\n" +
+	"\x02dp\x18\r \x01(\tH\fR\x02dp\x88\x01\x01\x12\x13\n" +
+	"\x02dq\x18\x0e \x01(\tH\rR\x02dq\x88\x01\x01\x12\x13\n" +
+	"\x02qi\x18\x0f \x01(\tH\x0eR\x02qi\x88\x01\x01B\x06\n" +
 	"\x04_algB\x06\n" +
 	"\x04_ktyB\x06\n" +
 	"\x04_useB\x06\n" +
-	"\x04_kidB\x04\n" +
-	"\x02_xB\x04\n" +
+	"\x04_kidB\x06\n" +
+	"\x04_pubB\a\n" +
+	"\x05_privB\a\n" +
+	"\x05_seedB\x04\n" +
 	"\x02_eB\x04\n" +
 	"\x02_nB\x04\n" +
 	"\x02_dB\x04\n" +

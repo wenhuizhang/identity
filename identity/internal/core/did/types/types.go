@@ -88,16 +88,14 @@ type DidDocument struct {
 // - a Quantum JSON Web Key (QJWK) with the respective fields specific to NTRU and LWE algorithms.
 type Jwk struct {
 	// ALG represents the algorithm intended for use with the key.
-	// Example algorithms for "Falcon" family: "FALCON512", "FALCON1024" for
-	// NTRU Post-Quantum algorithms.
-	// Example algorithms for "CRYSTALS-Dilithium" family: "CRYDI2", "CRYDI3",
-	// "CRYDI4" for LWE Post-Quantum algorithms.
+	// Example algorithms for Post-Quantum ML-DSA family:
+	// "ML-DSA-44", "ML-DSA-65", "ML-DSA-87".
 	// Some example algorithms are "RS256", "RS384", "RS512" for RSA algorithms.
 	ALG string `json:"alg,omitempty"`
 
 	// KTY represents the key type parameter.
 	// It specifies the family of quantum algorithms used with the key,
-	// such as "NTRU" or "LWE" for post quantum algorithms
+	// such as "AKP" for post quantum algorithms
 	// or "RSA" for non quantum algorithms.
 	KTY string `json:"kty,omitempty"`
 
@@ -109,8 +107,14 @@ type Jwk struct {
 	// It is used to match a specific key.
 	KID string `json:"kid,omitempty"`
 
-	// The public key for the NTRU and LWE kty.
-	X string `json:"x,omitempty"`
+	// The public key for the AKP kty.
+	PUB string `json:"pub,omitempty"`
+
+	// The private key for the AKP kty.
+	PRIV string `json:"priv,omitempty"`
+
+	// Seed used to derive keys for ML-DSA alg.
+	SEED string `json:"seed,omitempty"`
 
 	// The exponent for the RSA public key.
 	E string `json:"e,omitempty"`
@@ -119,7 +123,6 @@ type Jwk struct {
 	N string `json:"n,omitempty"`
 
 	// The private exponent for the RSA kty.
-	// The private key for the NTRU or LWE kty.
 	D string `json:"d,omitempty"`
 
 	// The first prime factor for the RSA private key.

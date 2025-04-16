@@ -50,16 +50,14 @@ message DidDocument {
 // - a Quantum JSON Web Key (QJWK) with the respective fields specific to NTRU and LWE algorithms.
 message Jwk {
   // ALG represents the algorithm intended for use with the key.
-  // Example algorithms for "Falcon" family: "FALCON512", "FALCON1024" for
-  // NTRU Post-Quantum algorithms.
-  // Example algorithms for "CRYSTALS-Dilithium" family: "CRYDI2", "CRYDI3",
-  // "CRYDI4" for LWE Post-Quantum algorithms.
+  // Example algorithms for Post-Quantum ML-DSA family:
+  // "ML-DSA-44", "ML-DSA-65", "ML-DSA-87".
   // Some example algorithms are "RS256", "RS384", "RS512" for RSA algorithms.
   optional string alg = 1;
 
   // KTY represents the key type parameter.
   // It specifies the family of quantum algorithms used with the key,
-  // such as "NTRU" or "LWE" for post quantum algorithms
+  // such as "AKP" for post quantum algorithms
   // or "RSA" for non quantum algorithms.
   optional string kty = 2;
 
@@ -71,33 +69,38 @@ message Jwk {
   // It is used to match a specific key.
   optional string kid = 4;
 
-  // The public key for the NTRU and LWE kty.
-  optional string x = 5;
+  // The public key for the AKP kty.
+  optional string pub = 5;
+
+  // The private key for the AKP kty.
+  optional string priv = 6;
+
+  // Seed used to derive keys for ML-DSA alg.
+  optional string seed = 7;
 
   // The exponent for the RSA public key.
-  optional string e = 6;
+  optional string e = 8;
 
   // The modulus for the RSA public key.
-  optional string n = 7;
+  optional string n = 9;
 
   // The private exponent for the RSA kty.
-  // The private key for the NTRU or LWE kty.
-  optional string d = 8;
+  optional string d = 10;
 
   // The first prime factor for the RSA private key.
-  optional string p = 9;
+  optional string p = 11;
 
   // The second prime factor for the RSA private key.
-  optional string q = 10;
+  optional string q = 12;
 
   // The first factor CRT exponent for the RSA private key.
-  optional string dp = 11;
+  optional string dp = 13;
 
   // The second factor CRT exponent for the RSA private key.
-  optional string dq = 12;
+  optional string dq = 14;
 
   // The first CRT coefficient for the RSA private key.
-  optional string qi = 13;
+  optional string qi = 15;
 }
 
 // JWKS represents a set of JSON Web Keys (JWKs).

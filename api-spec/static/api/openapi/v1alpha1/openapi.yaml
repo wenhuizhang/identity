@@ -347,17 +347,15 @@ components:
                     type: string
                     description: |-
                         ALG represents the algorithm intended for use with the key.
-                         Example algorithms for "Falcon" family: "FALCON512", "FALCON1024" for
-                         NTRU Post-Quantum algorithms.
-                         Example algorithms for "CRYSTALS-Dilithium" family: "CRYDI2", "CRYDI3",
-                         "CRYDI4" for LWE Post-Quantum algorithms.
+                         Example algorithms for Post-Quantum ML-DSA family:
+                         "ML-DSA-44", "ML-DSA-65", "ML-DSA-87".
                          Some example algorithms are "RS256", "RS384", "RS512" for RSA algorithms.
                 kty:
                     type: string
                     description: |-
                         KTY represents the key type parameter.
                          It specifies the family of quantum algorithms used with the key,
-                         such as "NTRU" or "LWE" for post quantum algorithms
+                         such as "AKP" for post quantum algorithms
                          or "RSA" for non quantum algorithms.
                 use:
                     type: string
@@ -369,9 +367,15 @@ components:
                     description: |-
                         KID represents the key ID.
                          It is used to match a specific key.
-                x:
+                pub:
                     type: string
-                    description: The public key for the NTRU and LWE kty.
+                    description: The public key for the AKP kty.
+                priv:
+                    type: string
+                    description: The private key for the AKP kty.
+                seed:
+                    type: string
+                    description: Seed used to derive keys for ML-DSA alg.
                 e:
                     type: string
                     description: The exponent for the RSA public key.
@@ -380,9 +384,7 @@ components:
                     description: The modulus for the RSA public key.
                 d:
                     type: string
-                    description: |-
-                        The private exponent for the RSA kty.
-                         The private key for the NTRU or LWE kty.
+                    description: The private exponent for the RSA kty.
                 p:
                     type: string
                     description: The first prime factor for the RSA private key.
