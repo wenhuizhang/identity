@@ -21,6 +21,7 @@ RUN go install github.com/google/gnostic/cmd/protoc-gen-openapi@latest
 RUN go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
 RUN go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
 RUN go install github.com/pseudomuto/protoc-gen-doc/cmd/protoc-gen-doc@latest
+RUN go install github.com/bufbuild/protoschema-plugins/cmd/protoc-gen-jsonschema@latest
 
 # Go to Protobuf
 RUN go install k8s.io/code-generator/cmd/go-to-protobuf@latest

@@ -114,3 +114,6 @@ cd "${Identity_ROOT}/code/api-spec"
 
 # Proto
 /usr/local/bin/buf generate --template buf.gen.doc.yaml --output ../api-spec/static/api/proto/v1alpha1 --path proto/$PROTO_FILE_PATH
+
+# Json Schema
+/usr/local/bin/buf generate --template buf.gen.jsonschema.yaml --output ../api-spec/static/api/jsonschema/v1alpha1 --path proto/$PROTO_FILE_PATH
