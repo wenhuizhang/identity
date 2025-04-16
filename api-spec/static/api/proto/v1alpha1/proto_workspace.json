@@ -107,7 +107,7 @@
           "fields": [
             {
               "name": "alg",
-              "description": "ALG represents the algorithm intended for use with the key.\nExample algorithms for \"Falcon\" family: \"FALCON512\", \"FALCON1024\" for\nNTRU Post-Quantum algorithms.\nExample algorithms for \"CRYSTALS-Dilithium\" family: \"CRYDI2\", \"CRYDI3\",\n\"CRYDI4\" for LWE Post-Quantum algorithms.\nSome example algorithms are \"RS256\", \"RS384\", \"RS512\" for RSA algorithms.",
+              "description": "ALG represents the algorithm intended for use with the key.\nExample algorithms for Post-Quantum ML-DSA family:\n\"ML-DSA-44\", \"ML-DSA-65\", \"ML-DSA-87\".\nSome example algorithms are \"RS256\", \"RS384\", \"RS512\" for RSA algorithms.",
               "label": "optional",
               "type": "string",
               "longType": "string",
@@ -119,7 +119,7 @@
             },
             {
               "name": "kty",
-              "description": "KTY represents the key type parameter.\nIt specifies the family of quantum algorithms used with the key,\nsuch as \"NTRU\" or \"LWE\" for post quantum algorithms\nor \"RSA\" for non quantum algorithms.",
+              "description": "KTY represents the key type parameter.\nIt specifies the family of quantum algorithms used with the key,\nsuch as \"AKP\" for post quantum algorithms\nor \"RSA\" for non quantum algorithms.",
               "label": "optional",
               "type": "string",
               "longType": "string",
@@ -154,15 +154,39 @@
               "defaultValue": ""
             },
             {
-              "name": "x",
-              "description": "The public key for the NTRU and LWE kty.",
+              "name": "pub",
+              "description": "The public key for the AKP kty.",
               "label": "optional",
               "type": "string",
               "longType": "string",
               "fullType": "string",
               "ismap": false,
               "isoneof": true,
-              "oneofdecl": "_x",
+              "oneofdecl": "_pub",
+              "defaultValue": ""
+            },
+            {
+              "name": "priv",
+              "description": "The private key for the AKP kty.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_priv",
+              "defaultValue": ""
+            },
+            {
+              "name": "seed",
+              "description": "Seed used to derive keys for ML-DSA alg.",
+              "label": "optional",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": true,
+              "oneofdecl": "_seed",
               "defaultValue": ""
             },
             {
@@ -191,7 +215,7 @@
             },
             {
               "name": "d",
-              "description": "The private exponent for the RSA kty.\nThe private key for the NTRU or LWE kty.",
+              "description": "The private exponent for the RSA kty.",
               "label": "optional",
               "type": "string",
               "longType": "string",
