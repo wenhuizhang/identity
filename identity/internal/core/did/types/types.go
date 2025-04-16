@@ -85,16 +85,20 @@ type DidDocument struct {
 
 // JWK represents:
 // - a JSON Web Key (JWK) with the respective fields specific to RSA algorithms.
-// - a Quantum JSON Web Key (QJWK) with the respective fields specific to NTRU algorithms.
+// - a Quantum JSON Web Key (QJWK) with the respective fields specific to NTRU and LWE algorithms.
 type Jwk struct {
 	// ALG represents the algorithm intended for use with the key.
-	// Some example algorithms are "Falcon" family: "Falcon-512", "Falcon-1024" for Quantum algorithms.
+	// Example algorithms for "Falcon" family: "FALCON512", "FALCON1024" for
+	// NTRU Post-Quantum algorithms.
+	// Example algorithms for "CRYSTALS-Dilithium" family: "CRYDI2", "CRYDI3",
+	// "CRYDI4" for LWE Post-Quantum algorithms.
 	// Some example algorithms are "RS256", "RS384", "RS512" for RSA algorithms.
 	ALG string `json:"alg,omitempty"`
 
 	// KTY represents the key type parameter.
 	// It specifies the family of quantum algorithms used with the key,
-	// such as "NTRU" or "RSA" for non quantum algorithms.
+	// such as "NTRU" or "LWE" for post quantum algorithms
+	// or "RSA" for non quantum algorithms.
 	KTY string `json:"kty,omitempty"`
 
 	// Use represents the intended use of the key.
@@ -105,13 +109,17 @@ type Jwk struct {
 	// It is used to match a specific key.
 	KID string `json:"kid,omitempty"`
 
+	// The public key for the NTRU and LWE kty.
+	X string `json:"x,omitempty"`
+
 	// The exponent for the RSA public key.
 	E string `json:"e,omitempty"`
 
 	// The modulus for the RSA public key.
 	N string `json:"n,omitempty"`
 
-	// The private exponent for the RSA private key.
+	// The private exponent for the RSA kty.
+	// The private key for the NTRU or LWE kty.
 	D string `json:"d,omitempty"`
 
 	// The first prime factor for the RSA private key.
@@ -128,18 +136,6 @@ type Jwk struct {
 
 	// The first CRT coefficient for the RSA private key.
 	QI string `json:"qi,omitempty"`
-
-	// The public key for the NTRU public key.
-	H string `json:"h,omitempty"`
-
-	// The polynomial for the NTRU private key.
-	F string `json:"f,omitempty"`
-
-	// The f inverse modulo p for the NTRU private key.
-	FP string `json:"fp,omitempty"`
-
-	// The polynomial for the NTRU private key.
-	G string `json:"g,omitempty"`
 }
 
 // JWKS represents a set of JSON Web Keys (JWKs).
