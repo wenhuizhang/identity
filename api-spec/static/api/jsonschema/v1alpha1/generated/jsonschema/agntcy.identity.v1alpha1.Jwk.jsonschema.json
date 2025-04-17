@@ -2,14 +2,14 @@
   "$id": "agntcy.identity.v1alpha1.Jwk.jsonschema.json",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "additionalProperties": false,
-  "description": "JWK represents:\n - a JSON Web Key (JWK) with the respective fields specific to RSA algorithms.\n - a Quantum JSON Web Key (QJWK) with the respective fields specific to NTRU and LWE algorithms.",
+  "description": "JWK represents:\n - a JSON Web Key (JWK) with the respective fields specific to RSA algorithms.\n - a Quantum JSON Web Key (QJWK) with the respective fields specific to AKP algorithms.",
   "properties": {
     "alg": {
-      "description": "ALG represents the algorithm intended for use with the key.\n Example algorithms for \"Falcon\" family: \"FALCON512\", \"FALCON1024\" for\n NTRU Post-Quantum algorithms.\n Example algorithms for \"CRYSTALS-Dilithium\" family: \"CRYDI2\", \"CRYDI3\",\n \"CRYDI4\" for LWE Post-Quantum algorithms.\n Some example algorithms are \"RS256\", \"RS384\", \"RS512\" for RSA algorithms.",
+      "description": "ALG represents the algorithm intended for use with the key.\n Example algorithms for Post-Quantum ML-DSA family:\n \"ML-DSA-44\", \"ML-DSA-65\", \"ML-DSA-87\".\n Some example algorithms are \"RS256\", \"RS384\", \"RS512\" for RSA algorithms.",
       "type": "string"
     },
     "d": {
-      "description": "The private exponent for the RSA kty.\n The private key for the NTRU or LWE kty.",
+      "description": "The private exponent for the RSA kty.",
       "type": "string"
     },
     "dp": {
@@ -29,7 +29,7 @@
       "type": "string"
     },
     "kty": {
-      "description": "KTY represents the key type parameter.\n It specifies the family of quantum algorithms used with the key,\n such as \"NTRU\" or \"LWE\" for post quantum algorithms\n or \"RSA\" for non quantum algorithms.",
+      "description": "KTY represents the key type parameter.\n It specifies the family of quantum algorithms used with the key,\n such as \"AKP\" for post quantum algorithms\n or \"RSA\" for non quantum algorithms.",
       "type": "string"
     },
     "n": {
@@ -40,6 +40,14 @@
       "description": "The first prime factor for the RSA private key.",
       "type": "string"
     },
+    "priv": {
+      "description": "The private key for the AKP kty.",
+      "type": "string"
+    },
+    "pub": {
+      "description": "The public key for the AKP kty.",
+      "type": "string"
+    },
     "q": {
       "description": "The second prime factor for the RSA private key.",
       "type": "string"
@@ -48,12 +56,12 @@
       "description": "The first CRT coefficient for the RSA private key.",
       "type": "string"
     },
-    "use": {
-      "description": "Use represents the intended use of the key.\n Some example values are \"enc\" and \"sig\".",
+    "seed": {
+      "description": "Seed used to derive keys for ML-DSA alg.",
       "type": "string"
     },
-    "x": {
-      "description": "The public key for the NTRU and LWE kty.",
+    "use": {
+      "description": "Use represents the intended use of the key.\n Some example values are \"enc\" and \"sig\".",
       "type": "string"
     }
   },
