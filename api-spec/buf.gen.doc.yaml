@@ -4,5 +4,5 @@ managed:
 plugins:
   - name: doc
     out: .
-    opt: json,proto_workspace.json
+    opt: json,proto_workspace.json:openapi*
     strategy: all
