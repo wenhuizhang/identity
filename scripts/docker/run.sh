@@ -111,10 +111,10 @@ cd "${Identity_ROOT}/code/api-spec"
 /usr/local/bin/buf generate --debug -v
 
 # Openapi
-/usr/local/bin/buf generate --template buf.gen.openapi.yaml --output ../api-spec/static/api/openapi/v1alpha1 --path proto/$PROTO_NODE_FILE_PATH
+/usr/local/bin/buf generate --template buf.gen.openapi.yaml --output ../api-spec/static/api/openapi/node/v1alpha1 --path proto/$PROTO_NODE_FILE_PATH
 
 # Proto
 /usr/local/bin/buf generate --template buf.gen.doc.yaml --output ../api-spec/static/api/proto/v1alpha1
 
 # Json Schema
-/usr/local/bin/buf generate --template buf.gen.jsonschema.yaml --output ../api-spec/static/api/jsonschema/v1alpha1 --path proto/$PROTO_CORE_FILE_PATH
+/usr/local/bin/buf generate --template buf.gen.jsonschema.yaml --output ../api-spec/static/api/jsonschema/core/v1alpha1 --path proto/$PROTO_CORE_FILE_PATH

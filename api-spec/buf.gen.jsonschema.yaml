@@ -3,4 +3,4 @@ managed:
   enabled: true
 plugins:
   - name: jsonschema
-    out: ./generated/jsonschema/
+    out: .
