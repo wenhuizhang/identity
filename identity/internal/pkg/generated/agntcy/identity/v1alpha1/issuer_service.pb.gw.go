@@ -168,7 +168,7 @@ func RegisterIssuerServiceHandlerServer(ctx context.Context, mux *runtime.ServeM
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/agntcy.identity.v1alpha1.IssuerService/WellKnown", runtime.WithHTTPPathPattern("/v1alpha1/issuer/{common_name}/.well-known/id.json"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/agntcy.identity.v1alpha1.IssuerService/WellKnown", runtime.WithHTTPPathPattern("/v1alpha1/issuer/{common_name}/.well-known/jwks.json"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -260,7 +260,7 @@ func RegisterIssuerServiceHandlerClient(ctx context.Context, mux *runtime.ServeM
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/agntcy.identity.v1alpha1.IssuerService/WellKnown", runtime.WithHTTPPathPattern("/v1alpha1/issuer/{common_name}/.well-known/id.json"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/agntcy.identity.v1alpha1.IssuerService/WellKnown", runtime.WithHTTPPathPattern("/v1alpha1/issuer/{common_name}/.well-known/jwks.json"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -279,7 +279,7 @@ func RegisterIssuerServiceHandlerClient(ctx context.Context, mux *runtime.ServeM
 var (
 	pattern_IssuerService_KeyGen_0    = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1alpha1", "issuer", "keygen"}, ""))
 	pattern_IssuerService_Register_0  = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1alpha1", "issuer", "register"}, ""))
-	pattern_IssuerService_WellKnown_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3, 2, 4}, []string{"v1alpha1", "issuer", "common_name", ".well-known", "id.json"}, ""))
+	pattern_IssuerService_WellKnown_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3, 2, 4}, []string{"v1alpha1", "issuer", "common_name", ".well-known", "jwks.json"}, ""))
 )
 
 var (
