@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package agntcy.identity.v1alpha1;
 
-import "agntcy/identity/v1alpha1/did.proto";
+import "agntcy/identity/v1alpha1/id.proto";
 import "agntcy/identity/v1alpha1/issuer.proto";
 import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
@@ -43,10 +43,10 @@ service IssuerService {
   }
 
 
-  // WellKnown endpoint resolved by did:web:{NODE}:{common_name} method
+  // WellKnown endpoint
   rpc WellKnown(WellKnownRequest) returns (Jwks) {
     option (google.api.http) = {
-            get: "/v1alpha1/issuer/{common_name}/.well-known/did.json"
+            get: "/v1alpha1/issuer/{common_name}/.well-known/id.json"
         };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       operation_id: "WellKnown";

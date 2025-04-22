@@ -71,9 +71,7 @@ service VcService {
 
 // IssueRequest is a request to issue a VC
 message IssueRequest {
-  // ID is the method-specific identifier in the DID URI.
-  // Spec: https://www.w3.org/TR/did-core/#method-specific-id
-  // Agntcy DID has the following format: did:agntcy:{id}
+  // ID is the identifier.
   string id = 1;
 
   // Content of the VC
@@ -85,9 +83,7 @@ message IssueRequest {
 
 // SearchRequest is a request to seach for VCs
 message SearchRequest {
-  // ID is the method-specific identifier in the DID URI.
-  // Spec: https://www.w3.org/TR/did-core/#method-specific-id
-  // Agntcy DID has the following format: did:agntcy:{id}
+  // ID is the identifier.
   string id = 1;
 
   // Schema is the schema of the credential contained in the VC

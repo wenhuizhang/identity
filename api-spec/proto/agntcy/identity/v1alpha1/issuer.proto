@@ -4,7 +4,7 @@ syntax = "proto3";
 
 package agntcy.identity.v1alpha1;
 
-import "agntcy/identity/v1alpha1/did.proto";
+import "agntcy/identity/v1alpha1/id.proto";
 
 // Package-wide variables from generator "generated".
 option go_package = "github.com/agntcy/identity/internal/pkg/generated/agntcy/identity/v1alpha1;identity_sdk_go";

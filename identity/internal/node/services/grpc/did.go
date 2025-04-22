@@ -1,8 +1,8 @@
 package grpcservices
 
-type DidService struct {
+type IdService struct {
 }
 
-func NewDidService() *DidService {
-	return &DidService{}
+func NewIdService() *IdService {
+	return &IdService{}
 }

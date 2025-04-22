@@ -111,7 +111,7 @@ var File_agntcy_identity_v1alpha1_issuer_proto protoreflect.FileDescriptor
 
 const file_agntcy_identity_v1alpha1_issuer_proto_rawDesc = "" +
 	"\n" +
-	"%agntcy/identity/v1alpha1/issuer.proto\x12\x18agntcy.identity.v1alpha1\x1a\"agntcy/identity/v1alpha1/did.proto\"\xe4\x02\n" +
+	"%agntcy/identity/v1alpha1/issuer.proto\x12\x18agntcy.identity.v1alpha1\x1a!agntcy/identity/v1alpha1/id.proto\"\xe4\x02\n" +
 	"\x06Issuer\x12'\n" +
 	"\forganization\x18\x01 \x01(\tH\x00R\forganization\x88\x01\x01\x12.\n" +
 	"\x10sub_organization\x18\x02 \x01(\tH\x01R\x0fsubOrganization\x88\x01\x01\x12$\n" +
@@ -159,7 +159,7 @@ func file_agntcy_identity_v1alpha1_issuer_proto_init() {
 	if File_agntcy_identity_v1alpha1_issuer_proto != nil {
 		return
 	}
-	file_agntcy_identity_v1alpha1_did_proto_init()
+	file_agntcy_identity_v1alpha1_id_proto_init()
 	file_agntcy_identity_v1alpha1_issuer_proto_msgTypes[0].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{

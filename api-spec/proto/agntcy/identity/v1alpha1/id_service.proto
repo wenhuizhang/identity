@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package agntcy.identity.v1alpha1;
 
-import "agntcy/identity/v1alpha1/did.proto";
+import "agntcy/identity/v1alpha1/id.proto";
 import "agntcy/identity/v1alpha1/issuer.proto";
 import "google/api/annotations.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
@@ -10,49 +10,47 @@ import "protoc-gen-openapiv2/options/annotations.proto";
 // Package-wide variables from generator "generated".
 option go_package = "github.com/agntcy/identity/internal/pkg/generated/agntcy/identity/v1alpha1;identity_sdk_go";
 
-// DidService is the service that provides DID operations.
-service DidService {
+// IdService is the service that provides ID operations.
+service IdService {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_tag) = {
-    name: "DidService";
+    name: "IdService";
   };
 
-  // Generate a Did
-  rpc Generate(GenerateRequest) returns (DidDocument) {
+  // Generate a Id
+  rpc Generate(GenerateRequest) returns (IdDocument) {
     option (google.api.http) = {
-            post: "/v1alpha1/did/generate"
+            post: "/v1alpha1/id/generate"
             body: "issuer"
         };
 
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      operation_id: "GenerateDid";
-      summary: "Generate Did";
+      operation_id: "GenerateId";
+      summary: "Generate Id";
     };
   }
 
-  // Resolve an Did
-  rpc Resolve(ResolveRequest) returns (DidDocument) {
+  // Resolve an Id
+  rpc Resolve(ResolveRequest) returns (IdDocument) {
     option (google.api.http) = {
-            post: "/v1alpha1/did/resolve"
+            post: "/v1alpha1/id/resolve"
             body: "*"
         };
 
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      operation_id: "ResolveDid";
-      summary: "Resolve Did";
+      operation_id: "ResolveId";
+      summary: "Resolve Id";
     };
   }
 }
 
-// Generate an Did for an issuer
+// Generate an Id for an issuer
 message GenerateRequest {
   // The issuer details
   Issuer issuer = 1;
 }
 
 message ResolveRequest {
-  // ID is the method-specific identifier in the DID URI.
-  // Spec: https://www.w3.org/TR/did-core/#method-specific-id
-  // Agntcy DID has the following format: did:agntcy:{id}
+  // ID is the identifier.
   string id = 1;
 }
 
