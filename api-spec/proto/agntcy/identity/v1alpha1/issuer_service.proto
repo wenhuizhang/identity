@@ -46,7 +46,7 @@ service IssuerService {
   // WellKnown endpoint
   rpc WellKnown(WellKnownRequest) returns (Jwks) {
     option (google.api.http) = {
-            get: "/v1alpha1/issuer/{common_name}/.well-known/id.json"
+            get: "/v1alpha1/issuer/{common_name}/.well-known/jwks.json"
         };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       operation_id: "WellKnown";

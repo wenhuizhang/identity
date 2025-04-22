@@ -21,10 +21,12 @@ message Issuer {
   // Could be a FQDN or a FQDA
   optional string common_name = 3;
 
+  // This field is optional
   // The keys of the issuer in JWK format
   // The public key is used to verify the signature of the different claims
   optional .agntcy.identity.v1alpha1.Jwk public_key = 4;
 
+  // This field is optional
   // The private key of the issuer in JWK format
   optional .agntcy.identity.v1alpha1.Jwk private_key = 5;
 }

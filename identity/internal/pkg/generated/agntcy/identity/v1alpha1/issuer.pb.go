@@ -33,9 +33,11 @@ type Issuer struct {
 	// The common name of the issuer
 	// Could be a FQDN or a FQDA
 	CommonName *string `protobuf:"bytes,3,opt,name=common_name,json=commonName,proto3,oneof" json:"common_name,omitempty"`
+	// This field is optional
 	// The keys of the issuer in JWK format
 	// The public key is used to verify the signature of the different claims
 	PublicKey *Jwk `protobuf:"bytes,4,opt,name=public_key,json=publicKey,proto3,oneof" json:"public_key,omitempty"`
+	// This field is optional
 	// The private key of the issuer in JWK format
 	PrivateKey    *Jwk `protobuf:"bytes,5,opt,name=private_key,json=privateKey,proto3,oneof" json:"private_key,omitempty"`
 	unknownFields protoimpl.UnknownFields
