@@ -102,7 +102,7 @@ func main() {
 	// healthzChecker := healthz.NewChecker()
 
 	register := app_grpc_register.GrpcServiceRegister{
-		// DidServiceServer: grpcservices.NewDidService(),
+		// IdServiceServer: grpcservices.NewIdService(),
 	}
 
 	register.RegisterGrpcHandlers(grpcsrv.Server)

@@ -35,7 +35,7 @@ type IssuerServiceClient interface {
 	KeyGen(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*Jwk, error)
 	// Register
 	Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterResponse, error)
-	// WellKnown endpoint resolved by did:web:{NODE}:{common_name} method
+	// WellKnown endpoint
 	WellKnown(ctx context.Context, in *WellKnownRequest, opts ...grpc.CallOption) (*Jwks, error)
 }
 
@@ -87,7 +87,7 @@ type IssuerServiceServer interface {
 	KeyGen(context.Context, *emptypb.Empty) (*Jwk, error)
 	// Register
 	Register(context.Context, *RegisterRequest) (*RegisterResponse, error)
-	// WellKnown endpoint resolved by did:web:{NODE}:{common_name} method
+	// WellKnown endpoint
 	WellKnown(context.Context, *WellKnownRequest) (*Jwks, error)
 }
 

@@ -27,9 +27,7 @@ const (
 // IssueRequest is a request to issue a VC
 type IssueRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// ID is the method-specific identifier in the DID URI.
-	// Spec: https://www.w3.org/TR/did-core/#method-specific-id
-	// Agntcy DID has the following format: did:agntcy:{id}
+	// ID is the identifier.
 	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	// Content of the VC
 	Content *CredentialContent `protobuf:"bytes,2,opt,name=content,proto3" json:"content,omitempty"`
@@ -93,9 +91,7 @@ func (x *IssueRequest) GetEnvelopeType() VerifiableCredentialEnvelopeType {
 // SearchRequest is a request to seach for VCs
 type SearchRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// ID is the method-specific identifier in the DID URI.
-	// Spec: https://www.w3.org/TR/did-core/#method-specific-id
-	// Agntcy DID has the following format: did:agntcy:{id}
+	// ID is the identifier.
 	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	// Schema is the schema of the credential contained in the VC
 	Schema *CredentialSchema `protobuf:"bytes,2,opt,name=schema,proto3" json:"schema,omitempty"`

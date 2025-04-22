@@ -1,7 +1,7 @@
 package types
 
 import (
-	didtypes "github.com/agntcy/identity/internal/core/did/types"
+	idtypes "github.com/agntcy/identity/internal/core/id/types"
 )
 
 // A Identity Issuer
@@ -18,8 +18,8 @@ type Issuer struct {
 
 	// The keys of the issuer in JWK format
 	// The public key is used to verify the signature of the different claims
-	PublicKey *didtypes.Jwk `json:"public_key,omitempty"`
+	PublicKey *idtypes.Jwk `json:"public_key,omitempty"`
 
 	// The private key of the issuer in JWK format
-	PrivateKey *didtypes.Jwk `json:"private_key,omitempty"`
+	PrivateKey *idtypes.Jwk `json:"private_key,omitempty"`
 }
