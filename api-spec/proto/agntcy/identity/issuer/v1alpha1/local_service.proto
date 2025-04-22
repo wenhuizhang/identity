@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package agntcy.identity.issuer.v1alpha1;
+
+import "agntcy/identity/core/v1alpha1/id.proto";
+import "agntcy/identity/core/v1alpha1/vc.proto";
+import "google/protobuf/empty.proto";
+
+// Package-wide variables from generator "generated".
+option go_package = "github.com/agntcy/identity/internal/pkg/generated/agntcy/identity/issuer/v1alpha1;identity_issuer_sdk_go";
+
+// LocalService is the service that provides LOCAL issuer operations.
+service LocalService {
+  // Generate a keypair in JWK format
+  rpc KeyGen(google.protobuf.Empty) returns (agntcy.identity.core.v1alpha1.Jwk);
+
+  // Issue a Verifiable Credential
+  rpc IssueVC(IssueVCRequest) returns (agntcy.identity.core.v1alpha1.EnvelopedVerifiableCredential);
+}
+
+// IssueRequest is a request to issue a VC
+message IssueVCRequest {
+  // ID is the identifier.
+  string id = 1;
+
+  // Content of the VC
+  agntcy.identity.core.v1alpha1.CredentialContent content = 2;
+
+  // Envelope type
+  agntcy.identity.core.v1alpha1.VerifiableCredentialEnvelopeType envelope_type = 3;
+}
+

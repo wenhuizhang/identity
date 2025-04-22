@@ -1,7 +1,8 @@
 package app_grpc_register
 
 import (
-	v1alpha1 "github.com/agntcy/identity/internal/pkg/generated/agntcy/identity/v1alpha1"
+	v1alpha1 "github.com/agntcy/identity/internal/pkg/generated/agntcy/identity/issuer/v1alpha1"
+	v1alpha11 "github.com/agntcy/identity/internal/pkg/generated/agntcy/identity/node/v1alpha1"
 )
 
 import (
@@ -12,47 +13,60 @@ import (
 )
 
 type GrpcServiceRegister struct {
-	IdServiceServer v1alpha1.IdServiceServer
+	LocalServiceServer v1alpha1.LocalServiceServer
 
-	IssuerServiceServer v1alpha1.IssuerServiceServer
+	IdServiceServer v1alpha11.IdServiceServer
 
-	VcServiceServer v1alpha1.VcServiceServer
+	IssuerServiceServer v1alpha11.IssuerServiceServer
+
+	VcServiceServer v1alpha11.VcServiceServer
 }
 
 func (r GrpcServiceRegister) RegisterGrpcHandlers(grpcServer *grpc.Server) {
 
+	if r.LocalServiceServer != nil {
+		v1alpha1.RegisterLocalServiceServer(grpcServer, r.LocalServiceServer)
+	}
+
 	if r.IdServiceServer != nil {
-		v1alpha1.RegisterIdServiceServer(grpcServer, r.IdServiceServer)
+		v1alpha11.RegisterIdServiceServer(grpcServer, r.IdServiceServer)
 	}
 
 	if r.IssuerServiceServer != nil {
-		v1alpha1.RegisterIssuerServiceServer(grpcServer, r.IssuerServiceServer)
+		v1alpha11.RegisterIssuerServiceServer(grpcServer, r.IssuerServiceServer)
 	}
 
 	if r.VcServiceServer != nil {
-		v1alpha1.RegisterVcServiceServer(grpcServer, r.VcServiceServer)
+		v1alpha11.RegisterVcServiceServer(grpcServer, r.VcServiceServer)
 	}
 
 }
 
 func (r GrpcServiceRegister) RegisterHttpHandlers(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
 
+	if r.LocalServiceServer != nil {
+		err := v1alpha1.RegisterLocalServiceHandler(ctx, mux, conn)
+		if err != nil {
+			return err
+		}
+	}
+
 	if r.IdServiceServer != nil {
-		err := v1alpha1.RegisterIdServiceHandler(ctx, mux, conn)
+		err := v1alpha11.RegisterIdServiceHandler(ctx, mux, conn)
 		if err != nil {
 			return err
 		}
 	}
 
 	if r.IssuerServiceServer != nil {
-		err := v1alpha1.RegisterIssuerServiceHandler(ctx, mux, conn)
+		err := v1alpha11.RegisterIssuerServiceHandler(ctx, mux, conn)
 		if err != nil {
 			return err
 		}
 	}
 
 	if r.VcServiceServer != nil {
-		err := v1alpha1.RegisterVcServiceHandler(ctx, mux, conn)
+		err := v1alpha11.RegisterVcServiceHandler(ctx, mux, conn)
 		if err != nil {
 			return err
 		}

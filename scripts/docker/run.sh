@@ -4,8 +4,9 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-PROTO_PACKAGE_NAME="agntcy.identity.v1alpha1"
-PROTO_FILE_PATH="agntcy/identity/v1alpha1/"
+PROTO_PACKAGE_NAME="agntcy.identity.core.v1alpha1"
+PROTO_CORE_FILE_PATH="agntcy/identity/core/v1alpha1/"
+PROTO_NODE_FILE_PATH="agntcy/identity/node/v1alpha1/"
 
 function get_module_name_from_package() {
   echo $(dirname "$1" | xargs basename)
@@ -77,7 +78,7 @@ if [ ! -z "${packages_comma_separated}" ]; then
 
   for m in $protos; do
     sed -i 's/syntax = "proto2";/syntax = "proto3";/g' "${m}"
-    sed -i 's|go_package = [^ ]\+|go_package = "github.com/agntcy/identity/internal/pkg/generated/agntcy/identity/v1alpha1;identity_sdk_go";|g' "${m}"
+    sed -i 's|go_package = [^ ]\+|go_package = "github.com/agntcy/identity/internal/pkg/generated/agntcy/identity/core/v1alpha1;identity_core_sdk_go";|g' "${m}"
   done
 
   for package in $packages; do
@@ -86,11 +87,11 @@ if [ ! -z "${packages_comma_separated}" ]; then
     import=$(echo "$package" | sed 's|/|\\.|g')
     for m in $protos; do
       sed -i "s|${import}|${PROTO_PACKAGE_NAME}|g" "${m}"
-      sed -i "s|${package}/generated.proto|${PROTO_FILE_PATH}${proto_file}.proto|g" "${m}"
+      sed -i "s|${package}/generated.proto|${PROTO_CORE_FILE_PATH}${proto_file}.proto|g" "${m}"
     done
   done
 
-  cp -r "${Identity_ROOT}/local/output/." "${Identity_ROOT}/code/api-spec/proto/agntcy/identity/v1alpha1"
+  cp -r "${Identity_ROOT}/local/output/." "${Identity_ROOT}/code/api-spec/proto/agntcy/identity/core/v1alpha1"
 fi
 
 echo ""
@@ -110,10 +111,10 @@ cd "${Identity_ROOT}/code/api-spec"
 /usr/local/bin/buf generate --debug -v
 
 # Openapi
-/usr/local/bin/buf generate --template buf.gen.openapi.yaml --output ../api-spec/static/api/openapi/v1alpha1 --path proto/$PROTO_FILE_PATH
+/usr/local/bin/buf generate --template buf.gen.openapi.yaml --output ../api-spec/static/api/openapi/v1alpha1 --path proto/$PROTO_NODE_FILE_PATH
 
 # Proto
-/usr/local/bin/buf generate --template buf.gen.doc.yaml --output ../api-spec/static/api/proto/v1alpha1 --path proto/$PROTO_FILE_PATH
+/usr/local/bin/buf generate --template buf.gen.doc.yaml --output ../api-spec/static/api/proto/v1alpha1
 
 # Json Schema
-/usr/local/bin/buf generate --template buf.gen.jsonschema.yaml --output ../api-spec/static/api/jsonschema/v1alpha1 --path proto/$PROTO_FILE_PATH
+/usr/local/bin/buf generate --template buf.gen.jsonschema.yaml --output ../api-spec/static/api/jsonschema/v1alpha1 --path proto/$PROTO_CORE_FILE_PATH
