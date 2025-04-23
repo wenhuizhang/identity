@@ -30,9 +30,9 @@ const (
 //
 // LocalService is the service that provides LOCAL issuer operations.
 type LocalServiceClient interface {
-	// Generate a keypair in JWK format
+	// Generate a keypair in Json Web Key (JWK) format
 	KeyGen(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*KeyGenResponse, error)
-	// Issue a Verifiable Credential
+	// Issue a Verifiable Credential in a specific Envelope Type
 	IssueVC(ctx context.Context, in *IssueVCRequest, opts ...grpc.CallOption) (*IssueVCResponse, error)
 }
 
@@ -70,9 +70,9 @@ func (c *localServiceClient) IssueVC(ctx context.Context, in *IssueVCRequest, op
 //
 // LocalService is the service that provides LOCAL issuer operations.
 type LocalServiceServer interface {
-	// Generate a keypair in JWK format
+	// Generate a keypair in Json Web Key (JWK) format
 	KeyGen(context.Context, *emptypb.Empty) (*KeyGenResponse, error)
-	// Issue a Verifiable Credential
+	// Issue a Verifiable Credential in a specific Envelope Type
 	IssueVC(context.Context, *IssueVCRequest) (*IssueVCResponse, error)
 }
 

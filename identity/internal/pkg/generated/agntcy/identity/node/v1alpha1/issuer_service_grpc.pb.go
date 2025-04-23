@@ -29,9 +29,10 @@ const (
 //
 // IssuerService is the service that provides ISSUER node operations.
 type IssuerServiceClient interface {
-	// Register
+	// Register an issuer by providing the issuer details
 	Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterResponse, error)
-	// IssuerWellKnown endpoint
+	// Returns the well-known document content for an issuer in
+	// Json Web Key Set (JWKS) format
 	IssuerWellKnown(ctx context.Context, in *IssuerWellKnownRequest, opts ...grpc.CallOption) (*IssuerWellKnownResponse, error)
 }
 
@@ -69,9 +70,10 @@ func (c *issuerServiceClient) IssuerWellKnown(ctx context.Context, in *IssuerWel
 //
 // IssuerService is the service that provides ISSUER node operations.
 type IssuerServiceServer interface {
-	// Register
+	// Register an issuer by providing the issuer details
 	Register(context.Context, *RegisterRequest) (*RegisterResponse, error)
-	// IssuerWellKnown endpoint
+	// Returns the well-known document content for an issuer in
+	// Json Web Key Set (JWKS) format
 	IssuerWellKnown(context.Context, *IssuerWellKnownRequest) (*IssuerWellKnownResponse, error)
 }
 

@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// IssueRequest is a request to issue a VC
+// Issues a Verifiable Credential in a specific Envelope Type
 type IssueVCRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// ID is the identifier.
@@ -87,7 +87,7 @@ func (x *IssueVCRequest) GetEnvelopeType() v1alpha1.CredentialEnvelopeType {
 	return v1alpha1.CredentialEnvelopeType(0)
 }
 
-// IssueResponse returns the issued VC
+// Returns the Verifiable Credential in the requested Envelope Type
 type IssueVCResponse struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The issued VC
@@ -133,7 +133,7 @@ func (x *IssueVCResponse) GetVc() *v1alpha1.EnvelopedCredential {
 	return nil
 }
 
-// KeyGenResponse returns the generated keypair
+// Returns the generated keypair in Json Web Key (JWK) format
 type KeyGenResponse struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The generated keypair

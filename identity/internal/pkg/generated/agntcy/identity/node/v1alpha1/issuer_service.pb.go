@@ -24,7 +24,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// RegisterRequest is the request to register an issuer
+// Request to register an issuer
 type RegisterRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Issuer to register.
@@ -70,7 +70,7 @@ func (x *RegisterRequest) GetIssuer() *v1alpha1.Issuer {
 	return nil
 }
 
-// RegisterResponse returns the action to take to complete the registration
+// Returns the action to take to complete the registration
 type RegisterResponse struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// A uri indicating an action to take to complete the registration.
@@ -116,8 +116,7 @@ func (x *RegisterResponse) GetUri() string {
 	return ""
 }
 
-// IssuerWellKnownRequest is the request to get the well-known JWKS document
-// of an issuer
+// Request to get the well-known JWKS document of an issuer
 type IssuerWellKnownRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The common name of the issuer
@@ -163,7 +162,7 @@ func (x *IssuerWellKnownRequest) GetCommonName() string {
 	return ""
 }
 
-// IssuerWellKnownResponse returns the content of the well-known JWKS document
+// Returns the content of the well-known JWKS document
 type IssuerWellKnownResponse struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The well-known Json Web Key Set (JWKS) document
@@ -222,10 +221,10 @@ const file_agntcy_identity_node_v1alpha1_issuer_service_proto_rawDesc = "" +
 	"\vcommon_name\x18\x01 \x01(\tR\n" +
 	"commonName\"R\n" +
 	"\x17IssuerWellKnownResponse\x127\n" +
-	"\x04jwks\x18\x01 \x01(\v2#.agntcy.identity.core.v1alpha1.JwksR\x04jwks2\xe0\x03\n" +
-	"\rIssuerService\x12\xbc\x01\n" +
-	"\bRegister\x12..agntcy.identity.node.v1alpha1.RegisterRequest\x1a/.agntcy.identity.node.v1alpha1.RegisterResponse\"O\x92A#\x12\x11Register a issuer*\x0eRegisterIssuer\x82\xd3\xe4\x93\x02#:\x06issuer\"\x19/v1alpha1/issuer/register\x12\xfb\x01\n" +
-	"\x0fIssuerWellKnown\x125.agntcy.identity.node.v1alpha1.IssuerWellKnownRequest\x1a6.agntcy.identity.node.v1alpha1.IssuerWellKnownResponse\"y\x92A:\x12-Returns the well-known document for an issuer*\tWellKnown\x82\xd3\xe4\x93\x026\x124/v1alpha1/issuer/{common_name}/.well-known/jwks.json\x1a\x12\x92A\x0f\n" +
+	"\x04jwks\x18\x01 \x01(\v2#.agntcy.identity.core.v1alpha1.JwksR\x04jwks2\xa5\x04\n" +
+	"\rIssuerService\x12\xd8\x01\n" +
+	"\bRegister\x12..agntcy.identity.node.v1alpha1.RegisterRequest\x1a/.agntcy.identity.node.v1alpha1.RegisterResponse\"k\x92AD\x122Register an issuer by providing the issuer details*\x0eRegisterIssuer\x82\xd3\xe4\x93\x02\x1e:\x01*\"\x19/v1alpha1/issuer/register\x12\xa4\x02\n" +
+	"\x0fIssuerWellKnown\x125.agntcy.identity.node.v1alpha1.IssuerWellKnownRequest\x1a6.agntcy.identity.node.v1alpha1.IssuerWellKnownResponse\"\xa1\x01\x92Ab\x12OReturns the well-known document for an issuer in Json Web Key Set (JWKS) format*\x0fIssuerWellKnown\x82\xd3\xe4\x93\x026\x124/v1alpha1/issuer/{common_name}/.well-known/jwks.json\x1a\x12\x92A\x0f\n" +
 	"\rIssuerServiceBfZdgithub.com/agntcy/identity/internal/pkg/generated/agntcy/identity/node/v1alpha1;identity_node_sdk_gob\x06proto3"
 
 var (

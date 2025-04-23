@@ -25,7 +25,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// PublishRequest is a request to publish a Verifiable Credential
+// Request to publish an issued Verifiable Credential
 type PublishRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Verifiable Credential to publish
@@ -71,7 +71,7 @@ func (x *PublishRequest) GetVc() *v1alpha1.EnvelopedCredential {
 	return nil
 }
 
-// VerifyRequest is a request to verify a Verifiable Credential
+// Request to verify an existing Verifiable Credential
 type VerifyRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Verifiable Credential to verify
@@ -117,7 +117,7 @@ func (x *VerifyRequest) GetVc() *v1alpha1.EnvelopedCredential {
 	return nil
 }
 
-// SearchRequest is a request to seach for VCs
+// Request to search for VCs based on the specified criteria
 type SearchRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// ID is the identifier.
@@ -181,7 +181,7 @@ func (x *SearchRequest) GetContent() string {
 	return ""
 }
 
-// SearchResponse returns the VCs that match the search criteria
+// Returns the VCs that match the search criteria
 type SearchResponse struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The list of VCs that match the search criteria
@@ -227,7 +227,7 @@ func (x *SearchResponse) GetVcs() []*v1alpha1.EnvelopedCredential {
 	return nil
 }
 
-// APWellKnownResponse returns the well-known document for a passport
+// Requests the well-known document content for an Agent Passport
 type APWellKnownRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The identifier.
@@ -273,7 +273,7 @@ func (x *APWellKnownRequest) GetId() string {
 	return ""
 }
 
-// APWellKnownResponse returns the well-known document for an Agent Passport
+// Returns the well-known document for an Agent Passport
 type APWellKnownResponse struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The well-known document for an Agent Passport
@@ -337,12 +337,12 @@ const file_agntcy_identity_node_v1alpha1_vc_service_proto_rawDesc = "" +
 	"\x12APWellKnownRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\"S\n" +
 	"\x13APWellKnownResponse\x12<\n" +
-	"\x02ap\x18\x01 \x01(\v2,.agntcy.identity.core.v1alpha1.AgentPassportR\x02ap2\xc2\x06\n" +
+	"\x02ap\x18\x01 \x01(\v2,.agntcy.identity.core.v1alpha1.AgentPassportR\x02ap2\xe7\x06\n" +
 	"\tVcService\x12\xb2\x01\n" +
 	"\aPublish\x12-.agntcy.identity.node.v1alpha1.PublishRequest\x1a\x16.google.protobuf.Empty\"`\x92A>\x12\x1fPublish a Verifiable Credential*\x1bPublishVerifiableCredential\x82\xd3\xe4\x93\x02\x19:\x01*\"\x14/v1alpha1/vc/publish\x12\xad\x01\n" +
 	"\x06Verify\x12,.agntcy.identity.node.v1alpha1.VerifyRequest\x1a\x16.google.protobuf.Empty\"]\x92A<\x12\x1eVerify a Verifiable Credential*\x1aVerifyVerifiableCredential\x82\xd3\xe4\x93\x02\x18:\x01*\"\x13/v1alpha1/vc/verify\x12\xf8\x01\n" +
-	"\vAPWellKnown\x121.agntcy.identity.node.v1alpha1.APWellKnownRequest\x1a2.agntcy.identity.node.v1alpha1.APWellKnownResponse\"\x81\x01\x92AQ\x12DReturns the well-known verifiable presentation for an agent passport*\tWellKnown\x82\xd3\xe4\x93\x02'\x12%/v1alpha1/vc/{id}/.well-known/ap.json\x12\xc4\x01\n" +
-	"\x06Search\x12,.agntcy.identity.node.v1alpha1.SearchRequest\x1a-.agntcy.identity.node.v1alpha1.SearchResponse\"]\x92A<\x12\x1dSearch Verifiable Credentials*\x1bSearchVerifiableCredentials\x82\xd3\xe4\x93\x02\x18:\x01*\"\x13/v1alpha1/vc/search\x1a\x0e\x92A\v\n" +
+	"\vAPWellKnown\x121.agntcy.identity.node.v1alpha1.APWellKnownRequest\x1a2.agntcy.identity.node.v1alpha1.APWellKnownResponse\"\x81\x01\x92AQ\x12DReturns the well-known Verifiable Presentation for an Agent Passport*\tWellKnown\x82\xd3\xe4\x93\x02'\x12%/v1alpha1/vc/{id}/.well-known/ap.json\x12\xe9\x01\n" +
+	"\x06Search\x12,.agntcy.identity.node.v1alpha1.SearchRequest\x1a-.agntcy.identity.node.v1alpha1.SearchResponse\"\x81\x01\x92A`\x12ASearch for Verifiable Credentials based on the specified criteria*\x1bSearchVerifiableCredentials\x82\xd3\xe4\x93\x02\x18:\x01*\"\x13/v1alpha1/vc/search\x1a\x0e\x92A\v\n" +
 	"\tVcServiceBfZdgithub.com/agntcy/identity/internal/pkg/generated/agntcy/identity/node/v1alpha1;identity_node_sdk_gob\x06proto3"
 
 var (

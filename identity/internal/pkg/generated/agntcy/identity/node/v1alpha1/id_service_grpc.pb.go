@@ -29,9 +29,9 @@ const (
 //
 // IdService is the service that provides ID operations.
 type IdServiceClient interface {
-	// Generate a Id
+	// Generate an Id and its corresponding Id Document for the specified issuer
 	Generate(ctx context.Context, in *GenerateRequest, opts ...grpc.CallOption) (*GenerateResponse, error)
-	// Resolve an Id
+	// Resolve a specified Id to its corresponding Id Document
 	Resolve(ctx context.Context, in *ResolveRequest, opts ...grpc.CallOption) (*ResolveResponse, error)
 }
 
@@ -69,9 +69,9 @@ func (c *idServiceClient) Resolve(ctx context.Context, in *ResolveRequest, opts 
 //
 // IdService is the service that provides ID operations.
 type IdServiceServer interface {
-	// Generate a Id
+	// Generate an Id and its corresponding Id Document for the specified issuer
 	Generate(context.Context, *GenerateRequest) (*GenerateResponse, error)
-	// Resolve an Id
+	// Resolve a specified Id to its corresponding Id Document
 	Resolve(context.Context, *ResolveRequest) (*ResolveResponse, error)
 }
 

@@ -32,13 +32,13 @@ const (
 //
 // VC is the service that provides VC operations.
 type VcServiceClient interface {
-	// Publish
+	// Publish an issued Verifiable Credential
 	Publish(ctx context.Context, in *PublishRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	// Verify
+	// Verify an existing Verifiable Credential
 	Verify(ctx context.Context, in *VerifyRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	// APWellKnown endpoint
+	// Returns the well-known Verifiable Presentation for an Agent Passport
 	APWellKnown(ctx context.Context, in *APWellKnownRequest, opts ...grpc.CallOption) (*APWellKnownResponse, error)
-	// Search
+	// Search for Verifiable Credentials based on the specified criteria
 	Search(ctx context.Context, in *SearchRequest, opts ...grpc.CallOption) (*SearchResponse, error)
 }
 
@@ -96,13 +96,13 @@ func (c *vcServiceClient) Search(ctx context.Context, in *SearchRequest, opts ..
 //
 // VC is the service that provides VC operations.
 type VcServiceServer interface {
-	// Publish
+	// Publish an issued Verifiable Credential
 	Publish(context.Context, *PublishRequest) (*emptypb.Empty, error)
-	// Verify
+	// Verify an existing Verifiable Credential
 	Verify(context.Context, *VerifyRequest) (*emptypb.Empty, error)
-	// APWellKnown endpoint
+	// Returns the well-known Verifiable Presentation for an Agent Passport
 	APWellKnown(context.Context, *APWellKnownRequest) (*APWellKnownResponse, error)
-	// Search
+	// Search for Verifiable Credentials based on the specified criteria
 	Search(context.Context, *SearchRequest) (*SearchResponse, error)
 }
 

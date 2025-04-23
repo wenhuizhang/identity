@@ -24,7 +24,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Generate an Id for an issuer
+// Generate an Id and its corresponding Id Document for the specified issuer
 type GenerateRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The issuer details
@@ -70,7 +70,7 @@ func (x *GenerateRequest) GetIssuer() *v1alpha1.Issuer {
 	return nil
 }
 
-// GenerateResponse returns the Id Document
+// Returns the Generated Id and its corresponding Id Document
 type GenerateResponse struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Id Document corresponding to the generated Id
@@ -116,7 +116,7 @@ func (x *GenerateResponse) GetIdDocument() *v1alpha1.IdDocument {
 	return nil
 }
 
-// Resolve an Id to the Id Document
+// Resolve a specified Id to its corresponding Id Document
 type ResolveRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Id is the identifier.
@@ -162,7 +162,7 @@ func (x *ResolveRequest) GetId() string {
 	return ""
 }
 
-// ResolveResponse returns the Id Document
+// Returns the Id Document corresponding to the specified Id
 type ResolveResponse struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Id Document resolved from the Id
@@ -222,11 +222,11 @@ const file_agntcy_identity_node_v1alpha1_id_service_proto_rawDesc = "" +
 	"\x02id\x18\x01 \x01(\tR\x02id\"]\n" +
 	"\x0fResolveResponse\x12J\n" +
 	"\vid_document\x18\x01 \x01(\v2).agntcy.identity.core.v1alpha1.IdDocumentR\n" +
-	"idDocument2\xb0\x03\n" +
-	"\tIdService\x12\xcb\x01\n" +
-	"\bGenerate\x12..agntcy.identity.node.v1alpha1.GenerateRequest\x1a/.agntcy.identity.node.v1alpha1.GenerateResponse\"^\x92A;\x12-Generate Id and its corresponding Id Document*\n" +
-	"GenerateId\x82\xd3\xe4\x93\x02\x1a:\x01*\"\x15/v1alpha1/id/generate\x12\xc4\x01\n" +
-	"\aResolve\x12-.agntcy.identity.node.v1alpha1.ResolveRequest\x1a..agntcy.identity.node.v1alpha1.ResolveResponse\"Z\x92A8\x12+Resolve Id to its corresponding Id Document*\tResolveId\x82\xd3\xe4\x93\x02\x19:\x01*\"\x14/v1alpha1/id/resolve\x1a\x0e\x92A\v\n" +
+	"idDocument2\xcc\x03\n" +
+	"\tIdService\x12\xe4\x01\n" +
+	"\bGenerate\x12..agntcy.identity.node.v1alpha1.GenerateRequest\x1a/.agntcy.identity.node.v1alpha1.GenerateResponse\"w\x92AT\x12FGenerate an Id and its corresponding Id Document for a specific issuer*\n" +
+	"GenerateId\x82\xd3\xe4\x93\x02\x1a:\x01*\"\x15/v1alpha1/id/generate\x12\xc7\x01\n" +
+	"\aResolve\x12-.agntcy.identity.node.v1alpha1.ResolveRequest\x1a..agntcy.identity.node.v1alpha1.ResolveResponse\"]\x92A;\x12.Resolve an Id to its corresponding Id Document*\tResolveId\x82\xd3\xe4\x93\x02\x19:\x01*\"\x14/v1alpha1/id/resolve\x1a\x0e\x92A\v\n" +
 	"\tIdServiceBfZdgithub.com/agntcy/identity/internal/pkg/generated/agntcy/identity/node/v1alpha1;identity_node_sdk_gob\x06proto3"
 
 var (
