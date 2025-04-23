@@ -22,8 +22,16 @@ message IdDocument {
   optional string node = 2;
 
   // VerificationMethod is a list of cryptographic public keys, which can be used
-  // to authenticate or authorize interactions with the VCs associated with the ID.
+  // to authenticate or authorize interactions with the entities represented by the ID.
   repeated VerificationMethod verification_method = 3;
+
+  // Service is used in ID Documents to express ways of communicating with
+  // the node that published the document.
+  repeated Service service = 4;
+
+  // AssertionMethod is used to specify how the entity represented by the ID
+  // is expected to express claims, such as for the purposes of issuing a VCs.
+  repeated string assertion_method = 5;
 }
 
 // JWK represents:
@@ -90,9 +98,17 @@ message Jwks {
   repeated Jwk keys = 1;
 }
 
+// Service is used in ID Documents to express ways of communicating with
+// the node that published the document.
+message Service {
+  // ServiceEndpoint is a network address, such as an HTTP URL, of the
+  // node.
+  repeated string service_endpoint = 1;
+}
+
 // VerificationMethod expresses verification methods, such as cryptographic
 // public keys, which can be used to authenticate or authorize interactions
-// with the VCs associated with the ID. It is a part of the ID Document.
+// with the entities represented by the ID. It is a part of the ID Document.
 message VerificationMethod {
   // A unique id of the verification method.
   optional string id = 1;
