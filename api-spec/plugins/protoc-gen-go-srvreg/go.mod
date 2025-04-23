@@ -4,5 +4,6 @@ go 1.23.1
 
 require (
 	github.com/golang/glog v1.2.4
-	google.golang.org/protobuf v1.35.1
+	github.com/grpc-ecosystem/grpc-gateway/v2 v2.26.3
+	google.golang.org/protobuf v1.36.5
 )
