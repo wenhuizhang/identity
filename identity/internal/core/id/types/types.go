@@ -2,7 +2,7 @@ package types
 
 // VerificationMethod expresses verification methods, such as cryptographic
 // public keys, which can be used to authenticate or authorize interactions
-// with the entities represented by the ID. It is a part of the ID Document.
+// with the entities represented by the ID. It is a part of the ResolverMetadata.
 type VerificationMethod struct {
 	// A unique id of the verification method.
 	ID string `json:"id"`
@@ -11,7 +11,7 @@ type VerificationMethod struct {
 	PublicKeyJwk *Jwk `json:"public_key_jwk,omitempty"`
 }
 
-// Service is used in ID Documents to express ways of communicating with
+// Service is used in ResolverMetadata to express ways of communicating with
 // the node that published the document.
 type Service struct {
 	// ServiceEndpoint is a network address, such as an HTTP URL, of the
@@ -19,25 +19,22 @@ type Service struct {
 	ServiceEndpoint []string `json:"service_endpoint"`
 }
 
-// IdDocument represents a set of data describing the ID including mechanisms such as:
+// ResolverMetadata represents a set of data describing the ID including mechanisms such as:
 //   - cryptographic public keys - used to authenticate itself and prove
 //     association with the ID
-//   - node - the node that was used to publish the document
+//   - service - ways of communicating with the node that published the document
 //
-// An ID Document can be retrieved by resolving an ID.
-type IdDocument struct {
+// A ResolverMetadata can be retrieved by resolving an ID.
+type ResolverMetadata struct {
 	// The ID
 	// The metadata below is related as claims to the ID
 	ID string `json:"id,omitempty"`
-
-	// The node that was used to publish the document
-	Node string `json:"node,omitempty"`
 
 	// VerificationMethod is a list of cryptographic public keys, which can be used
 	// to authenticate or authorize interactions with the entities represented by the ID.
 	VerificationMethod []VerificationMethod `json:"verification_method,omitempty"`
 
-	// Service is used in ID Documents to express ways of communicating with
+	// Service is used in ResolverMetadatas to express ways of communicating with
 	// the node that published the document.
 	Service []Service `json:"service,omitempty"`
 
