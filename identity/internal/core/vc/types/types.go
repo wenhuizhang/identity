@@ -128,3 +128,6 @@ type VerifiablePresentation struct {
 	// https://w3id.org/security#proof
 	Proof *Proof `json:"proof,omitempty"`
 }
+
+// AgentPassport represents a Verifiable Presentation for an agent.
+type AgentPassport VerifiablePresentation

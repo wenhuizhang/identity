@@ -70,6 +70,7 @@ func (x *RegisterRequest) GetIssuer() *v1alpha1.Issuer {
 	return nil
 }
 
+// RegisterResponse returns the action to take to complete the registration
 type RegisterResponse struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// A uri indicating an action to take to complete the registration.
@@ -115,7 +116,9 @@ func (x *RegisterResponse) GetUri() string {
 	return ""
 }
 
-type WellKnownRequest struct {
+// IssuerWellKnownRequest is the request to get the well-known JWKS document
+// of an issuer
+type IssuerWellKnownRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The common name of the issuer
 	CommonName    string `protobuf:"bytes,1,opt,name=common_name,json=commonName,proto3" json:"common_name,omitempty"`
@@ -123,20 +126,20 @@ type WellKnownRequest struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *WellKnownRequest) Reset() {
-	*x = WellKnownRequest{}
+func (x *IssuerWellKnownRequest) Reset() {
+	*x = IssuerWellKnownRequest{}
 	mi := &file_agntcy_identity_node_v1alpha1_issuer_service_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *WellKnownRequest) String() string {
+func (x *IssuerWellKnownRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*WellKnownRequest) ProtoMessage() {}
+func (*IssuerWellKnownRequest) ProtoMessage() {}
 
-func (x *WellKnownRequest) ProtoReflect() protoreflect.Message {
+func (x *IssuerWellKnownRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_agntcy_identity_node_v1alpha1_issuer_service_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -148,16 +151,62 @@ func (x *WellKnownRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use WellKnownRequest.ProtoReflect.Descriptor instead.
-func (*WellKnownRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use IssuerWellKnownRequest.ProtoReflect.Descriptor instead.
+func (*IssuerWellKnownRequest) Descriptor() ([]byte, []int) {
 	return file_agntcy_identity_node_v1alpha1_issuer_service_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *WellKnownRequest) GetCommonName() string {
+func (x *IssuerWellKnownRequest) GetCommonName() string {
 	if x != nil {
 		return x.CommonName
 	}
 	return ""
+}
+
+// IssuerWellKnownResponse returns the content of the well-known JWKS document
+type IssuerWellKnownResponse struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The well-known Json Web Key Set (JWKS) document
+	Jwks          *v1alpha1.Jwks `protobuf:"bytes,1,opt,name=jwks,proto3" json:"jwks,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *IssuerWellKnownResponse) Reset() {
+	*x = IssuerWellKnownResponse{}
+	mi := &file_agntcy_identity_node_v1alpha1_issuer_service_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *IssuerWellKnownResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*IssuerWellKnownResponse) ProtoMessage() {}
+
+func (x *IssuerWellKnownResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_agntcy_identity_node_v1alpha1_issuer_service_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use IssuerWellKnownResponse.ProtoReflect.Descriptor instead.
+func (*IssuerWellKnownResponse) Descriptor() ([]byte, []int) {
+	return file_agntcy_identity_node_v1alpha1_issuer_service_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *IssuerWellKnownResponse) GetJwks() *v1alpha1.Jwks {
+	if x != nil {
+		return x.Jwks
+	}
+	return nil
 }
 
 var File_agntcy_identity_node_v1alpha1_issuer_service_proto protoreflect.FileDescriptor
@@ -168,13 +217,15 @@ const file_agntcy_identity_node_v1alpha1_issuer_service_proto_rawDesc = "" +
 	"\x0fRegisterRequest\x12=\n" +
 	"\x06issuer\x18\x01 \x01(\v2%.agntcy.identity.core.v1alpha1.IssuerR\x06issuer\"$\n" +
 	"\x10RegisterResponse\x12\x10\n" +
-	"\x03uri\x18\x01 \x01(\tR\x03uri\"3\n" +
-	"\x10WellKnownRequest\x12\x1f\n" +
+	"\x03uri\x18\x01 \x01(\tR\x03uri\"9\n" +
+	"\x16IssuerWellKnownRequest\x12\x1f\n" +
 	"\vcommon_name\x18\x01 \x01(\tR\n" +
-	"commonName2\xc1\x03\n" +
+	"commonName\"R\n" +
+	"\x17IssuerWellKnownResponse\x127\n" +
+	"\x04jwks\x18\x01 \x01(\v2#.agntcy.identity.core.v1alpha1.JwksR\x04jwks2\xe0\x03\n" +
 	"\rIssuerService\x12\xbc\x01\n" +
-	"\bRegister\x12..agntcy.identity.node.v1alpha1.RegisterRequest\x1a/.agntcy.identity.node.v1alpha1.RegisterResponse\"O\x92A#\x12\x11Register a issuer*\x0eRegisterIssuer\x82\xd3\xe4\x93\x02#:\x06issuer\"\x19/v1alpha1/issuer/register\x12\xdc\x01\n" +
-	"\tWellKnown\x12/.agntcy.identity.node.v1alpha1.WellKnownRequest\x1a#.agntcy.identity.core.v1alpha1.Jwks\"y\x92A:\x12-Returns the well-known document for an issuer*\tWellKnown\x82\xd3\xe4\x93\x026\x124/v1alpha1/issuer/{common_name}/.well-known/jwks.json\x1a\x12\x92A\x0f\n" +
+	"\bRegister\x12..agntcy.identity.node.v1alpha1.RegisterRequest\x1a/.agntcy.identity.node.v1alpha1.RegisterResponse\"O\x92A#\x12\x11Register a issuer*\x0eRegisterIssuer\x82\xd3\xe4\x93\x02#:\x06issuer\"\x19/v1alpha1/issuer/register\x12\xfb\x01\n" +
+	"\x0fIssuerWellKnown\x125.agntcy.identity.node.v1alpha1.IssuerWellKnownRequest\x1a6.agntcy.identity.node.v1alpha1.IssuerWellKnownResponse\"y\x92A:\x12-Returns the well-known document for an issuer*\tWellKnown\x82\xd3\xe4\x93\x026\x124/v1alpha1/issuer/{common_name}/.well-known/jwks.json\x1a\x12\x92A\x0f\n" +
 	"\rIssuerServiceBfZdgithub.com/agntcy/identity/internal/pkg/generated/agntcy/identity/node/v1alpha1;identity_node_sdk_gob\x06proto3"
 
 var (
@@ -189,25 +240,27 @@ func file_agntcy_identity_node_v1alpha1_issuer_service_proto_rawDescGZIP() []byt
 	return file_agntcy_identity_node_v1alpha1_issuer_service_proto_rawDescData
 }
 
-var file_agntcy_identity_node_v1alpha1_issuer_service_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_agntcy_identity_node_v1alpha1_issuer_service_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_agntcy_identity_node_v1alpha1_issuer_service_proto_goTypes = []any{
-	(*RegisterRequest)(nil),  // 0: agntcy.identity.node.v1alpha1.RegisterRequest
-	(*RegisterResponse)(nil), // 1: agntcy.identity.node.v1alpha1.RegisterResponse
-	(*WellKnownRequest)(nil), // 2: agntcy.identity.node.v1alpha1.WellKnownRequest
-	(*v1alpha1.Issuer)(nil),  // 3: agntcy.identity.core.v1alpha1.Issuer
-	(*v1alpha1.Jwks)(nil),    // 4: agntcy.identity.core.v1alpha1.Jwks
+	(*RegisterRequest)(nil),         // 0: agntcy.identity.node.v1alpha1.RegisterRequest
+	(*RegisterResponse)(nil),        // 1: agntcy.identity.node.v1alpha1.RegisterResponse
+	(*IssuerWellKnownRequest)(nil),  // 2: agntcy.identity.node.v1alpha1.IssuerWellKnownRequest
+	(*IssuerWellKnownResponse)(nil), // 3: agntcy.identity.node.v1alpha1.IssuerWellKnownResponse
+	(*v1alpha1.Issuer)(nil),         // 4: agntcy.identity.core.v1alpha1.Issuer
+	(*v1alpha1.Jwks)(nil),           // 5: agntcy.identity.core.v1alpha1.Jwks
 }
 var file_agntcy_identity_node_v1alpha1_issuer_service_proto_depIdxs = []int32{
-	3, // 0: agntcy.identity.node.v1alpha1.RegisterRequest.issuer:type_name -> agntcy.identity.core.v1alpha1.Issuer
-	0, // 1: agntcy.identity.node.v1alpha1.IssuerService.Register:input_type -> agntcy.identity.node.v1alpha1.RegisterRequest
-	2, // 2: agntcy.identity.node.v1alpha1.IssuerService.WellKnown:input_type -> agntcy.identity.node.v1alpha1.WellKnownRequest
-	1, // 3: agntcy.identity.node.v1alpha1.IssuerService.Register:output_type -> agntcy.identity.node.v1alpha1.RegisterResponse
-	4, // 4: agntcy.identity.node.v1alpha1.IssuerService.WellKnown:output_type -> agntcy.identity.core.v1alpha1.Jwks
-	3, // [3:5] is the sub-list for method output_type
-	1, // [1:3] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	4, // 0: agntcy.identity.node.v1alpha1.RegisterRequest.issuer:type_name -> agntcy.identity.core.v1alpha1.Issuer
+	5, // 1: agntcy.identity.node.v1alpha1.IssuerWellKnownResponse.jwks:type_name -> agntcy.identity.core.v1alpha1.Jwks
+	0, // 2: agntcy.identity.node.v1alpha1.IssuerService.Register:input_type -> agntcy.identity.node.v1alpha1.RegisterRequest
+	2, // 3: agntcy.identity.node.v1alpha1.IssuerService.IssuerWellKnown:input_type -> agntcy.identity.node.v1alpha1.IssuerWellKnownRequest
+	1, // 4: agntcy.identity.node.v1alpha1.IssuerService.Register:output_type -> agntcy.identity.node.v1alpha1.RegisterResponse
+	3, // 5: agntcy.identity.node.v1alpha1.IssuerService.IssuerWellKnown:output_type -> agntcy.identity.node.v1alpha1.IssuerWellKnownResponse
+	4, // [4:6] is the sub-list for method output_type
+	2, // [2:4] is the sub-list for method input_type
+	2, // [2:2] is the sub-list for extension type_name
+	2, // [2:2] is the sub-list for extension extendee
+	0, // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_agntcy_identity_node_v1alpha1_issuer_service_proto_init() }
@@ -221,7 +274,7 @@ func file_agntcy_identity_node_v1alpha1_issuer_service_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_agntcy_identity_node_v1alpha1_issuer_service_proto_rawDesc), len(file_agntcy_identity_node_v1alpha1_issuer_service_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   3,
+			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

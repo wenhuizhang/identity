@@ -8,7 +8,6 @@ package identity_node_sdk_go
 
 import (
 	context "context"
-	v1alpha1 "github.com/agntcy/identity/internal/pkg/generated/agntcy/identity/core/v1alpha1"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -20,8 +19,8 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	IssuerService_Register_FullMethodName  = "/agntcy.identity.node.v1alpha1.IssuerService/Register"
-	IssuerService_WellKnown_FullMethodName = "/agntcy.identity.node.v1alpha1.IssuerService/WellKnown"
+	IssuerService_Register_FullMethodName        = "/agntcy.identity.node.v1alpha1.IssuerService/Register"
+	IssuerService_IssuerWellKnown_FullMethodName = "/agntcy.identity.node.v1alpha1.IssuerService/IssuerWellKnown"
 )
 
 // IssuerServiceClient is the client API for IssuerService service.
@@ -32,8 +31,8 @@ const (
 type IssuerServiceClient interface {
 	// Register
 	Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterResponse, error)
-	// WellKnown endpoint
-	WellKnown(ctx context.Context, in *WellKnownRequest, opts ...grpc.CallOption) (*v1alpha1.Jwks, error)
+	// IssuerWellKnown endpoint
+	IssuerWellKnown(ctx context.Context, in *IssuerWellKnownRequest, opts ...grpc.CallOption) (*IssuerWellKnownResponse, error)
 }
 
 type issuerServiceClient struct {
@@ -54,10 +53,10 @@ func (c *issuerServiceClient) Register(ctx context.Context, in *RegisterRequest,
 	return out, nil
 }
 
-func (c *issuerServiceClient) WellKnown(ctx context.Context, in *WellKnownRequest, opts ...grpc.CallOption) (*v1alpha1.Jwks, error) {
+func (c *issuerServiceClient) IssuerWellKnown(ctx context.Context, in *IssuerWellKnownRequest, opts ...grpc.CallOption) (*IssuerWellKnownResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(v1alpha1.Jwks)
-	err := c.cc.Invoke(ctx, IssuerService_WellKnown_FullMethodName, in, out, cOpts...)
+	out := new(IssuerWellKnownResponse)
+	err := c.cc.Invoke(ctx, IssuerService_IssuerWellKnown_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -72,8 +71,8 @@ func (c *issuerServiceClient) WellKnown(ctx context.Context, in *WellKnownReques
 type IssuerServiceServer interface {
 	// Register
 	Register(context.Context, *RegisterRequest) (*RegisterResponse, error)
-	// WellKnown endpoint
-	WellKnown(context.Context, *WellKnownRequest) (*v1alpha1.Jwks, error)
+	// IssuerWellKnown endpoint
+	IssuerWellKnown(context.Context, *IssuerWellKnownRequest) (*IssuerWellKnownResponse, error)
 }
 
 // UnimplementedIssuerServiceServer should be embedded to have
@@ -86,8 +85,8 @@ type UnimplementedIssuerServiceServer struct{}
 func (UnimplementedIssuerServiceServer) Register(context.Context, *RegisterRequest) (*RegisterResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Register not implemented")
 }
-func (UnimplementedIssuerServiceServer) WellKnown(context.Context, *WellKnownRequest) (*v1alpha1.Jwks, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method WellKnown not implemented")
+func (UnimplementedIssuerServiceServer) IssuerWellKnown(context.Context, *IssuerWellKnownRequest) (*IssuerWellKnownResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method IssuerWellKnown not implemented")
 }
 func (UnimplementedIssuerServiceServer) testEmbeddedByValue() {}
 
@@ -127,20 +126,20 @@ func _IssuerService_Register_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
-func _IssuerService_WellKnown_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(WellKnownRequest)
+func _IssuerService_IssuerWellKnown_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(IssuerWellKnownRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(IssuerServiceServer).WellKnown(ctx, in)
+		return srv.(IssuerServiceServer).IssuerWellKnown(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: IssuerService_WellKnown_FullMethodName,
+		FullMethod: IssuerService_IssuerWellKnown_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(IssuerServiceServer).WellKnown(ctx, req.(*WellKnownRequest))
+		return srv.(IssuerServiceServer).IssuerWellKnown(ctx, req.(*IssuerWellKnownRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -157,8 +156,8 @@ var IssuerService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _IssuerService_Register_Handler,
 		},
 		{
-			MethodName: "WellKnown",
-			Handler:    _IssuerService_WellKnown_Handler,
+			MethodName: "IssuerWellKnown",
+			Handler:    _IssuerService_IssuerWellKnown_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

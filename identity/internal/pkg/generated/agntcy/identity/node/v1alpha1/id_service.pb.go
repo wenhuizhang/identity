@@ -70,9 +70,56 @@ func (x *GenerateRequest) GetIssuer() *v1alpha1.Issuer {
 	return nil
 }
 
+// GenerateResponse returns the Id Document
+type GenerateResponse struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The Id Document corresponding to the generated Id
+	IdDocument    *v1alpha1.IdDocument `protobuf:"bytes,1,opt,name=id_document,json=idDocument,proto3" json:"id_document,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GenerateResponse) Reset() {
+	*x = GenerateResponse{}
+	mi := &file_agntcy_identity_node_v1alpha1_id_service_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GenerateResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GenerateResponse) ProtoMessage() {}
+
+func (x *GenerateResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_agntcy_identity_node_v1alpha1_id_service_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GenerateResponse.ProtoReflect.Descriptor instead.
+func (*GenerateResponse) Descriptor() ([]byte, []int) {
+	return file_agntcy_identity_node_v1alpha1_id_service_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *GenerateResponse) GetIdDocument() *v1alpha1.IdDocument {
+	if x != nil {
+		return x.IdDocument
+	}
+	return nil
+}
+
+// Resolve an Id to the Id Document
 type ResolveRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// ID is the identifier.
+	// Id is the identifier.
 	Id            string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -80,7 +127,7 @@ type ResolveRequest struct {
 
 func (x *ResolveRequest) Reset() {
 	*x = ResolveRequest{}
-	mi := &file_agntcy_identity_node_v1alpha1_id_service_proto_msgTypes[1]
+	mi := &file_agntcy_identity_node_v1alpha1_id_service_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -92,7 +139,7 @@ func (x *ResolveRequest) String() string {
 func (*ResolveRequest) ProtoMessage() {}
 
 func (x *ResolveRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_agntcy_identity_node_v1alpha1_id_service_proto_msgTypes[1]
+	mi := &file_agntcy_identity_node_v1alpha1_id_service_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -105,7 +152,7 @@ func (x *ResolveRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ResolveRequest.ProtoReflect.Descriptor instead.
 func (*ResolveRequest) Descriptor() ([]byte, []int) {
-	return file_agntcy_identity_node_v1alpha1_id_service_proto_rawDescGZIP(), []int{1}
+	return file_agntcy_identity_node_v1alpha1_id_service_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *ResolveRequest) GetId() string {
@@ -115,20 +162,71 @@ func (x *ResolveRequest) GetId() string {
 	return ""
 }
 
+// ResolveResponse returns the Id Document
+type ResolveResponse struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The Id Document resolved from the Id
+	IdDocument    *v1alpha1.IdDocument `protobuf:"bytes,1,opt,name=id_document,json=idDocument,proto3" json:"id_document,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ResolveResponse) Reset() {
+	*x = ResolveResponse{}
+	mi := &file_agntcy_identity_node_v1alpha1_id_service_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ResolveResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ResolveResponse) ProtoMessage() {}
+
+func (x *ResolveResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_agntcy_identity_node_v1alpha1_id_service_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ResolveResponse.ProtoReflect.Descriptor instead.
+func (*ResolveResponse) Descriptor() ([]byte, []int) {
+	return file_agntcy_identity_node_v1alpha1_id_service_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *ResolveResponse) GetIdDocument() *v1alpha1.IdDocument {
+	if x != nil {
+		return x.IdDocument
+	}
+	return nil
+}
+
 var File_agntcy_identity_node_v1alpha1_id_service_proto protoreflect.FileDescriptor
 
 const file_agntcy_identity_node_v1alpha1_id_service_proto_rawDesc = "" +
 	"\n" +
 	".agntcy/identity/node/v1alpha1/id_service.proto\x12\x1dagntcy.identity.node.v1alpha1\x1a&agntcy/identity/core/v1alpha1/id.proto\x1a*agntcy/identity/core/v1alpha1/issuer.proto\x1a\x1cgoogle/api/annotations.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\"P\n" +
 	"\x0fGenerateRequest\x12=\n" +
-	"\x06issuer\x18\x01 \x01(\v2%.agntcy.identity.core.v1alpha1.IssuerR\x06issuer\" \n" +
+	"\x06issuer\x18\x01 \x01(\v2%.agntcy.identity.core.v1alpha1.IssuerR\x06issuer\"^\n" +
+	"\x10GenerateResponse\x12J\n" +
+	"\vid_document\x18\x01 \x01(\v2).agntcy.identity.core.v1alpha1.IdDocumentR\n" +
+	"idDocument\" \n" +
 	"\x0eResolveRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id2\xe7\x02\n" +
-	"\tIdService\x12\xa8\x01\n" +
-	"\bGenerate\x12..agntcy.identity.node.v1alpha1.GenerateRequest\x1a).agntcy.identity.core.v1alpha1.IdDocument\"A\x92A\x19\x12\vGenerate Id*\n" +
-	"GenerateId\x82\xd3\xe4\x93\x02\x1f:\x06issuer\"\x15/v1alpha1/id/generate\x12\x9e\x01\n" +
-	"\aResolve\x12-.agntcy.identity.node.v1alpha1.ResolveRequest\x1a).agntcy.identity.core.v1alpha1.IdDocument\"9\x92A\x17\x12\n" +
-	"Resolve Id*\tResolveId\x82\xd3\xe4\x93\x02\x19:\x01*\"\x14/v1alpha1/id/resolve\x1a\x0e\x92A\v\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"]\n" +
+	"\x0fResolveResponse\x12J\n" +
+	"\vid_document\x18\x01 \x01(\v2).agntcy.identity.core.v1alpha1.IdDocumentR\n" +
+	"idDocument2\xb0\x03\n" +
+	"\tIdService\x12\xcb\x01\n" +
+	"\bGenerate\x12..agntcy.identity.node.v1alpha1.GenerateRequest\x1a/.agntcy.identity.node.v1alpha1.GenerateResponse\"^\x92A;\x12-Generate Id and its corresponding Id Document*\n" +
+	"GenerateId\x82\xd3\xe4\x93\x02\x1a:\x01*\"\x15/v1alpha1/id/generate\x12\xc4\x01\n" +
+	"\aResolve\x12-.agntcy.identity.node.v1alpha1.ResolveRequest\x1a..agntcy.identity.node.v1alpha1.ResolveResponse\"Z\x92A8\x12+Resolve Id to its corresponding Id Document*\tResolveId\x82\xd3\xe4\x93\x02\x19:\x01*\"\x14/v1alpha1/id/resolve\x1a\x0e\x92A\v\n" +
 	"\tIdServiceBfZdgithub.com/agntcy/identity/internal/pkg/generated/agntcy/identity/node/v1alpha1;identity_node_sdk_gob\x06proto3"
 
 var (
@@ -143,24 +241,28 @@ func file_agntcy_identity_node_v1alpha1_id_service_proto_rawDescGZIP() []byte {
 	return file_agntcy_identity_node_v1alpha1_id_service_proto_rawDescData
 }
 
-var file_agntcy_identity_node_v1alpha1_id_service_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_agntcy_identity_node_v1alpha1_id_service_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_agntcy_identity_node_v1alpha1_id_service_proto_goTypes = []any{
 	(*GenerateRequest)(nil),     // 0: agntcy.identity.node.v1alpha1.GenerateRequest
-	(*ResolveRequest)(nil),      // 1: agntcy.identity.node.v1alpha1.ResolveRequest
-	(*v1alpha1.Issuer)(nil),     // 2: agntcy.identity.core.v1alpha1.Issuer
-	(*v1alpha1.IdDocument)(nil), // 3: agntcy.identity.core.v1alpha1.IdDocument
+	(*GenerateResponse)(nil),    // 1: agntcy.identity.node.v1alpha1.GenerateResponse
+	(*ResolveRequest)(nil),      // 2: agntcy.identity.node.v1alpha1.ResolveRequest
+	(*ResolveResponse)(nil),     // 3: agntcy.identity.node.v1alpha1.ResolveResponse
+	(*v1alpha1.Issuer)(nil),     // 4: agntcy.identity.core.v1alpha1.Issuer
+	(*v1alpha1.IdDocument)(nil), // 5: agntcy.identity.core.v1alpha1.IdDocument
 }
 var file_agntcy_identity_node_v1alpha1_id_service_proto_depIdxs = []int32{
-	2, // 0: agntcy.identity.node.v1alpha1.GenerateRequest.issuer:type_name -> agntcy.identity.core.v1alpha1.Issuer
-	0, // 1: agntcy.identity.node.v1alpha1.IdService.Generate:input_type -> agntcy.identity.node.v1alpha1.GenerateRequest
-	1, // 2: agntcy.identity.node.v1alpha1.IdService.Resolve:input_type -> agntcy.identity.node.v1alpha1.ResolveRequest
-	3, // 3: agntcy.identity.node.v1alpha1.IdService.Generate:output_type -> agntcy.identity.core.v1alpha1.IdDocument
-	3, // 4: agntcy.identity.node.v1alpha1.IdService.Resolve:output_type -> agntcy.identity.core.v1alpha1.IdDocument
-	3, // [3:5] is the sub-list for method output_type
-	1, // [1:3] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	4, // 0: agntcy.identity.node.v1alpha1.GenerateRequest.issuer:type_name -> agntcy.identity.core.v1alpha1.Issuer
+	5, // 1: agntcy.identity.node.v1alpha1.GenerateResponse.id_document:type_name -> agntcy.identity.core.v1alpha1.IdDocument
+	5, // 2: agntcy.identity.node.v1alpha1.ResolveResponse.id_document:type_name -> agntcy.identity.core.v1alpha1.IdDocument
+	0, // 3: agntcy.identity.node.v1alpha1.IdService.Generate:input_type -> agntcy.identity.node.v1alpha1.GenerateRequest
+	2, // 4: agntcy.identity.node.v1alpha1.IdService.Resolve:input_type -> agntcy.identity.node.v1alpha1.ResolveRequest
+	1, // 5: agntcy.identity.node.v1alpha1.IdService.Generate:output_type -> agntcy.identity.node.v1alpha1.GenerateResponse
+	3, // 6: agntcy.identity.node.v1alpha1.IdService.Resolve:output_type -> agntcy.identity.node.v1alpha1.ResolveResponse
+	5, // [5:7] is the sub-list for method output_type
+	3, // [3:5] is the sub-list for method input_type
+	3, // [3:3] is the sub-list for extension type_name
+	3, // [3:3] is the sub-list for extension extendee
+	0, // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_agntcy_identity_node_v1alpha1_id_service_proto_init() }
@@ -174,7 +276,7 @@ func file_agntcy_identity_node_v1alpha1_id_service_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_agntcy_identity_node_v1alpha1_id_service_proto_rawDesc), len(file_agntcy_identity_node_v1alpha1_id_service_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

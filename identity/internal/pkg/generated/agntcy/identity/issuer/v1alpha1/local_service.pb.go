@@ -87,6 +87,98 @@ func (x *IssueVCRequest) GetEnvelopeType() v1alpha1.CredentialEnvelopeType {
 	return v1alpha1.CredentialEnvelopeType(0)
 }
 
+// IssueResponse returns the issued VC
+type IssueVCResponse struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The issued VC
+	Vc            *v1alpha1.EnvelopedCredential `protobuf:"bytes,1,opt,name=vc,proto3" json:"vc,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *IssueVCResponse) Reset() {
+	*x = IssueVCResponse{}
+	mi := &file_agntcy_identity_issuer_v1alpha1_local_service_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *IssueVCResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*IssueVCResponse) ProtoMessage() {}
+
+func (x *IssueVCResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_agntcy_identity_issuer_v1alpha1_local_service_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use IssueVCResponse.ProtoReflect.Descriptor instead.
+func (*IssueVCResponse) Descriptor() ([]byte, []int) {
+	return file_agntcy_identity_issuer_v1alpha1_local_service_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *IssueVCResponse) GetVc() *v1alpha1.EnvelopedCredential {
+	if x != nil {
+		return x.Vc
+	}
+	return nil
+}
+
+// KeyGenResponse returns the generated keypair
+type KeyGenResponse struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The generated keypair
+	Keypair       *v1alpha1.Jwk `protobuf:"bytes,1,opt,name=keypair,proto3" json:"keypair,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *KeyGenResponse) Reset() {
+	*x = KeyGenResponse{}
+	mi := &file_agntcy_identity_issuer_v1alpha1_local_service_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *KeyGenResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*KeyGenResponse) ProtoMessage() {}
+
+func (x *KeyGenResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_agntcy_identity_issuer_v1alpha1_local_service_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use KeyGenResponse.ProtoReflect.Descriptor instead.
+func (*KeyGenResponse) Descriptor() ([]byte, []int) {
+	return file_agntcy_identity_issuer_v1alpha1_local_service_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *KeyGenResponse) GetKeypair() *v1alpha1.Jwk {
+	if x != nil {
+		return x.Keypair
+	}
+	return nil
+}
+
 var File_agntcy_identity_issuer_v1alpha1_local_service_proto protoreflect.FileDescriptor
 
 const file_agntcy_identity_issuer_v1alpha1_local_service_proto_rawDesc = "" +
@@ -95,10 +187,14 @@ const file_agntcy_identity_issuer_v1alpha1_local_service_proto_rawDesc = "" +
 	"\x0eIssueVCRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12J\n" +
 	"\acontent\x18\x02 \x01(\v20.agntcy.identity.core.v1alpha1.CredentialContentR\acontent\x12Z\n" +
-	"\renvelope_type\x18\x03 \x01(\x0e25.agntcy.identity.core.v1alpha1.CredentialEnvelopeTypeR\fenvelopeType2\xc4\x01\n" +
-	"\fLocalService\x12D\n" +
-	"\x06KeyGen\x12\x16.google.protobuf.Empty\x1a\".agntcy.identity.core.v1alpha1.Jwk\x12n\n" +
-	"\aIssueVC\x12/.agntcy.identity.issuer.v1alpha1.IssueVCRequest\x1a2.agntcy.identity.core.v1alpha1.EnvelopedCredentialBjZhgithub.com/agntcy/identity/internal/pkg/generated/agntcy/identity/issuer/v1alpha1;identity_issuer_sdk_gob\x06proto3"
+	"\renvelope_type\x18\x03 \x01(\x0e25.agntcy.identity.core.v1alpha1.CredentialEnvelopeTypeR\fenvelopeType\"U\n" +
+	"\x0fIssueVCResponse\x12B\n" +
+	"\x02vc\x18\x01 \x01(\v22.agntcy.identity.core.v1alpha1.EnvelopedCredentialR\x02vc\"N\n" +
+	"\x0eKeyGenResponse\x12<\n" +
+	"\akeypair\x18\x01 \x01(\v2\".agntcy.identity.core.v1alpha1.JwkR\akeypair2\xcf\x01\n" +
+	"\fLocalService\x12Q\n" +
+	"\x06KeyGen\x12\x16.google.protobuf.Empty\x1a/.agntcy.identity.issuer.v1alpha1.KeyGenResponse\x12l\n" +
+	"\aIssueVC\x12/.agntcy.identity.issuer.v1alpha1.IssueVCRequest\x1a0.agntcy.identity.issuer.v1alpha1.IssueVCResponseBjZhgithub.com/agntcy/identity/internal/pkg/generated/agntcy/identity/issuer/v1alpha1;identity_issuer_sdk_gob\x06proto3"
 
 var (
 	file_agntcy_identity_issuer_v1alpha1_local_service_proto_rawDescOnce sync.Once
@@ -112,27 +208,31 @@ func file_agntcy_identity_issuer_v1alpha1_local_service_proto_rawDescGZIP() []by
 	return file_agntcy_identity_issuer_v1alpha1_local_service_proto_rawDescData
 }
 
-var file_agntcy_identity_issuer_v1alpha1_local_service_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
+var file_agntcy_identity_issuer_v1alpha1_local_service_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_agntcy_identity_issuer_v1alpha1_local_service_proto_goTypes = []any{
 	(*IssueVCRequest)(nil),               // 0: agntcy.identity.issuer.v1alpha1.IssueVCRequest
-	(*v1alpha1.CredentialContent)(nil),   // 1: agntcy.identity.core.v1alpha1.CredentialContent
-	(v1alpha1.CredentialEnvelopeType)(0), // 2: agntcy.identity.core.v1alpha1.CredentialEnvelopeType
-	(*emptypb.Empty)(nil),                // 3: google.protobuf.Empty
-	(*v1alpha1.Jwk)(nil),                 // 4: agntcy.identity.core.v1alpha1.Jwk
+	(*IssueVCResponse)(nil),              // 1: agntcy.identity.issuer.v1alpha1.IssueVCResponse
+	(*KeyGenResponse)(nil),               // 2: agntcy.identity.issuer.v1alpha1.KeyGenResponse
+	(*v1alpha1.CredentialContent)(nil),   // 3: agntcy.identity.core.v1alpha1.CredentialContent
+	(v1alpha1.CredentialEnvelopeType)(0), // 4: agntcy.identity.core.v1alpha1.CredentialEnvelopeType
 	(*v1alpha1.EnvelopedCredential)(nil), // 5: agntcy.identity.core.v1alpha1.EnvelopedCredential
+	(*v1alpha1.Jwk)(nil),                 // 6: agntcy.identity.core.v1alpha1.Jwk
+	(*emptypb.Empty)(nil),                // 7: google.protobuf.Empty
 }
 var file_agntcy_identity_issuer_v1alpha1_local_service_proto_depIdxs = []int32{
-	1, // 0: agntcy.identity.issuer.v1alpha1.IssueVCRequest.content:type_name -> agntcy.identity.core.v1alpha1.CredentialContent
-	2, // 1: agntcy.identity.issuer.v1alpha1.IssueVCRequest.envelope_type:type_name -> agntcy.identity.core.v1alpha1.CredentialEnvelopeType
-	3, // 2: agntcy.identity.issuer.v1alpha1.LocalService.KeyGen:input_type -> google.protobuf.Empty
-	0, // 3: agntcy.identity.issuer.v1alpha1.LocalService.IssueVC:input_type -> agntcy.identity.issuer.v1alpha1.IssueVCRequest
-	4, // 4: agntcy.identity.issuer.v1alpha1.LocalService.KeyGen:output_type -> agntcy.identity.core.v1alpha1.Jwk
-	5, // 5: agntcy.identity.issuer.v1alpha1.LocalService.IssueVC:output_type -> agntcy.identity.core.v1alpha1.EnvelopedCredential
-	4, // [4:6] is the sub-list for method output_type
-	2, // [2:4] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	3, // 0: agntcy.identity.issuer.v1alpha1.IssueVCRequest.content:type_name -> agntcy.identity.core.v1alpha1.CredentialContent
+	4, // 1: agntcy.identity.issuer.v1alpha1.IssueVCRequest.envelope_type:type_name -> agntcy.identity.core.v1alpha1.CredentialEnvelopeType
+	5, // 2: agntcy.identity.issuer.v1alpha1.IssueVCResponse.vc:type_name -> agntcy.identity.core.v1alpha1.EnvelopedCredential
+	6, // 3: agntcy.identity.issuer.v1alpha1.KeyGenResponse.keypair:type_name -> agntcy.identity.core.v1alpha1.Jwk
+	7, // 4: agntcy.identity.issuer.v1alpha1.LocalService.KeyGen:input_type -> google.protobuf.Empty
+	0, // 5: agntcy.identity.issuer.v1alpha1.LocalService.IssueVC:input_type -> agntcy.identity.issuer.v1alpha1.IssueVCRequest
+	2, // 6: agntcy.identity.issuer.v1alpha1.LocalService.KeyGen:output_type -> agntcy.identity.issuer.v1alpha1.KeyGenResponse
+	1, // 7: agntcy.identity.issuer.v1alpha1.LocalService.IssueVC:output_type -> agntcy.identity.issuer.v1alpha1.IssueVCResponse
+	6, // [6:8] is the sub-list for method output_type
+	4, // [4:6] is the sub-list for method input_type
+	4, // [4:4] is the sub-list for extension type_name
+	4, // [4:4] is the sub-list for extension extendee
+	0, // [0:4] is the sub-list for field type_name
 }
 
 func init() { file_agntcy_identity_issuer_v1alpha1_local_service_proto_init() }
@@ -146,7 +246,7 @@ func file_agntcy_identity_issuer_v1alpha1_local_service_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_agntcy_identity_issuer_v1alpha1_local_service_proto_rawDesc), len(file_agntcy_identity_issuer_v1alpha1_local_service_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   1,
+			NumMessages:   3,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

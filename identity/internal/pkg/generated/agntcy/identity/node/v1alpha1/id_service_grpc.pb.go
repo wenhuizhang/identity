@@ -8,7 +8,6 @@ package identity_node_sdk_go
 
 import (
 	context "context"
-	v1alpha1 "github.com/agntcy/identity/internal/pkg/generated/agntcy/identity/core/v1alpha1"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -31,9 +30,9 @@ const (
 // IdService is the service that provides ID operations.
 type IdServiceClient interface {
 	// Generate a Id
-	Generate(ctx context.Context, in *GenerateRequest, opts ...grpc.CallOption) (*v1alpha1.IdDocument, error)
+	Generate(ctx context.Context, in *GenerateRequest, opts ...grpc.CallOption) (*GenerateResponse, error)
 	// Resolve an Id
-	Resolve(ctx context.Context, in *ResolveRequest, opts ...grpc.CallOption) (*v1alpha1.IdDocument, error)
+	Resolve(ctx context.Context, in *ResolveRequest, opts ...grpc.CallOption) (*ResolveResponse, error)
 }
 
 type idServiceClient struct {
@@ -44,9 +43,9 @@ func NewIdServiceClient(cc grpc.ClientConnInterface) IdServiceClient {
 	return &idServiceClient{cc}
 }
 
-func (c *idServiceClient) Generate(ctx context.Context, in *GenerateRequest, opts ...grpc.CallOption) (*v1alpha1.IdDocument, error) {
+func (c *idServiceClient) Generate(ctx context.Context, in *GenerateRequest, opts ...grpc.CallOption) (*GenerateResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(v1alpha1.IdDocument)
+	out := new(GenerateResponse)
 	err := c.cc.Invoke(ctx, IdService_Generate_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -54,9 +53,9 @@ func (c *idServiceClient) Generate(ctx context.Context, in *GenerateRequest, opt
 	return out, nil
 }
 
-func (c *idServiceClient) Resolve(ctx context.Context, in *ResolveRequest, opts ...grpc.CallOption) (*v1alpha1.IdDocument, error) {
+func (c *idServiceClient) Resolve(ctx context.Context, in *ResolveRequest, opts ...grpc.CallOption) (*ResolveResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(v1alpha1.IdDocument)
+	out := new(ResolveResponse)
 	err := c.cc.Invoke(ctx, IdService_Resolve_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -71,9 +70,9 @@ func (c *idServiceClient) Resolve(ctx context.Context, in *ResolveRequest, opts 
 // IdService is the service that provides ID operations.
 type IdServiceServer interface {
 	// Generate a Id
-	Generate(context.Context, *GenerateRequest) (*v1alpha1.IdDocument, error)
+	Generate(context.Context, *GenerateRequest) (*GenerateResponse, error)
 	// Resolve an Id
-	Resolve(context.Context, *ResolveRequest) (*v1alpha1.IdDocument, error)
+	Resolve(context.Context, *ResolveRequest) (*ResolveResponse, error)
 }
 
 // UnimplementedIdServiceServer should be embedded to have
@@ -83,10 +82,10 @@ type IdServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedIdServiceServer struct{}
 
-func (UnimplementedIdServiceServer) Generate(context.Context, *GenerateRequest) (*v1alpha1.IdDocument, error) {
+func (UnimplementedIdServiceServer) Generate(context.Context, *GenerateRequest) (*GenerateResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Generate not implemented")
 }
-func (UnimplementedIdServiceServer) Resolve(context.Context, *ResolveRequest) (*v1alpha1.IdDocument, error) {
+func (UnimplementedIdServiceServer) Resolve(context.Context, *ResolveRequest) (*ResolveResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Resolve not implemented")
 }
 func (UnimplementedIdServiceServer) testEmbeddedByValue() {}

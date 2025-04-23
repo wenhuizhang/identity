@@ -8,7 +8,6 @@ package identity_node_sdk_go
 
 import (
 	context "context"
-	v1alpha1 "github.com/agntcy/identity/internal/pkg/generated/agntcy/identity/core/v1alpha1"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -21,10 +20,10 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	VcService_Publish_FullMethodName           = "/agntcy.identity.node.v1alpha1.VcService/Publish"
-	VcService_Verify_FullMethodName            = "/agntcy.identity.node.v1alpha1.VcService/Verify"
-	VcService_PassportWellKnown_FullMethodName = "/agntcy.identity.node.v1alpha1.VcService/PassportWellKnown"
-	VcService_Search_FullMethodName            = "/agntcy.identity.node.v1alpha1.VcService/Search"
+	VcService_Publish_FullMethodName     = "/agntcy.identity.node.v1alpha1.VcService/Publish"
+	VcService_Verify_FullMethodName      = "/agntcy.identity.node.v1alpha1.VcService/Verify"
+	VcService_APWellKnown_FullMethodName = "/agntcy.identity.node.v1alpha1.VcService/APWellKnown"
+	VcService_Search_FullMethodName      = "/agntcy.identity.node.v1alpha1.VcService/Search"
 )
 
 // VcServiceClient is the client API for VcService service.
@@ -34,11 +33,11 @@ const (
 // VC is the service that provides VC operations.
 type VcServiceClient interface {
 	// Publish
-	Publish(ctx context.Context, in *v1alpha1.EnvelopedCredential, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	Publish(ctx context.Context, in *PublishRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Verify
-	Verify(ctx context.Context, in *v1alpha1.EnvelopedCredential, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	// Passport WellKnown endpoint
-	PassportWellKnown(ctx context.Context, in *PassportWellKnownRequest, opts ...grpc.CallOption) (*v1alpha1.EnvelopedCredential, error)
+	Verify(ctx context.Context, in *VerifyRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// APWellKnown endpoint
+	APWellKnown(ctx context.Context, in *APWellKnownRequest, opts ...grpc.CallOption) (*APWellKnownResponse, error)
 	// Search
 	Search(ctx context.Context, in *SearchRequest, opts ...grpc.CallOption) (*SearchResponse, error)
 }
@@ -51,7 +50,7 @@ func NewVcServiceClient(cc grpc.ClientConnInterface) VcServiceClient {
 	return &vcServiceClient{cc}
 }
 
-func (c *vcServiceClient) Publish(ctx context.Context, in *v1alpha1.EnvelopedCredential, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *vcServiceClient) Publish(ctx context.Context, in *PublishRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, VcService_Publish_FullMethodName, in, out, cOpts...)
@@ -61,7 +60,7 @@ func (c *vcServiceClient) Publish(ctx context.Context, in *v1alpha1.EnvelopedCre
 	return out, nil
 }
 
-func (c *vcServiceClient) Verify(ctx context.Context, in *v1alpha1.EnvelopedCredential, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *vcServiceClient) Verify(ctx context.Context, in *VerifyRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, VcService_Verify_FullMethodName, in, out, cOpts...)
@@ -71,10 +70,10 @@ func (c *vcServiceClient) Verify(ctx context.Context, in *v1alpha1.EnvelopedCred
 	return out, nil
 }
 
-func (c *vcServiceClient) PassportWellKnown(ctx context.Context, in *PassportWellKnownRequest, opts ...grpc.CallOption) (*v1alpha1.EnvelopedCredential, error) {
+func (c *vcServiceClient) APWellKnown(ctx context.Context, in *APWellKnownRequest, opts ...grpc.CallOption) (*APWellKnownResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(v1alpha1.EnvelopedCredential)
-	err := c.cc.Invoke(ctx, VcService_PassportWellKnown_FullMethodName, in, out, cOpts...)
+	out := new(APWellKnownResponse)
+	err := c.cc.Invoke(ctx, VcService_APWellKnown_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -98,11 +97,11 @@ func (c *vcServiceClient) Search(ctx context.Context, in *SearchRequest, opts ..
 // VC is the service that provides VC operations.
 type VcServiceServer interface {
 	// Publish
-	Publish(context.Context, *v1alpha1.EnvelopedCredential) (*emptypb.Empty, error)
+	Publish(context.Context, *PublishRequest) (*emptypb.Empty, error)
 	// Verify
-	Verify(context.Context, *v1alpha1.EnvelopedCredential) (*emptypb.Empty, error)
-	// Passport WellKnown endpoint
-	PassportWellKnown(context.Context, *PassportWellKnownRequest) (*v1alpha1.EnvelopedCredential, error)
+	Verify(context.Context, *VerifyRequest) (*emptypb.Empty, error)
+	// APWellKnown endpoint
+	APWellKnown(context.Context, *APWellKnownRequest) (*APWellKnownResponse, error)
 	// Search
 	Search(context.Context, *SearchRequest) (*SearchResponse, error)
 }
@@ -114,14 +113,14 @@ type VcServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedVcServiceServer struct{}
 
-func (UnimplementedVcServiceServer) Publish(context.Context, *v1alpha1.EnvelopedCredential) (*emptypb.Empty, error) {
+func (UnimplementedVcServiceServer) Publish(context.Context, *PublishRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Publish not implemented")
 }
-func (UnimplementedVcServiceServer) Verify(context.Context, *v1alpha1.EnvelopedCredential) (*emptypb.Empty, error) {
+func (UnimplementedVcServiceServer) Verify(context.Context, *VerifyRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Verify not implemented")
 }
-func (UnimplementedVcServiceServer) PassportWellKnown(context.Context, *PassportWellKnownRequest) (*v1alpha1.EnvelopedCredential, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method PassportWellKnown not implemented")
+func (UnimplementedVcServiceServer) APWellKnown(context.Context, *APWellKnownRequest) (*APWellKnownResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method APWellKnown not implemented")
 }
 func (UnimplementedVcServiceServer) Search(context.Context, *SearchRequest) (*SearchResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Search not implemented")
@@ -147,7 +146,7 @@ func RegisterVcServiceServer(s grpc.ServiceRegistrar, srv VcServiceServer) {
 }
 
 func _VcService_Publish_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(v1alpha1.EnvelopedCredential)
+	in := new(PublishRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -159,13 +158,13 @@ func _VcService_Publish_Handler(srv interface{}, ctx context.Context, dec func(i
 		FullMethod: VcService_Publish_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(VcServiceServer).Publish(ctx, req.(*v1alpha1.EnvelopedCredential))
+		return srv.(VcServiceServer).Publish(ctx, req.(*PublishRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _VcService_Verify_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(v1alpha1.EnvelopedCredential)
+	in := new(VerifyRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -177,25 +176,25 @@ func _VcService_Verify_Handler(srv interface{}, ctx context.Context, dec func(in
 		FullMethod: VcService_Verify_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(VcServiceServer).Verify(ctx, req.(*v1alpha1.EnvelopedCredential))
+		return srv.(VcServiceServer).Verify(ctx, req.(*VerifyRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _VcService_PassportWellKnown_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PassportWellKnownRequest)
+func _VcService_APWellKnown_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(APWellKnownRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(VcServiceServer).PassportWellKnown(ctx, in)
+		return srv.(VcServiceServer).APWellKnown(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: VcService_PassportWellKnown_FullMethodName,
+		FullMethod: VcService_APWellKnown_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(VcServiceServer).PassportWellKnown(ctx, req.(*PassportWellKnownRequest))
+		return srv.(VcServiceServer).APWellKnown(ctx, req.(*APWellKnownRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -234,8 +233,8 @@ var VcService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _VcService_Verify_Handler,
 		},
 		{
-			MethodName: "PassportWellKnown",
-			Handler:    _VcService_PassportWellKnown_Handler,
+			MethodName: "APWellKnown",
+			Handler:    _VcService_APWellKnown_Handler,
 		},
 		{
 			MethodName: "Search",

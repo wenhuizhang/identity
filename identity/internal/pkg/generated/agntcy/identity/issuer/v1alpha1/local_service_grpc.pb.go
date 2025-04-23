@@ -8,7 +8,6 @@ package identity_issuer_sdk_go
 
 import (
 	context "context"
-	v1alpha1 "github.com/agntcy/identity/internal/pkg/generated/agntcy/identity/core/v1alpha1"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -32,9 +31,9 @@ const (
 // LocalService is the service that provides LOCAL issuer operations.
 type LocalServiceClient interface {
 	// Generate a keypair in JWK format
-	KeyGen(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*v1alpha1.Jwk, error)
+	KeyGen(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*KeyGenResponse, error)
 	// Issue a Verifiable Credential
-	IssueVC(ctx context.Context, in *IssueVCRequest, opts ...grpc.CallOption) (*v1alpha1.EnvelopedCredential, error)
+	IssueVC(ctx context.Context, in *IssueVCRequest, opts ...grpc.CallOption) (*IssueVCResponse, error)
 }
 
 type localServiceClient struct {
@@ -45,9 +44,9 @@ func NewLocalServiceClient(cc grpc.ClientConnInterface) LocalServiceClient {
 	return &localServiceClient{cc}
 }
 
-func (c *localServiceClient) KeyGen(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*v1alpha1.Jwk, error) {
+func (c *localServiceClient) KeyGen(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*KeyGenResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(v1alpha1.Jwk)
+	out := new(KeyGenResponse)
 	err := c.cc.Invoke(ctx, LocalService_KeyGen_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -55,9 +54,9 @@ func (c *localServiceClient) KeyGen(ctx context.Context, in *emptypb.Empty, opts
 	return out, nil
 }
 
-func (c *localServiceClient) IssueVC(ctx context.Context, in *IssueVCRequest, opts ...grpc.CallOption) (*v1alpha1.EnvelopedCredential, error) {
+func (c *localServiceClient) IssueVC(ctx context.Context, in *IssueVCRequest, opts ...grpc.CallOption) (*IssueVCResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(v1alpha1.EnvelopedCredential)
+	out := new(IssueVCResponse)
 	err := c.cc.Invoke(ctx, LocalService_IssueVC_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -72,9 +71,9 @@ func (c *localServiceClient) IssueVC(ctx context.Context, in *IssueVCRequest, op
 // LocalService is the service that provides LOCAL issuer operations.
 type LocalServiceServer interface {
 	// Generate a keypair in JWK format
-	KeyGen(context.Context, *emptypb.Empty) (*v1alpha1.Jwk, error)
+	KeyGen(context.Context, *emptypb.Empty) (*KeyGenResponse, error)
 	// Issue a Verifiable Credential
-	IssueVC(context.Context, *IssueVCRequest) (*v1alpha1.EnvelopedCredential, error)
+	IssueVC(context.Context, *IssueVCRequest) (*IssueVCResponse, error)
 }
 
 // UnimplementedLocalServiceServer should be embedded to have
@@ -84,10 +83,10 @@ type LocalServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedLocalServiceServer struct{}
 
-func (UnimplementedLocalServiceServer) KeyGen(context.Context, *emptypb.Empty) (*v1alpha1.Jwk, error) {
+func (UnimplementedLocalServiceServer) KeyGen(context.Context, *emptypb.Empty) (*KeyGenResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method KeyGen not implemented")
 }
-func (UnimplementedLocalServiceServer) IssueVC(context.Context, *IssueVCRequest) (*v1alpha1.EnvelopedCredential, error) {
+func (UnimplementedLocalServiceServer) IssueVC(context.Context, *IssueVCRequest) (*IssueVCResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method IssueVC not implemented")
 }
 func (UnimplementedLocalServiceServer) testEmbeddedByValue() {}
