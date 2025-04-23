@@ -92,7 +92,7 @@ func (x *SearchRequest) GetContent() string {
 type SearchResponse struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The list of VCs that match the search criteria
-	Credentials   []*v1alpha1.EnvelopedVerifiableCredential `protobuf:"bytes,1,rep,name=credentials,proto3" json:"credentials,omitempty"`
+	Credentials   []*v1alpha1.EnvelopedCredential `protobuf:"bytes,1,rep,name=credentials,proto3" json:"credentials,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -127,11 +127,56 @@ func (*SearchResponse) Descriptor() ([]byte, []int) {
 	return file_agntcy_identity_node_v1alpha1_vc_service_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *SearchResponse) GetCredentials() []*v1alpha1.EnvelopedVerifiableCredential {
+func (x *SearchResponse) GetCredentials() []*v1alpha1.EnvelopedCredential {
 	if x != nil {
 		return x.Credentials
 	}
 	return nil
+}
+
+type PassportWellKnownRequest struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The identifier.
+	Id            string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PassportWellKnownRequest) Reset() {
+	*x = PassportWellKnownRequest{}
+	mi := &file_agntcy_identity_node_v1alpha1_vc_service_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PassportWellKnownRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PassportWellKnownRequest) ProtoMessage() {}
+
+func (x *PassportWellKnownRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_agntcy_identity_node_v1alpha1_vc_service_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PassportWellKnownRequest.ProtoReflect.Descriptor instead.
+func (*PassportWellKnownRequest) Descriptor() ([]byte, []int) {
+	return file_agntcy_identity_node_v1alpha1_vc_service_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *PassportWellKnownRequest) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
 }
 
 var File_agntcy_identity_node_v1alpha1_vc_service_proto protoreflect.FileDescriptor
@@ -142,12 +187,15 @@ const file_agntcy_identity_node_v1alpha1_vc_service_proto_rawDesc = "" +
 	"\rSearchRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12G\n" +
 	"\x06schema\x18\x02 \x01(\v2/.agntcy.identity.core.v1alpha1.CredentialSchemaR\x06schema\x12\x18\n" +
-	"\acontent\x18\x03 \x01(\tR\acontent\"p\n" +
-	"\x0eSearchResponse\x12^\n" +
-	"\vcredentials\x18\x01 \x03(\v2<.agntcy.identity.core.v1alpha1.EnvelopedVerifiableCredentialR\vcredentials2\xe6\x04\n" +
-	"\tVcService\x12\xc1\x01\n" +
-	"\aPublish\x12<.agntcy.identity.core.v1alpha1.EnvelopedVerifiableCredential\x1a\x16.google.protobuf.Empty\"`\x92A>\x12\x1fPublish a Verifiable Credential*\x1bPublishVerifiableCredential\x82\xd3\xe4\x93\x02\x19:\x01*\"\x14/v1alpha1/vc/publish\x12\xbd\x01\n" +
-	"\x06Verify\x12<.agntcy.identity.core.v1alpha1.EnvelopedVerifiableCredential\x1a\x16.google.protobuf.Empty\"]\x92A<\x12\x1eVerify a Verifiable Credential*\x1aVerifyVerifiableCredential\x82\xd3\xe4\x93\x02\x18:\x01*\"\x13/v1alpha1/vc/verify\x12\xc4\x01\n" +
+	"\acontent\x18\x03 \x01(\tR\acontent\"f\n" +
+	"\x0eSearchResponse\x12T\n" +
+	"\vcredentials\x18\x01 \x03(\v22.agntcy.identity.core.v1alpha1.EnvelopedCredentialR\vcredentials\"*\n" +
+	"\x18PassportWellKnownRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id2\xd8\x06\n" +
+	"\tVcService\x12\xb7\x01\n" +
+	"\aPublish\x122.agntcy.identity.core.v1alpha1.EnvelopedCredential\x1a\x16.google.protobuf.Empty\"`\x92A>\x12\x1fPublish a Verifiable Credential*\x1bPublishVerifiableCredential\x82\xd3\xe4\x93\x02\x19:\x01*\"\x14/v1alpha1/vc/publish\x12\xb3\x01\n" +
+	"\x06Verify\x122.agntcy.identity.core.v1alpha1.EnvelopedCredential\x1a\x16.google.protobuf.Empty\"]\x92A<\x12\x1eVerify a Verifiable Credential*\x1aVerifyVerifiableCredential\x82\xd3\xe4\x93\x02\x18:\x01*\"\x13/v1alpha1/vc/verify\x12\x83\x02\n" +
+	"\x11PassportWellKnown\x127.agntcy.identity.node.v1alpha1.PassportWellKnownRequest\x1a2.agntcy.identity.core.v1alpha1.EnvelopedCredential\"\x80\x01\x92AJ\x12=Returns the well-known verifiable presentation for a passport*\tWellKnown\x82\xd3\xe4\x93\x02-\x12+/v1alpha1/vc/{id}/.well-known/passport.json\x12\xc4\x01\n" +
 	"\x06Search\x12,.agntcy.identity.node.v1alpha1.SearchRequest\x1a-.agntcy.identity.node.v1alpha1.SearchResponse\"]\x92A<\x12\x1dSearch Verifiable Credentials*\x1bSearchVerifiableCredentials\x82\xd3\xe4\x93\x02\x18:\x01*\"\x13/v1alpha1/vc/search\x1a\x0e\x92A\v\n" +
 	"\tVcServiceBfZdgithub.com/agntcy/identity/internal/pkg/generated/agntcy/identity/node/v1alpha1;identity_node_sdk_gob\x06proto3"
 
@@ -163,25 +211,28 @@ func file_agntcy_identity_node_v1alpha1_vc_service_proto_rawDescGZIP() []byte {
 	return file_agntcy_identity_node_v1alpha1_vc_service_proto_rawDescData
 }
 
-var file_agntcy_identity_node_v1alpha1_vc_service_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_agntcy_identity_node_v1alpha1_vc_service_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_agntcy_identity_node_v1alpha1_vc_service_proto_goTypes = []any{
-	(*SearchRequest)(nil),                          // 0: agntcy.identity.node.v1alpha1.SearchRequest
-	(*SearchResponse)(nil),                         // 1: agntcy.identity.node.v1alpha1.SearchResponse
-	(*v1alpha1.CredentialSchema)(nil),              // 2: agntcy.identity.core.v1alpha1.CredentialSchema
-	(*v1alpha1.EnvelopedVerifiableCredential)(nil), // 3: agntcy.identity.core.v1alpha1.EnvelopedVerifiableCredential
-	(*emptypb.Empty)(nil),                          // 4: google.protobuf.Empty
+	(*SearchRequest)(nil),                // 0: agntcy.identity.node.v1alpha1.SearchRequest
+	(*SearchResponse)(nil),               // 1: agntcy.identity.node.v1alpha1.SearchResponse
+	(*PassportWellKnownRequest)(nil),     // 2: agntcy.identity.node.v1alpha1.PassportWellKnownRequest
+	(*v1alpha1.CredentialSchema)(nil),    // 3: agntcy.identity.core.v1alpha1.CredentialSchema
+	(*v1alpha1.EnvelopedCredential)(nil), // 4: agntcy.identity.core.v1alpha1.EnvelopedCredential
+	(*emptypb.Empty)(nil),                // 5: google.protobuf.Empty
 }
 var file_agntcy_identity_node_v1alpha1_vc_service_proto_depIdxs = []int32{
-	2, // 0: agntcy.identity.node.v1alpha1.SearchRequest.schema:type_name -> agntcy.identity.core.v1alpha1.CredentialSchema
-	3, // 1: agntcy.identity.node.v1alpha1.SearchResponse.credentials:type_name -> agntcy.identity.core.v1alpha1.EnvelopedVerifiableCredential
-	3, // 2: agntcy.identity.node.v1alpha1.VcService.Publish:input_type -> agntcy.identity.core.v1alpha1.EnvelopedVerifiableCredential
-	3, // 3: agntcy.identity.node.v1alpha1.VcService.Verify:input_type -> agntcy.identity.core.v1alpha1.EnvelopedVerifiableCredential
-	0, // 4: agntcy.identity.node.v1alpha1.VcService.Search:input_type -> agntcy.identity.node.v1alpha1.SearchRequest
-	4, // 5: agntcy.identity.node.v1alpha1.VcService.Publish:output_type -> google.protobuf.Empty
-	4, // 6: agntcy.identity.node.v1alpha1.VcService.Verify:output_type -> google.protobuf.Empty
-	1, // 7: agntcy.identity.node.v1alpha1.VcService.Search:output_type -> agntcy.identity.node.v1alpha1.SearchResponse
-	5, // [5:8] is the sub-list for method output_type
-	2, // [2:5] is the sub-list for method input_type
+	3, // 0: agntcy.identity.node.v1alpha1.SearchRequest.schema:type_name -> agntcy.identity.core.v1alpha1.CredentialSchema
+	4, // 1: agntcy.identity.node.v1alpha1.SearchResponse.credentials:type_name -> agntcy.identity.core.v1alpha1.EnvelopedCredential
+	4, // 2: agntcy.identity.node.v1alpha1.VcService.Publish:input_type -> agntcy.identity.core.v1alpha1.EnvelopedCredential
+	4, // 3: agntcy.identity.node.v1alpha1.VcService.Verify:input_type -> agntcy.identity.core.v1alpha1.EnvelopedCredential
+	2, // 4: agntcy.identity.node.v1alpha1.VcService.PassportWellKnown:input_type -> agntcy.identity.node.v1alpha1.PassportWellKnownRequest
+	0, // 5: agntcy.identity.node.v1alpha1.VcService.Search:input_type -> agntcy.identity.node.v1alpha1.SearchRequest
+	5, // 6: agntcy.identity.node.v1alpha1.VcService.Publish:output_type -> google.protobuf.Empty
+	5, // 7: agntcy.identity.node.v1alpha1.VcService.Verify:output_type -> google.protobuf.Empty
+	4, // 8: agntcy.identity.node.v1alpha1.VcService.PassportWellKnown:output_type -> agntcy.identity.core.v1alpha1.EnvelopedCredential
+	1, // 9: agntcy.identity.node.v1alpha1.VcService.Search:output_type -> agntcy.identity.node.v1alpha1.SearchResponse
+	6, // [6:10] is the sub-list for method output_type
+	2, // [2:6] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name
 	2, // [2:2] is the sub-list for extension extendee
 	0, // [0:2] is the sub-list for field type_name
@@ -198,7 +249,7 @@ func file_agntcy_identity_node_v1alpha1_vc_service_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_agntcy_identity_node_v1alpha1_vc_service_proto_rawDesc), len(file_agntcy_identity_node_v1alpha1_vc_service_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   3,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

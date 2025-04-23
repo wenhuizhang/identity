@@ -31,7 +31,7 @@ type IssueVCRequest struct {
 	// Content of the VC
 	Content *v1alpha1.CredentialContent `protobuf:"bytes,2,opt,name=content,proto3" json:"content,omitempty"`
 	// Envelope type
-	EnvelopeType  v1alpha1.VerifiableCredentialEnvelopeType `protobuf:"varint,3,opt,name=envelope_type,json=envelopeType,proto3,enum=agntcy.identity.core.v1alpha1.VerifiableCredentialEnvelopeType" json:"envelope_type,omitempty"`
+	EnvelopeType  v1alpha1.CredentialEnvelopeType `protobuf:"varint,3,opt,name=envelope_type,json=envelopeType,proto3,enum=agntcy.identity.core.v1alpha1.CredentialEnvelopeType" json:"envelope_type,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -80,25 +80,25 @@ func (x *IssueVCRequest) GetContent() *v1alpha1.CredentialContent {
 	return nil
 }
 
-func (x *IssueVCRequest) GetEnvelopeType() v1alpha1.VerifiableCredentialEnvelopeType {
+func (x *IssueVCRequest) GetEnvelopeType() v1alpha1.CredentialEnvelopeType {
 	if x != nil {
 		return x.EnvelopeType
 	}
-	return v1alpha1.VerifiableCredentialEnvelopeType(0)
+	return v1alpha1.CredentialEnvelopeType(0)
 }
 
 var File_agntcy_identity_issuer_v1alpha1_local_service_proto protoreflect.FileDescriptor
 
 const file_agntcy_identity_issuer_v1alpha1_local_service_proto_rawDesc = "" +
 	"\n" +
-	"3agntcy/identity/issuer/v1alpha1/local_service.proto\x12\x1fagntcy.identity.issuer.v1alpha1\x1a&agntcy/identity/core/v1alpha1/id.proto\x1a&agntcy/identity/core/v1alpha1/vc.proto\x1a\x1bgoogle/protobuf/empty.proto\"\xd2\x01\n" +
+	"3agntcy/identity/issuer/v1alpha1/local_service.proto\x12\x1fagntcy.identity.issuer.v1alpha1\x1a&agntcy/identity/core/v1alpha1/id.proto\x1a&agntcy/identity/core/v1alpha1/vc.proto\x1a\x1bgoogle/protobuf/empty.proto\"\xc8\x01\n" +
 	"\x0eIssueVCRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12J\n" +
-	"\acontent\x18\x02 \x01(\v20.agntcy.identity.core.v1alpha1.CredentialContentR\acontent\x12d\n" +
-	"\renvelope_type\x18\x03 \x01(\x0e2?.agntcy.identity.core.v1alpha1.VerifiableCredentialEnvelopeTypeR\fenvelopeType2\xce\x01\n" +
+	"\acontent\x18\x02 \x01(\v20.agntcy.identity.core.v1alpha1.CredentialContentR\acontent\x12Z\n" +
+	"\renvelope_type\x18\x03 \x01(\x0e25.agntcy.identity.core.v1alpha1.CredentialEnvelopeTypeR\fenvelopeType2\xc4\x01\n" +
 	"\fLocalService\x12D\n" +
-	"\x06KeyGen\x12\x16.google.protobuf.Empty\x1a\".agntcy.identity.core.v1alpha1.Jwk\x12x\n" +
-	"\aIssueVC\x12/.agntcy.identity.issuer.v1alpha1.IssueVCRequest\x1a<.agntcy.identity.core.v1alpha1.EnvelopedVerifiableCredentialBjZhgithub.com/agntcy/identity/internal/pkg/generated/agntcy/identity/issuer/v1alpha1;identity_issuer_sdk_gob\x06proto3"
+	"\x06KeyGen\x12\x16.google.protobuf.Empty\x1a\".agntcy.identity.core.v1alpha1.Jwk\x12n\n" +
+	"\aIssueVC\x12/.agntcy.identity.issuer.v1alpha1.IssueVCRequest\x1a2.agntcy.identity.core.v1alpha1.EnvelopedCredentialBjZhgithub.com/agntcy/identity/internal/pkg/generated/agntcy/identity/issuer/v1alpha1;identity_issuer_sdk_gob\x06proto3"
 
 var (
 	file_agntcy_identity_issuer_v1alpha1_local_service_proto_rawDescOnce sync.Once
@@ -114,20 +114,20 @@ func file_agntcy_identity_issuer_v1alpha1_local_service_proto_rawDescGZIP() []by
 
 var file_agntcy_identity_issuer_v1alpha1_local_service_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_agntcy_identity_issuer_v1alpha1_local_service_proto_goTypes = []any{
-	(*IssueVCRequest)(nil),                         // 0: agntcy.identity.issuer.v1alpha1.IssueVCRequest
-	(*v1alpha1.CredentialContent)(nil),             // 1: agntcy.identity.core.v1alpha1.CredentialContent
-	(v1alpha1.VerifiableCredentialEnvelopeType)(0), // 2: agntcy.identity.core.v1alpha1.VerifiableCredentialEnvelopeType
-	(*emptypb.Empty)(nil),                          // 3: google.protobuf.Empty
-	(*v1alpha1.Jwk)(nil),                           // 4: agntcy.identity.core.v1alpha1.Jwk
-	(*v1alpha1.EnvelopedVerifiableCredential)(nil), // 5: agntcy.identity.core.v1alpha1.EnvelopedVerifiableCredential
+	(*IssueVCRequest)(nil),               // 0: agntcy.identity.issuer.v1alpha1.IssueVCRequest
+	(*v1alpha1.CredentialContent)(nil),   // 1: agntcy.identity.core.v1alpha1.CredentialContent
+	(v1alpha1.CredentialEnvelopeType)(0), // 2: agntcy.identity.core.v1alpha1.CredentialEnvelopeType
+	(*emptypb.Empty)(nil),                // 3: google.protobuf.Empty
+	(*v1alpha1.Jwk)(nil),                 // 4: agntcy.identity.core.v1alpha1.Jwk
+	(*v1alpha1.EnvelopedCredential)(nil), // 5: agntcy.identity.core.v1alpha1.EnvelopedCredential
 }
 var file_agntcy_identity_issuer_v1alpha1_local_service_proto_depIdxs = []int32{
 	1, // 0: agntcy.identity.issuer.v1alpha1.IssueVCRequest.content:type_name -> agntcy.identity.core.v1alpha1.CredentialContent
-	2, // 1: agntcy.identity.issuer.v1alpha1.IssueVCRequest.envelope_type:type_name -> agntcy.identity.core.v1alpha1.VerifiableCredentialEnvelopeType
+	2, // 1: agntcy.identity.issuer.v1alpha1.IssueVCRequest.envelope_type:type_name -> agntcy.identity.core.v1alpha1.CredentialEnvelopeType
 	3, // 2: agntcy.identity.issuer.v1alpha1.LocalService.KeyGen:input_type -> google.protobuf.Empty
 	0, // 3: agntcy.identity.issuer.v1alpha1.LocalService.IssueVC:input_type -> agntcy.identity.issuer.v1alpha1.IssueVCRequest
 	4, // 4: agntcy.identity.issuer.v1alpha1.LocalService.KeyGen:output_type -> agntcy.identity.core.v1alpha1.Jwk
-	5, // 5: agntcy.identity.issuer.v1alpha1.LocalService.IssueVC:output_type -> agntcy.identity.core.v1alpha1.EnvelopedVerifiableCredential
+	5, // 5: agntcy.identity.issuer.v1alpha1.LocalService.IssueVC:output_type -> agntcy.identity.core.v1alpha1.EnvelopedCredential
 	4, // [4:6] is the sub-list for method output_type
 	2, // [2:4] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

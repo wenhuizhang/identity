@@ -34,7 +34,7 @@ type LocalServiceClient interface {
 	// Generate a keypair in JWK format
 	KeyGen(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*v1alpha1.Jwk, error)
 	// Issue a Verifiable Credential
-	IssueVC(ctx context.Context, in *IssueVCRequest, opts ...grpc.CallOption) (*v1alpha1.EnvelopedVerifiableCredential, error)
+	IssueVC(ctx context.Context, in *IssueVCRequest, opts ...grpc.CallOption) (*v1alpha1.EnvelopedCredential, error)
 }
 
 type localServiceClient struct {
@@ -55,9 +55,9 @@ func (c *localServiceClient) KeyGen(ctx context.Context, in *emptypb.Empty, opts
 	return out, nil
 }
 
-func (c *localServiceClient) IssueVC(ctx context.Context, in *IssueVCRequest, opts ...grpc.CallOption) (*v1alpha1.EnvelopedVerifiableCredential, error) {
+func (c *localServiceClient) IssueVC(ctx context.Context, in *IssueVCRequest, opts ...grpc.CallOption) (*v1alpha1.EnvelopedCredential, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(v1alpha1.EnvelopedVerifiableCredential)
+	out := new(v1alpha1.EnvelopedCredential)
 	err := c.cc.Invoke(ctx, LocalService_IssueVC_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -74,7 +74,7 @@ type LocalServiceServer interface {
 	// Generate a keypair in JWK format
 	KeyGen(context.Context, *emptypb.Empty) (*v1alpha1.Jwk, error)
 	// Issue a Verifiable Credential
-	IssueVC(context.Context, *IssueVCRequest) (*v1alpha1.EnvelopedVerifiableCredential, error)
+	IssueVC(context.Context, *IssueVCRequest) (*v1alpha1.EnvelopedCredential, error)
 }
 
 // UnimplementedLocalServiceServer should be embedded to have
@@ -87,7 +87,7 @@ type UnimplementedLocalServiceServer struct{}
 func (UnimplementedLocalServiceServer) KeyGen(context.Context, *emptypb.Empty) (*v1alpha1.Jwk, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method KeyGen not implemented")
 }
-func (UnimplementedLocalServiceServer) IssueVC(context.Context, *IssueVCRequest) (*v1alpha1.EnvelopedVerifiableCredential, error) {
+func (UnimplementedLocalServiceServer) IssueVC(context.Context, *IssueVCRequest) (*v1alpha1.EnvelopedCredential, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method IssueVC not implemented")
 }
 func (UnimplementedLocalServiceServer) testEmbeddedByValue() {}

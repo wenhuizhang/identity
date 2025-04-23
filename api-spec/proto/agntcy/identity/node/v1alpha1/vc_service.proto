@@ -17,7 +17,7 @@ service VcService {
   };
 
   // Publish
-  rpc Publish(agntcy.identity.core.v1alpha1.EnvelopedVerifiableCredential) returns (google.protobuf.Empty) {
+  rpc Publish(agntcy.identity.core.v1alpha1.EnvelopedCredential) returns (google.protobuf.Empty) {
     option (google.api.http) = {
             post: "/v1alpha1/vc/publish"
             body: "*"
@@ -30,7 +30,7 @@ service VcService {
   }
 
   // Verify
-  rpc Verify(agntcy.identity.core.v1alpha1.EnvelopedVerifiableCredential) returns (google.protobuf.Empty) {
+  rpc Verify(agntcy.identity.core.v1alpha1.EnvelopedCredential) returns (google.protobuf.Empty) {
     option (google.api.http) = {
             post: "/v1alpha1/vc/verify"
             body: "*"
@@ -39,6 +39,17 @@ service VcService {
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       operation_id: "VerifyVerifiableCredential";
       summary: "Verify a Verifiable Credential";
+    };
+  }
+
+  // Passport WellKnown endpoint
+  rpc PassportWellKnown(PassportWellKnownRequest) returns (agntcy.identity.core.v1alpha1.EnvelopedCredential) {
+    option (google.api.http) = {
+            get: "/v1alpha1/vc/{id}/.well-known/passport.json"
+        };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      operation_id: "WellKnown";
+      summary: "Returns the well-known verifiable presentation for a passport";
     };
   }
 
@@ -70,6 +81,10 @@ message SearchRequest {
 
 message SearchResponse {
   // The list of VCs that match the search criteria
-  repeated agntcy.identity.core.v1alpha1.EnvelopedVerifiableCredential credentials = 1;
+  repeated agntcy.identity.core.v1alpha1.EnvelopedCredential credentials = 1;
 }
 
+message PassportWellKnownRequest {
+  // The identifier.
+  string id = 1;
+}
