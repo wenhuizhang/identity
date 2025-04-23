@@ -5,10 +5,13 @@ import (
 	_ "embed"
 	"flag"
 	"fmt"
+	"slices"
 	"text/template"
 
 	"github.com/golang/glog"
+	openapi_options "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
 	"google.golang.org/protobuf/compiler/protogen"
+	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/pluginpb"
 )
 
@@ -31,14 +34,27 @@ func main() {
 			file := gp.FilesByPath[name]
 			pkg := file.GoImportPath
 
+			httpServices := []string{}
+			for _, protoSrv := range file.Proto.Service {
+				if proto.HasExtension(protoSrv.Options, openapi_options.E_Openapiv2Tag) {
+					httpServices = append(httpServices, protoSrv.GetName())
+				}
+			}
+
 			for _, service := range file.Services {
 				server := fmt.Sprintf("%sServer", service.GoName)
-				services = append(services, &ServiceData{
+				data := &ServiceData{
 					ServerName:              server,
 					ServerType:              gen.QualifiedGoIdent(pkg.Ident(server)),
 					RegisterGrpcServerFunc:  gen.QualifiedGoIdent(pkg.Ident(fmt.Sprintf("Register%s", server))),
-					RegisterHttpHandlerFunc: gen.QualifiedGoIdent(pkg.Ident(fmt.Sprintf("Register%sHandler", service.GoName))),
-				})
+					RegisterHttpHandlerFunc: "",
+				}
+
+				if slices.Contains(httpServices, service.GoName) {
+					data.RegisterHttpHandlerFunc = gen.QualifiedGoIdent(pkg.Ident(fmt.Sprintf("Register%sHandler", service.GoName)))
+				}
+
+				services = append(services, data)
 			}
 		}
 

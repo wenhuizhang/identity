@@ -1,14 +1,14 @@
 package pagination
 
 import (
-	identity_shared_go "github.com/agntcy/identity/internal/pkg/generated/agntcy/identity/shared/v1alpha1"
+	identity_core_go "github.com/agntcy/identity/internal/pkg/generated/agntcy/identity/core/v1alpha1"
 )
 
 // Creates a PagedResponse object
 func ConvertToPagedResponse[T any](
 	paginationFilter PaginationFilter,
 	items *Pageable[T],
-) *identity_shared_go.PagedResponse {
+) *identity_core_go.PagedResponse {
 	var nextPage *int32
 	hasNextPage := int64(paginationFilter.GetPage())*int64(paginationFilter.GetLimit()) < items.Total
 	if hasNextPage {
@@ -16,7 +16,7 @@ func ConvertToPagedResponse[T any](
 		nextPage = &n
 	}
 
-	return &identity_shared_go.PagedResponse{
+	return &identity_core_go.PagedResponse{
 		HasNextPage: &hasNextPage,
 		NextPage:    nextPage,
 		Total:       items.Total,

@@ -23,12 +23,14 @@ func (r GrpcServiceRegister) RegisterGrpcHandlers(grpcServer *grpc.Server) {
 
 func (r GrpcServiceRegister) RegisterHttpHandlers(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
 {{ range $service := .Services }}
+	{{ if ne $service.RegisterHttpHandlerFunc "" }}
     if r.{{ $service.ServerName }} != nil {
         err := {{ $service.RegisterHttpHandlerFunc }}(ctx, mux, conn)
 		if err != nil {
 			return err
 		}
 	}
+	{{ end }}
 {{ end }}
 
 	return nil

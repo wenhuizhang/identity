@@ -44,13 +44,6 @@ func (r GrpcServiceRegister) RegisterGrpcHandlers(grpcServer *grpc.Server) {
 
 func (r GrpcServiceRegister) RegisterHttpHandlers(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
 
-	if r.LocalServiceServer != nil {
-		err := v1alpha1.RegisterLocalServiceHandler(ctx, mux, conn)
-		if err != nil {
-			return err
-		}
-	}
-
 	if r.IdServiceServer != nil {
 		err := v1alpha11.RegisterIdServiceHandler(ctx, mux, conn)
 		if err != nil {
