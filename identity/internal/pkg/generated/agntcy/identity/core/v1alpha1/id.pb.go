@@ -37,10 +37,16 @@ type IdDocument struct {
 	// The node that was used to publish the document
 	Node *string `protobuf:"bytes,2,opt,name=node,proto3,oneof" json:"node,omitempty"`
 	// VerificationMethod is a list of cryptographic public keys, which can be used
-	// to authenticate or authorize interactions with the VCs associated with the ID.
+	// to authenticate or authorize interactions with the entities represented by the ID.
 	VerificationMethod []*VerificationMethod `protobuf:"bytes,3,rep,name=verification_method,json=verificationMethod,proto3" json:"verification_method,omitempty"`
-	unknownFields      protoimpl.UnknownFields
-	sizeCache          protoimpl.SizeCache
+	// Service is used in ID Documents to express ways of communicating with
+	// the node that published the document.
+	Service []*Service `protobuf:"bytes,4,rep,name=service,proto3" json:"service,omitempty"`
+	// AssertionMethod is used to specify how the entity represented by the ID
+	// is expected to express claims, such as for the purposes of issuing a VCs.
+	AssertionMethod []string `protobuf:"bytes,5,rep,name=assertion_method,json=assertionMethod,proto3" json:"assertion_method,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
 }
 
 func (x *IdDocument) Reset() {
@@ -90,6 +96,20 @@ func (x *IdDocument) GetNode() string {
 func (x *IdDocument) GetVerificationMethod() []*VerificationMethod {
 	if x != nil {
 		return x.VerificationMethod
+	}
+	return nil
+}
+
+func (x *IdDocument) GetService() []*Service {
+	if x != nil {
+		return x.Service
+	}
+	return nil
+}
+
+func (x *IdDocument) GetAssertionMethod() []string {
+	if x != nil {
+		return x.AssertionMethod
 	}
 	return nil
 }
@@ -322,9 +342,57 @@ func (x *Jwks) GetKeys() []*Jwk {
 	return nil
 }
 
+// Service is used in ID Documents to express ways of communicating with
+// the node that published the document.
+type Service struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// ServiceEndpoint is a network address, such as an HTTP URL, of the
+	// node.
+	ServiceEndpoint []string `protobuf:"bytes,1,rep,name=service_endpoint,json=serviceEndpoint,proto3" json:"service_endpoint,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
+}
+
+func (x *Service) Reset() {
+	*x = Service{}
+	mi := &file_agntcy_identity_core_v1alpha1_id_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Service) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Service) ProtoMessage() {}
+
+func (x *Service) ProtoReflect() protoreflect.Message {
+	mi := &file_agntcy_identity_core_v1alpha1_id_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Service.ProtoReflect.Descriptor instead.
+func (*Service) Descriptor() ([]byte, []int) {
+	return file_agntcy_identity_core_v1alpha1_id_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *Service) GetServiceEndpoint() []string {
+	if x != nil {
+		return x.ServiceEndpoint
+	}
+	return nil
+}
+
 // VerificationMethod expresses verification methods, such as cryptographic
 // public keys, which can be used to authenticate or authorize interactions
-// with the VCs associated with the ID. It is a part of the ID Document.
+// with the entities represented by the ID. It is a part of the ID Document.
 type VerificationMethod struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// A unique id of the verification method.
@@ -337,7 +405,7 @@ type VerificationMethod struct {
 
 func (x *VerificationMethod) Reset() {
 	*x = VerificationMethod{}
-	mi := &file_agntcy_identity_core_v1alpha1_id_proto_msgTypes[3]
+	mi := &file_agntcy_identity_core_v1alpha1_id_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -349,7 +417,7 @@ func (x *VerificationMethod) String() string {
 func (*VerificationMethod) ProtoMessage() {}
 
 func (x *VerificationMethod) ProtoReflect() protoreflect.Message {
-	mi := &file_agntcy_identity_core_v1alpha1_id_proto_msgTypes[3]
+	mi := &file_agntcy_identity_core_v1alpha1_id_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -362,7 +430,7 @@ func (x *VerificationMethod) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use VerificationMethod.ProtoReflect.Descriptor instead.
 func (*VerificationMethod) Descriptor() ([]byte, []int) {
-	return file_agntcy_identity_core_v1alpha1_id_proto_rawDescGZIP(), []int{3}
+	return file_agntcy_identity_core_v1alpha1_id_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *VerificationMethod) GetId() string {
@@ -383,12 +451,14 @@ var File_agntcy_identity_core_v1alpha1_id_proto protoreflect.FileDescriptor
 
 const file_agntcy_identity_core_v1alpha1_id_proto_rawDesc = "" +
 	"\n" +
-	"&agntcy/identity/core/v1alpha1/id.proto\x12\x1dagntcy.identity.core.v1alpha1\"\xae\x01\n" +
+	"&agntcy/identity/core/v1alpha1/id.proto\x12\x1dagntcy.identity.core.v1alpha1\"\x9b\x02\n" +
 	"\n" +
 	"IdDocument\x12\x13\n" +
 	"\x02id\x18\x01 \x01(\tH\x00R\x02id\x88\x01\x01\x12\x17\n" +
 	"\x04node\x18\x02 \x01(\tH\x01R\x04node\x88\x01\x01\x12b\n" +
-	"\x13verification_method\x18\x03 \x03(\v21.agntcy.identity.core.v1alpha1.VerificationMethodR\x12verificationMethodB\x05\n" +
+	"\x13verification_method\x18\x03 \x03(\v21.agntcy.identity.core.v1alpha1.VerificationMethodR\x12verificationMethod\x12@\n" +
+	"\aservice\x18\x04 \x03(\v2&.agntcy.identity.core.v1alpha1.ServiceR\aservice\x12)\n" +
+	"\x10assertion_method\x18\x05 \x03(\tR\x0fassertionMethodB\x05\n" +
 	"\x03_idB\a\n" +
 	"\x05_node\"\xb5\x03\n" +
 	"\x03Jwk\x12\x15\n" +
@@ -425,7 +495,9 @@ const file_agntcy_identity_core_v1alpha1_id_proto_rawDesc = "" +
 	"\x03_dqB\x05\n" +
 	"\x03_qi\">\n" +
 	"\x04Jwks\x126\n" +
-	"\x04keys\x18\x01 \x03(\v2\".agntcy.identity.core.v1alpha1.JwkR\x04keys\"\x92\x01\n" +
+	"\x04keys\x18\x01 \x03(\v2\".agntcy.identity.core.v1alpha1.JwkR\x04keys\"4\n" +
+	"\aService\x12)\n" +
+	"\x10service_endpoint\x18\x01 \x03(\tR\x0fserviceEndpoint\"\x92\x01\n" +
 	"\x12VerificationMethod\x12\x13\n" +
 	"\x02id\x18\x01 \x01(\tH\x00R\x02id\x88\x01\x01\x12M\n" +
 	"\x0epublic_key_jwk\x18\x02 \x01(\v2\".agntcy.identity.core.v1alpha1.JwkH\x01R\fpublicKeyJwk\x88\x01\x01B\x05\n" +
@@ -444,22 +516,24 @@ func file_agntcy_identity_core_v1alpha1_id_proto_rawDescGZIP() []byte {
 	return file_agntcy_identity_core_v1alpha1_id_proto_rawDescData
 }
 
-var file_agntcy_identity_core_v1alpha1_id_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_agntcy_identity_core_v1alpha1_id_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_agntcy_identity_core_v1alpha1_id_proto_goTypes = []any{
 	(*IdDocument)(nil),         // 0: agntcy.identity.core.v1alpha1.IdDocument
 	(*Jwk)(nil),                // 1: agntcy.identity.core.v1alpha1.Jwk
 	(*Jwks)(nil),               // 2: agntcy.identity.core.v1alpha1.Jwks
-	(*VerificationMethod)(nil), // 3: agntcy.identity.core.v1alpha1.VerificationMethod
+	(*Service)(nil),            // 3: agntcy.identity.core.v1alpha1.Service
+	(*VerificationMethod)(nil), // 4: agntcy.identity.core.v1alpha1.VerificationMethod
 }
 var file_agntcy_identity_core_v1alpha1_id_proto_depIdxs = []int32{
-	3, // 0: agntcy.identity.core.v1alpha1.IdDocument.verification_method:type_name -> agntcy.identity.core.v1alpha1.VerificationMethod
-	1, // 1: agntcy.identity.core.v1alpha1.Jwks.keys:type_name -> agntcy.identity.core.v1alpha1.Jwk
-	1, // 2: agntcy.identity.core.v1alpha1.VerificationMethod.public_key_jwk:type_name -> agntcy.identity.core.v1alpha1.Jwk
-	3, // [3:3] is the sub-list for method output_type
-	3, // [3:3] is the sub-list for method input_type
-	3, // [3:3] is the sub-list for extension type_name
-	3, // [3:3] is the sub-list for extension extendee
-	0, // [0:3] is the sub-list for field type_name
+	4, // 0: agntcy.identity.core.v1alpha1.IdDocument.verification_method:type_name -> agntcy.identity.core.v1alpha1.VerificationMethod
+	3, // 1: agntcy.identity.core.v1alpha1.IdDocument.service:type_name -> agntcy.identity.core.v1alpha1.Service
+	1, // 2: agntcy.identity.core.v1alpha1.Jwks.keys:type_name -> agntcy.identity.core.v1alpha1.Jwk
+	1, // 3: agntcy.identity.core.v1alpha1.VerificationMethod.public_key_jwk:type_name -> agntcy.identity.core.v1alpha1.Jwk
+	4, // [4:4] is the sub-list for method output_type
+	4, // [4:4] is the sub-list for method input_type
+	4, // [4:4] is the sub-list for extension type_name
+	4, // [4:4] is the sub-list for extension extendee
+	0, // [0:4] is the sub-list for field type_name
 }
 
 func init() { file_agntcy_identity_core_v1alpha1_id_proto_init() }
@@ -469,14 +543,14 @@ func file_agntcy_identity_core_v1alpha1_id_proto_init() {
 	}
 	file_agntcy_identity_core_v1alpha1_id_proto_msgTypes[0].OneofWrappers = []any{}
 	file_agntcy_identity_core_v1alpha1_id_proto_msgTypes[1].OneofWrappers = []any{}
-	file_agntcy_identity_core_v1alpha1_id_proto_msgTypes[3].OneofWrappers = []any{}
+	file_agntcy_identity_core_v1alpha1_id_proto_msgTypes[4].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_agntcy_identity_core_v1alpha1_id_proto_rawDesc), len(file_agntcy_identity_core_v1alpha1_id_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   4,
+			NumMessages:   5,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

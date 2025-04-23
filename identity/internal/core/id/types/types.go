@@ -2,13 +2,21 @@ package types
 
 // VerificationMethod expresses verification methods, such as cryptographic
 // public keys, which can be used to authenticate or authorize interactions
-// with the VCs associated with the ID. It is a part of the ID Document.
+// with the entities represented by the ID. It is a part of the ID Document.
 type VerificationMethod struct {
 	// A unique id of the verification method.
 	ID string `json:"id"`
 
 	// The public key used for the verification method.
 	PublicKeyJwk *Jwk `json:"public_key_jwk,omitempty"`
+}
+
+// Service is used in ID Documents to express ways of communicating with
+// the node that published the document.
+type Service struct {
+	// ServiceEndpoint is a network address, such as an HTTP URL, of the
+	// node.
+	ServiceEndpoint []string `json:"service_endpoint"`
 }
 
 // IdDocument represents a set of data describing the ID including mechanisms such as:
@@ -26,8 +34,16 @@ type IdDocument struct {
 	Node string `json:"node,omitempty"`
 
 	// VerificationMethod is a list of cryptographic public keys, which can be used
-	// to authenticate or authorize interactions with the VCs associated with the ID.
+	// to authenticate or authorize interactions with the entities represented by the ID.
 	VerificationMethod []VerificationMethod `json:"verification_method,omitempty"`
+
+	// Service is used in ID Documents to express ways of communicating with
+	// the node that published the document.
+	Service []Service `json:"service,omitempty"`
+
+	// AssertionMethod is used to specify how the entity represented by the ID
+	// is expected to express claims, such as for the purposes of issuing a VCs.
+	AssertionMethod []string `json:"assertion_method,omitempty"`
 }
 
 // JWK represents:
