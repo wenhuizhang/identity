@@ -12,23 +12,23 @@ type IdRepository interface {
 		ctx context.Context,
 		paginationFilter pagination.PaginationFilter,
 		query *string,
-	) (*pagination.Pageable[types.IdDocument], error)
+	) (*pagination.Pageable[types.ResolverMetadata], error)
 	CreateId(
 		ctx context.Context,
-		identity *types.IdDocument,
-	) (*types.IdDocument, error)
+		identity *types.ResolverMetadata,
+	) (*types.ResolverMetadata, error)
 	GetId(
 		ctx context.Context,
 		id string,
 		withFields ...string,
-	) (*types.IdDocument, error)
+	) (*types.ResolverMetadata, error)
 	GetIdByCatalogID(
 		ctx context.Context,
 		catalogID string,
-	) (*types.IdDocument, error)
+	) (*types.ResolverMetadata, error)
 	UpdateId(
 		ctx context.Context,
-		identity *types.IdDocument,
-	) (*types.IdDocument, error)
+		identity *types.ResolverMetadata,
+	) (*types.ResolverMetadata, error)
 	DeleteId(ctx context.Context, id string) error
 }

@@ -24,10 +24,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Generate an Id and its corresponding Id Document for the specified issuer
+// Generate an Id and its corresponding ResolverMetadata for the specified Issuer
 type GenerateRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// The issuer details
+	// The Issuer details
 	Issuer        *v1alpha1.Issuer `protobuf:"bytes,1,opt,name=issuer,proto3" json:"issuer,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -70,13 +70,13 @@ func (x *GenerateRequest) GetIssuer() *v1alpha1.Issuer {
 	return nil
 }
 
-// Returns the Generated Id and its corresponding Id Document
+// Returns the Generated Id and its corresponding ResolverMetadata
 type GenerateResponse struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// The Id Document corresponding to the generated Id
-	IdDocument    *v1alpha1.IdDocument `protobuf:"bytes,1,opt,name=id_document,json=idDocument,proto3" json:"id_document,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	// The ResolverMetadata corresponding to the generated Id
+	ResolverMetadata *v1alpha1.ResolverMetadata `protobuf:"bytes,1,opt,name=resolver_metadata,json=resolverMetadata,proto3" json:"resolver_metadata,omitempty"`
+	unknownFields    protoimpl.UnknownFields
+	sizeCache        protoimpl.SizeCache
 }
 
 func (x *GenerateResponse) Reset() {
@@ -109,14 +109,14 @@ func (*GenerateResponse) Descriptor() ([]byte, []int) {
 	return file_agntcy_identity_node_v1alpha1_id_service_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GenerateResponse) GetIdDocument() *v1alpha1.IdDocument {
+func (x *GenerateResponse) GetResolverMetadata() *v1alpha1.ResolverMetadata {
 	if x != nil {
-		return x.IdDocument
+		return x.ResolverMetadata
 	}
 	return nil
 }
 
-// Resolve a specified Id to its corresponding Id Document
+// Resolve a specified Id to its corresponding ResolverMetadata
 type ResolveRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Id is the identifier.
@@ -162,13 +162,13 @@ func (x *ResolveRequest) GetId() string {
 	return ""
 }
 
-// Returns the Id Document corresponding to the specified Id
+// Returns the ResolverMetadata corresponding to the specified Id
 type ResolveResponse struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// The Id Document resolved from the Id
-	IdDocument    *v1alpha1.IdDocument `protobuf:"bytes,1,opt,name=id_document,json=idDocument,proto3" json:"id_document,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	// The ResolverMetadata resolved from the Id
+	ResolverMetadata *v1alpha1.ResolverMetadata `protobuf:"bytes,1,opt,name=resolver_metadata,json=resolverMetadata,proto3" json:"resolver_metadata,omitempty"`
+	unknownFields    protoimpl.UnknownFields
+	sizeCache        protoimpl.SizeCache
 }
 
 func (x *ResolveResponse) Reset() {
@@ -201,9 +201,9 @@ func (*ResolveResponse) Descriptor() ([]byte, []int) {
 	return file_agntcy_identity_node_v1alpha1_id_service_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *ResolveResponse) GetIdDocument() *v1alpha1.IdDocument {
+func (x *ResolveResponse) GetResolverMetadata() *v1alpha1.ResolverMetadata {
 	if x != nil {
-		return x.IdDocument
+		return x.ResolverMetadata
 	}
 	return nil
 }
@@ -214,19 +214,17 @@ const file_agntcy_identity_node_v1alpha1_id_service_proto_rawDesc = "" +
 	"\n" +
 	".agntcy/identity/node/v1alpha1/id_service.proto\x12\x1dagntcy.identity.node.v1alpha1\x1a&agntcy/identity/core/v1alpha1/id.proto\x1a*agntcy/identity/core/v1alpha1/issuer.proto\x1a\x1cgoogle/api/annotations.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\"P\n" +
 	"\x0fGenerateRequest\x12=\n" +
-	"\x06issuer\x18\x01 \x01(\v2%.agntcy.identity.core.v1alpha1.IssuerR\x06issuer\"^\n" +
-	"\x10GenerateResponse\x12J\n" +
-	"\vid_document\x18\x01 \x01(\v2).agntcy.identity.core.v1alpha1.IdDocumentR\n" +
-	"idDocument\" \n" +
+	"\x06issuer\x18\x01 \x01(\v2%.agntcy.identity.core.v1alpha1.IssuerR\x06issuer\"p\n" +
+	"\x10GenerateResponse\x12\\\n" +
+	"\x11resolver_metadata\x18\x01 \x01(\v2/.agntcy.identity.core.v1alpha1.ResolverMetadataR\x10resolverMetadata\" \n" +
 	"\x0eResolveRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\"]\n" +
-	"\x0fResolveResponse\x12J\n" +
-	"\vid_document\x18\x01 \x01(\v2).agntcy.identity.core.v1alpha1.IdDocumentR\n" +
-	"idDocument2\xcc\x03\n" +
-	"\tIdService\x12\xe4\x01\n" +
-	"\bGenerate\x12..agntcy.identity.node.v1alpha1.GenerateRequest\x1a/.agntcy.identity.node.v1alpha1.GenerateResponse\"w\x92AT\x12FGenerate an Id and its corresponding Id Document for a specific issuer*\n" +
-	"GenerateId\x82\xd3\xe4\x93\x02\x1a:\x01*\"\x15/v1alpha1/id/generate\x12\xc7\x01\n" +
-	"\aResolve\x12-.agntcy.identity.node.v1alpha1.ResolveRequest\x1a..agntcy.identity.node.v1alpha1.ResolveResponse\"]\x92A;\x12.Resolve an Id to its corresponding Id Document*\tResolveId\x82\xd3\xe4\x93\x02\x19:\x01*\"\x14/v1alpha1/id/resolve\x1a\x0e\x92A\v\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"o\n" +
+	"\x0fResolveResponse\x12\\\n" +
+	"\x11resolver_metadata\x18\x01 \x01(\v2/.agntcy.identity.core.v1alpha1.ResolverMetadataR\x10resolverMetadata2\xd7\x03\n" +
+	"\tIdService\x12\xea\x01\n" +
+	"\bGenerate\x12..agntcy.identity.node.v1alpha1.GenerateRequest\x1a/.agntcy.identity.node.v1alpha1.GenerateResponse\"}\x92AZ\x12LGenerate an Id and its corresponding ResolverMetadata for a specified Issuer*\n" +
+	"GenerateId\x82\xd3\xe4\x93\x02\x1a:\x01*\"\x15/v1alpha1/id/generate\x12\xcc\x01\n" +
+	"\aResolve\x12-.agntcy.identity.node.v1alpha1.ResolveRequest\x1a..agntcy.identity.node.v1alpha1.ResolveResponse\"b\x92A@\x123Resolve an Id to its corresponding ResolverMetadata*\tResolveId\x82\xd3\xe4\x93\x02\x19:\x01*\"\x14/v1alpha1/id/resolve\x1a\x0e\x92A\v\n" +
 	"\tIdServiceBfZdgithub.com/agntcy/identity/internal/pkg/generated/agntcy/identity/node/v1alpha1;identity_node_sdk_gob\x06proto3"
 
 var (
@@ -243,17 +241,17 @@ func file_agntcy_identity_node_v1alpha1_id_service_proto_rawDescGZIP() []byte {
 
 var file_agntcy_identity_node_v1alpha1_id_service_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_agntcy_identity_node_v1alpha1_id_service_proto_goTypes = []any{
-	(*GenerateRequest)(nil),     // 0: agntcy.identity.node.v1alpha1.GenerateRequest
-	(*GenerateResponse)(nil),    // 1: agntcy.identity.node.v1alpha1.GenerateResponse
-	(*ResolveRequest)(nil),      // 2: agntcy.identity.node.v1alpha1.ResolveRequest
-	(*ResolveResponse)(nil),     // 3: agntcy.identity.node.v1alpha1.ResolveResponse
-	(*v1alpha1.Issuer)(nil),     // 4: agntcy.identity.core.v1alpha1.Issuer
-	(*v1alpha1.IdDocument)(nil), // 5: agntcy.identity.core.v1alpha1.IdDocument
+	(*GenerateRequest)(nil),           // 0: agntcy.identity.node.v1alpha1.GenerateRequest
+	(*GenerateResponse)(nil),          // 1: agntcy.identity.node.v1alpha1.GenerateResponse
+	(*ResolveRequest)(nil),            // 2: agntcy.identity.node.v1alpha1.ResolveRequest
+	(*ResolveResponse)(nil),           // 3: agntcy.identity.node.v1alpha1.ResolveResponse
+	(*v1alpha1.Issuer)(nil),           // 4: agntcy.identity.core.v1alpha1.Issuer
+	(*v1alpha1.ResolverMetadata)(nil), // 5: agntcy.identity.core.v1alpha1.ResolverMetadata
 }
 var file_agntcy_identity_node_v1alpha1_id_service_proto_depIdxs = []int32{
 	4, // 0: agntcy.identity.node.v1alpha1.GenerateRequest.issuer:type_name -> agntcy.identity.core.v1alpha1.Issuer
-	5, // 1: agntcy.identity.node.v1alpha1.GenerateResponse.id_document:type_name -> agntcy.identity.core.v1alpha1.IdDocument
-	5, // 2: agntcy.identity.node.v1alpha1.ResolveResponse.id_document:type_name -> agntcy.identity.core.v1alpha1.IdDocument
+	5, // 1: agntcy.identity.node.v1alpha1.GenerateResponse.resolver_metadata:type_name -> agntcy.identity.core.v1alpha1.ResolverMetadata
+	5, // 2: agntcy.identity.node.v1alpha1.ResolveResponse.resolver_metadata:type_name -> agntcy.identity.core.v1alpha1.ResolverMetadata
 	0, // 3: agntcy.identity.node.v1alpha1.IdService.Generate:input_type -> agntcy.identity.node.v1alpha1.GenerateRequest
 	2, // 4: agntcy.identity.node.v1alpha1.IdService.Resolve:input_type -> agntcy.identity.node.v1alpha1.ResolveRequest
 	1, // 5: agntcy.identity.node.v1alpha1.IdService.Generate:output_type -> agntcy.identity.node.v1alpha1.GenerateResponse

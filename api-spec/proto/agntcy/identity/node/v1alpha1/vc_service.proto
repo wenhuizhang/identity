@@ -106,5 +106,5 @@ message APWellKnownRequest {
 // Returns the well-known document for an Agent Passport
 message APWellKnownResponse {
   // The well-known document for an Agent Passport
-  agntcy.identity.core.v1alpha1.AgentPassport ap = 1;
+  agntcy.identity.core.v1alpha1.AgentPassport agent_passport = 1;
 }

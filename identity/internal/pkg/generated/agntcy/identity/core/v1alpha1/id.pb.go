@@ -23,97 +23,6 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// IdDocument represents a set of data describing the ID including mechanisms such as:
-//   - cryptographic public keys - used to authenticate itself and prove
-//     association with the ID
-//   - node - the node that was used to publish the document
-//
-// An ID Document can be retrieved by resolving an ID.
-type IdDocument struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// The ID
-	// The metadata below is related as claims to the ID
-	Id *string `protobuf:"bytes,1,opt,name=id,proto3,oneof" json:"id,omitempty"`
-	// The node that was used to publish the document
-	Node *string `protobuf:"bytes,2,opt,name=node,proto3,oneof" json:"node,omitempty"`
-	// VerificationMethod is a list of cryptographic public keys, which can be used
-	// to authenticate or authorize interactions with the entities represented by the ID.
-	VerificationMethod []*VerificationMethod `protobuf:"bytes,3,rep,name=verification_method,json=verificationMethod,proto3" json:"verification_method,omitempty"`
-	// Service is used in ID Documents to express ways of communicating with
-	// the node that published the document.
-	Service []*Service `protobuf:"bytes,4,rep,name=service,proto3" json:"service,omitempty"`
-	// AssertionMethod is used to specify how the entity represented by the ID
-	// is expected to express claims, such as for the purposes of issuing a VCs.
-	AssertionMethod []string `protobuf:"bytes,5,rep,name=assertion_method,json=assertionMethod,proto3" json:"assertion_method,omitempty"`
-	unknownFields   protoimpl.UnknownFields
-	sizeCache       protoimpl.SizeCache
-}
-
-func (x *IdDocument) Reset() {
-	*x = IdDocument{}
-	mi := &file_agntcy_identity_core_v1alpha1_id_proto_msgTypes[0]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *IdDocument) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*IdDocument) ProtoMessage() {}
-
-func (x *IdDocument) ProtoReflect() protoreflect.Message {
-	mi := &file_agntcy_identity_core_v1alpha1_id_proto_msgTypes[0]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use IdDocument.ProtoReflect.Descriptor instead.
-func (*IdDocument) Descriptor() ([]byte, []int) {
-	return file_agntcy_identity_core_v1alpha1_id_proto_rawDescGZIP(), []int{0}
-}
-
-func (x *IdDocument) GetId() string {
-	if x != nil && x.Id != nil {
-		return *x.Id
-	}
-	return ""
-}
-
-func (x *IdDocument) GetNode() string {
-	if x != nil && x.Node != nil {
-		return *x.Node
-	}
-	return ""
-}
-
-func (x *IdDocument) GetVerificationMethod() []*VerificationMethod {
-	if x != nil {
-		return x.VerificationMethod
-	}
-	return nil
-}
-
-func (x *IdDocument) GetService() []*Service {
-	if x != nil {
-		return x.Service
-	}
-	return nil
-}
-
-func (x *IdDocument) GetAssertionMethod() []string {
-	if x != nil {
-		return x.AssertionMethod
-	}
-	return nil
-}
-
 // JWK represents:
 // - a JSON Web Key (JWK) with the respective fields specific to RSA algorithms.
 // - a Quantum JSON Web Key (QJWK) with the respective fields specific to AKP algorithms.
@@ -163,7 +72,7 @@ type Jwk struct {
 
 func (x *Jwk) Reset() {
 	*x = Jwk{}
-	mi := &file_agntcy_identity_core_v1alpha1_id_proto_msgTypes[1]
+	mi := &file_agntcy_identity_core_v1alpha1_id_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -175,7 +84,7 @@ func (x *Jwk) String() string {
 func (*Jwk) ProtoMessage() {}
 
 func (x *Jwk) ProtoReflect() protoreflect.Message {
-	mi := &file_agntcy_identity_core_v1alpha1_id_proto_msgTypes[1]
+	mi := &file_agntcy_identity_core_v1alpha1_id_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -188,7 +97,7 @@ func (x *Jwk) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Jwk.ProtoReflect.Descriptor instead.
 func (*Jwk) Descriptor() ([]byte, []int) {
-	return file_agntcy_identity_core_v1alpha1_id_proto_rawDescGZIP(), []int{1}
+	return file_agntcy_identity_core_v1alpha1_id_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *Jwk) GetAlg() string {
@@ -307,7 +216,7 @@ type Jwks struct {
 
 func (x *Jwks) Reset() {
 	*x = Jwks{}
-	mi := &file_agntcy_identity_core_v1alpha1_id_proto_msgTypes[2]
+	mi := &file_agntcy_identity_core_v1alpha1_id_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -319,7 +228,7 @@ func (x *Jwks) String() string {
 func (*Jwks) ProtoMessage() {}
 
 func (x *Jwks) ProtoReflect() protoreflect.Message {
-	mi := &file_agntcy_identity_core_v1alpha1_id_proto_msgTypes[2]
+	mi := &file_agntcy_identity_core_v1alpha1_id_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -332,7 +241,7 @@ func (x *Jwks) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Jwks.ProtoReflect.Descriptor instead.
 func (*Jwks) Descriptor() ([]byte, []int) {
-	return file_agntcy_identity_core_v1alpha1_id_proto_rawDescGZIP(), []int{2}
+	return file_agntcy_identity_core_v1alpha1_id_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *Jwks) GetKeys() []*Jwk {
@@ -342,7 +251,89 @@ func (x *Jwks) GetKeys() []*Jwk {
 	return nil
 }
 
-// Service is used in ID Documents to express ways of communicating with
+// ResolverMetadata represents a set of data describing the ID including mechanisms such as:
+//   - cryptographic public keys - used to authenticate itself and prove
+//     association with the ID
+//   - service - ways of communicating with the node that published the document
+//
+// A ResolverMetadata can be retrieved by resolving an ID.
+type ResolverMetadata struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The ID
+	// The metadata below is related as claims to the ID
+	Id *string `protobuf:"bytes,1,opt,name=id,proto3,oneof" json:"id,omitempty"`
+	// VerificationMethod is a list of cryptographic public keys, which can be used
+	// to authenticate or authorize interactions with the entities represented by the ID.
+	VerificationMethod []*VerificationMethod `protobuf:"bytes,2,rep,name=verification_method,json=verificationMethod,proto3" json:"verification_method,omitempty"`
+	// Service is used in ResolverMetadatas to express ways of communicating with
+	// the node that published the document.
+	Service []*Service `protobuf:"bytes,3,rep,name=service,proto3" json:"service,omitempty"`
+	// AssertionMethod is used to specify how the entity represented by the ID
+	// is expected to express claims, such as for the purposes of issuing a VCs.
+	AssertionMethod []string `protobuf:"bytes,4,rep,name=assertion_method,json=assertionMethod,proto3" json:"assertion_method,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
+}
+
+func (x *ResolverMetadata) Reset() {
+	*x = ResolverMetadata{}
+	mi := &file_agntcy_identity_core_v1alpha1_id_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ResolverMetadata) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ResolverMetadata) ProtoMessage() {}
+
+func (x *ResolverMetadata) ProtoReflect() protoreflect.Message {
+	mi := &file_agntcy_identity_core_v1alpha1_id_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ResolverMetadata.ProtoReflect.Descriptor instead.
+func (*ResolverMetadata) Descriptor() ([]byte, []int) {
+	return file_agntcy_identity_core_v1alpha1_id_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *ResolverMetadata) GetId() string {
+	if x != nil && x.Id != nil {
+		return *x.Id
+	}
+	return ""
+}
+
+func (x *ResolverMetadata) GetVerificationMethod() []*VerificationMethod {
+	if x != nil {
+		return x.VerificationMethod
+	}
+	return nil
+}
+
+func (x *ResolverMetadata) GetService() []*Service {
+	if x != nil {
+		return x.Service
+	}
+	return nil
+}
+
+func (x *ResolverMetadata) GetAssertionMethod() []string {
+	if x != nil {
+		return x.AssertionMethod
+	}
+	return nil
+}
+
+// Service is used in ResolverMetadata to express ways of communicating with
 // the node that published the document.
 type Service struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
@@ -392,7 +383,7 @@ func (x *Service) GetServiceEndpoint() []string {
 
 // VerificationMethod expresses verification methods, such as cryptographic
 // public keys, which can be used to authenticate or authorize interactions
-// with the entities represented by the ID. It is a part of the ID Document.
+// with the entities represented by the ID. It is a part of the ResolverMetadata.
 type VerificationMethod struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// A unique id of the verification method.
@@ -451,16 +442,7 @@ var File_agntcy_identity_core_v1alpha1_id_proto protoreflect.FileDescriptor
 
 const file_agntcy_identity_core_v1alpha1_id_proto_rawDesc = "" +
 	"\n" +
-	"&agntcy/identity/core/v1alpha1/id.proto\x12\x1dagntcy.identity.core.v1alpha1\"\x9b\x02\n" +
-	"\n" +
-	"IdDocument\x12\x13\n" +
-	"\x02id\x18\x01 \x01(\tH\x00R\x02id\x88\x01\x01\x12\x17\n" +
-	"\x04node\x18\x02 \x01(\tH\x01R\x04node\x88\x01\x01\x12b\n" +
-	"\x13verification_method\x18\x03 \x03(\v21.agntcy.identity.core.v1alpha1.VerificationMethodR\x12verificationMethod\x12@\n" +
-	"\aservice\x18\x04 \x03(\v2&.agntcy.identity.core.v1alpha1.ServiceR\aservice\x12)\n" +
-	"\x10assertion_method\x18\x05 \x03(\tR\x0fassertionMethodB\x05\n" +
-	"\x03_idB\a\n" +
-	"\x05_node\"\xb5\x03\n" +
+	"&agntcy/identity/core/v1alpha1/id.proto\x12\x1dagntcy.identity.core.v1alpha1\"\xb5\x03\n" +
 	"\x03Jwk\x12\x15\n" +
 	"\x03alg\x18\x01 \x01(\tH\x00R\x03alg\x88\x01\x01\x12\x15\n" +
 	"\x03kty\x18\x02 \x01(\tH\x01R\x03kty\x88\x01\x01\x12\x15\n" +
@@ -495,7 +477,13 @@ const file_agntcy_identity_core_v1alpha1_id_proto_rawDesc = "" +
 	"\x03_dqB\x05\n" +
 	"\x03_qi\">\n" +
 	"\x04Jwks\x126\n" +
-	"\x04keys\x18\x01 \x03(\v2\".agntcy.identity.core.v1alpha1.JwkR\x04keys\"4\n" +
+	"\x04keys\x18\x01 \x03(\v2\".agntcy.identity.core.v1alpha1.JwkR\x04keys\"\xff\x01\n" +
+	"\x10ResolverMetadata\x12\x13\n" +
+	"\x02id\x18\x01 \x01(\tH\x00R\x02id\x88\x01\x01\x12b\n" +
+	"\x13verification_method\x18\x02 \x03(\v21.agntcy.identity.core.v1alpha1.VerificationMethodR\x12verificationMethod\x12@\n" +
+	"\aservice\x18\x03 \x03(\v2&.agntcy.identity.core.v1alpha1.ServiceR\aservice\x12)\n" +
+	"\x10assertion_method\x18\x04 \x03(\tR\x0fassertionMethodB\x05\n" +
+	"\x03_id\"4\n" +
 	"\aService\x12)\n" +
 	"\x10service_endpoint\x18\x01 \x03(\tR\x0fserviceEndpoint\"\x92\x01\n" +
 	"\x12VerificationMethod\x12\x13\n" +
@@ -518,17 +506,17 @@ func file_agntcy_identity_core_v1alpha1_id_proto_rawDescGZIP() []byte {
 
 var file_agntcy_identity_core_v1alpha1_id_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_agntcy_identity_core_v1alpha1_id_proto_goTypes = []any{
-	(*IdDocument)(nil),         // 0: agntcy.identity.core.v1alpha1.IdDocument
-	(*Jwk)(nil),                // 1: agntcy.identity.core.v1alpha1.Jwk
-	(*Jwks)(nil),               // 2: agntcy.identity.core.v1alpha1.Jwks
+	(*Jwk)(nil),                // 0: agntcy.identity.core.v1alpha1.Jwk
+	(*Jwks)(nil),               // 1: agntcy.identity.core.v1alpha1.Jwks
+	(*ResolverMetadata)(nil),   // 2: agntcy.identity.core.v1alpha1.ResolverMetadata
 	(*Service)(nil),            // 3: agntcy.identity.core.v1alpha1.Service
 	(*VerificationMethod)(nil), // 4: agntcy.identity.core.v1alpha1.VerificationMethod
 }
 var file_agntcy_identity_core_v1alpha1_id_proto_depIdxs = []int32{
-	4, // 0: agntcy.identity.core.v1alpha1.IdDocument.verification_method:type_name -> agntcy.identity.core.v1alpha1.VerificationMethod
-	3, // 1: agntcy.identity.core.v1alpha1.IdDocument.service:type_name -> agntcy.identity.core.v1alpha1.Service
-	1, // 2: agntcy.identity.core.v1alpha1.Jwks.keys:type_name -> agntcy.identity.core.v1alpha1.Jwk
-	1, // 3: agntcy.identity.core.v1alpha1.VerificationMethod.public_key_jwk:type_name -> agntcy.identity.core.v1alpha1.Jwk
+	0, // 0: agntcy.identity.core.v1alpha1.Jwks.keys:type_name -> agntcy.identity.core.v1alpha1.Jwk
+	4, // 1: agntcy.identity.core.v1alpha1.ResolverMetadata.verification_method:type_name -> agntcy.identity.core.v1alpha1.VerificationMethod
+	3, // 2: agntcy.identity.core.v1alpha1.ResolverMetadata.service:type_name -> agntcy.identity.core.v1alpha1.Service
+	0, // 3: agntcy.identity.core.v1alpha1.VerificationMethod.public_key_jwk:type_name -> agntcy.identity.core.v1alpha1.Jwk
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name
@@ -542,7 +530,7 @@ func file_agntcy_identity_core_v1alpha1_id_proto_init() {
 		return
 	}
 	file_agntcy_identity_core_v1alpha1_id_proto_msgTypes[0].OneofWrappers = []any{}
-	file_agntcy_identity_core_v1alpha1_id_proto_msgTypes[1].OneofWrappers = []any{}
+	file_agntcy_identity_core_v1alpha1_id_proto_msgTypes[2].OneofWrappers = []any{}
 	file_agntcy_identity_core_v1alpha1_id_proto_msgTypes[4].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{

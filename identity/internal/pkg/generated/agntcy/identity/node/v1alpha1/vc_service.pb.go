@@ -277,7 +277,7 @@ func (x *APWellKnownRequest) GetId() string {
 type APWellKnownResponse struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The well-known document for an Agent Passport
-	Ap            *v1alpha1.AgentPassport `protobuf:"bytes,1,opt,name=ap,proto3" json:"ap,omitempty"`
+	AgentPassport *v1alpha1.AgentPassport `protobuf:"bytes,1,opt,name=agent_passport,json=agentPassport,proto3" json:"agent_passport,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -312,9 +312,9 @@ func (*APWellKnownResponse) Descriptor() ([]byte, []int) {
 	return file_agntcy_identity_node_v1alpha1_vc_service_proto_rawDescGZIP(), []int{5}
 }
 
-func (x *APWellKnownResponse) GetAp() *v1alpha1.AgentPassport {
+func (x *APWellKnownResponse) GetAgentPassport() *v1alpha1.AgentPassport {
 	if x != nil {
-		return x.Ap
+		return x.AgentPassport
 	}
 	return nil
 }
@@ -335,9 +335,9 @@ const file_agntcy_identity_node_v1alpha1_vc_service_proto_rawDesc = "" +
 	"\x0eSearchResponse\x12D\n" +
 	"\x03vcs\x18\x01 \x03(\v22.agntcy.identity.core.v1alpha1.EnvelopedCredentialR\x03vcs\"$\n" +
 	"\x12APWellKnownRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\"S\n" +
-	"\x13APWellKnownResponse\x12<\n" +
-	"\x02ap\x18\x01 \x01(\v2,.agntcy.identity.core.v1alpha1.AgentPassportR\x02ap2\xe7\x06\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"j\n" +
+	"\x13APWellKnownResponse\x12S\n" +
+	"\x0eagent_passport\x18\x01 \x01(\v2,.agntcy.identity.core.v1alpha1.AgentPassportR\ragentPassport2\xe7\x06\n" +
 	"\tVcService\x12\xb2\x01\n" +
 	"\aPublish\x12-.agntcy.identity.node.v1alpha1.PublishRequest\x1a\x16.google.protobuf.Empty\"`\x92A>\x12\x1fPublish a Verifiable Credential*\x1bPublishVerifiableCredential\x82\xd3\xe4\x93\x02\x19:\x01*\"\x14/v1alpha1/vc/publish\x12\xad\x01\n" +
 	"\x06Verify\x12,.agntcy.identity.node.v1alpha1.VerifyRequest\x1a\x16.google.protobuf.Empty\"]\x92A<\x12\x1eVerify a Verifiable Credential*\x1aVerifyVerifiableCredential\x82\xd3\xe4\x93\x02\x18:\x01*\"\x13/v1alpha1/vc/verify\x12\xf8\x01\n" +
@@ -375,7 +375,7 @@ var file_agntcy_identity_node_v1alpha1_vc_service_proto_depIdxs = []int32{
 	6, // 1: agntcy.identity.node.v1alpha1.VerifyRequest.vc:type_name -> agntcy.identity.core.v1alpha1.EnvelopedCredential
 	7, // 2: agntcy.identity.node.v1alpha1.SearchRequest.schema:type_name -> agntcy.identity.core.v1alpha1.CredentialSchema
 	6, // 3: agntcy.identity.node.v1alpha1.SearchResponse.vcs:type_name -> agntcy.identity.core.v1alpha1.EnvelopedCredential
-	8, // 4: agntcy.identity.node.v1alpha1.APWellKnownResponse.ap:type_name -> agntcy.identity.core.v1alpha1.AgentPassport
+	8, // 4: agntcy.identity.node.v1alpha1.APWellKnownResponse.agent_passport:type_name -> agntcy.identity.core.v1alpha1.AgentPassport
 	0, // 5: agntcy.identity.node.v1alpha1.VcService.Publish:input_type -> agntcy.identity.node.v1alpha1.PublishRequest
 	1, // 6: agntcy.identity.node.v1alpha1.VcService.Verify:input_type -> agntcy.identity.node.v1alpha1.VerifyRequest
 	4, // 7: agntcy.identity.node.v1alpha1.VcService.APWellKnown:input_type -> agntcy.identity.node.v1alpha1.APWellKnownRequest
