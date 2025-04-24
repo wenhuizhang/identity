@@ -49,8 +49,8 @@ const (
 	// The Verifiable Credential is invalid, this can be related to either
 	// invalid format or unable to verify the Data Integrity proof.
 	ErrorReason_ERROR_REASON_INVALID_VERIFIABLE_CREDENTIAL ErrorReason = 7
-	// Unable to find an Agent Passport for an ID.
-	ErrorReason_ERROR_REASON_AGENT_PASSPORT_NOT_FOUND ErrorReason = 8
+	// Unable to find an VCs for an ID.
+	ErrorReason_ERROR_REASON_ID_VCS_NOT_FOUND ErrorReason = 8
 )
 
 // Enum value maps for ErrorReason.
@@ -64,7 +64,7 @@ var (
 		5: "ERROR_REASON_INVALID_CREDENTIAL_CONTENT_FORMAT",
 		6: "ERROR_REASON_INVALID_ISSUER",
 		7: "ERROR_REASON_INVALID_VERIFIABLE_CREDENTIAL",
-		8: "ERROR_REASON_AGENT_PASSPORT_NOT_FOUND",
+		8: "ERROR_REASON_ID_VCS_NOT_FOUND",
 	}
 	ErrorReason_value = map[string]int32{
 		"ERROR_REASON_UNSPECIFIED":                              0,
@@ -75,7 +75,7 @@ var (
 		"ERROR_REASON_INVALID_CREDENTIAL_CONTENT_FORMAT":        5,
 		"ERROR_REASON_INVALID_ISSUER":                           6,
 		"ERROR_REASON_INVALID_VERIFIABLE_CREDENTIAL":            7,
-		"ERROR_REASON_AGENT_PASSPORT_NOT_FOUND":                 8,
+		"ERROR_REASON_ID_VCS_NOT_FOUND":                         8,
 	}
 )
 
@@ -174,7 +174,7 @@ const file_agntcy_identity_core_v1alpha1_errors_proto_rawDesc = "" +
 	"\amessage\x18\x02 \x01(\tH\x01R\amessage\x88\x01\x01B\t\n" +
 	"\a_reasonB\n" +
 	"\n" +
-	"\b_message*\x98\x03\n" +
+	"\b_message*\x90\x03\n" +
 	"\vErrorReason\x12\x1c\n" +
 	"\x18ERROR_REASON_UNSPECIFIED\x10\x00\x12\x1b\n" +
 	"\x17ERROR_REASON_INVALID_ID\x10\x01\x121\n" +
@@ -183,8 +183,8 @@ const file_agntcy_identity_core_v1alpha1_errors_proto_rawDesc = "" +
 	",ERROR_REASON_INVALID_CREDENTIAL_CONTENT_TYPE\x10\x04\x122\n" +
 	".ERROR_REASON_INVALID_CREDENTIAL_CONTENT_FORMAT\x10\x05\x12\x1f\n" +
 	"\x1bERROR_REASON_INVALID_ISSUER\x10\x06\x12.\n" +
-	"*ERROR_REASON_INVALID_VERIFIABLE_CREDENTIAL\x10\a\x12)\n" +
-	"%ERROR_REASON_AGENT_PASSPORT_NOT_FOUND\x10\bBfZdgithub.com/agntcy/identity/internal/pkg/generated/agntcy/identity/core/v1alpha1;identity_core_sdk_gob\x06proto3"
+	"*ERROR_REASON_INVALID_VERIFIABLE_CREDENTIAL\x10\a\x12!\n" +
+	"\x1dERROR_REASON_ID_VCS_NOT_FOUND\x10\bBfZdgithub.com/agntcy/identity/internal/pkg/generated/agntcy/identity/core/v1alpha1;identity_core_sdk_gob\x06proto3"
 
 var (
 	file_agntcy_identity_core_v1alpha1_errors_proto_rawDescOnce sync.Once
