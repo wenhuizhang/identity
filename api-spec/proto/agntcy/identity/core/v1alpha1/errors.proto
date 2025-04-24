@@ -44,7 +44,7 @@ enum ErrorReason {
   // The Verifiable Credential is invalid, this can be related to either
   // invalid format or unable to verify the Data Integrity proof.
   ERROR_REASON_INVALID_VERIFIABLE_CREDENTIAL = 7;
-  // Unable to find an Agent Passport for an ID.
-  ERROR_REASON_AGENT_PASSPORT_NOT_FOUND = 8;
+  // Unable to find an VCs for an ID.
+  ERROR_REASON_ID_VCS_NOT_FOUND = 8;
 }
 

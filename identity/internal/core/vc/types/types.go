@@ -16,7 +16,7 @@ const (
 )
 
 // The content of the Credential.
-// Multiple content types can be supported: AgentBadge, AgentPassport, etc.
+// Multiple content types can be supported: AgentBadge, etc.
 type CredentialContentType int
 
 const (
@@ -28,13 +28,6 @@ const (
 	// OASF: https://schema.oasf.agntcy.org/schema/objects/agent
 	// Google A2A: https://github.com/google/A2A/blob/main/specification/json/a2a.json
 	CREDENTIAL_CONTENT_TYPE_AGENT_BADGE
-
-	// AgentPassport Content Type.
-	// The Agent passport is a verifiable presentation that aggregates all the
-	// agent badges of the agent.
-	// It can also be accessed on a well-known URL
-	// of type: {agent_id}/.well-known/passport.json
-	CREDENTIAL_CONTENT_TYPE_AGENT_PASSPORT
 )
 
 // EnvelopedCredential represents a Credential enveloped in a specific format.
@@ -128,6 +121,3 @@ type VerifiablePresentation struct {
 	// https://w3id.org/security#proof
 	Proof *Proof `json:"proof,omitempty"`
 }
-
-// AgentPassport represents a Verifiable Presentation for an agent.
-type AgentPassport VerifiablePresentation

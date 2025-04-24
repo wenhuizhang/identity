@@ -22,7 +22,7 @@ const _ = grpc.SupportPackageIsVersion9
 const (
 	VcService_Publish_FullMethodName     = "/agntcy.identity.node.v1alpha1.VcService/Publish"
 	VcService_Verify_FullMethodName      = "/agntcy.identity.node.v1alpha1.VcService/Verify"
-	VcService_APWellKnown_FullMethodName = "/agntcy.identity.node.v1alpha1.VcService/APWellKnown"
+	VcService_VcWellKnown_FullMethodName = "/agntcy.identity.node.v1alpha1.VcService/VcWellKnown"
 	VcService_Search_FullMethodName      = "/agntcy.identity.node.v1alpha1.VcService/Search"
 )
 
@@ -36,8 +36,8 @@ type VcServiceClient interface {
 	Publish(ctx context.Context, in *PublishRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Verify an existing Verifiable Credential
 	Verify(ctx context.Context, in *VerifyRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	// Returns the well-known Verifiable Presentation for an Agent Passport
-	APWellKnown(ctx context.Context, in *APWellKnownRequest, opts ...grpc.CallOption) (*APWellKnownResponse, error)
+	// Returns the well-known Verifiable Credentials for the specified Id
+	VcWellKnown(ctx context.Context, in *VcWellKnownRequest, opts ...grpc.CallOption) (*VcWellKnownResponse, error)
 	// Search for Verifiable Credentials based on the specified criteria
 	Search(ctx context.Context, in *SearchRequest, opts ...grpc.CallOption) (*SearchResponse, error)
 }
@@ -70,10 +70,10 @@ func (c *vcServiceClient) Verify(ctx context.Context, in *VerifyRequest, opts ..
 	return out, nil
 }
 
-func (c *vcServiceClient) APWellKnown(ctx context.Context, in *APWellKnownRequest, opts ...grpc.CallOption) (*APWellKnownResponse, error) {
+func (c *vcServiceClient) VcWellKnown(ctx context.Context, in *VcWellKnownRequest, opts ...grpc.CallOption) (*VcWellKnownResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(APWellKnownResponse)
-	err := c.cc.Invoke(ctx, VcService_APWellKnown_FullMethodName, in, out, cOpts...)
+	out := new(VcWellKnownResponse)
+	err := c.cc.Invoke(ctx, VcService_VcWellKnown_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -100,8 +100,8 @@ type VcServiceServer interface {
 	Publish(context.Context, *PublishRequest) (*emptypb.Empty, error)
 	// Verify an existing Verifiable Credential
 	Verify(context.Context, *VerifyRequest) (*emptypb.Empty, error)
-	// Returns the well-known Verifiable Presentation for an Agent Passport
-	APWellKnown(context.Context, *APWellKnownRequest) (*APWellKnownResponse, error)
+	// Returns the well-known Verifiable Credentials for the specified Id
+	VcWellKnown(context.Context, *VcWellKnownRequest) (*VcWellKnownResponse, error)
 	// Search for Verifiable Credentials based on the specified criteria
 	Search(context.Context, *SearchRequest) (*SearchResponse, error)
 }
@@ -119,8 +119,8 @@ func (UnimplementedVcServiceServer) Publish(context.Context, *PublishRequest) (*
 func (UnimplementedVcServiceServer) Verify(context.Context, *VerifyRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Verify not implemented")
 }
-func (UnimplementedVcServiceServer) APWellKnown(context.Context, *APWellKnownRequest) (*APWellKnownResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method APWellKnown not implemented")
+func (UnimplementedVcServiceServer) VcWellKnown(context.Context, *VcWellKnownRequest) (*VcWellKnownResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method VcWellKnown not implemented")
 }
 func (UnimplementedVcServiceServer) Search(context.Context, *SearchRequest) (*SearchResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Search not implemented")
@@ -181,20 +181,20 @@ func _VcService_Verify_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
-func _VcService_APWellKnown_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(APWellKnownRequest)
+func _VcService_VcWellKnown_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(VcWellKnownRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(VcServiceServer).APWellKnown(ctx, in)
+		return srv.(VcServiceServer).VcWellKnown(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: VcService_APWellKnown_FullMethodName,
+		FullMethod: VcService_VcWellKnown_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(VcServiceServer).APWellKnown(ctx, req.(*APWellKnownRequest))
+		return srv.(VcServiceServer).VcWellKnown(ctx, req.(*VcWellKnownRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -233,8 +233,8 @@ var VcService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _VcService_Verify_Handler,
 		},
 		{
-			MethodName: "APWellKnown",
-			Handler:    _VcService_APWellKnown_Handler,
+			MethodName: "VcWellKnown",
+			Handler:    _VcService_VcWellKnown_Handler,
 		},
 		{
 			MethodName: "Search",

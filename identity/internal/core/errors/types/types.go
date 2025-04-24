@@ -36,8 +36,8 @@ const (
 	// invalid format or unable to verify the Data Integrity proof.
 	ERROR_REASON_INVALID_VERIFIABLE_CREDENTIAL
 
-	// Unable to find an Agent Passport for an ID.
-	ERROR_REASON_AGENT_PASSPORT_NOT_FOUND
+	// Unable to find an VCs for an ID.
+	ERROR_REASON_ID_VCS_NOT_FOUND
 )
 
 // Describes the cause of the error with structured details.
