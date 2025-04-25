@@ -20,10 +20,10 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	VcService_Publish_FullMethodName     = "/agntcy.identity.node.v1alpha1.VcService/Publish"
-	VcService_Verify_FullMethodName      = "/agntcy.identity.node.v1alpha1.VcService/Verify"
-	VcService_VcWellKnown_FullMethodName = "/agntcy.identity.node.v1alpha1.VcService/VcWellKnown"
-	VcService_Search_FullMethodName      = "/agntcy.identity.node.v1alpha1.VcService/Search"
+	VcService_Publish_FullMethodName      = "/agntcy.identity.node.v1alpha1.VcService/Publish"
+	VcService_Verify_FullMethodName       = "/agntcy.identity.node.v1alpha1.VcService/Verify"
+	VcService_GetWellKnown_FullMethodName = "/agntcy.identity.node.v1alpha1.VcService/GetWellKnown"
+	VcService_Search_FullMethodName       = "/agntcy.identity.node.v1alpha1.VcService/Search"
 )
 
 // VcServiceClient is the client API for VcService service.
@@ -37,7 +37,7 @@ type VcServiceClient interface {
 	// Verify an existing Verifiable Credential
 	Verify(ctx context.Context, in *VerifyRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Returns the well-known Verifiable Credentials for the specified Id
-	VcWellKnown(ctx context.Context, in *VcWellKnownRequest, opts ...grpc.CallOption) (*VcWellKnownResponse, error)
+	GetWellKnown(ctx context.Context, in *GetVcWellKnownRequest, opts ...grpc.CallOption) (*GetVcWellKnownResponse, error)
 	// Search for Verifiable Credentials based on the specified criteria
 	Search(ctx context.Context, in *SearchRequest, opts ...grpc.CallOption) (*SearchResponse, error)
 }
@@ -70,10 +70,10 @@ func (c *vcServiceClient) Verify(ctx context.Context, in *VerifyRequest, opts ..
 	return out, nil
 }
 
-func (c *vcServiceClient) VcWellKnown(ctx context.Context, in *VcWellKnownRequest, opts ...grpc.CallOption) (*VcWellKnownResponse, error) {
+func (c *vcServiceClient) GetWellKnown(ctx context.Context, in *GetVcWellKnownRequest, opts ...grpc.CallOption) (*GetVcWellKnownResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(VcWellKnownResponse)
-	err := c.cc.Invoke(ctx, VcService_VcWellKnown_FullMethodName, in, out, cOpts...)
+	out := new(GetVcWellKnownResponse)
+	err := c.cc.Invoke(ctx, VcService_GetWellKnown_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -101,7 +101,7 @@ type VcServiceServer interface {
 	// Verify an existing Verifiable Credential
 	Verify(context.Context, *VerifyRequest) (*emptypb.Empty, error)
 	// Returns the well-known Verifiable Credentials for the specified Id
-	VcWellKnown(context.Context, *VcWellKnownRequest) (*VcWellKnownResponse, error)
+	GetWellKnown(context.Context, *GetVcWellKnownRequest) (*GetVcWellKnownResponse, error)
 	// Search for Verifiable Credentials based on the specified criteria
 	Search(context.Context, *SearchRequest) (*SearchResponse, error)
 }
@@ -119,8 +119,8 @@ func (UnimplementedVcServiceServer) Publish(context.Context, *PublishRequest) (*
 func (UnimplementedVcServiceServer) Verify(context.Context, *VerifyRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Verify not implemented")
 }
-func (UnimplementedVcServiceServer) VcWellKnown(context.Context, *VcWellKnownRequest) (*VcWellKnownResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method VcWellKnown not implemented")
+func (UnimplementedVcServiceServer) GetWellKnown(context.Context, *GetVcWellKnownRequest) (*GetVcWellKnownResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetWellKnown not implemented")
 }
 func (UnimplementedVcServiceServer) Search(context.Context, *SearchRequest) (*SearchResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Search not implemented")
@@ -181,20 +181,20 @@ func _VcService_Verify_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
-func _VcService_VcWellKnown_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(VcWellKnownRequest)
+func _VcService_GetWellKnown_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetVcWellKnownRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(VcServiceServer).VcWellKnown(ctx, in)
+		return srv.(VcServiceServer).GetWellKnown(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: VcService_VcWellKnown_FullMethodName,
+		FullMethod: VcService_GetWellKnown_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(VcServiceServer).VcWellKnown(ctx, req.(*VcWellKnownRequest))
+		return srv.(VcServiceServer).GetWellKnown(ctx, req.(*GetVcWellKnownRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -233,8 +233,8 @@ var VcService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _VcService_Verify_Handler,
 		},
 		{
-			MethodName: "VcWellKnown",
-			Handler:    _VcService_VcWellKnown_Handler,
+			MethodName: "GetWellKnown",
+			Handler:    _VcService_GetWellKnown_Handler,
 		},
 		{
 			MethodName: "Search",

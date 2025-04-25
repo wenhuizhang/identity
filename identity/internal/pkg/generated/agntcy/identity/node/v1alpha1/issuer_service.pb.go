@@ -25,7 +25,7 @@ const (
 )
 
 // Request to register an issuer
-type RegisterRequest struct {
+type RegisterIssuerRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Issuer to register.
 	Issuer        *v1alpha1.Issuer `protobuf:"bytes,1,opt,name=issuer,proto3" json:"issuer,omitempty"`
@@ -33,20 +33,20 @@ type RegisterRequest struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *RegisterRequest) Reset() {
-	*x = RegisterRequest{}
+func (x *RegisterIssuerRequest) Reset() {
+	*x = RegisterIssuerRequest{}
 	mi := &file_agntcy_identity_node_v1alpha1_issuer_service_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *RegisterRequest) String() string {
+func (x *RegisterIssuerRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*RegisterRequest) ProtoMessage() {}
+func (*RegisterIssuerRequest) ProtoMessage() {}
 
-func (x *RegisterRequest) ProtoReflect() protoreflect.Message {
+func (x *RegisterIssuerRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_agntcy_identity_node_v1alpha1_issuer_service_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,12 +58,12 @@ func (x *RegisterRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use RegisterRequest.ProtoReflect.Descriptor instead.
-func (*RegisterRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use RegisterIssuerRequest.ProtoReflect.Descriptor instead.
+func (*RegisterIssuerRequest) Descriptor() ([]byte, []int) {
 	return file_agntcy_identity_node_v1alpha1_issuer_service_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *RegisterRequest) GetIssuer() *v1alpha1.Issuer {
+func (x *RegisterIssuerRequest) GetIssuer() *v1alpha1.Issuer {
 	if x != nil {
 		return x.Issuer
 	}
@@ -71,7 +71,7 @@ func (x *RegisterRequest) GetIssuer() *v1alpha1.Issuer {
 }
 
 // Returns the action to take to complete the registration
-type RegisterResponse struct {
+type RegisterIssuerResponse struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// A uri indicating an action to take to complete the registration.
 	Uri           string `protobuf:"bytes,1,opt,name=uri,proto3" json:"uri,omitempty"`
@@ -79,20 +79,20 @@ type RegisterResponse struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *RegisterResponse) Reset() {
-	*x = RegisterResponse{}
+func (x *RegisterIssuerResponse) Reset() {
+	*x = RegisterIssuerResponse{}
 	mi := &file_agntcy_identity_node_v1alpha1_issuer_service_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *RegisterResponse) String() string {
+func (x *RegisterIssuerResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*RegisterResponse) ProtoMessage() {}
+func (*RegisterIssuerResponse) ProtoMessage() {}
 
-func (x *RegisterResponse) ProtoReflect() protoreflect.Message {
+func (x *RegisterIssuerResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_agntcy_identity_node_v1alpha1_issuer_service_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -104,12 +104,12 @@ func (x *RegisterResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use RegisterResponse.ProtoReflect.Descriptor instead.
-func (*RegisterResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use RegisterIssuerResponse.ProtoReflect.Descriptor instead.
+func (*RegisterIssuerResponse) Descriptor() ([]byte, []int) {
 	return file_agntcy_identity_node_v1alpha1_issuer_service_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *RegisterResponse) GetUri() string {
+func (x *RegisterIssuerResponse) GetUri() string {
 	if x != nil {
 		return x.Uri
 	}
@@ -117,7 +117,7 @@ func (x *RegisterResponse) GetUri() string {
 }
 
 // Request to get the well-known JWKS document of an issuer
-type IssuerWellKnownRequest struct {
+type GetIssuerWellKnownRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The common name of the issuer
 	CommonName    string `protobuf:"bytes,1,opt,name=common_name,json=commonName,proto3" json:"common_name,omitempty"`
@@ -125,20 +125,20 @@ type IssuerWellKnownRequest struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *IssuerWellKnownRequest) Reset() {
-	*x = IssuerWellKnownRequest{}
+func (x *GetIssuerWellKnownRequest) Reset() {
+	*x = GetIssuerWellKnownRequest{}
 	mi := &file_agntcy_identity_node_v1alpha1_issuer_service_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *IssuerWellKnownRequest) String() string {
+func (x *GetIssuerWellKnownRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*IssuerWellKnownRequest) ProtoMessage() {}
+func (*GetIssuerWellKnownRequest) ProtoMessage() {}
 
-func (x *IssuerWellKnownRequest) ProtoReflect() protoreflect.Message {
+func (x *GetIssuerWellKnownRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_agntcy_identity_node_v1alpha1_issuer_service_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -150,12 +150,12 @@ func (x *IssuerWellKnownRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use IssuerWellKnownRequest.ProtoReflect.Descriptor instead.
-func (*IssuerWellKnownRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use GetIssuerWellKnownRequest.ProtoReflect.Descriptor instead.
+func (*GetIssuerWellKnownRequest) Descriptor() ([]byte, []int) {
 	return file_agntcy_identity_node_v1alpha1_issuer_service_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *IssuerWellKnownRequest) GetCommonName() string {
+func (x *GetIssuerWellKnownRequest) GetCommonName() string {
 	if x != nil {
 		return x.CommonName
 	}
@@ -163,7 +163,7 @@ func (x *IssuerWellKnownRequest) GetCommonName() string {
 }
 
 // Returns the content of the well-known JWKS document
-type IssuerWellKnownResponse struct {
+type GetIssuerWellKnownResponse struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The well-known Json Web Key Set (JWKS) document
 	Jwks          *v1alpha1.Jwks `protobuf:"bytes,1,opt,name=jwks,proto3" json:"jwks,omitempty"`
@@ -171,20 +171,20 @@ type IssuerWellKnownResponse struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *IssuerWellKnownResponse) Reset() {
-	*x = IssuerWellKnownResponse{}
+func (x *GetIssuerWellKnownResponse) Reset() {
+	*x = GetIssuerWellKnownResponse{}
 	mi := &file_agntcy_identity_node_v1alpha1_issuer_service_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *IssuerWellKnownResponse) String() string {
+func (x *GetIssuerWellKnownResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*IssuerWellKnownResponse) ProtoMessage() {}
+func (*GetIssuerWellKnownResponse) ProtoMessage() {}
 
-func (x *IssuerWellKnownResponse) ProtoReflect() protoreflect.Message {
+func (x *GetIssuerWellKnownResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_agntcy_identity_node_v1alpha1_issuer_service_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -196,12 +196,12 @@ func (x *IssuerWellKnownResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use IssuerWellKnownResponse.ProtoReflect.Descriptor instead.
-func (*IssuerWellKnownResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use GetIssuerWellKnownResponse.ProtoReflect.Descriptor instead.
+func (*GetIssuerWellKnownResponse) Descriptor() ([]byte, []int) {
 	return file_agntcy_identity_node_v1alpha1_issuer_service_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *IssuerWellKnownResponse) GetJwks() *v1alpha1.Jwks {
+func (x *GetIssuerWellKnownResponse) GetJwks() *v1alpha1.Jwks {
 	if x != nil {
 		return x.Jwks
 	}
@@ -212,19 +212,19 @@ var File_agntcy_identity_node_v1alpha1_issuer_service_proto protoreflect.FileDes
 
 const file_agntcy_identity_node_v1alpha1_issuer_service_proto_rawDesc = "" +
 	"\n" +
-	"2agntcy/identity/node/v1alpha1/issuer_service.proto\x12\x1dagntcy.identity.node.v1alpha1\x1a&agntcy/identity/core/v1alpha1/id.proto\x1a*agntcy/identity/core/v1alpha1/issuer.proto\x1a\x1cgoogle/api/annotations.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\"P\n" +
-	"\x0fRegisterRequest\x12=\n" +
-	"\x06issuer\x18\x01 \x01(\v2%.agntcy.identity.core.v1alpha1.IssuerR\x06issuer\"$\n" +
-	"\x10RegisterResponse\x12\x10\n" +
-	"\x03uri\x18\x01 \x01(\tR\x03uri\"9\n" +
-	"\x16IssuerWellKnownRequest\x12\x1f\n" +
+	"2agntcy/identity/node/v1alpha1/issuer_service.proto\x12\x1dagntcy.identity.node.v1alpha1\x1a&agntcy/identity/core/v1alpha1/id.proto\x1a*agntcy/identity/core/v1alpha1/issuer.proto\x1a\x1cgoogle/api/annotations.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\"V\n" +
+	"\x15RegisterIssuerRequest\x12=\n" +
+	"\x06issuer\x18\x01 \x01(\v2%.agntcy.identity.core.v1alpha1.IssuerR\x06issuer\"*\n" +
+	"\x16RegisterIssuerResponse\x12\x10\n" +
+	"\x03uri\x18\x01 \x01(\tR\x03uri\"<\n" +
+	"\x19GetIssuerWellKnownRequest\x12\x1f\n" +
 	"\vcommon_name\x18\x01 \x01(\tR\n" +
-	"commonName\"R\n" +
-	"\x17IssuerWellKnownResponse\x127\n" +
-	"\x04jwks\x18\x01 \x01(\v2#.agntcy.identity.core.v1alpha1.JwksR\x04jwks2\xa5\x04\n" +
-	"\rIssuerService\x12\xd8\x01\n" +
-	"\bRegister\x12..agntcy.identity.node.v1alpha1.RegisterRequest\x1a/.agntcy.identity.node.v1alpha1.RegisterResponse\"k\x92AD\x122Register an issuer by providing the issuer details*\x0eRegisterIssuer\x82\xd3\xe4\x93\x02\x1e:\x01*\"\x19/v1alpha1/issuer/register\x12\xa4\x02\n" +
-	"\x0fIssuerWellKnown\x125.agntcy.identity.node.v1alpha1.IssuerWellKnownRequest\x1a6.agntcy.identity.node.v1alpha1.IssuerWellKnownResponse\"\xa1\x01\x92Ab\x12OReturns the well-known document for an issuer in Json Web Key Set (JWKS) format*\x0fIssuerWellKnown\x82\xd3\xe4\x93\x026\x124/v1alpha1/issuer/{common_name}/.well-known/jwks.json\x1a\x12\x92A\x0f\n" +
+	"commonName\"U\n" +
+	"\x1aGetIssuerWellKnownResponse\x127\n" +
+	"\x04jwks\x18\x01 \x01(\v2#.agntcy.identity.core.v1alpha1.JwksR\x04jwks2\xb7\x04\n" +
+	"\rIssuerService\x12\xe4\x01\n" +
+	"\bRegister\x124.agntcy.identity.node.v1alpha1.RegisterIssuerRequest\x1a5.agntcy.identity.node.v1alpha1.RegisterIssuerResponse\"k\x92AD\x122Register an issuer by providing the issuer details*\x0eRegisterIssuer\x82\xd3\xe4\x93\x02\x1e:\x01*\"\x19/v1alpha1/issuer/register\x12\xaa\x02\n" +
+	"\fGetWellKnown\x128.agntcy.identity.node.v1alpha1.GetIssuerWellKnownRequest\x1a9.agntcy.identity.node.v1alpha1.GetIssuerWellKnownResponse\"\xa4\x01\x92Ae\x12OReturns the well-known document for an issuer in Json Web Key Set (JWKS) format*\x12GetIssuerWellKnown\x82\xd3\xe4\x93\x026\x124/v1alpha1/issuer/{common_name}/.well-known/jwks.json\x1a\x12\x92A\x0f\n" +
 	"\rIssuerServiceBfZdgithub.com/agntcy/identity/internal/pkg/generated/agntcy/identity/node/v1alpha1;identity_node_sdk_gob\x06proto3"
 
 var (
@@ -241,20 +241,20 @@ func file_agntcy_identity_node_v1alpha1_issuer_service_proto_rawDescGZIP() []byt
 
 var file_agntcy_identity_node_v1alpha1_issuer_service_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_agntcy_identity_node_v1alpha1_issuer_service_proto_goTypes = []any{
-	(*RegisterRequest)(nil),         // 0: agntcy.identity.node.v1alpha1.RegisterRequest
-	(*RegisterResponse)(nil),        // 1: agntcy.identity.node.v1alpha1.RegisterResponse
-	(*IssuerWellKnownRequest)(nil),  // 2: agntcy.identity.node.v1alpha1.IssuerWellKnownRequest
-	(*IssuerWellKnownResponse)(nil), // 3: agntcy.identity.node.v1alpha1.IssuerWellKnownResponse
-	(*v1alpha1.Issuer)(nil),         // 4: agntcy.identity.core.v1alpha1.Issuer
-	(*v1alpha1.Jwks)(nil),           // 5: agntcy.identity.core.v1alpha1.Jwks
+	(*RegisterIssuerRequest)(nil),      // 0: agntcy.identity.node.v1alpha1.RegisterIssuerRequest
+	(*RegisterIssuerResponse)(nil),     // 1: agntcy.identity.node.v1alpha1.RegisterIssuerResponse
+	(*GetIssuerWellKnownRequest)(nil),  // 2: agntcy.identity.node.v1alpha1.GetIssuerWellKnownRequest
+	(*GetIssuerWellKnownResponse)(nil), // 3: agntcy.identity.node.v1alpha1.GetIssuerWellKnownResponse
+	(*v1alpha1.Issuer)(nil),            // 4: agntcy.identity.core.v1alpha1.Issuer
+	(*v1alpha1.Jwks)(nil),              // 5: agntcy.identity.core.v1alpha1.Jwks
 }
 var file_agntcy_identity_node_v1alpha1_issuer_service_proto_depIdxs = []int32{
-	4, // 0: agntcy.identity.node.v1alpha1.RegisterRequest.issuer:type_name -> agntcy.identity.core.v1alpha1.Issuer
-	5, // 1: agntcy.identity.node.v1alpha1.IssuerWellKnownResponse.jwks:type_name -> agntcy.identity.core.v1alpha1.Jwks
-	0, // 2: agntcy.identity.node.v1alpha1.IssuerService.Register:input_type -> agntcy.identity.node.v1alpha1.RegisterRequest
-	2, // 3: agntcy.identity.node.v1alpha1.IssuerService.IssuerWellKnown:input_type -> agntcy.identity.node.v1alpha1.IssuerWellKnownRequest
-	1, // 4: agntcy.identity.node.v1alpha1.IssuerService.Register:output_type -> agntcy.identity.node.v1alpha1.RegisterResponse
-	3, // 5: agntcy.identity.node.v1alpha1.IssuerService.IssuerWellKnown:output_type -> agntcy.identity.node.v1alpha1.IssuerWellKnownResponse
+	4, // 0: agntcy.identity.node.v1alpha1.RegisterIssuerRequest.issuer:type_name -> agntcy.identity.core.v1alpha1.Issuer
+	5, // 1: agntcy.identity.node.v1alpha1.GetIssuerWellKnownResponse.jwks:type_name -> agntcy.identity.core.v1alpha1.Jwks
+	0, // 2: agntcy.identity.node.v1alpha1.IssuerService.Register:input_type -> agntcy.identity.node.v1alpha1.RegisterIssuerRequest
+	2, // 3: agntcy.identity.node.v1alpha1.IssuerService.GetWellKnown:input_type -> agntcy.identity.node.v1alpha1.GetIssuerWellKnownRequest
+	1, // 4: agntcy.identity.node.v1alpha1.IssuerService.Register:output_type -> agntcy.identity.node.v1alpha1.RegisterIssuerResponse
+	3, // 5: agntcy.identity.node.v1alpha1.IssuerService.GetWellKnown:output_type -> agntcy.identity.node.v1alpha1.GetIssuerWellKnownResponse
 	4, // [4:6] is the sub-list for method output_type
 	2, // [2:4] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name
