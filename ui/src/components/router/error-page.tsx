@@ -27,7 +27,7 @@ export const ErrorPage = ({error, className, resetErrorBoundary}: ErrorPageProps
   }
 
   return (
-    <BasePage>
+    <BasePage useBreadcrumbs={false}>
       <Card className={cn('p-6', className)}>
         <div className="mb-6">
           <div className="p-3 inline-flex items-center align-center rounded-full bg-primary">

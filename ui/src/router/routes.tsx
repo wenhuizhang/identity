@@ -7,7 +7,7 @@ import Layout from '@/components/layout/layout';
 import {Navigate} from 'react-router-dom';
 import React from 'react';
 
-const Wallets = React.lazy(() => import('@/pages/wallets/wallets'));
+const WalletsKeys = React.lazy(() => import('@/pages/wallets-keys/wallets-keys'));
 const IdentityNetwork = React.lazy(() => import('@/pages/identity-network/identity-network'));
 const AgentLineages = React.lazy(() => import('@/pages/agent-lineages/agent-lineages'));
 const VerifyAgentPassport = React.lazy(() => import('@/pages/verify-agent-passport/verify-agent-passport'));
@@ -24,7 +24,7 @@ export const generateRoutes = (routes: Route[]): Route[] => {
       children: [
         {
           index: true,
-          element: <Navigate to={PATHS.wallets} replace />
+          element: <Navigate to={PATHS.walletsKeys} replace />
         },
         ...routes,
         {
@@ -40,8 +40,8 @@ export const useRoutes = () => {
   const routes = useMemo<Route[]>(() => {
     return [
       {
-        path: PATHS.wallets,
-        element: <Wallets />
+        path: PATHS.walletsKeys,
+        element: <WalletsKeys />
       },
       {
         path: PATHS.identityNetwork,

@@ -1,6 +1,6 @@
 export const PATHS = {
   basePath: '/',
-  wallets: '/wallets',
+  walletsKeys: '/wallets-keys',
   identityNetwork: '/identity-network',
   agentLineages: '/agent-lineages',
   verifyAgentPassport: '/verify-agent-passport'

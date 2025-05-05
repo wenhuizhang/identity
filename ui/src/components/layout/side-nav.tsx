@@ -1,12 +1,12 @@
 import {ReactNode, useMemo} from 'react';
 import {Link, useLocation} from 'react-router-dom';
 import {Tooltip, TooltipContent, TooltipTrigger} from '@/components/ui/tooltip';
-import {BookIcon, FileLock2Icon, GitForkIcon, WalletMinimalIcon} from 'lucide-react';
 import {cn} from '@/lib/utils';
 import {PATHS} from '@/router/paths';
-import AgntcyLogo from '@/assets/agntcy-logo.svg?react';
-import SmallAgntcyLogo from '@/assets/favicon.svg?react';
-import {GlobeIcon} from '@radix-ui/react-icons';
+import KeyIcon from '@/assets/key.svg?react';
+import IdentityNetworkIcon from '@/assets/network.svg?react';
+import AgentLineagesIcon from '@/assets/lineages.svg?react';
+import SafeIcon from '@/assets/safe.svg?react';
 
 export const SideNav: React.FC<{isCollapsed?: boolean}> = ({isCollapsed}) => {
   const sideNavLinks: {
@@ -18,27 +18,27 @@ export const SideNav: React.FC<{isCollapsed?: boolean}> = ({isCollapsed}) => {
   }[] = useMemo(() => {
     return [
       {
-        href: PATHS.wallets,
-        label: 'Wallets',
-        icon: <WalletMinimalIcon className="w-4 h-4" />,
-        description: 'View your wallets.'
+        href: PATHS.walletsKeys,
+        label: 'Wallets and Keys',
+        icon: <KeyIcon className="w-4 h-4" />,
+        description: 'View your Wallets and Keys.'
       },
       {
         href: PATHS.identityNetwork,
         label: 'Identity Network',
-        icon: <GlobeIcon className="w-4 h-4" />,
+        icon: <IdentityNetworkIcon className="w-4 h-4" />,
         description: 'View your identity network.'
       },
       {
         href: PATHS.agentLineages,
         label: 'Agent Lineages',
-        icon: <GitForkIcon className="w-4 h-4" />,
-        description: 'View your agent lineages.'
+        icon: <AgentLineagesIcon className="w-4 h-4" />,
+        description: 'View Agent Lineages.'
       },
       {
         href: PATHS.verifyAgentPassport,
         label: 'Verify Agent Passport',
-        icon: <FileLock2Icon className="w-4 h-4" />,
+        icon: <SafeIcon className="w-4 h-4" />,
         description: 'View your agent passport.'
       }
     ];
@@ -52,36 +52,13 @@ export const SideNav: React.FC<{isCollapsed?: boolean}> = ({isCollapsed}) => {
   });
 
   return (
-    <nav className="flex relative flex-col justify-between gap-1 px-2 group-[[data-collapsed=true]]:justify-center group-[[data-collapsed=true]]:px-2 bg-side-nav-background h-full text-white">
+    <nav className="flex relative flex-col justify-between gap-1 px-2 group-[[data-collapsed=true]]:justify-center group-[[data-collapsed=true]]:px-2 bg-side-nav-background h-full text-white side-bar">
       <div className="flex flex-col gap-4">
-        <Link to={PATHS.basePath}>
-          <button className={cn('flex justify-center items-center py-6 rounded w-full px-3', isCollapsed && 'px-1')}>
-            {!isCollapsed ? (
-              <div className="space-y-2">
-                <AgntcyLogo className="h-12 w-full" />
-                <span className="text-[16px] font-bold text-center text-[#187ADC]">Agent Identity Managment</span>
-              </div>
-            ) : (
-              <SmallAgntcyLogo className="h-full w-12" />
-            )}
-          </button>
-        </Link>
         <div className="flex flex-col gap-1">
           {sideNavLinks.map((link) => {
             return <SideNavLink {...link} isCollapsed={isCollapsed} key={`side-nav-link-${link.href}`} isActive={active?.href === link.href} />;
           })}
         </div>
-      </div>
-      <div className="mb-4">
-        <SideNavLink
-          label="Documentation"
-          href={'#'}
-          icon={<BookIcon className={cn('mr-1', isCollapsed ? '!w-4 !min-w-4 !h-4 !min-h-4' : '!w-4 !min-w-4 !h-4 !min-h-4')} />}
-          description="View the documentation."
-          isCollapsed={isCollapsed}
-          isActive={false}
-          isExternal={true}
-        />
       </div>
     </nav>
   );
@@ -101,7 +78,7 @@ const SideNavLink: React.FC<{
     <Link to={href} target={isExternal ? '_blank' : undefined} rel={isExternal ? 'noopener noreferrer' : undefined}>
       <button
         className={cn(
-          'flex items-center px-3 py-3 gap-4 hover:bg-side-nav-hover w-full rounded-md text-white overflow-hidden text-sm cursor-pointer font-medium transition-colors',
+          'flex items-center px-3 py-3 gap-4 hover:bg-side-nav-hover w-full rounded-md text-[#00142B] overflow-hidden text-sm cursor-pointer font-medium transition-colors hover:text-[#0051AF]',
           isActive && 'bg-side-nav-selected hover:bg-side-nav-selected-hover',
           isCollapsed && 'justify-center',
           !isCollapsed && 'pl-4'
@@ -114,7 +91,7 @@ const SideNavLink: React.FC<{
             isCollapsed
               ? '[&>svg]:min-w-4 [&>svg]:min-h-4 [&>svg]:max-w-4 [&>svg]:max-h-4 stroke-[1.3]'
               : '[&>svg]:min-w-5 [&>svg]:min-h-5 [&>svg]:max-w-5 [&>svg]:max-h-5 stroke-[1.4]',
-            isActive && '[&>svg]:text-[#F5A035]'
+            isActive && '[&>svg]:text-[#0051AF]'
           )}
         >
           {icon}
@@ -122,8 +99,8 @@ const SideNavLink: React.FC<{
         {!isCollapsed && (
           <span
             className={cn(
-              'text-white text-left whitespace-nowrap overflow-ellipsis overflow-hidden text-[0.9rem] pb-[0.125rem] font-semibold',
-              isActive && 'font-bold text-[#F5A035]'
+              'text-[#00142B] text-left whitespace-nowrap overflow-ellipsis overflow-hidden text-[0.9rem] font-semibold',
+              isActive && 'text-[#0051AF]'
             )}
           >
             {label}
