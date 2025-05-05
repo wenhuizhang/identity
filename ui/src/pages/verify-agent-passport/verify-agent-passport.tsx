@@ -3,7 +3,16 @@ import PlaceholderPageContent from '@/components/ui/placeholder-page-content';
 
 const VerifyAgentPassport: React.FC = () => {
   return (
-    <BasePage title="Verify Agent Passport" description="Verify an agent's passport." breadcrumbs={[{text: 'Verify Agent Passport'}]}>
+    <BasePage
+      title="Verify Agent Passport"
+      description={
+        <div className="space-y-4">
+          <p>You can copy an Agent Passport into the field below, and verify that is legitimate and linked to a trust anchor. </p>
+          <p>You can read more about the Internet of Agents trust anchors here.</p>
+        </div>
+      }
+      useBreadcrumbs={false}
+    >
       <PlaceholderPageContent />
     </BasePage>
   );

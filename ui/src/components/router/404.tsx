@@ -14,7 +14,7 @@ const NotFound: React.FC = () => {
   };
 
   return (
-    <BasePage>
+    <BasePage useBreadcrumbs={false}>
       <Card className="p-6 mt-6">
         <div className="mb-6">
           <div className="p-3 inline-flex items-center align-center rounded-full bg-primary">

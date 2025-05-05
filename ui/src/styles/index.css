@@ -2,13 +2,13 @@
 @plugin "tailwindcss-animate";
 
 :root {
-  font-family: barlow, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: Inter, Sharp Sans, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: transparent;
+  background-color: #EFF3FC;
 
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -16,28 +16,28 @@
   --radius: 0.5rem;
   font-synthesis: none;
 
-  --background: transparent;
-  --foreground: oklch(0.828 0.189 84.429);
+  --background: #EFF3FC;
+  --foreground: #EFF3FC;
 
-  --side-nav-background: #00142B;
-  --side-nav-hover: #424d66;
-  --side-nav-selected: #424d66;
-  --side-nav-selected-hover: #424d66;
+  --side-nav-background: #EFF3FC;
+  --side-nav-hover: #E8F1FF;
+  --side-nav-selected: #E8F1FF;
+  --side-nav-selected-hover: #E8F1FF;
 
   --card: #004A8C;
-  --card-foreground: #F5A035;
+  --card-foreground: #00142B;
 
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
 
-  --primary: #F5A035;
+  --primary: #187ADC;
   --primary-foreground: oklch(0.985 0 0);
 
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
 
-  --muted: #004A8C;
-  --muted-foreground: #FFFFFF;
+  --muted: #E8F1FF;
+  --muted-foreground: #3C4551;
 
   --accent: oklch(0.97 0 0);
   --accent-foreground: oklch(0.205 0 0);
@@ -107,10 +107,6 @@
   }
 }
 
-.layout {
-  background-image: linear-gradient(to right bottom, #004a8c, #00417b, #00396a, #00305a, #01284a);
-}
-
 .card-group {
   align-items: stretch;
   display: flex;
@@ -123,4 +119,27 @@
 .card-flex-group {
   flex: 1 1 20%;
   max-width: unset;
+}
+
+.app-bar {
+  border-bottom: 1px solid #D5DFF7;
+  overflow: hidden;
+}
+
+.side-bar {
+  border-right: 1px solid #D5DFF7;
+  padding-top: 32px;
+  padding-right: 12px;
+  padding-bottom: 64px;
+  padding-left: 12px;
+}
+
+.product-name {
+  font-family: Sharp Sans;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 18px;
+  letter-spacing: 0%;
+  vertical-align: middle;
+  color: #00142B;
 }

@@ -1,56 +1,37 @@
 import type {ReactNode} from 'react';
-import React, {useCallback} from 'react';
+import React from 'react';
 import {Tabs, TabsList, TabsTrigger} from '@/components/ui/tabs';
 import Breadcrumbs, {BreadcrumbsProps} from '@/components/ui/breadcrumbs';
 import {Link} from 'react-router-dom';
-import {Tooltip, TooltipContent, TooltipTrigger} from '../ui/tooltip';
-import {Button} from '../ui/button';
-import {EraserIcon} from 'lucide-react';
-import {TooltipArrow} from '@radix-ui/react-tooltip';
-import {useStore} from '@/store';
-import {useShallow} from 'zustand/react/shallow';
-import {toast} from 'sonner';
+import {cn} from '@/lib/utils';
 
-export const BasePage: React.FC<BasePageProps> = ({children, breadcrumbs, parentTitle, title, description, rightSideItems, subNav}) => {
+export const BasePage: React.FC<BasePageProps> = ({
+  children,
+  breadcrumbs,
+  parentTitle,
+  title,
+  description,
+  rightSideItems,
+  subNav,
+  useBreadcrumbs = true
+}) => {
   const hideHeader = !title && !description && !rightSideItems;
   const showHeader = !hideHeader;
 
-  const {cleanStore} = useStore(
-    useShallow((store) => ({
-      cleanStore: store.cleanStore
-    }))
-  );
-
-  const handleOnClean = useCallback(() => {
-    cleanStore();
-    toast.success('CLI tool cleaned');
-  }, [cleanStore]);
-
   return (
     <>
-      <div className="flex justify-between px-5 py-2 items-center layout max-w-screen overflow-hidden border-b sticky top-0 z-40">
-        <Breadcrumbs breadcrumbs={breadcrumbs} />
-        <div className="flex items-center gap-2 flex-shrink-0">
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button onClick={handleOnClean} variant="ghost" size="icon" className="px-2 relative">
-                <EraserIcon className="w-5 h-5" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent side="bottom">
-              <TooltipArrow />
-              Clean CLI tool
-            </TooltipContent>
-          </Tooltip>
+      {useBreadcrumbs ? (
+        <div className="flex justify-between px-5 py-4 items-center max-w-screen overflow-hidden">
+          <Breadcrumbs breadcrumbs={breadcrumbs} />
         </div>
-      </div>
+      ) : null}
       <div>
         {showHeader && (
-          <div className="mt-4 flex items-center justify-between gap-2 py-2 flex-wrap mx-5 pb-2 mb-2">
+          <div className={cn('flex items-center justify-between gap-2 flex-wrap mx-5 pb-2 mb-2', !useBreadcrumbs && 'mt-6')}>
             <div className="flex items-center justify-between border-b w-full flex-wrap pb-2 gap-2">
               <div>
-                <h1 className="text-2xl flex items-center gap-2 mb-1 font-semibold">{parentTitle || title}</h1>
-                <div className="text-muted-foreground min-h-4">{description}</div>
+                <h1 className="text-[24px] flex items-center gap-2 mb-1 font-semibold text-[#00142B]">{parentTitle || title}</h1>
+                <div className="text-[#3C4551] text-[14px] min-h-4">{description}</div>
               </div>
               <div className="flex items-center gap-2">{rightSideItems}</div>
             </div>
@@ -90,4 +71,5 @@ interface BasePageProps {
   description?: ReactNode;
   rightSideItems?: ReactNode;
   subNav?: {href: string; label: ReactNode; active?: boolean}[];
+  useBreadcrumbs?: boolean;
 }
