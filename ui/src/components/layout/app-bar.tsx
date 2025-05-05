@@ -1,28 +1,14 @@
-import React, {useCallback} from 'react';
+import React from 'react';
 import {Link} from 'react-router-dom';
 import {Tooltip, TooltipContent, TooltipTrigger} from '../ui/tooltip';
 import {Button} from '../ui/button';
 import {TooltipArrow} from '@radix-ui/react-tooltip';
-import {useStore} from '@/store';
-import {useShallow} from 'zustand/react/shallow';
-import {toast} from 'sonner';
 import Logo from '@/assets/logo.svg';
 import UnionLogo from '@/assets/union.svg?react';
 import GitLogo from '@/assets/git.svg?react';
 import {PATHS} from '@/router/paths';
 
 export const AppBar: React.FC = () => {
-  const {cleanStore} = useStore(
-    useShallow((store) => ({
-      cleanStore: store.cleanStore
-    }))
-  );
-
-  const handleOnClean = useCallback(() => {
-    cleanStore();
-    toast.success('CLI tool cleaned');
-  }, [cleanStore]);
-
   return (
     <header className="flex justify-between px-6 py-2 items-center max-w-screen overflow-hidden border-b sticky top-0 z-40 app-bar">
       <div className="flex gap-4 items-center">

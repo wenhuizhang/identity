@@ -70,12 +70,7 @@ const Layout = () => {
           <SideNav isCollapsed={isCollapsed} />
         </ResizablePanel>
         <ResizablePanel defaultSize={defaultLayout[1]} collapsible={false} minSize={30} className="!overflow-auto">
-          <main
-            className="pb-10 h-full overflow-y-auto"
-            style={{
-              minHeight: 'calc(100vh)'
-            }}
-          >
+          <main className="pb-10 h-full overflow-y-auto">
             <Outlet />
           </main>
         </ResizablePanel>
