@@ -8,7 +8,7 @@ import IdentityNetworkIcon from '@/assets/network.svg?react';
 import AgentLineagesIcon from '@/assets/lineages.svg?react';
 import SafeIcon from '@/assets/safe.svg?react';
 import {Button} from '../ui/button';
-import {ChevronLeftIcon, ChevronRightIcon} from 'lucide-react';
+import {ChevronLeftIcon} from 'lucide-react';
 
 export const SideNav: React.FC<{isCollapsed?: boolean; onChangeCollapsed?: (value?: boolean) => void}> = ({isCollapsed, onChangeCollapsed}) => {
   const sideNavLinks: {
