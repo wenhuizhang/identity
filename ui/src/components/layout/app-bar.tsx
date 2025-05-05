@@ -41,7 +41,7 @@ export const AppBar: React.FC = () => {
           </TooltipTrigger>
           <TooltipContent side="bottom">
             <TooltipArrow />
-            Github
+            GitHub
           </TooltipContent>
         </Tooltip>
       </div>
