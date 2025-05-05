@@ -8,7 +8,7 @@ export const EmptyWallet = () => {
   const navigate = useNavigate();
 
   const onClick = () => {
-    void navigate(PATHS.wallets, {replace: true});
+    void navigate(PATHS.walletsKeys, {replace: true});
   };
 
   return (
