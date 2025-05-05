@@ -7,8 +7,10 @@ import KeyIcon from '@/assets/key.svg?react';
 import IdentityNetworkIcon from '@/assets/network.svg?react';
 import AgentLineagesIcon from '@/assets/lineages.svg?react';
 import SafeIcon from '@/assets/safe.svg?react';
+import {Button} from '../ui/button';
+import {ChevronLeftIcon, ChevronRightIcon} from 'lucide-react';
 
-export const SideNav: React.FC<{isCollapsed?: boolean}> = ({isCollapsed}) => {
+export const SideNav: React.FC<{isCollapsed?: boolean; onChangeCollapsed?: (value?: boolean) => void}> = ({isCollapsed, onChangeCollapsed}) => {
   const sideNavLinks: {
     href: string;
     label: ReactNode;
@@ -59,6 +61,11 @@ export const SideNav: React.FC<{isCollapsed?: boolean}> = ({isCollapsed}) => {
             return <SideNavLink {...link} isCollapsed={isCollapsed} key={`side-nav-link-${link.href}`} isActive={active?.href === link.href} />;
           })}
         </div>
+      </div>
+      <div className={cn('absolute bottom-15 left-5', isCollapsed && 'left-[9px]')}>
+        <Button variant="outline" className="collapse-button" onClick={() => onChangeCollapsed?.(!isCollapsed)} size="icon">
+          <ChevronLeftIcon className={cn('w-4 h-4 stroke-[#00142B]', isCollapsed && 'rotate-180')} />
+        </Button>
       </div>
     </nav>
   );

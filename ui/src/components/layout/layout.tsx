@@ -67,7 +67,7 @@ const Layout = () => {
             !isCollapsed && 'min-w-[264px] max-w-[264px]'
           )}
         >
-          <SideNav isCollapsed={isCollapsed} />
+          <SideNav isCollapsed={isCollapsed} onChangeCollapsed={(value) => setIsCollapsed(value as boolean)} />
         </ResizablePanel>
         <ResizablePanel defaultSize={defaultLayout[1]} collapsible={false} minSize={30} className="!overflow-auto">
           <main className="pb-10 h-full overflow-y-auto">
