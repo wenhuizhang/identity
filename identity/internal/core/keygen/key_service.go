@@ -8,10 +8,10 @@ import (
 
 // KeyService defines methods for generating, saving, and retrieving JWKs.
 type KeyService interface {
-	// GenerateKey generates and save a new JWK.
+	// GenerateKey generates a new JWK.
 	GenerateKey(ctx context.Context, alg string, use string, id string) (*types.Jwk, error)
 
-	// SaveKey saves a JWK to the key storage.
+	// SaveKey saves a JWK to the key storage. it supports local file, 1Password, and OS keychain.
 	SaveKey(ctx context.Context, id string, jwk *types.Jwk) error
 
 	// RetrieveKey retrieves a public JWK by its ID.
