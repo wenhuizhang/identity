@@ -28,7 +28,11 @@ const (
 type RegisterIssuerRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Issuer to register.
-	Issuer        *v1alpha1.Issuer `protobuf:"bytes,1,opt,name=issuer,proto3" json:"issuer,omitempty"`
+	Issuer *v1alpha1.Issuer `protobuf:"bytes,1,opt,name=issuer,proto3" json:"issuer,omitempty"`
+	// Optional Proof of ownership of the Issuer's common_name
+	// This should be provided when the Issuer is provided by an external IdP
+	// Example: a signed JWT
+	Proof         *v1alpha1.Proof `protobuf:"bytes,2,opt,name=proof,proto3,oneof" json:"proof,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -70,11 +74,19 @@ func (x *RegisterIssuerRequest) GetIssuer() *v1alpha1.Issuer {
 	return nil
 }
 
+func (x *RegisterIssuerRequest) GetProof() *v1alpha1.Proof {
+	if x != nil {
+		return x.Proof
+	}
+	return nil
+}
+
 // Returns the action to take to complete the registration
 type RegisterIssuerResponse struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// A uri indicating an action to take to complete the registration.
-	Uri           string `protobuf:"bytes,1,opt,name=uri,proto3" json:"uri,omitempty"`
+	// Optional: a uri indicating an action to take to complete the registration
+	// Depending on the issuer type, this could be a validation URL
+	Uri           *string `protobuf:"bytes,1,opt,name=uri,proto3,oneof" json:"uri,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -110,8 +122,8 @@ func (*RegisterIssuerResponse) Descriptor() ([]byte, []int) {
 }
 
 func (x *RegisterIssuerResponse) GetUri() string {
-	if x != nil {
-		return x.Uri
+	if x != nil && x.Uri != nil {
+		return *x.Uri
 	}
 	return ""
 }
@@ -212,11 +224,14 @@ var File_agntcy_identity_node_v1alpha1_issuer_service_proto protoreflect.FileDes
 
 const file_agntcy_identity_node_v1alpha1_issuer_service_proto_rawDesc = "" +
 	"\n" +
-	"2agntcy/identity/node/v1alpha1/issuer_service.proto\x12\x1dagntcy.identity.node.v1alpha1\x1a&agntcy/identity/core/v1alpha1/id.proto\x1a*agntcy/identity/core/v1alpha1/issuer.proto\x1a\x1cgoogle/api/annotations.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\"V\n" +
+	"2agntcy/identity/node/v1alpha1/issuer_service.proto\x12\x1dagntcy.identity.node.v1alpha1\x1a&agntcy/identity/core/v1alpha1/id.proto\x1a*agntcy/identity/core/v1alpha1/issuer.proto\x1a&agntcy/identity/core/v1alpha1/vc.proto\x1a\x1cgoogle/api/annotations.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\"\xa1\x01\n" +
 	"\x15RegisterIssuerRequest\x12=\n" +
-	"\x06issuer\x18\x01 \x01(\v2%.agntcy.identity.core.v1alpha1.IssuerR\x06issuer\"*\n" +
-	"\x16RegisterIssuerResponse\x12\x10\n" +
-	"\x03uri\x18\x01 \x01(\tR\x03uri\"<\n" +
+	"\x06issuer\x18\x01 \x01(\v2%.agntcy.identity.core.v1alpha1.IssuerR\x06issuer\x12?\n" +
+	"\x05proof\x18\x02 \x01(\v2$.agntcy.identity.core.v1alpha1.ProofH\x00R\x05proof\x88\x01\x01B\b\n" +
+	"\x06_proof\"7\n" +
+	"\x16RegisterIssuerResponse\x12\x15\n" +
+	"\x03uri\x18\x01 \x01(\tH\x00R\x03uri\x88\x01\x01B\x06\n" +
+	"\x04_uri\"<\n" +
 	"\x19GetIssuerWellKnownRequest\x12\x1f\n" +
 	"\vcommon_name\x18\x01 \x01(\tR\n" +
 	"commonName\"U\n" +
@@ -246,20 +261,22 @@ var file_agntcy_identity_node_v1alpha1_issuer_service_proto_goTypes = []any{
 	(*GetIssuerWellKnownRequest)(nil),  // 2: agntcy.identity.node.v1alpha1.GetIssuerWellKnownRequest
 	(*GetIssuerWellKnownResponse)(nil), // 3: agntcy.identity.node.v1alpha1.GetIssuerWellKnownResponse
 	(*v1alpha1.Issuer)(nil),            // 4: agntcy.identity.core.v1alpha1.Issuer
-	(*v1alpha1.Jwks)(nil),              // 5: agntcy.identity.core.v1alpha1.Jwks
+	(*v1alpha1.Proof)(nil),             // 5: agntcy.identity.core.v1alpha1.Proof
+	(*v1alpha1.Jwks)(nil),              // 6: agntcy.identity.core.v1alpha1.Jwks
 }
 var file_agntcy_identity_node_v1alpha1_issuer_service_proto_depIdxs = []int32{
 	4, // 0: agntcy.identity.node.v1alpha1.RegisterIssuerRequest.issuer:type_name -> agntcy.identity.core.v1alpha1.Issuer
-	5, // 1: agntcy.identity.node.v1alpha1.GetIssuerWellKnownResponse.jwks:type_name -> agntcy.identity.core.v1alpha1.Jwks
-	0, // 2: agntcy.identity.node.v1alpha1.IssuerService.Register:input_type -> agntcy.identity.node.v1alpha1.RegisterIssuerRequest
-	2, // 3: agntcy.identity.node.v1alpha1.IssuerService.GetWellKnown:input_type -> agntcy.identity.node.v1alpha1.GetIssuerWellKnownRequest
-	1, // 4: agntcy.identity.node.v1alpha1.IssuerService.Register:output_type -> agntcy.identity.node.v1alpha1.RegisterIssuerResponse
-	3, // 5: agntcy.identity.node.v1alpha1.IssuerService.GetWellKnown:output_type -> agntcy.identity.node.v1alpha1.GetIssuerWellKnownResponse
-	4, // [4:6] is the sub-list for method output_type
-	2, // [2:4] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	5, // 1: agntcy.identity.node.v1alpha1.RegisterIssuerRequest.proof:type_name -> agntcy.identity.core.v1alpha1.Proof
+	6, // 2: agntcy.identity.node.v1alpha1.GetIssuerWellKnownResponse.jwks:type_name -> agntcy.identity.core.v1alpha1.Jwks
+	0, // 3: agntcy.identity.node.v1alpha1.IssuerService.Register:input_type -> agntcy.identity.node.v1alpha1.RegisterIssuerRequest
+	2, // 4: agntcy.identity.node.v1alpha1.IssuerService.GetWellKnown:input_type -> agntcy.identity.node.v1alpha1.GetIssuerWellKnownRequest
+	1, // 5: agntcy.identity.node.v1alpha1.IssuerService.Register:output_type -> agntcy.identity.node.v1alpha1.RegisterIssuerResponse
+	3, // 6: agntcy.identity.node.v1alpha1.IssuerService.GetWellKnown:output_type -> agntcy.identity.node.v1alpha1.GetIssuerWellKnownResponse
+	5, // [5:7] is the sub-list for method output_type
+	3, // [3:5] is the sub-list for method input_type
+	3, // [3:3] is the sub-list for extension type_name
+	3, // [3:3] is the sub-list for extension extendee
+	0, // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_agntcy_identity_node_v1alpha1_issuer_service_proto_init() }
@@ -267,6 +284,8 @@ func file_agntcy_identity_node_v1alpha1_issuer_service_proto_init() {
 	if File_agntcy_identity_node_v1alpha1_issuer_service_proto != nil {
 		return
 	}
+	file_agntcy_identity_node_v1alpha1_issuer_service_proto_msgTypes[0].OneofWrappers = []any{}
+	file_agntcy_identity_node_v1alpha1_issuer_service_proto_msgTypes[1].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
