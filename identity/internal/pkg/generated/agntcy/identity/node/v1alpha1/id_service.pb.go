@@ -25,10 +25,16 @@ const (
 )
 
 // Generate an Id and its corresponding ResolverMetadata for the specified Issuer
+// For external IdPs, the Issuer should be provided with a Proof of ownership
+// of the Issuer's provided id
 type GenerateRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Issuer details
-	Issuer        *v1alpha1.Issuer `protobuf:"bytes,1,opt,name=issuer,proto3" json:"issuer,omitempty"`
+	Issuer *v1alpha1.Issuer `protobuf:"bytes,1,opt,name=issuer,proto3" json:"issuer,omitempty"`
+	// Optional Proof of ownership of the Issuer's provided id
+	// This should be provided when the Issuer is provided by an external IdP
+	// Example: a signed JWT
+	Proof         *v1alpha1.Proof `protobuf:"bytes,2,opt,name=proof,proto3,oneof" json:"proof,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -66,6 +72,13 @@ func (*GenerateRequest) Descriptor() ([]byte, []int) {
 func (x *GenerateRequest) GetIssuer() *v1alpha1.Issuer {
 	if x != nil {
 		return x.Issuer
+	}
+	return nil
+}
+
+func (x *GenerateRequest) GetProof() *v1alpha1.Proof {
+	if x != nil {
+		return x.Proof
 	}
 	return nil
 }
@@ -212,9 +225,11 @@ var File_agntcy_identity_node_v1alpha1_id_service_proto protoreflect.FileDescrip
 
 const file_agntcy_identity_node_v1alpha1_id_service_proto_rawDesc = "" +
 	"\n" +
-	".agntcy/identity/node/v1alpha1/id_service.proto\x12\x1dagntcy.identity.node.v1alpha1\x1a&agntcy/identity/core/v1alpha1/id.proto\x1a*agntcy/identity/core/v1alpha1/issuer.proto\x1a\x1cgoogle/api/annotations.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\"P\n" +
+	".agntcy/identity/node/v1alpha1/id_service.proto\x12\x1dagntcy.identity.node.v1alpha1\x1a&agntcy/identity/core/v1alpha1/id.proto\x1a*agntcy/identity/core/v1alpha1/issuer.proto\x1a&agntcy/identity/core/v1alpha1/vc.proto\x1a\x1cgoogle/api/annotations.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\"\x9b\x01\n" +
 	"\x0fGenerateRequest\x12=\n" +
-	"\x06issuer\x18\x01 \x01(\v2%.agntcy.identity.core.v1alpha1.IssuerR\x06issuer\"p\n" +
+	"\x06issuer\x18\x01 \x01(\v2%.agntcy.identity.core.v1alpha1.IssuerR\x06issuer\x12?\n" +
+	"\x05proof\x18\x02 \x01(\v2$.agntcy.identity.core.v1alpha1.ProofH\x00R\x05proof\x88\x01\x01B\b\n" +
+	"\x06_proof\"p\n" +
 	"\x10GenerateResponse\x12\\\n" +
 	"\x11resolver_metadata\x18\x01 \x01(\v2/.agntcy.identity.core.v1alpha1.ResolverMetadataR\x10resolverMetadata\" \n" +
 	"\x0eResolveRequest\x12\x0e\n" +
@@ -246,21 +261,23 @@ var file_agntcy_identity_node_v1alpha1_id_service_proto_goTypes = []any{
 	(*ResolveRequest)(nil),            // 2: agntcy.identity.node.v1alpha1.ResolveRequest
 	(*ResolveResponse)(nil),           // 3: agntcy.identity.node.v1alpha1.ResolveResponse
 	(*v1alpha1.Issuer)(nil),           // 4: agntcy.identity.core.v1alpha1.Issuer
-	(*v1alpha1.ResolverMetadata)(nil), // 5: agntcy.identity.core.v1alpha1.ResolverMetadata
+	(*v1alpha1.Proof)(nil),            // 5: agntcy.identity.core.v1alpha1.Proof
+	(*v1alpha1.ResolverMetadata)(nil), // 6: agntcy.identity.core.v1alpha1.ResolverMetadata
 }
 var file_agntcy_identity_node_v1alpha1_id_service_proto_depIdxs = []int32{
 	4, // 0: agntcy.identity.node.v1alpha1.GenerateRequest.issuer:type_name -> agntcy.identity.core.v1alpha1.Issuer
-	5, // 1: agntcy.identity.node.v1alpha1.GenerateResponse.resolver_metadata:type_name -> agntcy.identity.core.v1alpha1.ResolverMetadata
-	5, // 2: agntcy.identity.node.v1alpha1.ResolveResponse.resolver_metadata:type_name -> agntcy.identity.core.v1alpha1.ResolverMetadata
-	0, // 3: agntcy.identity.node.v1alpha1.IdService.Generate:input_type -> agntcy.identity.node.v1alpha1.GenerateRequest
-	2, // 4: agntcy.identity.node.v1alpha1.IdService.Resolve:input_type -> agntcy.identity.node.v1alpha1.ResolveRequest
-	1, // 5: agntcy.identity.node.v1alpha1.IdService.Generate:output_type -> agntcy.identity.node.v1alpha1.GenerateResponse
-	3, // 6: agntcy.identity.node.v1alpha1.IdService.Resolve:output_type -> agntcy.identity.node.v1alpha1.ResolveResponse
-	5, // [5:7] is the sub-list for method output_type
-	3, // [3:5] is the sub-list for method input_type
-	3, // [3:3] is the sub-list for extension type_name
-	3, // [3:3] is the sub-list for extension extendee
-	0, // [0:3] is the sub-list for field type_name
+	5, // 1: agntcy.identity.node.v1alpha1.GenerateRequest.proof:type_name -> agntcy.identity.core.v1alpha1.Proof
+	6, // 2: agntcy.identity.node.v1alpha1.GenerateResponse.resolver_metadata:type_name -> agntcy.identity.core.v1alpha1.ResolverMetadata
+	6, // 3: agntcy.identity.node.v1alpha1.ResolveResponse.resolver_metadata:type_name -> agntcy.identity.core.v1alpha1.ResolverMetadata
+	0, // 4: agntcy.identity.node.v1alpha1.IdService.Generate:input_type -> agntcy.identity.node.v1alpha1.GenerateRequest
+	2, // 5: agntcy.identity.node.v1alpha1.IdService.Resolve:input_type -> agntcy.identity.node.v1alpha1.ResolveRequest
+	1, // 6: agntcy.identity.node.v1alpha1.IdService.Generate:output_type -> agntcy.identity.node.v1alpha1.GenerateResponse
+	3, // 7: agntcy.identity.node.v1alpha1.IdService.Resolve:output_type -> agntcy.identity.node.v1alpha1.ResolveResponse
+	6, // [6:8] is the sub-list for method output_type
+	4, // [4:6] is the sub-list for method input_type
+	4, // [4:4] is the sub-list for extension type_name
+	4, // [4:4] is the sub-list for extension extendee
+	0, // [0:4] is the sub-list for field type_name
 }
 
 func init() { file_agntcy_identity_node_v1alpha1_id_service_proto_init() }
@@ -268,6 +285,7 @@ func file_agntcy_identity_node_v1alpha1_id_service_proto_init() {
 	if File_agntcy_identity_node_v1alpha1_id_service_proto != nil {
 		return
 	}
+	file_agntcy_identity_node_v1alpha1_id_service_proto_msgTypes[0].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
