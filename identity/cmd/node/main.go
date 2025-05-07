@@ -8,7 +8,9 @@ import (
 	"os/signal"
 	"time"
 
-	identity_api "github.com/agntcy/identity/api"
+	identityapi "github.com/agntcy/identity/api"
+	issuergrpc "github.com/agntcy/identity/internal/issuer/grpc"
+	nodegrpc "github.com/agntcy/identity/internal/node/grpc"
 	"github.com/agntcy/identity/internal/pkg/grpcutil"
 	"github.com/agntcy/identity/pkg/cmd"
 	"github.com/agntcy/identity/pkg/grpcserver"
@@ -101,8 +103,11 @@ func main() {
 	// Healthz
 	// healthzChecker := healthz.NewChecker()
 
-	register := identity_api.GrpcServiceRegister{
-		// IdServiceServer: grpcservices.NewIdService(),
+	register := identityapi.GrpcServiceRegister{
+		IdServiceServer:     nodegrpc.NewIdService(),
+		IssuerServiceServer: nodegrpc.NewIssuerService(),
+		VcServiceServer:     nodegrpc.NewVcService(),
+		LocalServiceServer:  issuergrpc.NewLocalService(),
 	}
 
 	register.RegisterGrpcHandlers(grpcsrv.Server)
