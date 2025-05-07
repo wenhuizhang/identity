@@ -1,8 +1,8 @@
 package app_grpc_register
 
 import (
-	v1alpha1 "github.com/agntcy/identity/internal/pkg/generated/agntcy/identity/issuer/v1alpha1"
-	v1alpha11 "github.com/agntcy/identity/internal/pkg/generated/agntcy/identity/node/v1alpha1"
+	v1alpha1 "github.com/agntcy/identity/api/agntcy/identity/issuer/v1alpha1"
+	v1alpha11 "github.com/agntcy/identity/api/agntcy/identity/node/v1alpha1"
 )
 
 import (

@@ -615,7 +615,7 @@ const file_agntcy_identity_core_v1alpha1_vc_proto_rawDesc = "" +
 	"\x16CredentialEnvelopeType\x12(\n" +
 	"$CREDENTIAL_ENVELOPE_TYPE_UNSPECIFIED\x10\x00\x12+\n" +
 	"'CREDENTIAL_ENVELOPE_TYPE_EMBEDDED_PROOF\x10\x01\x12!\n" +
-	"\x1dCREDENTIAL_ENVELOPE_TYPE_JOSE\x10\x02BfZdgithub.com/agntcy/identity/internal/pkg/generated/agntcy/identity/core/v1alpha1;identity_core_sdk_gob\x06proto3"
+	"\x1dCREDENTIAL_ENVELOPE_TYPE_JOSE\x10\x02BSZQgithub.com/agntcy/identity/api/agntcy/identity/core/v1alpha1;identity_core_sdk_gob\x06proto3"
 
 var (
 	file_agntcy_identity_core_v1alpha1_vc_proto_rawDescOnce sync.Once

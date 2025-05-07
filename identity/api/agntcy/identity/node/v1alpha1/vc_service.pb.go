@@ -7,7 +7,7 @@
 package identity_node_sdk_go
 
 import (
-	v1alpha1 "github.com/agntcy/identity/internal/pkg/generated/agntcy/identity/core/v1alpha1"
+	v1alpha1 "github.com/agntcy/identity/api/agntcy/identity/core/v1alpha1"
 	_ "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -356,7 +356,7 @@ const file_agntcy_identity_node_v1alpha1_vc_service_proto_rawDesc = "" +
 	"\x06Verify\x12,.agntcy.identity.node.v1alpha1.VerifyRequest\x1a\x16.google.protobuf.Empty\"]\x92A<\x12\x1eVerify a Verifiable Credential*\x1aVerifyVerifiableCredential\x82\xd3\xe4\x93\x02\x18:\x01*\"\x13/v1alpha1/vc/verify\x12\x83\x02\n" +
 	"\fGetWellKnown\x124.agntcy.identity.node.v1alpha1.GetVcWellKnownRequest\x1a5.agntcy.identity.node.v1alpha1.GetVcWellKnownResponse\"\x85\x01\x92AT\x12BReturns the well-known Verifiable Credentials for the specified Id*\x0eGetVcWellKnown\x82\xd3\xe4\x93\x02(\x12&/v1alpha1/vc/{id}/.well-known/vcs.json\x12\xe9\x01\n" +
 	"\x06Search\x12,.agntcy.identity.node.v1alpha1.SearchRequest\x1a-.agntcy.identity.node.v1alpha1.SearchResponse\"\x81\x01\x92A`\x12ASearch for Verifiable Credentials based on the specified criteria*\x1bSearchVerifiableCredentials\x82\xd3\xe4\x93\x02\x18:\x01*\"\x13/v1alpha1/vc/search\x1a\x0e\x92A\v\n" +
-	"\tVcServiceBfZdgithub.com/agntcy/identity/internal/pkg/generated/agntcy/identity/node/v1alpha1;identity_node_sdk_gob\x06proto3"
+	"\tVcServiceBSZQgithub.com/agntcy/identity/api/agntcy/identity/node/v1alpha1;identity_node_sdk_gob\x06proto3"
 
 var (
 	file_agntcy_identity_node_v1alpha1_vc_service_proto_rawDescOnce sync.Once

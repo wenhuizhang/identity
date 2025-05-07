@@ -490,7 +490,7 @@ const file_agntcy_identity_core_v1alpha1_id_proto_rawDesc = "" +
 	"\x02id\x18\x01 \x01(\tH\x00R\x02id\x88\x01\x01\x12M\n" +
 	"\x0epublic_key_jwk\x18\x02 \x01(\v2\".agntcy.identity.core.v1alpha1.JwkH\x01R\fpublicKeyJwk\x88\x01\x01B\x05\n" +
 	"\x03_idB\x11\n" +
-	"\x0f_public_key_jwkBfZdgithub.com/agntcy/identity/internal/pkg/generated/agntcy/identity/core/v1alpha1;identity_core_sdk_gob\x06proto3"
+	"\x0f_public_key_jwkBSZQgithub.com/agntcy/identity/api/agntcy/identity/core/v1alpha1;identity_core_sdk_gob\x06proto3"
 
 var (
 	file_agntcy_identity_core_v1alpha1_id_proto_rawDescOnce sync.Once
