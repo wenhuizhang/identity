@@ -8,7 +8,7 @@ import (
 	"os/signal"
 	"time"
 
-	app_grpc_register "github.com/agntcy/identity/internal/pkg/generated"
+	identity_api "github.com/agntcy/identity/api"
 	"github.com/agntcy/identity/internal/pkg/grpcutil"
 	"github.com/agntcy/identity/pkg/cmd"
 	"github.com/agntcy/identity/pkg/grpcserver"
@@ -101,7 +101,7 @@ func main() {
 	// Healthz
 	// healthzChecker := healthz.NewChecker()
 
-	register := app_grpc_register.GrpcServiceRegister{
+	register := identity_api.GrpcServiceRegister{
 		// IdServiceServer: grpcservices.NewIdService(),
 	}
 

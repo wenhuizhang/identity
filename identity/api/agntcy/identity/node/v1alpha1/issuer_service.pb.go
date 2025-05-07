@@ -7,7 +7,7 @@
 package identity_node_sdk_go
 
 import (
-	v1alpha1 "github.com/agntcy/identity/internal/pkg/generated/agntcy/identity/core/v1alpha1"
+	v1alpha1 "github.com/agntcy/identity/api/agntcy/identity/core/v1alpha1"
 	_ "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -240,7 +240,7 @@ const file_agntcy_identity_node_v1alpha1_issuer_service_proto_rawDesc = "" +
 	"\rIssuerService\x12\xe4\x01\n" +
 	"\bRegister\x124.agntcy.identity.node.v1alpha1.RegisterIssuerRequest\x1a5.agntcy.identity.node.v1alpha1.RegisterIssuerResponse\"k\x92AD\x122Register an issuer by providing the issuer details*\x0eRegisterIssuer\x82\xd3\xe4\x93\x02\x1e:\x01*\"\x19/v1alpha1/issuer/register\x12\xaa\x02\n" +
 	"\fGetWellKnown\x128.agntcy.identity.node.v1alpha1.GetIssuerWellKnownRequest\x1a9.agntcy.identity.node.v1alpha1.GetIssuerWellKnownResponse\"\xa4\x01\x92Ae\x12OReturns the well-known document for an issuer in Json Web Key Set (JWKS) format*\x12GetIssuerWellKnown\x82\xd3\xe4\x93\x026\x124/v1alpha1/issuer/{common_name}/.well-known/jwks.json\x1a\x12\x92A\x0f\n" +
-	"\rIssuerServiceBfZdgithub.com/agntcy/identity/internal/pkg/generated/agntcy/identity/node/v1alpha1;identity_node_sdk_gob\x06proto3"
+	"\rIssuerServiceBSZQgithub.com/agntcy/identity/api/agntcy/identity/node/v1alpha1;identity_node_sdk_gob\x06proto3"
 
 var (
 	file_agntcy_identity_node_v1alpha1_issuer_service_proto_rawDescOnce sync.Once

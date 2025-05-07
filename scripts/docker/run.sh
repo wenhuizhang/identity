@@ -78,7 +78,7 @@ if [ ! -z "${packages_comma_separated}" ]; then
 
   for m in $protos; do
     sed -i 's/syntax = "proto2";/syntax = "proto3";/g' "${m}"
-    sed -i 's|go_package = [^ ]\+|go_package = "github.com/agntcy/identity/internal/pkg/generated/agntcy/identity/core/v1alpha1;identity_core_sdk_go";|g' "${m}"
+    sed -i 's|go_package = [^ ]\+|go_package = "github.com/agntcy/identity/api/agntcy/identity/core/v1alpha1;identity_core_sdk_go";|g' "${m}"
   done
 
   for package in $packages; do
@@ -103,7 +103,7 @@ echo "| |_/ / |_| | |     | |_\ \  __/ | | |  __/ | | (_| | ||  __/"
 echo "\____/ \___/\_|      \____/\___|_| |_|\___|_|  \__,_|\__\___|"
 echo ""
 
-rm -rvf ${Identity_ROOT}/code/identity/internal/pkg/generated 2>&1 || true
+rm -rvf ${Identity_ROOT}/code/identity/api 2>&1 || true
 
 cd "${Identity_ROOT}/code/api-spec"
 

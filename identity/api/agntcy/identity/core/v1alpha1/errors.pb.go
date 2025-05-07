@@ -184,7 +184,7 @@ const file_agntcy_identity_core_v1alpha1_errors_proto_rawDesc = "" +
 	".ERROR_REASON_INVALID_CREDENTIAL_CONTENT_FORMAT\x10\x05\x12\x1f\n" +
 	"\x1bERROR_REASON_INVALID_ISSUER\x10\x06\x12.\n" +
 	"*ERROR_REASON_INVALID_VERIFIABLE_CREDENTIAL\x10\a\x12!\n" +
-	"\x1dERROR_REASON_ID_VCS_NOT_FOUND\x10\bBfZdgithub.com/agntcy/identity/internal/pkg/generated/agntcy/identity/core/v1alpha1;identity_core_sdk_gob\x06proto3"
+	"\x1dERROR_REASON_ID_VCS_NOT_FOUND\x10\bBSZQgithub.com/agntcy/identity/api/agntcy/identity/core/v1alpha1;identity_core_sdk_gob\x06proto3"
 
 var (
 	file_agntcy_identity_core_v1alpha1_errors_proto_rawDescOnce sync.Once

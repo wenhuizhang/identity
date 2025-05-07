@@ -1,15 +1,15 @@
 version: v1
 plugins:
   - plugin: go
-    out: ../identity/internal/pkg/generated
+    out: ../identity/api
     opt: paths=source_relative
   - plugin: go-grpc
-    out: ../identity/internal/pkg/generated
+    out: ../identity/api
     opt: paths=source_relative,require_unimplemented_servers=false
   - plugin: grpc-gateway
-    out: ../identity/internal/pkg/generated
+    out: ../identity/api
     opt: paths=source_relative,allow_delete_body=true
   - plugin: go-srvreg
-    out: ../identity/internal/pkg/generated
+    out: ../identity/api
     opt: logtostderr=true,paths=source_relative
     strategy: all

@@ -5,7 +5,7 @@ package agntcy.identity.node.v1alpha1;
 import "openapiv3/annotations.proto";
 
 // Package-wide variables from generator "generated".
-option go_package = "github.com/agntcy/identity/internal/pkg/generated/agntcy/identity/node/v1alpha1;identity_node_sdk_go";
+option go_package = "github.com/agntcy/identity/api/agntcy/identity/node/v1alpha1;identity_node_sdk_go";
 
 option (openapi.v3.document) = {
     info: {
