@@ -1,3 +1,6 @@
+# Copyright 2025  AGNTCY Contributors (https://github.com/agntcy)
+# SPDX-License-Identifier: Apache-2.0
+
 ---
 # Default state for all rules
 default: true
@@ -8,7 +11,7 @@ extends: null
 # https://github.com/DavidAnson/markdownlint/blob/v0.34.0/doc/md013.md
 MD013:
   # Number of characters
-  line_length: 150
+  line_length: 300
   # Include code blocks
   code_blocks: true
   # Include tables

@@ -1,9 +1,13 @@
+// Copyright 2025  AGNTCY Contributors (https://github.com/agntcy)
+// SPDX-License-Identifier: Apache-2.0
+
 package main
 
 import (
 	"time"
 )
 
+//nolint:lll // Ignore linting for long lines
 type Configuration struct {
 	ServerHttpHost                                          string        `split_words:"true" required:"true"`
 	ServerGrpcHost                                          string        `split_words:"true" required:"true"`

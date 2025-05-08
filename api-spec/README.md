@@ -10,15 +10,6 @@ To generate the gRPC code from the API spec, run the following command from the 
 cd scripts && ./buf-generate.sh
 ```
 
-This will generate the Golang code in the `identity/internal/pkg/generated` directory and the Python code in the `sdk/python/internal/generated` directory.
+This will generate the Golang code in the `identity/api` directory.
 
-## OpenAPI Client and Proto Documentation
-
-The API spec is also used to generate the OpenAPI client and the Proto documentation.
-To generate the OpenAPI client and the Proto documentation, run the following command from the root of the repository:
-
-```bash
-make start_docs
-```
-
-You can then access the docs portal at `http://localhost:3000`.
+**Note**: The Proto Documentation, the OpenAPI Client and the JSON Schema will be generated in the `api-spec/static` directory.

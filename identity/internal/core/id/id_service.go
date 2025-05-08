@@ -1,3 +1,6 @@
+// Copyright 2025  AGNTCY Contributors (https://github.com/agntcy)
+// SPDX-License-Identifier: Apache-2.0
+
 package id
 
 import (
@@ -7,6 +10,6 @@ import (
 )
 
 type IdService interface {
-	// Get a ResolverMetadata by Id
-	Get(ctx context.Context, id string) (*types.ResolverMetadata, error)
+	// Resolves an ID into a ResolverMetadata
+	Resolve(ctx context.Context, id string) (*types.ResolverMetadata, error)
 }

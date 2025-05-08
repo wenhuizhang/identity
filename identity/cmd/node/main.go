@@ -1,3 +1,6 @@
+// Copyright 2025  AGNTCY Contributors (https://github.com/agntcy)
+// SPDX-License-Identifier: Apache-2.0
+
 package main
 
 import (
@@ -8,7 +11,9 @@ import (
 	"os/signal"
 	"time"
 
-	app_grpc_register "github.com/agntcy/identity/internal/pkg/generated"
+	identityapi "github.com/agntcy/identity/api"
+	issuergrpc "github.com/agntcy/identity/internal/issuer/grpc"
+	nodegrpc "github.com/agntcy/identity/internal/node/grpc"
 	"github.com/agntcy/identity/internal/pkg/grpcutil"
 	"github.com/agntcy/identity/pkg/cmd"
 	"github.com/agntcy/identity/pkg/grpcserver"
@@ -30,6 +35,7 @@ var maxMsgSize = math.MaxInt64
 
 // ------------------------ GLOBAL -------------------- //
 
+//nolint:funlen // Ignore linting for main function
 func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 
@@ -45,6 +51,7 @@ func main() {
 	log.Info("Starting in env:", config.GoEnv)
 
 	// Create a gRPC server object
+	//nolint:lll // Ignore linting for long lines
 	var kaep = keepalive.EnforcementPolicy{
 		MinTime: time.Duration(
 			config.ServerGrpcKeepAliveEnvorcementPolicyMinTime,
@@ -94,21 +101,25 @@ func main() {
 		grpc.KeepaliveParams(kasp),
 	)
 	if err != nil {
-		log.Fatal(err)
+		log.Error(err)
 	}
-	defer grpcsrv.Shutdown(ctx)
 
-	// Healthz
-	// healthzChecker := healthz.NewChecker()
+	defer func() {
+		_ = grpcsrv.Shutdown(ctx)
+	}()
 
-	register := app_grpc_register.GrpcServiceRegister{
-		// IdServiceServer: grpcservices.NewIdService(),
+	register := identityapi.GrpcServiceRegister{
+		IdServiceServer:     nodegrpc.NewIdService(),
+		IssuerServiceServer: nodegrpc.NewIssuerService(),
+		VcServiceServer:     nodegrpc.NewVcService(),
+		LocalServiceServer:  issuergrpc.NewLocalService(),
 	}
 
 	register.RegisterGrpcHandlers(grpcsrv.Server)
 
 	// Serve gRPC server
 	log.Info("Serving gRPC on:", config.ServerGrpcHost)
+
 	go func() {
 		if err := grpcsrv.Run(); err != nil {
 			log.Fatal(err)
@@ -118,6 +129,7 @@ func main() {
 	// Create a client connection to the gRPC server we just started
 	// This is where the gRPC-Gateway proxies the requests
 
+	//nolint:lll // Allow long line for struct
 	var kacp = keepalive.ClientParameters{
 		Time: time.Duration(
 			config.ClientGrpcKeepAliveClientParametersTime,
@@ -139,7 +151,7 @@ func main() {
 		),
 	)
 	if err != nil {
-		log.Fatal("Failed to dial server:", err)
+		log.Error("Failed to dial server:", err)
 	}
 
 	gwOpts := []runtime.ServeMuxOption{
@@ -150,7 +162,7 @@ func main() {
 
 	err = register.RegisterHttpHandlers(ctx, gwmux, conn)
 	if err != nil {
-		log.Fatal(err)
+		log.Error(err)
 	}
 
 	// Setup cors for dev
@@ -184,7 +196,10 @@ func main() {
 		ReadTimeout:       time.Duration(config.HttpServerReadTimeout) * time.Second,
 		ReadHeaderTimeout: time.Duration(config.HttpServerReadHeaderTimeout) * time.Second,
 	}
-	defer gwServer.Shutdown(ctx)
+
+	defer func() {
+		_ = gwServer.Shutdown(ctx)
+	}()
 
 	go func() {
 		log.Info("Serving gRPC-Gateway on:", config.ServerHttpHost)

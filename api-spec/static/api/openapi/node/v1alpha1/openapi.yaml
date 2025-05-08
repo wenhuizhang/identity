@@ -1,3 +1,6 @@
+# Copyright 2025 Copyright AGNTCY Contributors (https://github.com/agntcy)
+# SPDX-License-Identifier: appache
+
 # Generated with protoc-gen-openapi
 # https://github.com/google/gnostic/tree/master/cmd/protoc-gen-openapi
 
@@ -417,6 +420,13 @@ components:
                     allOf:
                         - $ref: '#/components/schemas/EnvelopedCredential'
                     description: The Verifiable Credential to publish
+                proof:
+                    allOf:
+                        - $ref: '#/components/schemas/Proof'
+                    description: |-
+                        Optional Proof of ownership of the Issuer's ResolverMetadata
+                         This should be provided when the Issuer is provided by an external IdP
+                         Example: a signed JWT
             description: Request to publish an issued Verifiable Credential
         RegisterIssuerRequest:
             type: object

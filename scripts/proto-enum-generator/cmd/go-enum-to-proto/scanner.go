@@ -1,3 +1,6 @@
+// Copyright 2025  AGNTCY Contributors (https://github.com/agntcy)
+// SPDX-License-Identifier: Apache-2.0
+
 package main
 
 import (
@@ -20,6 +23,9 @@ import (
 	flag "github.com/spf13/pflag"
 	"golang.org/x/tools/go/packages"
 )
+
+const filePermissions = 0o644
+const nameLength = 2
 
 type PackageCol struct {
 	Pkgs []*packages.Package
@@ -50,9 +56,26 @@ func NewEnumScanner() *EnumScanner {
 }
 
 func (s *EnumScanner) BindFlags(flag *flag.FlagSet) {
-	flag.StringVarP(&s.Packages, "packages", "p", s.Packages, "comma-separated list of directories to get input enums from.")
-	flag.StringVar(&s.GoModulePath, "go-mod-path", s.Packages, "The path containing the go.mod for the specified packages.")
-	flag.StringVarP(&s.OutputDir, "output-dir", "o", s.OutputDir, "The base directory under which to generate results.")
+	flag.StringVarP(
+		&s.Packages,
+		"packages",
+		"p",
+		s.Packages,
+		"comma-separated list of directories to get input enums from.",
+	)
+	flag.StringVar(
+		&s.GoModulePath,
+		"go-mod-path",
+		s.Packages,
+		"The path containing the go.mod for the specified packages.",
+	)
+	flag.StringVarP(
+		&s.OutputDir,
+		"output-dir",
+		"o",
+		s.OutputDir,
+		"The base directory under which to generate results.",
+	)
 }
 
 func (s *EnumScanner) Scan() error {
@@ -63,7 +86,7 @@ func (s *EnumScanner) Scan() error {
 
 	pkgs, err := s.loadPackages(packages)
 	if err != nil {
-		return fmt.Errorf("unable to load packages: %v", err)
+		return fmt.Errorf("unable to load packages: %w", err)
 	}
 
 	s.fset = pkgs.Fset
@@ -81,6 +104,7 @@ func (s *EnumScanner) Scan() error {
 
 func (s *EnumScanner) GenerateProtos(writeToFile bool) ([]*types.ProtoOutput, error) {
 	outs := make([]*types.ProtoOutput, len(s.enums))
+
 	for i, enum := range s.enums {
 		var buf bytes.Buffer
 
@@ -103,12 +127,12 @@ func (s *EnumScanner) GenerateProtos(writeToFile bool) ([]*types.ProtoOutput, er
 	if writeToFile {
 		data, err := json.MarshalIndent(outs, "", " ")
 		if err != nil {
-			return nil, fmt.Errorf("unable to marshal the output: %v", err)
+			return nil, fmt.Errorf("unable to marshal the output: %w", err)
 		}
 
-		err = os.WriteFile(path.Join(s.OutputDir, "enums.json"), data, 0644)
+		err = os.WriteFile(path.Join(s.OutputDir, "enums.json"), data, filePermissions)
 		if err != nil {
-			return nil, fmt.Errorf("unable to write the output: %v", err)
+			return nil, fmt.Errorf("unable to write the output: %w", err)
 		}
 	}
 
@@ -122,7 +146,7 @@ func (s *EnumScanner) generateProtoComments(
 ) {
 	if comment != nil {
 		for _, c := range comment.List {
-			buf.WriteString(fmt.Sprintf("%s%s\n", prefix, c))
+			fmt.Fprintf(buf, "%s%s\n", prefix, c)
 		}
 	}
 }
@@ -182,6 +206,7 @@ func (s *EnumScanner) addComments(pkg *packages.Package) {
 func (s *EnumScanner) getObjectComment(obj gotypes.Object) *ast.CommentGroup {
 	position := s.fset.Position(obj.Pos())
 	key := fileLine{file: position.Filename, line: position.Line - 1}
+
 	return s.endLineToCommentGroup[key]
 }
 
@@ -225,6 +250,7 @@ func (s *EnumScanner) addEnumValue(ct *gotypes.Const, nt *gotypes.Named, bt *got
 	}
 
 	var val int
+
 	if ct.Val().Kind() == constant.Int {
 		v, err := strconv.Atoi(ct.Val().String())
 		if err != nil {
@@ -290,15 +316,17 @@ func (s *EnumScanner) goNameToName(in string) types.Name {
 	// package path in front.
 	nameParts := strings.Split(in[:genericIndex], ".")
 	name := types.Name{Name: in}
-	if n := len(nameParts); n >= 2 {
+
+	if n := len(nameParts); n >= nameLength {
 		// The final "." is the name of the type--previous ones must
 		// have been in the package path.
 		name.Package, name.Name = strings.Join(nameParts[:n-1], "."), nameParts[n-1]
 		// Add back the generic component now that the package and type name have been separated.
 		if genericIndex != len(in) {
-			name.Name = name.Name + in[genericIndex:]
+			name.Name += in[genericIndex:]
 		}
 	}
+
 	return name
 }
 

@@ -1,3 +1,6 @@
+// Copyright 2025  AGNTCY Contributors (https://github.com/agntcy)
+// SPDX-License-Identifier: Apache-2.0
+
 package main
 
 import (
@@ -28,6 +31,7 @@ func (p *GoPatcher) Patch() error {
 	}
 
 	groupedEnums := map[string][]*types.Enum{}
+
 	for _, enum := range enums {
 		path := enum.Enum.Path
 		groupedEnums[path] = append(groupedEnums[path], enum.Enum)
@@ -62,7 +66,7 @@ func (p *GoPatcher) patchGoEnum(path string, enums []*types.Enum) error {
 	err = file.Flush()
 	if err != nil {
 		return fmt.Errorf(
-			"unable to patch enums in Go file [%s]: %v",
+			"unable to patch enums in Go file [%s]: %w",
 			path,
 			err,
 		)

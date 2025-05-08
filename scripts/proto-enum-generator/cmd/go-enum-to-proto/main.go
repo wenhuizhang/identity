@@ -1,3 +1,6 @@
+// Copyright 2025  AGNTCY Contributors (https://github.com/agntcy)
+// SPDX-License-Identifier: Apache-2.0
+
 package main
 
 import (
@@ -11,7 +14,8 @@ var scanner = NewEnumScanner()
 
 func init() {
 	scanner.BindFlags(pflag.CommandLine)
-	goflag.Set("logtostderr", "true")
+	_ = goflag.Set("logtostderr", "true")
+
 	pflag.CommandLine.AddGoFlagSet(goflag.CommandLine)
 }
 

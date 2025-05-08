@@ -1,3 +1,6 @@
+// Copyright 2025  AGNTCY Contributors (https://github.com/agntcy)
+// SPDX-License-Identifier: Apache-2.0
+
 package log
 
 import (
@@ -5,8 +8,6 @@ import (
 
 	"github.com/sirupsen/logrus"
 )
-
-// TODO: refactor this by defining an actual interface
 
 // Commonly used field names here
 const (

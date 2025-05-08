@@ -1,11 +1,12 @@
+// Copyright 2025  AGNTCY Contributors (https://github.com/agntcy)
+// SPDX-License-Identifier: Apache-2.0
+
 package grpcutil
 
 import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
-
-// TODO: better to define an interface for errors, and have services implementing this
 
 func NotFoundError(err error) error {
 	return status.Errorf(codes.NotFound, "%v", err)

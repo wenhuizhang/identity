@@ -1,3 +1,6 @@
+// Copyright 2025  AGNTCY Contributors (https://github.com/agntcy)
+// SPDX-License-Identifier: Apache-2.0
+
 package httputil
 
 import (
@@ -156,8 +159,8 @@ func postDataWithHeaders(uri string, payload interface{}, headers map[string]str
 
 	// Send req using http Client
 	client := &http.Client{}
-	resp, err := client.Do(req)
 
+	resp, err := client.Do(req)
 	if err != nil {
 		log.Debug("Got error", err)
 		return nil

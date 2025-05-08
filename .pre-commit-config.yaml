@@ -1,55 +1,40 @@
+# Copyright 2025  AGNTCY Contributors (https://github.com/agntcy)
+# SPDX-License-Identifier: Apache-2.0
+
 ---
 default_stages: [pre-commit, pre-push]
 repos:
+  - repo: https://github.com/google/addlicense
+    rev: 499ed7f28389eb4a08c2d7e40b1637cfd7f65381
+    hooks:
+      - id: addlicense # Add license header to files
+        args: ["-ignore", "**/node_modules/**", "-ignore", "**/vendor/**", "-c", "Copyright AGNTCY Contributors (https://github.com/agntcy)", "-l", "appache", "-s=only", "."]
+
   - repo: https://github.com/tekwizely/pre-commit-golang
     rev: v1.0.0-rc.1
     hooks:
       - id: go-mod-tidy
-        files: ^backend/
+        files: ^identity/
       - id: go-fmt
-        files: ^backend/
+        files: ^identity/
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0
     hooks:
       - id: check-added-large-files # Prevent giant files from being committed
-        files: ^agent/
+        files: ^identity/
       - id: detect-private-key      # Checks for the existence of private keys
-        files: ^agent/
+        files: ^identity/
       - id: check-case-conflict     # Check for files with names that would conflict on a case-insensitive filesystem
-        files: ^agent/
+        files: ^identity/
       - id: check-merge-conflict    # Check for files that contain merge conflict strings
-        files: ^agent/
+        files: ^identity/
       - id: check-symlinks          # Checks for symlinks which do not point to anything
-        files: ^agent/
+        files: ^identity/
       - id: end-of-file-fixer       # Makes sure files end in a newline and only a newline
-        files: ^agent/
+        files: ^identity/
       - id: mixed-line-ending       # Replaces or checks mixed line ending
-        files: ^agent/
+        files: ^identity/
       - id: trailing-whitespace     # Trims trailing whitespace
         args: [--markdown-linebreak-ext=md]
-        files: ^agent/
-
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.8.4
-    hooks:
-      - id: ruff
-        args: [--fix]
-        types_or: [python, pyi, jupyter]
-        files: ^agent/
-      - id: ruff-format
-        types_or: [python, pyi, jupyter]
-        files: ^agent/
-
-  - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.13.0
-    hooks:
-      - id: mypy
-        additional_dependencies: [numpy, types-PyYAML, types-requests]
-        files: ^agent/
-
-  - repo: https://github.com/shellcheck-py/shellcheck-py
-    rev: v0.10.0.1
-    hooks:
-      - id: shellcheck
-        files: ^agent/
+        files: ^identity/

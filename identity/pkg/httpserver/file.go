@@ -1,3 +1,6 @@
+// Copyright 2025  AGNTCY Contributors (https://github.com/agntcy)
+// SPDX-License-Identifier: Apache-2.0
+
 package httpserver
 
 import (
@@ -10,5 +13,6 @@ import (
 func FileServer(dir string) http.Handler {
 	staticFS := assets.NewHttpStaticFS(os.DirFS(dir))
 	handler := http.FileServer(http.FS(staticFS))
+
 	return handler
 }

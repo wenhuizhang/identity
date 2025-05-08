@@ -1,3 +1,7 @@
+// Copyright 2025  AGNTCY Contributors (https://github.com/agntcy)
+// SPDX-License-Identifier: Apache-2.0
+
+//nolint:errname // Ignore error name for types/proto
 package types
 
 import "fmt"
