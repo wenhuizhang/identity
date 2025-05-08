@@ -1,4 +1,7 @@
 #!/bin/bash -e
+# Copyright 2025  AGNTCY Contributors (https://github.com/agntcy)
+# SPDX-License-Identifier: Apache-2.0
+
 # Syntax build-docker.sh [-i|--image imagename]
 
 PROJECT=identity
@@ -28,9 +31,6 @@ done
 case $DOCKER_IMAGE in
 $PROJECT-node*)
   DOCKER_FILE=./deployments/docker/identity/node/Dockerfile.node
-  ;;
-$PROJECT-docs*)
-  DOCKER_FILE=./deployments/docker/docs/Dockerfile
   ;;
 
 esac

@@ -1,3 +1,6 @@
+// Copyright 2025 Copyright AGNTCY Contributors (https://github.com/agntcy)
+// SPDX-License-Identifier: appache
+
 package app_grpc_register
 
 import (
