@@ -15,6 +15,7 @@ var networkConnectCmd = &cobra.Command{
 	Use:   "setup [identity_node_address]",
 	Short: "Setup the connection to an Identity Network node",
 	Run: func(cmd *cobra.Command, args []string) {
+		//nolint:forbidigo // Allow print for CLI
 		fmt.Println("Setting up connection to an Identity Network node")
 	},
 }
@@ -23,6 +24,7 @@ var networkTestCmd = &cobra.Command{
 	Use:   "test",
 	Short: "Test the connection to an Identity Network node",
 	Run: func(cmd *cobra.Command, args []string) {
+		//nolint:forbidigo // Allow print for CLI
 		fmt.Println("Testing connection to an Identity Network node")
 	},
 }
@@ -31,6 +33,7 @@ var networkForgetCmd = &cobra.Command{
 	Use:   "forget",
 	Short: "Forget the connection to an Identity Network node",
 	Run: func(cmd *cobra.Command, args []string) {
+		//nolint:forbidigo // Allow print for CLI
 		fmt.Println("Forgetting connection to an Identity Network node")
 	},
 }

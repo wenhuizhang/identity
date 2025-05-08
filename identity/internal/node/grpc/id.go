@@ -2,6 +2,7 @@ package grpc
 
 import (
 	"context"
+	"fmt"
 
 	nodeapi "github.com/agntcy/identity/api/agntcy/identity/node/v1alpha1"
 )
@@ -17,7 +18,7 @@ func (idService) Generate(
 	ctx context.Context,
 	req *nodeapi.GenerateRequest,
 ) (*nodeapi.GenerateResponse, error) {
-	return nil, nil
+	return nil, fmt.Errorf("not implemented")
 }
 
 // Resolve a specified Id to its corresponding ResolverMetadata
@@ -25,5 +26,5 @@ func (idService) Resolve(
 	ctx context.Context,
 	req *nodeapi.ResolveRequest,
 ) (*nodeapi.ResolveResponse, error) {
-	return nil, nil
+	return nil, fmt.Errorf("not implemented")
 }

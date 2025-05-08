@@ -1,3 +1,4 @@
+//nolint:errname // Ignore error name for types/proto
 package types
 
 import "fmt"

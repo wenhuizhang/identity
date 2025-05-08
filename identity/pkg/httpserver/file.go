@@ -10,5 +10,6 @@ import (
 func FileServer(dir string) http.Handler {
 	staticFS := assets.NewHttpStaticFS(os.DirFS(dir))
 	handler := http.FileServer(http.FS(staticFS))
+
 	return handler
 }

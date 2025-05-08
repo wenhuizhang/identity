@@ -25,7 +25,8 @@ var rootCmd = &cobra.Command{
         __/ /
        |___/
 
-The Identity CLI tool is a command line interface for generating and publishing identities within the Internet of Agents.
+The Identity CLI tool is a command line interface for generating and publishing
+identities within the Internet of Agents.
 
 With it you can:
 - Connect to a local wallet, generate and store quantum-resistant cryptographic keys
@@ -34,7 +35,10 @@ With it you can:
 - Verify the identity of other agents via their agent passport
 `,
 	Run: func(cmd *cobra.Command, args []string) {
-		cmd.Help()
+		err := cmd.Help()
+		if err != nil {
+			os.Exit(1)
+		}
 	},
 }
 

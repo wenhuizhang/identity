@@ -2,6 +2,7 @@ package grpc
 
 import (
 	"context"
+	"fmt"
 
 	issuerapi "github.com/agntcy/identity/api/agntcy/identity/issuer/v1alpha1"
 	"google.golang.org/protobuf/types/known/emptypb"
@@ -14,17 +15,17 @@ func NewLocalService() issuerapi.LocalServiceServer {
 }
 
 // Generate a keypair in Json Web Key (JWK) format
-func (localService) KeyGen(
+func (l *localService) KeyGen(
 	ctx context.Context,
 	req *emptypb.Empty,
 ) (*issuerapi.KeyGenResponse, error) {
-	return nil, nil
+	return nil, fmt.Errorf("not implemented")
 }
 
 // Issue a Verifiable Credential in a specific Envelope Type
-func (localService) IssueVC(
+func (l *localService) IssueVC(
 	ctx context.Context,
 	req *issuerapi.IssueVCRequest,
 ) (*issuerapi.IssueVCResponse, error) {
-	return nil, nil
+	return nil, fmt.Errorf("not implemented")
 }

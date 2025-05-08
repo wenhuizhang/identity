@@ -11,7 +11,8 @@ var scanner = NewEnumScanner()
 
 func init() {
 	scanner.BindFlags(pflag.CommandLine)
-	goflag.Set("logtostderr", "true")
+	_ = goflag.Set("logtostderr", "true")
+
 	pflag.CommandLine.AddGoFlagSet(goflag.CommandLine)
 }
 

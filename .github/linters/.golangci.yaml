@@ -1,4 +1,7 @@
+---
 linters-settings:
+  cyclop:
+    max-complexity: 15
   goconst:
     min-len: 2
     min-occurrences: 3
@@ -17,6 +20,8 @@ linters-settings:
   nolintlint:
     require-explanation: true
     require-specific: true
+  revive:
+    severity: warning
   wsl:
     allow-cuddle-declarations: true
     allow-assign-and-anything: true
@@ -46,7 +51,6 @@ linters:
     - forbidigo
     - forcetypeassert
     - funlen
-    - gochecknoinits
     - gocognit
     - goconst
     - gocritic
@@ -65,7 +69,6 @@ linters:
     - importas
     - ineffassign
     - interfacebloat
-    - ireturn
     - lll
     - loggercheck
     - maintidx
@@ -90,7 +93,6 @@ linters:
     - sqlclosecheck
     - staticcheck
     - stylecheck
-    - tenv
     - testableexamples
     - testpackage
     - thelper
@@ -101,6 +103,31 @@ linters:
     - wastedassign
     - whitespace
     - wsl
+
+  exclusions:
+    paths:
+      - '.*_test\.go'
+      - '.*\.pb\.go'
+      - '.*\.gen\.go'
+      - '.*\.pb\.gw\.go'
+      - '.*\.mock\.go'
+      - '.*\.generated\.go'
+      - '.*_gen\.go'
+      - '.*_testdata\.go'
+      - '.*_testdata/.*'
+      - '.*_test/.*'
+      - '.*_test.go/.*'
+issues:
+  # Excluding configuration per-path, per-linter, per-text and per-source
+  exclude-rules:
+    - linters:
+      - stylecheck
+      text: "ST1003:"
+
+    - linters:
+      - stylecheck
+      text: "ST1000:"
+
 
 run:
   issues-exit-code: 1

@@ -20,6 +20,7 @@ var registerTmpl string
 
 func main() {
 	flag.Parse()
+
 	defer glog.Flush()
 
 	protogen.Options{
@@ -30,11 +31,13 @@ func main() {
 		gen := gp.NewGeneratedFile("service_registrer.pb.go", "")
 
 		services := make([]*ServiceData, 0)
+
 		for _, name := range gp.Request.FileToGenerate {
 			file := gp.FilesByPath[name]
 			pkg := file.GoImportPath
 
 			httpServices := []string{}
+
 			for _, protoSrv := range file.Proto.Service {
 				if proto.HasExtension(protoSrv.Options, openapi_options.E_Openapiv2Tag) {
 					httpServices = append(httpServices, protoSrv.GetName())
