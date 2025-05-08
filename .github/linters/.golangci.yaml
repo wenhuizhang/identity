@@ -102,6 +102,13 @@ linters:
     - whitespace
     - wsl
 
+  exclusions:
+    paths:
+      - identity/api
+
+    paths-except:
+      - identity/
+
 run:
   issues-exit-code: 1
   go: '1.24.1'

@@ -30,12 +30,13 @@ jobs:
           LINTER_RULES_PATH: ".github/linters"
           MARKDOWN_CONFIG_FILE: ".markdownlint.yml"
           YAML_CONFIG_FILE: ".yamllint.yml"
+          GO_CONFIG_FILE: ".golangci.yaml"
           VALIDATE_ALL_CODEBASE: false
           VALIDATE_MARKDOWN_PRETTIER: false
           VALIDATE_YAML_PRETTIER: false
           VALIDATE_NATURAL_LANGUAGE: false
           VALIDATE_JSCPD: false
           VALIDATE_CHECKOV: false
-          VALIDATE_GO: false
+          VALIDATE_GO_MODULES: false
           VALIDATE_SHELL_SHFMT: false
           MULTI_STATUS: false
