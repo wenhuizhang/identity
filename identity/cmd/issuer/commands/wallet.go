@@ -10,7 +10,7 @@ var WalletCmd = &cobra.Command{
 	Use:   "wallet",
 	Short: "Manage your wallet and generate quantum-resistant cryptographic keys",
 	Long: `
-The Identity tool does not store or share any keys that are used to provide identity to your agents. The tool connects to popular password management applications or crypto wallets to handle the keys. 
+The Identity tool does not store or share any keys that are used to provide identity to your agents. The tool connects to popular password management applications or crypto wallets to handle the keys.
 
 The keys that are generated via this tool use quantum safe algorithms, and you can find more information on these in our documentation.
 `,
@@ -81,7 +81,9 @@ var walletForgetCmd = &cobra.Command{
 	Use:   "forget",
 	Short: "Forget the currently connected wallet",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("Forgetting the currently connected wallet. Please connect to a new wallet to continue.")
+		fmt.Println(
+			"Forgetting the currently connected wallet. Please connect to a new wallet to continue.",
+		)
 	},
 }
 
@@ -92,7 +94,9 @@ var walletGenerateCmd = &cobra.Command{
 
 In order for other users to use and verify the identity of agents you publish, you will have to also publish your public key in one of the supported Trust Anchors. You can find out more about the trust anchors and how to publish the public key in our documentation.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("Generating quantum-resistant cryptographic keys and storing them in your wallet")
+		fmt.Println(
+			"Generating quantum-resistant cryptographic keys and storing them in your wallet",
+		)
 	},
 }
 
