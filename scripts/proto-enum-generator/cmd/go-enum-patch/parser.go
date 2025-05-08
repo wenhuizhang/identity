@@ -10,7 +10,7 @@ import (
 func ParsePatchFile(path string) ([]*types.ProtoOutput, error) {
 	data, err := os.ReadFile(path)
 	if err != nil {
-		return nil, fmt.Errorf("unable to read patch file: %v", err)
+		return nil, fmt.Errorf("unable to read patch file: %w", err)
 	}
 
 	var enums []*types.ProtoOutput

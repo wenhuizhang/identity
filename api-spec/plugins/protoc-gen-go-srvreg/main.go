@@ -20,6 +20,7 @@ var registerTmpl string
 
 func main() {
 	flag.Parse()
+
 	defer glog.Flush()
 
 	protogen.Options{
@@ -30,11 +31,13 @@ func main() {
 		gen := gp.NewGeneratedFile("service_registrer.pb.go", "")
 
 		services := make([]*ServiceData, 0)
+
 		for _, name := range gp.Request.FileToGenerate {
 			file := gp.FilesByPath[name]
 			pkg := file.GoImportPath
 
 			httpServices := []string{}
+
 			for _, protoSrv := range file.Proto.Service {
 				if proto.HasExtension(protoSrv.Options, openapi_options.E_Openapiv2Tag) {
 					httpServices = append(httpServices, protoSrv.GetName())
@@ -44,14 +47,18 @@ func main() {
 			for _, service := range file.Services {
 				server := fmt.Sprintf("%sServer", service.GoName)
 				data := &ServiceData{
-					ServerName:              server,
-					ServerType:              gen.QualifiedGoIdent(pkg.Ident(server)),
-					RegisterGrpcServerFunc:  gen.QualifiedGoIdent(pkg.Ident(fmt.Sprintf("Register%s", server))),
+					ServerName: server,
+					ServerType: gen.QualifiedGoIdent(pkg.Ident(server)),
+					RegisterGrpcServerFunc: gen.QualifiedGoIdent(
+						pkg.Ident(fmt.Sprintf("Register%s", server)),
+					),
 					RegisterHttpHandlerFunc: "",
 				}
 
 				if slices.Contains(httpServices, service.GoName) {
-					data.RegisterHttpHandlerFunc = gen.QualifiedGoIdent(pkg.Ident(fmt.Sprintf("Register%sHandler", service.GoName)))
+					data.RegisterHttpHandlerFunc = gen.QualifiedGoIdent(
+						pkg.Ident(fmt.Sprintf("Register%sHandler", service.GoName)),
+					)
 				}
 
 				services = append(services, data)
@@ -62,7 +69,7 @@ func main() {
 		if err != nil {
 			return err
 		}
-		gen.Write(data)
+		_, _ = gen.Write(data)
 
 		return nil
 	})

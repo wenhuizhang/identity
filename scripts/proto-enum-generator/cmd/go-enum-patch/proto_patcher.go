@@ -39,6 +39,7 @@ func (p *ProtoPatcher) Patch() error {
 	}
 
 	groupedEnums := map[string][]*types.ProtoOutput{}
+
 	for _, enum := range enums {
 		pkg := filepath.Dir(enum.Enum.Path)
 		groupedEnums[pkg] = append(groupedEnums[pkg], enum)
@@ -98,7 +99,10 @@ type enumPosition struct {
 	End   int
 }
 
-func (p *ProtoPatcher) parseProtoFile(path string, enums []string) (map[string]*enumPosition, error) {
+func (p *ProtoPatcher) parseProtoFile(
+	path string,
+	enums []string,
+) (map[string]*enumPosition, error) {
 	reader, err := os.Open(path)
 	if err != nil {
 		return nil, err
@@ -108,10 +112,11 @@ func (p *ProtoPatcher) parseProtoFile(path string, enums []string) (map[string]*
 
 	proto, err := protoparser.Parse(reader)
 	if err != nil {
-		return nil, fmt.Errorf("failed to parse proto: %v", err)
+		return nil, fmt.Errorf("failed to parse proto: %w", err)
 	}
 
 	positions := make(map[string]*enumPosition)
+
 	for _, item := range proto.ProtoBody {
 		msg, ok := item.(*parser.Message)
 		if !ok {

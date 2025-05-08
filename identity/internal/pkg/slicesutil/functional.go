@@ -6,5 +6,6 @@ func Map[T, U any](ts []T, f func(T) U) []U {
 	for i := range ts {
 		us[i] = f(ts[i])
 	}
+
 	return us
 }

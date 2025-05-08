@@ -10,6 +10,7 @@ func ConvertToPagedResponse[T any](
 	items *Pageable[T],
 ) *identity_api.PagedResponse {
 	var nextPage *int32
+
 	hasNextPage := int64(paginationFilter.GetPage())*int64(paginationFilter.GetLimit()) < items.Total
 	if hasNextPage {
 		n := paginationFilter.GetPage() + 1

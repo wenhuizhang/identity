@@ -4,6 +4,7 @@ import (
 	"time"
 )
 
+//nolint:lll // Ignore linting for long lines
 type Configuration struct {
 	ServerHttpHost                                          string        `split_words:"true" required:"true"`
 	ServerGrpcHost                                          string        `split_words:"true" required:"true"`

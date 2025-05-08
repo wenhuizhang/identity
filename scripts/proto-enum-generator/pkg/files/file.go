@@ -45,6 +45,7 @@ func (f *File) Flush() error {
 	}
 
 	swpFilePath := fmt.Sprintf("%s_swp", f.file.Name())
+
 	swpFile, err := os.Create(swpFilePath)
 	if err != nil {
 		return err
@@ -60,24 +61,25 @@ func (f *File) Flush() error {
 	for scanner.Scan() {
 		line++
 		text := scanner.Text()
+
 		if ops, ok := f.ops[line]; ok {
 			for _, op := range ops {
-				switch op.(type) {
+				switch op := op.(type) {
 				case FileOperationReplace:
-					writer.WriteString(op.(FileOperationReplace).NewText + "\n")
+					_, _ = writer.WriteString(op.NewText + "\n")
 				case FileOperationRemove:
 					continue
 				default:
-					writer.WriteString(text + "\n")
+					_, _ = writer.WriteString(text + "\n")
 				}
 			}
 		} else {
-			writer.WriteString(text + "\n")
+			_, _ = writer.WriteString(text + "\n")
 		}
 	}
 
 	for _, ap := range f.appends {
-		writer.WriteString(ap.Text + "\n")
+		_, _ = writer.WriteString(ap.Text + "\n")
 	}
 
 	err = writer.Flush()
@@ -102,7 +104,6 @@ func (f *File) ReplaceLine(line int, text string) {
 
 func (f *File) RemoveLine(line int) {
 	f.ops[line] = append(f.ops[line], FileOperationRemove{})
-
 }
 
 func (f *File) Append(text string) {

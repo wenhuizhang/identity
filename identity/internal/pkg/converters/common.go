@@ -14,7 +14,7 @@ func Convert[D any](src any) *D {
 
 	var dst D
 	if deepCopy(src, &dst) != nil {
-		return nil // TODO: handle this properly later
+		return nil
 	}
 
 	return &dst
@@ -46,6 +46,8 @@ func isNilish(val any) bool {
 
 	v := reflect.ValueOf(val)
 	k := v.Kind()
+
+	//nolint:exhaustive // Ignore exhaustive check
 	switch k {
 	case reflect.Chan, reflect.Func, reflect.Map, reflect.Pointer,
 		reflect.UnsafePointer, reflect.Interface, reflect.Slice:

@@ -17,6 +17,12 @@ import (
 	"github.com/spf13/cobra"
 )
 
+const readHeaderTimeout = 10 * time.Second
+const waitForServerDelay = 2 * time.Second
+const waitForServerShutdownDelay = 5 * time.Second
+const retryConnectionTimes = 10
+const waitBeforeRetryDelay = 500 * time.Millisecond
+
 var WebCmd = &cobra.Command{
 	Use:   "web [port]",
 	Short: "Starts the Web UI and keeps CLI active until Ctrl+C is pressed",
@@ -50,8 +56,9 @@ var WebCmd = &cobra.Command{
 
 		// Create an HTTP server with context
 		srv := &http.Server{
-			Addr:    ":" + port,
-			Handler: mux,
+			Addr:              ":" + port,
+			Handler:           mux,
+			ReadHeaderTimeout: readHeaderTimeout,
 		}
 
 		// Channel to listen for OS signals (Ctrl+C)
@@ -68,7 +75,7 @@ var WebCmd = &cobra.Command{
 
 		// Wait for the server to be ready before opening the browser
 		go func() {
-			time.Sleep(2 * time.Second) // Short delay before checking
+			time.Sleep(waitForServerDelay) // Short delay before checking
 			waitForServer("http://localhost:" + port)
 			openBrowser("http://localhost:" + port)
 		}()
@@ -78,7 +85,7 @@ var WebCmd = &cobra.Command{
 		log.Info("Shutting down server...")
 
 		// Gracefully shutdown the server
-		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		ctx, cancel := context.WithTimeout(context.Background(), waitForServerShutdownDelay)
 		defer cancel()
 		if err := srv.Shutdown(ctx); err != nil {
 			log.Error("Server forced to shutdown: ", err)
@@ -90,13 +97,27 @@ var WebCmd = &cobra.Command{
 
 // Waits for the server to be available
 func waitForServer(url string) {
-	for range 10 { // Try 10 times before giving up
-		resp, err := http.Get(url)
-		if err == nil && resp.StatusCode == 200 {
+	ctx := context.Background()
+
+	for range retryConnectionTimes { // Try X times before giving up
+		req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, http.NoBody)
+		if err != nil {
+			return
+		}
+
+		resp, err := http.DefaultClient.Do(req)
+		if err != nil {
+			return
+		}
+
+		resp.Body.Close()
+
+		if err == nil && resp.StatusCode == http.StatusOK {
 			log.Info("Web server is ready.")
 			return
 		}
-		time.Sleep(500 * time.Millisecond) // Wait before retrying
+
+		time.Sleep(waitBeforeRetryDelay) // Wait before retrying
 	}
 
 	log.Warn("Could not confirm server readiness. Try opening manually:", url)

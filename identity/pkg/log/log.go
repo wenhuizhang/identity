@@ -6,8 +6,6 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-// TODO: refactor this by defining an actual interface
-
 // Commonly used field names here
 const (
 	ErrorField string = "error"
