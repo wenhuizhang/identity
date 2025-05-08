@@ -6,6 +6,6 @@
 set -Eeuo pipefail
 
 # Make sure .env file exists in deploy/scripts/ directory
-./deployments/scripts/backend/env_setup_backend.sh
+./deployments/scripts/identity/env_setup_node.sh
 
-docker compose -f ./deployments/docker-compose/backend/docker-compose.mongo.yml down
+docker compose -f ./deployments/docker-compose/identity/docker-compose.couchdb.yml down

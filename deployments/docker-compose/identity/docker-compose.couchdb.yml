@@ -2,21 +2,23 @@
 # SPDX-License-Identifier: Apache-2.0
 
 ---
-name: identity-node
+name: identity-couchdb
 services:
-  identity-api:
-    container_name: identity-node
-    build:
-      context: ../../../
-      dockerfile: deployments/docker/identity/Dockerfile.node
+  couchdb:
+    image: couchdb:latest
+    container_name: identity-couchdb
     restart: always
+    volumes:
+      - ./couchdb-data:/opt/couchdb/data
     ports:
-      - "4000:4000"
-      - "4001:4001"
+      - "5984:5984"
     env_file:
       - .env
     networks:
       - identity-network
+
+volumes:
+  couchdb-data:
 
 networks:
   identity-network:
