@@ -44,14 +44,18 @@ func main() {
 			for _, service := range file.Services {
 				server := fmt.Sprintf("%sServer", service.GoName)
 				data := &ServiceData{
-					ServerName:              server,
-					ServerType:              gen.QualifiedGoIdent(pkg.Ident(server)),
-					RegisterGrpcServerFunc:  gen.QualifiedGoIdent(pkg.Ident(fmt.Sprintf("Register%s", server))),
+					ServerName: server,
+					ServerType: gen.QualifiedGoIdent(pkg.Ident(server)),
+					RegisterGrpcServerFunc: gen.QualifiedGoIdent(
+						pkg.Ident(fmt.Sprintf("Register%s", server)),
+					),
 					RegisterHttpHandlerFunc: "",
 				}
 
 				if slices.Contains(httpServices, service.GoName) {
-					data.RegisterHttpHandlerFunc = gen.QualifiedGoIdent(pkg.Ident(fmt.Sprintf("Register%sHandler", service.GoName)))
+					data.RegisterHttpHandlerFunc = gen.QualifiedGoIdent(
+						pkg.Ident(fmt.Sprintf("Register%sHandler", service.GoName)),
+					)
 				}
 
 				services = append(services, data)
@@ -62,7 +66,7 @@ func main() {
 		if err != nil {
 			return err
 		}
-		gen.Write(data)
+		_, _ = gen.Write(data)
 
 		return nil
 	})

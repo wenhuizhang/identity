@@ -2,14 +2,13 @@
 
 set -o errexit
 set -o nounset
-set -o pipefail
 
 PROTO_PACKAGE_NAME="agntcy.identity.core.v1alpha1"
 PROTO_CORE_FILE_PATH="agntcy/identity/core/v1alpha1/"
 PROTO_NODE_FILE_PATH="agntcy/identity/node/v1alpha1/"
 
-function get_module_name_from_package() {
-  echo $(dirname "$1" | xargs basename)
+get_module_name_from_package() {
+  dirname "$1" | xargs basename
 }
 
 echo ""
@@ -21,8 +20,9 @@ echo "| |_\ \ (_) |   | | (_) | | |  | | | (_) | || (_) |"
 echo " \____/\___/    \_/\___/  \_|  |_|  \___/ \__\___/ "
 echo ""
 
-source "${Identity_ROOT}/protoc.sh"
-cd ${Identity_ROOT}
+Identity_ROOT=${Identity_ROOT:-}
+. "${Identity_ROOT}/protoc.sh"
+cd "${Identity_ROOT}"
 
 protoc_install
 
@@ -42,10 +42,11 @@ packages=$(echo "$packages" | sed 's/\s$//' | sed 's/^\s//')
 cd "${Identity_ROOT}/local/github.com/agntcy/identity"
 
 go get github.com/gogo/protobuf/proto
+go mod vendor
 
 packages_comma_separated=$(echo "$packages" | tr ' ' ',')
 
-if [ ! -z "${packages_comma_separated}" ]; then
+if [ -n "${packages_comma_separated}" ]; then
   # Detect GO enums
   go-enum-to-proto \
     --packages="${packages_comma_separated}" \
@@ -103,7 +104,7 @@ echo "| |_/ / |_| | |     | |_\ \  __/ | | |  __/ | | (_| | ||  __/"
 echo "\____/ \___/\_|      \____/\___|_| |_|\___|_|  \__,_|\__\___|"
 echo ""
 
-rm -rvf ${Identity_ROOT}/code/identity/api 2>&1 || true
+rm -rvf "${Identity_ROOT}/code/identity/api" 2>&1 || true
 
 cd "${Identity_ROOT}/code/api-spec"
 

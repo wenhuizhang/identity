@@ -64,20 +64,20 @@ func (f *File) Flush() error {
 			for _, op := range ops {
 				switch op.(type) {
 				case FileOperationReplace:
-					writer.WriteString(op.(FileOperationReplace).NewText + "\n")
+					_, _ = writer.WriteString(op.(FileOperationReplace).NewText + "\n")
 				case FileOperationRemove:
 					continue
 				default:
-					writer.WriteString(text + "\n")
+					_, _ = writer.WriteString(text + "\n")
 				}
 			}
 		} else {
-			writer.WriteString(text + "\n")
+			_, _ = writer.WriteString(text + "\n")
 		}
 	}
 
 	for _, ap := range f.appends {
-		writer.WriteString(ap.Text + "\n")
+		_, _ = writer.WriteString(ap.Text + "\n")
 	}
 
 	err = writer.Flush()

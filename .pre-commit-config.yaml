@@ -5,51 +5,17 @@ repos:
     rev: v1.0.0-rc.1
     hooks:
       - id: go-mod-tidy
-        files: ^backend/
       - id: go-fmt
-        files: ^backend/
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0
     hooks:
       - id: check-added-large-files # Prevent giant files from being committed
-        files: ^agent/
       - id: detect-private-key      # Checks for the existence of private keys
-        files: ^agent/
       - id: check-case-conflict     # Check for files with names that would conflict on a case-insensitive filesystem
-        files: ^agent/
       - id: check-merge-conflict    # Check for files that contain merge conflict strings
-        files: ^agent/
       - id: check-symlinks          # Checks for symlinks which do not point to anything
-        files: ^agent/
       - id: end-of-file-fixer       # Makes sure files end in a newline and only a newline
-        files: ^agent/
       - id: mixed-line-ending       # Replaces or checks mixed line ending
-        files: ^agent/
       - id: trailing-whitespace     # Trims trailing whitespace
         args: [--markdown-linebreak-ext=md]
-        files: ^agent/
-
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.8.4
-    hooks:
-      - id: ruff
-        args: [--fix]
-        types_or: [python, pyi, jupyter]
-        files: ^agent/
-      - id: ruff-format
-        types_or: [python, pyi, jupyter]
-        files: ^agent/
-
-  - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.13.0
-    hooks:
-      - id: mypy
-        additional_dependencies: [numpy, types-PyYAML, types-requests]
-        files: ^agent/
-
-  - repo: https://github.com/shellcheck-py/shellcheck-py
-    rev: v0.10.0.1
-    hooks:
-      - id: shellcheck
-        files: ^agent/

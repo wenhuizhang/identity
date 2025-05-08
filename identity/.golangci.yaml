@@ -104,4 +104,4 @@ linters:
 
 run:
   issues-exit-code: 1
-  go: '1.22'
+  go: '1.24.1'

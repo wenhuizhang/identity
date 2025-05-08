@@ -5,40 +5,41 @@ PROJECT=identity
 DOCKER_IMAGE=${PROJECT}:latest
 DOCKER_FILE=Dockerfile
 
-while [[ $# -gt 0 ]]
-do
-    key="${1}"
+while [[ $# -gt 0 ]]; do
+  key="${1}"
 
-    case ${key} in
-    -i|--image)
-        DOCKER_IMAGE="${2}"
-        shift;shift
-        ;;
-    -h|--help)
-        less README.md
-        exit 0
-        ;;
-    -c|--code-coverage)
-        CODE_COVERAGE=cc
-        shift
-        ;;
-    -s|--static-analysis)
-        STATIC_ANALYSIS=sa
-        shift
-        ;;
-    *) # unknown
-        echo Unknown Parameter $1
-        exit 4
-    esac
+  case ${key} in
+  -i | --image)
+    DOCKER_IMAGE="${2}"
+    shift
+    shift
+    ;;
+  -h | --help)
+    less README.md
+    exit 0
+    ;;
+  -c | --code-coverage)
+    CODE_COVERAGE=cc
+    shift
+    ;;
+  -s | --static-analysis)
+    STATIC_ANALYSIS=sa
+    shift
+    ;;
+  *) # unknown
+    echo Unknown Parameter $1
+    exit 4
+    ;;
+  esac
 done
 
 case $DOCKER_IMAGE in
-    $PROJECT-node*)
-        DOCKER_FILE=./deployments/docker/identity/node/Dockerfile.node
-        ;;
-    $PROJECT-docs*)
-        DOCKER_FILE=./deployments/docker/docs/Dockerfile
-        ;;
+$PROJECT-node*)
+  DOCKER_FILE=./deployments/docker/identity/node/Dockerfile.node
+  ;;
+$PROJECT-docs*)
+  DOCKER_FILE=./deployments/docker/docs/Dockerfile
+  ;;
 
 esac
 
