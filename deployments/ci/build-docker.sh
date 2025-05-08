@@ -18,16 +18,8 @@ while [[ $# -gt 0 ]]; do
     less README.md
     exit 0
     ;;
-  -c | --code-coverage)
-    CODE_COVERAGE=cc
-    shift
-    ;;
-  -s | --static-analysis)
-    STATIC_ANALYSIS=sa
-    shift
-    ;;
   *) # unknown
-    echo Unknown Parameter $1
+    echo Unknown Parameter "$1"
     exit 4
     ;;
   esac
@@ -43,5 +35,5 @@ $PROJECT-docs*)
 
 esac
 
-echo BUILDING DOCKER ${DOCKER_IMAGE}
-docker build -t ${DOCKER_IMAGE} --build-arg ARTIFACTORY_TOKEN=${ARTIFACTORY_TOKEN} -f ${DOCKER_FILE} .
+echo BUILDING DOCKER "${DOCKER_IMAGE}"
+docker build -t "${DOCKER_IMAGE}" --build-arg ARTIFACTORY_TOKEN="${ARTIFACTORY_TOKEN}" -f "${DOCKER_FILE}" .
