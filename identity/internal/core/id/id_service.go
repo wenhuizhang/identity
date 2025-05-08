@@ -7,6 +7,6 @@ import (
 )
 
 type IdService interface {
-	// Get a ResolverMetadata by Id
-	Get(ctx context.Context, id string) (*types.ResolverMetadata, error)
+	// Resolves an ID into a ResolverMetadata
+	Resolve(ctx context.Context, id string) (*types.ResolverMetadata, error)
 }
