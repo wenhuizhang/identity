@@ -105,9 +105,8 @@ linters:
   exclusions:
     paths:
       - identity/api
-
-    paths-except:
-      - identity/
+      - api-spec
+      - scripts
 
 run:
   issues-exit-code: 1
