@@ -11,7 +11,7 @@ In order to run the CLI, you must first make sure that the `ui/dist` directory i
 Then, you can run the following commands from the root of the project to start the CLI in web mode:
 
 ```sh
-cd identity 
+cd identity
 go generate cmd/issuer/main.go
 go run cmd/issuer/main.go web [port]
 ```
