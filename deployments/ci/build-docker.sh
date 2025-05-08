@@ -32,9 +32,6 @@ case $DOCKER_IMAGE in
 $PROJECT-node*)
   DOCKER_FILE=./deployments/docker/identity/node/Dockerfile.node
   ;;
-$PROJECT-docs*)
-  DOCKER_FILE=./deployments/docker/docs/Dockerfile
-  ;;
 
 esac
 
