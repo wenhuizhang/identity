@@ -1,5 +1,5 @@
-// Copyright 2025  AGNTCY Contributors (https://github.com/agntcy)
-// SPDX-License-Identifier: Apache-2.0
+// Copyright 2025 Copyright AGNTCY Contributors (https://github.com/agntcy)
+// SPDX-License-Identifier: appache
 
 package app_grpc_register
 
