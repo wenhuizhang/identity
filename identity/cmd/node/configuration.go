@@ -14,14 +14,10 @@ type Configuration struct {
 	ApiUrl                                                  string        `split_words:"true"`
 	GoEnv                                                   string        `split_words:"true"                 default:"production"`
 	LogLevel                                                string        `split_words:"true"                 default:"InfoLevel"`
-	MongoDbHost                                             string        `split_words:"true" required:"true"`
-	MongoDbPort                                             string        `split_words:"true" required:"true"`
-	MongoDbUsername                                         string        `split_words:"true"`
-	MongoDbPassword                                         string        `split_words:"true"`
-	EnableTracing                                           bool          `split_words:"true"                 default:"false"`
-	EnableDbLogs                                            bool          `split_words:"true"                 default:"false"`
-	JwtLeeway                                               string        `split_words:"true"                 default:"1m"`
-	OtelCollectorHost                                       string        `split_words:"true"`
+	CouchdbHost                                             string        `split_words:"true" required:"true"`
+	CouchdbPort                                             string        `split_words:"true" required:"true"`
+	CouchdbUsername                                         string        `split_words:"true"`
+	CouchdbPassword                                         string        `split_words:"true"`
 	ServerGrpcKeepAliveEnvorcementPolicyMinTime             int           `split_words:"true"                 default:"300"`
 	ServerGrpcKeepAliveEnvorcementPolicyPermitWithoutStream bool          `split_words:"true"                 default:"false"`
 	ServerGrpcKeepAliveServerParametersMaxConnectionIdle    int           `split_words:"true"                 default:"100"`

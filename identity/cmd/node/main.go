@@ -16,9 +16,9 @@ import (
 	nodegrpc "github.com/agntcy/identity/internal/node/grpc"
 	"github.com/agntcy/identity/internal/pkg/grpcutil"
 	"github.com/agntcy/identity/pkg/cmd"
+	"github.com/agntcy/identity/pkg/couchdb"
 	"github.com/agntcy/identity/pkg/grpcserver"
 	"github.com/agntcy/identity/pkg/log"
-	"github.com/agntcy/identity/pkg/mongodb"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/rs/cors"
 	"github.com/sirupsen/logrus"
@@ -71,21 +71,19 @@ func main() {
 		) * time.Second, // Wait X second for the ping ack before assuming the connection is dead
 	}
 
-	mongoDbClient, err := mongodb.Connect(
+	couchDbClient, err := couchdb.Connect(
 		ctx,
-		config.MongoDbHost,
-		config.MongoDbPort,
-		config.MongoDbUsername,
-		config.MongoDbPassword,
-		config.EnableTracing,
-		config.EnableDbLogs,
+		config.CouchdbHost,
+		config.CouchdbPort,
+		config.CouchdbUsername,
+		config.CouchdbPassword,
 	)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	defer func() {
-		if err = mongodb.Disconnect(ctx, mongoDbClient); err != nil {
+		if err = couchdb.Disconnect(ctx, couchDbClient); err != nil {
 			log.Fatal(err)
 		}
 	}()
