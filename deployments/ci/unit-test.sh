@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright 2025  AGNTCY Contributors (https://github.com/agntcy)
+# Copyright 2025 AGNTCY Contributors (https://github.com/agntcy)
 # SPDX-License-Identifier: Apache-2.0
 
 
