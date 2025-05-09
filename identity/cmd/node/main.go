@@ -12,9 +12,12 @@ import (
 	"time"
 
 	identityapi "github.com/agntcy/identity/api"
+	"github.com/agntcy/identity/internal/core"
 	issuergrpc "github.com/agntcy/identity/internal/issuer/grpc"
+	"github.com/agntcy/identity/internal/node"
 	nodegrpc "github.com/agntcy/identity/internal/node/grpc"
 	"github.com/agntcy/identity/internal/pkg/grpcutil"
+	"github.com/agntcy/identity/internal/pkg/oidc"
 	"github.com/agntcy/identity/pkg/cmd"
 	"github.com/agntcy/identity/pkg/couchdb"
 	"github.com/agntcy/identity/pkg/grpcserver"
@@ -106,9 +109,16 @@ func main() {
 		_ = grpcsrv.Shutdown(ctx)
 	}()
 
+	// Create OIDC client
+	oidcClient := oidc.NewClient()
+
+	// Create internal services
+	verificationService := core.NewVerificationService(oidcClient)
+	nodeIssuerService := node.NewIssuerService(verificationService)
+
 	register := identityapi.GrpcServiceRegister{
 		IdServiceServer:     nodegrpc.NewIdService(),
-		IssuerServiceServer: nodegrpc.NewIssuerService(),
+		IssuerServiceServer: nodegrpc.NewIssuerService(nodeIssuerService),
 		VcServiceServer:     nodegrpc.NewVcService(),
 		LocalServiceServer:  issuergrpc.NewLocalService(),
 	}

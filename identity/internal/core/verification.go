@@ -1,0 +1,90 @@
+// Copyright 2025 AGNTCY Contributors (https://github.com/agntcy)
+// SPDX-License-Identifier: Apache-2.0
+
+package core
+
+import (
+	"context"
+	"fmt"
+	"net/url"
+
+	vctypes "github.com/agntcy/identity/internal/core/vc/types"
+	"github.com/agntcy/identity/internal/pkg/oidc"
+)
+
+const (
+	// ProofTypeJWT is the proof type for JWT
+	ProofTypeJWT = "JWT"
+)
+
+// The VerificationService interface defines the core methods for
+// common name verification
+type VerificationService interface {
+	VerifyCommonName(ctx context.Context, commonName *string, proof *vctypes.Proof) error
+	VerifyProof(ctx context.Context, proof *vctypes.Proof) (*string, *string, error)
+}
+
+// The verificationService struct implements the VerificationService interface
+type verificationService struct {
+	oidc oidc.Client
+}
+
+// NewVerificationService creates a new instance of the VerificationService
+func NewVerificationService(oidc oidc.Client) VerificationService {
+	return &verificationService{
+		oidc,
+	}
+}
+
+// VerifyCommonName verifies the common name against the proof
+// by checking if the common name is the same as the proof's issuer's hostname
+func (v *verificationService) VerifyCommonName(
+	ctx context.Context,
+	commonName *string,
+	proof *vctypes.Proof,
+) error {
+	// Verify the proof and get the subject and issuer
+	_, issuer, err := v.VerifyProof(ctx, proof)
+	if err != nil {
+		return err
+	}
+
+	// Extract the hostname from the issuer
+	url, err := url.Parse(*issuer)
+	if err != nil {
+		return err
+	}
+
+	// Verify common name is the same as the issuer's hostname
+	if url.Hostname() != *commonName {
+		return fmt.Errorf("common name %s does not match issuer %s", *commonName, *issuer)
+	}
+
+	return nil
+}
+
+// VerifyProof verifies the proof and returns the subject and issuer
+// based on the proof type
+func (v *verificationService) VerifyProof(
+	ctx context.Context,
+	proof *vctypes.Proof,
+) (*string, *string, error) {
+	// Validate the proof
+	if proof == nil {
+		return nil, nil, fmt.Errorf("proof is empty")
+	}
+
+	// Check the proof type
+	if proof.Type == ProofTypeJWT {
+		// Verify the JWT proof
+		claims, err := v.oidc.ParseJwt(&proof.ProofValue)
+		if err != nil {
+			return nil, nil, err
+		}
+
+		// Return the issuer and subject
+		return &claims.Issuer, &proof.ProofValue, nil
+	}
+
+	return nil, nil, fmt.Errorf("unsupported proof type %s", proof.Type)
+}
