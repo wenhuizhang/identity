@@ -109,11 +109,11 @@ func main() {
 		_ = grpcsrv.Shutdown(ctx)
 	}()
 
-	// Create OIDC client
-	oidcClient := oidc.NewClient()
+	// Create OIDC parser
+	oidcParser := oidc.NewParser()
 
 	// Create internal services
-	verificationService := core.NewVerificationService(oidcClient)
+	verificationService := core.NewVerificationService(oidcParser)
 	nodeIssuerService := node.NewIssuerService(verificationService)
 
 	register := identityapi.GrpcServiceRegister{

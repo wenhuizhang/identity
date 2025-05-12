@@ -26,13 +26,13 @@ type VerificationService interface {
 
 // The verificationService struct implements the VerificationService interface
 type verificationService struct {
-	oidc oidc.Client
+	oidcParser oidc.Parser
 }
 
 // NewVerificationService creates a new instance of the VerificationService
-func NewVerificationService(oidc oidc.Client) VerificationService {
+func NewVerificationService(oidcParser oidc.Parser) VerificationService {
 	return &verificationService{
-		oidc,
+		oidcParser,
 	}
 }
 
@@ -77,7 +77,7 @@ func (v *verificationService) VerifyProof(
 	// Check the proof type
 	if proof.Type == ProofTypeJWT {
 		// Verify the JWT proof
-		claims, err := v.oidc.ParseJwt(&proof.ProofValue)
+		claims, err := v.oidcParser.ParseJwt(ctx, &proof.ProofValue)
 		if err != nil {
 			return nil, nil, err
 		}
