@@ -15,15 +15,6 @@ import (
 var rootCmd = &cobra.Command{
 	Use: "identity",
 	Long: `
-  _____                           _____ _____
- |  __ \                         |_   _|  __ \
- | |__) |   _ _ __ __ _ _ __ ___   | | | |  | |
- |  ___/ | | | '__/ _' | '_ ' _ \  | | | |  | |
- | |   | |_| | | | (_| | | | | | |_| |_| |__| |
- |_|    \__, |_|  \__,_|_| |_| |_|\___/|_____/
-        __/ /
-       |___/
-
 The Identity CLI tool is a command line interface for generating and publishing
 identities within the Internet of Agents.
 
