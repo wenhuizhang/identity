@@ -70,12 +70,12 @@ func (p *parser) ParseJwt(ctx context.Context, jwtString *string) (*Claims, erro
 		return nil, errutil.Err(err, "failed to parse JWT")
 	}
 
-	// Get the JWKS from the issuer
 	issuer, ok := jwtToken.Issuer()
 	if !ok {
 		return nil, errutil.Err(nil, "failed to decode JWT: missing 'iss' claim")
 	}
 
+	// Get the JWKS from the issuer
 	jwks, err := p.getJwks(ctx, issuer)
 	if err != nil {
 		return nil, err

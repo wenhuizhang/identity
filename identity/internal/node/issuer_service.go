@@ -52,7 +52,7 @@ func (i *issuerService) Register(
 		)
 	}
 
-	// Verify the public key
+	// Validate the public key
 
 	// Verify the issuer's common name
 	// Validate the proof exists
