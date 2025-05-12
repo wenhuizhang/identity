@@ -19,7 +19,11 @@ require (
 	google.golang.org/protobuf v1.36.5
 )
 
-require github.com/google/gnostic-models v0.6.9
+require (
+	github.com/google/gnostic-models v0.6.9
+	github.com/google/uuid v1.6.0
+	github.com/open-quantum-safe/liboqs-go v0.0.0-20250119172907-28b5301df438
+)
 
 require (
 	github.com/beorn7/perks v1.0.1 // indirect
