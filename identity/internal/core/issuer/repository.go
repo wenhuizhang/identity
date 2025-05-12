@@ -5,30 +5,45 @@ package issuer
 
 import (
 	"context"
+	"net/http"
 
 	"github.com/agntcy/identity/internal/core/issuer/types"
-	"github.com/agntcy/identity/internal/pkg/pagination"
+	"github.com/agntcy/identity/internal/pkg/errutil"
+	"github.com/go-kivik/kivik/v4"
 )
 
-// IssuerRepository is the interface for the Issuer repository
-type IssuerRepository interface {
-	GetIssuers(
-		ctx context.Context,
-		paginationFilter pagination.PaginationFilter,
-		query *string,
-	) (*pagination.Pageable[types.Issuer], error)
+// Repository is the interface for the Issuer repository
+type Repository interface {
 	CreateIssuer(
 		ctx context.Context,
-		issuerentity *types.Issuer,
+		issuer *types.Issuer,
 	) (*types.Issuer, error)
-	GetIssuer(
-		ctx context.Context,
-		issuer string,
-		withFields ...string,
-	) (*types.Issuer, error)
-	UpdateIssuer(
-		ctx context.Context,
-		issuerentity *types.Issuer,
-	) (*types.Issuer, error)
-	DeleteIssuer(ctx context.Context, issuer string) error
+}
+
+type repository struct {
+	dbContext *kivik.DB
+}
+
+// NewIssuerRepository creates a new instance of the IssuerRepository
+func NewRepository(dbContext *kivik.DB) Repository {
+	return &repository{
+		dbContext,
+	}
+}
+
+// CreateIssuer creates a new Issuer
+func (r *repository) CreateIssuer(
+	ctx context.Context,
+	issuer *types.Issuer,
+) (*types.Issuer, error) {
+	// Create the issuer
+	if _, err := r.dbContext.Put(ctx, issuer.CommonName, issuer); err != nil {
+		if kivik.HTTPStatus(err) == http.StatusConflict {
+			return nil, errutil.Err(err, "issuer exists")
+		}
+
+		return nil, errutil.Err(err, "failed to create issuer")
+	}
+
+	return issuer, nil
 }

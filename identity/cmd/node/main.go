@@ -13,6 +13,7 @@ import (
 
 	identityapi "github.com/agntcy/identity/api"
 	"github.com/agntcy/identity/internal/core"
+	"github.com/agntcy/identity/internal/core/issuer"
 	issuergrpc "github.com/agntcy/identity/internal/issuer/grpc"
 	"github.com/agntcy/identity/internal/node"
 	nodegrpc "github.com/agntcy/identity/internal/node/grpc"
@@ -85,6 +86,14 @@ func main() {
 		log.Fatal(err)
 	}
 
+	// Create DB if it does not exist
+	err = couchDbClient.CreateDB(ctx, "identity")
+	if err != nil {
+		log.Debug("DB already exists:", err)
+	}
+
+	dbContext := couchDbClient.DB("identity")
+
 	defer func() {
 		if err = couchdb.Disconnect(ctx, couchDbClient); err != nil {
 			log.Fatal(err)
@@ -112,9 +121,12 @@ func main() {
 	// Create OIDC parser
 	oidcParser := oidc.NewParser()
 
+	// Create repositories
+	issuerRepository := issuer.NewRepository(dbContext)
+
 	// Create internal services
 	verificationService := core.NewVerificationService(oidcParser)
-	nodeIssuerService := node.NewIssuerService(verificationService)
+	nodeIssuerService := node.NewIssuerService(issuerRepository, verificationService)
 
 	register := identityapi.GrpcServiceRegister{
 		IdServiceServer:     nodegrpc.NewIdService(),

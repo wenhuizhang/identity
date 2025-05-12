@@ -48,10 +48,12 @@ func (v *verificationService) VerifyCommonName(
 	proof *vctypes.Proof,
 ) error {
 	// Verify the proof and get the subject and issuer
-	_, issuer, err := v.VerifyProof(ctx, proof)
+	issuer, _, err := v.VerifyProof(ctx, proof)
 	if err != nil {
 		return err
 	}
+
+	log.Debug("Verifying common name:", *commonName)
 
 	// Extract the hostname from the issuer
 	url, err := url.Parse(*issuer)
@@ -59,10 +61,14 @@ func (v *verificationService) VerifyCommonName(
 		return err
 	}
 
+	log.Debug("Issuer hostname:", url.Hostname())
+
 	// Verify common name is the same as the issuer's hostname
 	if url.Hostname() != *commonName {
 		return errutil.Err(nil, "common name does not match issuer")
 	}
+
+	log.Debug("Common name verified successfully")
 
 	return nil
 }
@@ -78,7 +84,7 @@ func (v *verificationService) VerifyProof(
 		return nil, nil, errutil.Err(nil, "proof is empty")
 	}
 
-	log.Debug("Verifying proof", proof)
+	log.Debug("Verifying proof of type", proof.Type)
 
 	// Check the proof type
 	if slices.Contains(strings.Split(ProofTypeJWT, ","), proof.Type) {
@@ -89,7 +95,7 @@ func (v *verificationService) VerifyProof(
 		}
 
 		// Return the issuer and subject
-		return &claims.Issuer, &proof.ProofValue, nil
+		return &claims.Issuer, &claims.Subject, nil
 	}
 
 	return nil, nil, errutil.Err(nil, fmt.Sprintf("unsupported proof type %s", proof.Type))
