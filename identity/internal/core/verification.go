@@ -7,14 +7,18 @@ import (
 	"context"
 	"fmt"
 	"net/url"
+	"slices"
+	"strings"
 
 	vctypes "github.com/agntcy/identity/internal/core/vc/types"
+	"github.com/agntcy/identity/internal/pkg/errutil"
 	"github.com/agntcy/identity/internal/pkg/oidc"
+	"github.com/agntcy/identity/pkg/log"
 )
 
 const (
 	// ProofTypeJWT is the proof type for JWT
-	ProofTypeJWT = "JWT"
+	ProofTypeJWT = "JWT,JWTToken,Jwk,JwkToken,JwtToken,JwkToken,Jwt"
 )
 
 // The VerificationService interface defines the core methods for
@@ -57,7 +61,7 @@ func (v *verificationService) VerifyCommonName(
 
 	// Verify common name is the same as the issuer's hostname
 	if url.Hostname() != *commonName {
-		return fmt.Errorf("common name %s does not match issuer %s", *commonName, *issuer)
+		return errutil.Err(nil, "common name does not match issuer")
 	}
 
 	return nil
@@ -71,11 +75,13 @@ func (v *verificationService) VerifyProof(
 ) (*string, *string, error) {
 	// Validate the proof
 	if proof == nil {
-		return nil, nil, fmt.Errorf("proof is empty")
+		return nil, nil, errutil.Err(nil, "proof is empty")
 	}
 
+	log.Debug("Verifying proof", proof)
+
 	// Check the proof type
-	if proof.Type == ProofTypeJWT {
+	if slices.Contains(strings.Split(ProofTypeJWT, ","), proof.Type) {
 		// Verify the JWT proof
 		claims, err := v.oidcParser.ParseJwt(ctx, &proof.ProofValue)
 		if err != nil {
@@ -86,5 +92,5 @@ func (v *verificationService) VerifyProof(
 		return &claims.Issuer, &proof.ProofValue, nil
 	}
 
-	return nil, nil, fmt.Errorf("unsupported proof type %s", proof.Type)
+	return nil, nil, errutil.Err(nil, fmt.Sprintf("unsupported proof type %s", proof.Type))
 }

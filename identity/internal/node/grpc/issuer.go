@@ -5,13 +5,13 @@ package grpc
 
 import (
 	"context"
-	"fmt"
 
 	nodeapi "github.com/agntcy/identity/api/agntcy/identity/node/v1alpha1"
 	issuertypes "github.com/agntcy/identity/internal/core/issuer/types"
 	vctypes "github.com/agntcy/identity/internal/core/vc/types"
 	"github.com/agntcy/identity/internal/node"
 	converters "github.com/agntcy/identity/internal/pkg/converters"
+	"github.com/agntcy/identity/internal/pkg/errutil"
 	grpcutil "github.com/agntcy/identity/internal/pkg/grpcutil"
 )
 
@@ -52,5 +52,5 @@ func (i *issuerService) GetWellKnown(
 	ctx context.Context,
 	req *nodeapi.GetIssuerWellKnownRequest,
 ) (*nodeapi.GetIssuerWellKnownResponse, error) {
-	return nil, fmt.Errorf("not implemented")
+	return nil, errutil.Err(nil, "not implemented")
 }

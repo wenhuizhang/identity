@@ -5,11 +5,11 @@ package node
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/agntcy/identity/internal/core"
 	issuertypes "github.com/agntcy/identity/internal/core/issuer/types"
 	vctypes "github.com/agntcy/identity/internal/core/vc/types"
+	"github.com/agntcy/identity/internal/pkg/errutil"
 	"github.com/agntcy/identity/internal/pkg/grpcutil"
 )
 
@@ -42,7 +42,7 @@ func (i *issuerService) Register(
 	// Validate the issuer
 	if issuer == nil {
 		return nil, grpcutil.BadRequestError(
-			fmt.Errorf("issuer is empty"),
+			errutil.Err(nil, "issuer is empty"),
 		)
 	}
 
@@ -57,7 +57,7 @@ func (i *issuerService) Register(
 
 		// This is currently not supported
 		return nil, grpcutil.UnimplementedError(
-			fmt.Errorf("issuer without external IdP is not implemented"),
+			errutil.Err(nil, "issuer without external IdP is not implemented"),
 		)
 	} else {
 		verificationErr := i.verficationService.VerifyCommonName(
@@ -68,7 +68,7 @@ func (i *issuerService) Register(
 
 		if verificationErr != nil {
 			return nil, grpcutil.BadRequestError(
-				fmt.Errorf("failed to verify common name: %w", verificationErr),
+				errutil.Err(verificationErr, "failed to verify common name"),
 			)
 		}
 	}
