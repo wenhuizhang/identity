@@ -11,34 +11,41 @@ import (
 
 var VerifyCmd = &cobra.Command{
 	Use:   "verify",
-	Short: "Load and verify an Agent Badge",
+	Short: "Load and verify an Agent or MCP Server Badge",
+	Long: `
+The verify command is used to load and verify an Agent or MCP Server Badge. With it you can:
+
+- (load) Load an existing badge
+- (validate) Validate the loaded badge
+- (forget) Forget the loaded badge
+`,
 }
 
 var loadCmd = &cobra.Command{
-	Use:   "load [agent_badge]",
-	Short: "Load an Agent Badge",
+	Use:   "load [badge]",
+	Short: "Load an Agent of MCP Server Badge",
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		//nolint:forbidigo // Allow print for CLI
-		fmt.Printf("Loading agent badge")
+		fmt.Printf("Loading Badge")
 	},
 }
 
 var validateCmd = &cobra.Command{
 	Use:   "validate",
-	Short: "Validate the loaded Agent Badge",
+	Short: "Validate the loaded Agent or MCP Server Badge",
 	Run: func(cmd *cobra.Command, args []string) {
 		//nolint:forbidigo // Allow print for CLI
-		fmt.Println("Validating the loaded Agent Badge")
+		fmt.Println("Validating the loaded Badge")
 	},
 }
 
 var forgetCmd = &cobra.Command{
 	Use:   "forget",
-	Short: "Forget the loaded Agent Badge",
+	Short: "Forget the loaded Agent or MCP Server Badge",
 	Run: func(cmd *cobra.Command, args []string) {
 		//nolint:forbidigo // Allow print for CLI
-		fmt.Println("Forgetting the loaded Agent Badge")
+		fmt.Println("Forgetting the loaded Badge")
 	},
 }
 

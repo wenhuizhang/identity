@@ -6,23 +6,25 @@ package main
 import (
 	"os"
 
-	"github.com/agntcy/identity/cmd/issuer/commands"
+	commands "github.com/agntcy/identity/cmd/issuer/commands"
 
 	"github.com/spf13/cobra"
 )
 
 // rootCmd represents the base command when called without any subcommands
+
+//nolint:lll // Allow long lines for CLI
 var rootCmd = &cobra.Command{
 	Use: "identity",
 	Long: `
-The Identity CLI tool is a command line interface for generating and publishing
-identities within the Internet of Agents.
+The Identity CLI tool is a command line interface for generating, publishing and verifying identities within the Internet of Agents.
 
 With it you can:
-- Connect to a local vault, generate and store quantum-resistant cryptographic keys
-- Connect to a network, publish your identity and interact with other agents
-- Create and manage your agent identities, including agent artefacts and agent artefact versions
-- Verify the identity of other agents via their agent badge
+
+- (setup) Connect to a local vault, link to an identity provider and register with an identity network
+- (metadata) Issue and publish important metadata for your Agent and MCP Server identities
+- (badge) Issue and publish badges for your Agent and MCP Server identities
+- (verify) Verify the identity of other Agents and MCP Servers via their resolver metadata and badges
 `,
 	Run: func(cmd *cobra.Command, args []string) {
 		err := cmd.Help()
@@ -42,8 +44,8 @@ func main() {
 }
 
 func init() {
-	rootCmd.AddCommand(commands.VaultCmd)
-	rootCmd.AddCommand(commands.NetworkCmd)
-	rootCmd.AddCommand(commands.AgentCmd)
+	rootCmd.AddCommand(commands.SetupCmd)
+	rootCmd.AddCommand(commands.MetadataCmd)
+	rootCmd.AddCommand(commands.BadgeCmd)
 	rootCmd.AddCommand(commands.VerifyCmd)
 }

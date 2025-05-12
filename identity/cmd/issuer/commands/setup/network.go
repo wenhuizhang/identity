@@ -1,7 +1,7 @@
 // Copyright 2025 AGNTCY Contributors (https://github.com/agntcy)
 // SPDX-License-Identifier: Apache-2.0
 
-package commands
+package setup
 
 import (
 	"fmt"
@@ -12,6 +12,13 @@ import (
 var NetworkCmd = &cobra.Command{
 	Use:   "network",
 	Short: "Manage your connection to an Identity Network node",
+	Long: `
+The network command is used to manage your connection to an Identity Network node. With it you can:
+
+- (setup) Setup the connection to an Identity Network node
+- (test) Test the connection to an Identity Network node
+- (forget) Forget the connection to an Identity Network node
+`,
 }
 
 var networkConnectCmd = &cobra.Command{

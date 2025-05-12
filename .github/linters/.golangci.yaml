@@ -43,7 +43,7 @@ linters:
     - cyclop
     - decorder
     - dogsled
-    - dupl
+    # - dupl # Disabled due to false positives with identity/cmd/issuer/commands/metadata.go and identity/cmd/issuer/commands/badge.go
     - dupword
     - durationcheck
     - errcheck
