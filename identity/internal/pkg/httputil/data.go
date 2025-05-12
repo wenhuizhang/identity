@@ -35,6 +35,11 @@ func GetDataAuth(ctx context.Context, uri, accessToken string, result interface{
 	getDataWithHeaders(ctx, uri, authHeaders(accessToken), result)
 }
 
+// GetData : Get data
+func GetData(ctx context.Context, uri string, result interface{}) {
+	getDataWithHeaders(ctx, uri, nil, result)
+}
+
 func GetRawDataWithHeaders(
 	ctx context.Context,
 	uri string,

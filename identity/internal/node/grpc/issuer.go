@@ -5,30 +5,52 @@ package grpc
 
 import (
 	"context"
-	"fmt"
 
 	nodeapi "github.com/agntcy/identity/api/agntcy/identity/node/v1alpha1"
+	issuertypes "github.com/agntcy/identity/internal/core/issuer/types"
+	vctypes "github.com/agntcy/identity/internal/core/vc/types"
+	"github.com/agntcy/identity/internal/node"
+	converters "github.com/agntcy/identity/internal/pkg/converters"
+	"github.com/agntcy/identity/internal/pkg/errutil"
+	grpcutil "github.com/agntcy/identity/internal/pkg/grpcutil"
 )
 
-type issuerService struct{}
+type issuerService struct {
+	nodeIssuerService node.IssuerService
+}
 
-func NewIssuerService() nodeapi.IssuerServiceServer {
-	return &issuerService{}
+func NewIssuerService(nodeIssuerService node.IssuerService) nodeapi.IssuerServiceServer {
+	return &issuerService{
+		nodeIssuerService,
+	}
 }
 
 // Register an issuer by providing the issuer details
-func (issuerService) Register(
+func (i *issuerService) Register(
 	ctx context.Context,
 	req *nodeapi.RegisterIssuerRequest,
 ) (*nodeapi.RegisterIssuerResponse, error) {
-	return nil, fmt.Errorf("not implemented")
+	// Convert entities and call the node service
+	uri, err := i.nodeIssuerService.Register(
+		ctx,
+		converters.Convert[issuertypes.Issuer](req.Issuer),
+		converters.Convert[vctypes.Proof](req.Proof),
+	)
+	if err != nil {
+		return nil, grpcutil.BadRequestError(err)
+	}
+
+	// Return the action uri
+	return &nodeapi.RegisterIssuerResponse{
+		Uri: uri,
+	}, nil
 }
 
 // Returns the well-known document content for an issuer in
 // Json Web Key Set (JWKS) format
-func (issuerService) GetWellKnown(
+func (i *issuerService) GetWellKnown(
 	ctx context.Context,
 	req *nodeapi.GetIssuerWellKnownRequest,
 ) (*nodeapi.GetIssuerWellKnownResponse, error) {
-	return nil, fmt.Errorf("not implemented")
+	return nil, errutil.Err(nil, "not implemented")
 }

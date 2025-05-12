@@ -12,9 +12,13 @@ import (
 	"time"
 
 	identityapi "github.com/agntcy/identity/api"
+	"github.com/agntcy/identity/internal/core"
+	"github.com/agntcy/identity/internal/core/issuer"
 	issuergrpc "github.com/agntcy/identity/internal/issuer/grpc"
+	"github.com/agntcy/identity/internal/node"
 	nodegrpc "github.com/agntcy/identity/internal/node/grpc"
 	"github.com/agntcy/identity/internal/pkg/grpcutil"
+	"github.com/agntcy/identity/internal/pkg/oidc"
 	"github.com/agntcy/identity/pkg/cmd"
 	"github.com/agntcy/identity/pkg/couchdb"
 	"github.com/agntcy/identity/pkg/grpcserver"
@@ -82,6 +86,14 @@ func main() {
 		log.Fatal(err)
 	}
 
+	// Create DB if it does not exist
+	err = couchDbClient.CreateDB(ctx, "identity")
+	if err != nil {
+		log.Debug("DB already exists:", err)
+	}
+
+	dbContext := couchDbClient.DB("identity")
+
 	defer func() {
 		if err = couchdb.Disconnect(ctx, couchDbClient); err != nil {
 			log.Fatal(err)
@@ -106,9 +118,19 @@ func main() {
 		_ = grpcsrv.Shutdown(ctx)
 	}()
 
+	// Create OIDC parser
+	oidcParser := oidc.NewParser()
+
+	// Create repositories
+	issuerRepository := issuer.NewRepository(dbContext)
+
+	// Create internal services
+	verificationService := core.NewVerificationService(oidcParser)
+	nodeIssuerService := node.NewIssuerService(issuerRepository, verificationService)
+
 	register := identityapi.GrpcServiceRegister{
 		IdServiceServer:     nodegrpc.NewIdService(),
-		IssuerServiceServer: nodegrpc.NewIssuerService(),
+		IssuerServiceServer: nodegrpc.NewIssuerService(nodeIssuerService),
 		VcServiceServer:     nodegrpc.NewVcService(),
 		LocalServiceServer:  issuergrpc.NewLocalService(),
 	}

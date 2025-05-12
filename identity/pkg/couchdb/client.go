@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net"
 
+	"github.com/agntcy/identity/pkg/log"
 	kivik "github.com/go-kivik/kivik/v4"
 	_ "github.com/go-kivik/kivik/v4/couchdb"
 )
@@ -20,7 +21,7 @@ func Connect(
 	host := net.JoinHostPort(url, port)
 
 	// Set connection string
-	connectionString := fmt.Sprintf("couchdb://%s", host)
+	connectionString := fmt.Sprintf("http://%s", host)
 
 	// Check if auth is enabled
 	if (username != "") && (password != "") {
@@ -31,6 +32,8 @@ func Connect(
 			host,
 		)
 	}
+
+	log.Debug("Connecting to CouchDB:", connectionString)
 
 	client, err := kivik.New("couch", connectionString)
 	if err != nil {
