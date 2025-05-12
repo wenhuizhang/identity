@@ -82,7 +82,7 @@ func (p *parser) ParseJwt(ctx context.Context, jwtString *string) (*Claims, erro
 	}
 
 	// Verify the JWT signature
-	_, err = jws.Verify([]byte(*jwtString), jws.WithKeySet(*jwks))
+	_, err = jws.Verify([]byte(*jwtString), jws.WithKeySet(jwks))
 	if err != nil {
 		return nil, err
 	}
@@ -129,11 +129,11 @@ func (p *parser) getJwksURI(ctx context.Context, issuer string) (*string, error)
 	return &jwksURI, nil
 }
 
-func (p *parser) getJwks(ctx context.Context, issuer string) (*jwk.Set, error) {
+func (p *parser) getJwks(ctx context.Context, issuer string) (jwk.Set, error) {
 	// Try to get the cached JWKS
 	cachedEntry, found := identitycache.GetFromCache[CachedJwks](ctx, p.jwksCache, issuer)
 	if found {
-		return p.parseJwks(ctx, &cachedEntry.Jwks)
+		return p.parseJwks(&cachedEntry.Jwks)
 	}
 
 	// Get the JWKS URI from the issuer
@@ -146,9 +146,15 @@ func (p *parser) getJwks(ctx context.Context, issuer string) (*jwk.Set, error) {
 	var jwksString string
 
 	// Get the metadata from the issuer
-	httputil.GetRawDataWithHeaders(ctx, *jwksURI, nil, &jwksString)
+	err = httputil.GetRawDataWithHeaders(ctx, *jwksURI, nil, &jwksString)
+	if err != nil {
+		return nil, errutil.Err(err, "failed to get JWKS from issuer")
+	}
 
-	jwks, err := p.parseJwks(ctx, &jwksString)
+	jwks, err := p.parseJwks(&jwksString)
+	if err != nil {
+		return nil, errutil.Err(err, "failed to parse JWKS")
+	}
 
 	// Cache the JWKS
 	_ = identitycache.AddToCache(ctx, p.jwksCache, issuer, &CachedJwks{Jwks: jwksString})
@@ -156,7 +162,7 @@ func (p *parser) getJwks(ctx context.Context, issuer string) (*jwk.Set, error) {
 	return jwks, nil
 }
 
-func (p *parser) parseJwks(ctx context.Context, jwksString *string) (*jwk.Set, error) {
+func (p *parser) parseJwks(jwksString *string) (jwk.Set, error) {
 	if jwksString == nil || *jwksString == "" {
 		return nil, errutil.Err(nil, "JWKS string is empty")
 	}
@@ -166,5 +172,5 @@ func (p *parser) parseJwks(ctx context.Context, jwksString *string) (*jwk.Set, e
 		return nil, errutil.Err(err, "failed to parse JWKS")
 	}
 
-	return &jwks, nil
+	return jwks, nil
 }
