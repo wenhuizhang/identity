@@ -11,34 +11,34 @@ import (
 
 var VerifyCmd = &cobra.Command{
 	Use:   "verify",
-	Short: "Load and verify an Agent Passport",
+	Short: "Load and verify an Agent Badge",
 }
 
 var loadCmd = &cobra.Command{
-	Use:   "load [agent_passport]",
-	Short: "Load an Agent Passport",
+	Use:   "load [agent_badge]",
+	Short: "Load an Agent Badge",
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		//nolint:forbidigo // Allow print for CLI
-		fmt.Printf("Loading agent passport")
+		fmt.Printf("Loading agent badge")
 	},
 }
 
 var validateCmd = &cobra.Command{
 	Use:   "validate",
-	Short: "Validate the loaded Agent Passport",
+	Short: "Validate the loaded Agent Badge",
 	Run: func(cmd *cobra.Command, args []string) {
 		//nolint:forbidigo // Allow print for CLI
-		fmt.Println("Validating the loaded Agent Passport")
+		fmt.Println("Validating the loaded Agent Badge")
 	},
 }
 
 var forgetCmd = &cobra.Command{
 	Use:   "forget",
-	Short: "Forget the loaded Agent Passport",
+	Short: "Forget the loaded Agent Badge",
 	Run: func(cmd *cobra.Command, args []string) {
 		//nolint:forbidigo // Allow print for CLI
-		fmt.Println("Forgetting the loaded Agent Passport")
+		fmt.Println("Forgetting the loaded Agent Badge")
 	},
 }
 

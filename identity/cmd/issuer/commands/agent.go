@@ -78,7 +78,4 @@ func init() {
 	AgentCmd.AddCommand(agentCreateCmd)
 	AgentCmd.AddCommand(agentForgetCmd)
 	AgentCmd.AddCommand(agentPublishCmd)
-
-	// Add the agent artefact commands to the agent command
-	AgentCmd.AddCommand(artefactCmd)
 }

@@ -22,7 +22,7 @@ With it you can:
 - Connect to a local vault, generate and store quantum-resistant cryptographic keys
 - Connect to a network, publish your identity and interact with other agents
 - Create and manage your agent identities, including agent artefacts and agent artefact versions
-- Verify the identity of other agents via their agent passport
+- Verify the identity of other agents via their agent badge
 `,
 	Run: func(cmd *cobra.Command, args []string) {
 		err := cmd.Help()
