@@ -8,8 +8,5 @@ import (
 )
 
 func CustomMatcher(key string) (string, bool) {
-	switch key {
-	default:
-		return runtime.DefaultHeaderMatcher(key)
-	}
+	return runtime.DefaultHeaderMatcher(key)
 }
