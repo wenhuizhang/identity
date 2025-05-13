@@ -7,6 +7,7 @@ import (
 	"context"
 
 	"github.com/agntcy/identity/internal/core/issuer/types"
+	"github.com/agntcy/identity/internal/pkg/errutil"
 	"github.com/agntcy/identity/pkg/db"
 )
 
@@ -19,11 +20,11 @@ type Repository interface {
 }
 
 type repository struct {
-	dbContext *db.Context
+	dbContext db.Context
 }
 
 // NewIssuerRepository creates a new instance of the IssuerRepository
-func NewRepository(dbContext *db.Context) Repository {
+func NewRepository(dbContext db.Context) Repository {
 	return &repository{
 		dbContext,
 	}
@@ -35,6 +36,12 @@ func (r *repository) CreateIssuer(
 	issuer *types.Issuer,
 ) (*types.Issuer, error) {
 	// Create the issuer
+	inserted := r.dbContext.Client().Create(&issuer)
+	if inserted.Error != nil {
+		return nil, errutil.Err(
+			inserted.Error, "there was an error creating the issuer",
+		)
+	}
 
 	return issuer, nil
 }

@@ -13,6 +13,7 @@ import (
 
 type Context interface {
 	Connect() error
+	Client() *gorm.DB
 	AutoMigrate(types ...interface{}) error
 	Disconnect() error
 }
@@ -24,7 +25,7 @@ type context struct {
 	username string
 	password string
 	useSSL   bool
-	Client   *gorm.DB
+	client   *gorm.DB
 }
 
 func NewContext(host, port, name, username, password string, useSSL bool) Context {
@@ -60,20 +61,29 @@ func (d *context) Connect() error {
 	}
 
 	// Set client
-	d.Client = client
+	d.client = client
 
 	return nil
+}
+
+// Client returns the database client
+func (d *context) Client() *gorm.DB {
+	if d.client == nil {
+		log.Fatal("DB client is not initialized")
+	}
+
+	return d.client
 }
 
 // AutoMigrate performs auto migration for the given models
 func (d *context) AutoMigrate(types ...interface{}) error {
 	// Perform auto migration
-	return d.Client.AutoMigrate(types...)
+	return d.client.AutoMigrate(types...)
 }
 
 // Disconnect from the database instance
 func (d *context) Disconnect() error {
-	dbInstance, _ := d.Client.DB()
+	dbInstance, _ := d.client.DB()
 	if err := dbInstance.Close(); err != nil {
 		return err
 	}

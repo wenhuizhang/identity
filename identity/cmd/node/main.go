@@ -127,7 +127,7 @@ func main() {
 	oidcParser := oidc.NewParser()
 
 	// Create repositories
-	issuerRepository := issuer.NewRepository(&dbContext)
+	issuerRepository := issuer.NewRepository(dbContext)
 
 	// Create internal services
 	verificationService := core.NewVerificationService(oidcParser)
