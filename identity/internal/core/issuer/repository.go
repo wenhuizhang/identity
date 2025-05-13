@@ -5,11 +5,10 @@ package issuer
 
 import (
 	"context"
-	"net/http"
 
 	"github.com/agntcy/identity/internal/core/issuer/types"
 	"github.com/agntcy/identity/internal/pkg/errutil"
-	"github.com/go-kivik/kivik/v4"
+	"github.com/agntcy/identity/pkg/db"
 )
 
 // Repository is the interface for the Issuer repository
@@ -21,11 +20,11 @@ type Repository interface {
 }
 
 type repository struct {
-	dbContext *kivik.DB
+	dbContext db.Context
 }
 
 // NewIssuerRepository creates a new instance of the IssuerRepository
-func NewRepository(dbContext *kivik.DB) Repository {
+func NewRepository(dbContext db.Context) Repository {
 	return &repository{
 		dbContext,
 	}
@@ -37,12 +36,11 @@ func (r *repository) CreateIssuer(
 	issuer *types.Issuer,
 ) (*types.Issuer, error) {
 	// Create the issuer
-	if _, err := r.dbContext.Put(ctx, issuer.CommonName, issuer); err != nil {
-		if kivik.HTTPStatus(err) == http.StatusConflict {
-			return nil, errutil.Err(err, "issuer exists")
-		}
-
-		return nil, errutil.Err(err, "failed to create issuer")
+	inserted := r.dbContext.Client().Create(&issuer)
+	if inserted.Error != nil {
+		return nil, errutil.Err(
+			inserted.Error, "there was an error creating the issuer",
+		)
 	}
 
 	return issuer, nil

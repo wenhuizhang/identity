@@ -8,4 +8,4 @@ set -Eeuo pipefail
 # Make sure .env file exists in deploy/scripts/ directory
 ./deployments/scripts/identity/env_setup_node.sh
 
-docker compose -f ./deployments/docker-compose/identity/docker-compose.couchdb.yml down
+docker compose -f ./deployments/docker-compose/identity/docker-compose.db.yml down

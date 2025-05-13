@@ -2,16 +2,16 @@
 # SPDX-License-Identifier: Apache-2.0
 
 ---
-name: identity-couchdb
+name: identity-postgres
 services:
   couchdb:
-    image: couchdb:latest
-    container_name: identity-couchdb
+    image: postgres:latest
+    container_name: identity-postgres
     restart: always
     volumes:
-      - ./couchdb-data:/opt/couchdb/data
+      - ./postgres-data:/var/lib/postgresql
     ports:
-      - "5984:5984"
+      - "5432:5432"
     env_file:
       - .env
     networks:

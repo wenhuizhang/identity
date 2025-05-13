@@ -14,13 +14,14 @@ import (
 	identityapi "github.com/agntcy/identity/api"
 	"github.com/agntcy/identity/internal/core"
 	"github.com/agntcy/identity/internal/core/issuer"
+	issuertypes "github.com/agntcy/identity/internal/core/issuer/types"
 	issuergrpc "github.com/agntcy/identity/internal/issuer/grpc"
 	"github.com/agntcy/identity/internal/node"
 	nodegrpc "github.com/agntcy/identity/internal/node/grpc"
 	"github.com/agntcy/identity/internal/pkg/grpcutil"
 	"github.com/agntcy/identity/internal/pkg/oidc"
 	"github.com/agntcy/identity/pkg/cmd"
-	"github.com/agntcy/identity/pkg/couchdb"
+	"github.com/agntcy/identity/pkg/db"
 	"github.com/agntcy/identity/pkg/grpcserver"
 	"github.com/agntcy/identity/pkg/log"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
@@ -75,27 +76,31 @@ func main() {
 		) * time.Second, // Wait X second for the ping ack before assuming the connection is dead
 	}
 
-	couchDbClient, err := couchdb.Connect(
-		ctx,
-		config.CouchdbHost,
-		config.CouchdbPort,
-		config.CouchdbUsername,
-		config.CouchdbPassword,
+	// Create a database context
+	dbContext := db.NewContext(
+		config.DbHost,
+		config.DbPort,
+		config.DbName,
+		config.DbUsername,
+		config.DbPassword,
+		config.DbUseSsl,
 	)
+
+	// Connect to the database
+	err = dbContext.Connect()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	// Create DB if it does not exist
-	err = couchDbClient.CreateDB(ctx, "identity")
+	// Migrate the database
+	err = dbContext.AutoMigrate(&issuertypes.Issuer{})
 	if err != nil {
-		log.Debug("DB already exists:", err)
+		log.Fatal(err)
 	}
 
-	dbContext := couchDbClient.DB("identity")
-
+	// Disconnect the database client when done
 	defer func() {
-		if err = couchdb.Disconnect(ctx, couchDbClient); err != nil {
+		if err = dbContext.Disconnect(); err != nil {
 			log.Fatal(err)
 		}
 	}()
