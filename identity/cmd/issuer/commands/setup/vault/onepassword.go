@@ -41,13 +41,13 @@ var onePasswordConnectCmd = &cobra.Command{
 		fmt.Fprintf(os.Stdout, "%s\n", "\nEnter your 1Password service account token: ")
 		_, err := fmt.Scanln(&serviceAccountToken)
 		if err != nil {
-			fmt.Fprintf(os.Stdout, "Error reading service account token: %v\n\n", err)
+			fmt.Fprintf(os.Stderr, "Error reading service account token: %v\n\n", err)
 			return
 		}
 
 		// Validate the service account token
 		if serviceAccountToken == "" {
-			fmt.Fprintf(os.Stdout, "%s\n", "Service account token cannot be empty.")
+			fmt.Fprintf(os.Stderr, "%s\n", "Service account token cannot be empty.")
 			return
 		}
 
@@ -69,7 +69,7 @@ var onePasswordConnectCmd = &cobra.Command{
 			return
 		}
 		if len(vaults) == 0 {
-			fmt.Fprintf(os.Stdout, "No vaults found for the provided service account token.\n\n")
+			fmt.Fprintf(os.Stderr, "No vaults found for the provided service account token.\n\n")
 			return
 		}
 
@@ -84,11 +84,11 @@ var onePasswordConnectCmd = &cobra.Command{
 		var selectedVaultID string
 		_, err = fmt.Scanln(&selectedVaultID)
 		if err != nil {
-			fmt.Fprintf(os.Stdout, "Error reading vault ID: %v\n\n", err)
+			fmt.Fprintf(os.Stderr, "Error reading vault ID: %v\n\n", err)
 			return
 		}
 		if selectedVaultID == "" {
-			fmt.Fprintf(os.Stdout, "%s\n", "Vault ID cannot be empty.")
+			fmt.Fprintf(os.Stderr, "%s\n", "Vault ID cannot be empty.")
 			return
 		}
 
@@ -101,7 +101,7 @@ var onePasswordConnectCmd = &cobra.Command{
 			}
 		}
 		if !vaultFound {
-			fmt.Fprintf(os.Stdout, "Vault with ID %s not found.\n\n", selectedVaultID)
+			fmt.Fprintf(os.Stderr, "Vault with ID %s not found.\n\n", selectedVaultID)
 			return
 		}
 
@@ -117,7 +117,7 @@ var onePasswordConnectCmd = &cobra.Command{
 		// Save to a config file in the user's home directory
 		homeDir, err := os.UserHomeDir()
 		if err != nil {
-			fmt.Fprintf(os.Stdout, "Error getting home directory: %v\n\n", err)
+			fmt.Fprintf(os.Stderr, "Error getting home directory: %v\n\n", err)
 			return
 		}
 		configPath := filepath.Join(homeDir, ".identity", "1password_config.json")
@@ -125,20 +125,20 @@ var onePasswordConnectCmd = &cobra.Command{
 		// Create directories if they don't exist
 		configDir := filepath.Dir(configPath)
 		if err := os.MkdirAll(configDir, dirPerm); err != nil {
-			fmt.Fprintf(os.Stdout, "Error creating config directory: %v\n\n", err)
+			fmt.Fprintf(os.Stderr, "Error creating config directory: %v\n\n", err)
 			return
 		}
 
 		// Marshal the config to JSON
 		configData, err := json.Marshal(config)
 		if err != nil {
-			fmt.Fprintf(os.Stdout, "Error marshaling config: %v\n\n", err)
+			fmt.Fprintf(os.Stderr, "Error marshaling config: %v\n\n", err)
 			return
 		}
 
 		// Write the config to file
 		if err := os.WriteFile(configPath, configData, filePerm); err != nil {
-			fmt.Fprintf(os.Stdout, "Error writing config file: %v\n\n", err)
+			fmt.Fprintf(os.Stderr, "Error writing config file: %v\n\n", err)
 			return
 		}
 
@@ -153,20 +153,20 @@ var onePasswordForgetCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		homeDir, err := os.UserHomeDir()
 		if err != nil {
-			fmt.Fprintf(os.Stdout, "\nError getting home directory: %v\n", err)
+			fmt.Fprintf(os.Stderr, "\nError getting home directory: %v\n", err)
 			return
 		}
 		configPath := filepath.Join(homeDir, ".identity", "1password_config.json")
 
 		// Check if the config file exists
 		if _, err := os.Stat(configPath); errors.Is(err, os.ErrNotExist) {
-			fmt.Fprintf(os.Stdout, "\nNo 1Password configuration found at %s\n\n", configPath)
+			fmt.Fprintf(os.Stderr, "\nNo 1Password configuration found at %s\n\n", configPath)
 			return
 		}
 
 		// Delete the config file
 		if err := os.Remove(configPath); err != nil {
-			fmt.Fprintf(os.Stdout, "\nError deleting config file: %v\n\n", err)
+			fmt.Fprintf(os.Stderr, "\nError deleting config file: %v\n\n", err)
 			return
 		}
 
@@ -184,7 +184,7 @@ var onePasswordGenerateCmd = &cobra.Command{
 		// Load the 1Password configuration
 		homeDir, err := os.UserHomeDir()
 		if err != nil {
-			fmt.Fprintf(os.Stdout, "Error getting home directory: %v\n", err)
+			fmt.Fprintf(os.Stderr, "Error getting home directory: %v\n", err)
 			return
 		}
 		configPath := filepath.Join(homeDir, ".identity", "1password_config.json")
@@ -192,7 +192,7 @@ var onePasswordGenerateCmd = &cobra.Command{
 		// Check if the config file exists
 		configData, err := os.ReadFile(configPath)
 		if err != nil {
-			fmt.Fprintf(os.Stdout, "%s\n", "1Password configuration not found. Please run 'connect' command first.\n")
+			fmt.Fprintf(os.Stderr, "%s\n", "1Password configuration not found. Please run 'connect' command first.\n")
 			return
 		}
 
@@ -202,7 +202,7 @@ var onePasswordGenerateCmd = &cobra.Command{
 			VaultID             string `json:"vaultId"`
 		}
 		if err := json.Unmarshal(configData, &config); err != nil {
-			fmt.Fprintf(os.Stdout, "Error parsing config: %v\n", err)
+			fmt.Fprintf(os.Stderr, "Error parsing config: %v\n", err)
 			return
 		}
 
@@ -213,7 +213,7 @@ var onePasswordGenerateCmd = &cobra.Command{
 			onepassword.WithIntegrationInfo("Agntcy Identity 1Password Integration", "v0.0.1"),
 		)
 		if err != nil {
-			fmt.Fprintf(os.Stdout, "Error connecting to 1Password: %v\n", err)
+			fmt.Fprintf(os.Stderr, "Error connecting to 1Password: %v\n", err)
 			return
 		}
 
@@ -225,7 +225,7 @@ var onePasswordGenerateCmd = &cobra.Command{
 		// Check if the item already exists
 		items, err := client.Items().List(context.Background(), config.VaultID)
 		if err != nil {
-			fmt.Fprintf(os.Stdout, "Error listing items: %v\n", err)
+			fmt.Fprintf(os.Stderr, "Error listing items: %v\n", err)
 			return
 		}
 
@@ -277,14 +277,14 @@ var onePasswordGenerateCmd = &cobra.Command{
 		// Creates a new item based on the structure definition
 		item, err := client.Items().Create(context.Background(), itemParams)
 		if err != nil {
-			fmt.Fprintf(os.Stdout, "Error storing keys in 1Password: %v\n", err)
+			fmt.Fprintf(os.Stderr, "Error storing keys in 1Password: %v\n", err)
 			return
 		}
 
 		// Save the Item ID to a file to the existing config file
 		configFile, err := os.OpenFile(configPath, os.O_RDWR|os.O_CREATE, filePerm)
 		if err != nil {
-			fmt.Fprintf(os.Stdout, "Error opening config file: %v\n", err)
+			fmt.Fprintf(os.Stderr, "Error opening config file: %v\n", err)
 			return
 		}
 		defer configFile.Close()
@@ -295,7 +295,7 @@ var onePasswordGenerateCmd = &cobra.Command{
 			ItemID              string `json:"itemId"`
 		}
 		if err := json.Unmarshal(configData, &existingConfig); err != nil {
-			fmt.Fprintf(os.Stdout, "Error parsing existing config: %v\n", err)
+			fmt.Fprintf(os.Stderr, "Error parsing existing config: %v\n", err)
 			return
 		}
 		// Update the ItemID in the config
@@ -303,20 +303,20 @@ var onePasswordGenerateCmd = &cobra.Command{
 		// Marshal the updated config to JSON
 		updatedConfigData, err := json.Marshal(existingConfig)
 		if err != nil {
-			fmt.Fprintf(os.Stdout, "Error marshaling updated config: %v\n", err)
+			fmt.Fprintf(os.Stderr, "Error marshaling updated config: %v\n", err)
 			return
 		}
 		// Write the updated config to file
 		if _, err := configFile.WriteAt(updatedConfigData, 0); err != nil {
-			fmt.Fprintf(os.Stdout, "Error writing updated config file: %v\n", err)
+			fmt.Fprintf(os.Stderr, "Error writing updated config file: %v\n", err)
 			return
 		}
 		if err := configFile.Truncate(int64(len(updatedConfigData))); err != nil {
-			fmt.Fprintf(os.Stdout, "Error truncating config file: %v\n", err)
+			fmt.Fprintf(os.Stderr, "Error truncating config file: %v\n", err)
 			return
 		}
 		if err := configFile.Close(); err != nil {
-			fmt.Fprintf(os.Stdout, "Error closing config file: %v\n", err)
+			fmt.Fprintf(os.Stderr, "Error closing config file: %v\n", err)
 			return
 		}
 
@@ -336,7 +336,7 @@ var onePasswordLoadCmd = &cobra.Command{
 		// Load the 1Password configuration
 		homeDir, err := os.UserHomeDir()
 		if err != nil {
-			fmt.Fprintf(os.Stdout, "Error getting home directory: %v\n", err)
+			fmt.Fprintf(os.Stderr, "Error getting home directory: %v\n", err)
 			return
 		}
 		configPath := filepath.Join(homeDir, ".identity", "1password_config.json")
@@ -344,7 +344,7 @@ var onePasswordLoadCmd = &cobra.Command{
 		// Check if the config file exists
 		configData, err := os.ReadFile(configPath)
 		if err != nil {
-			fmt.Fprintf(os.Stdout, "%s\n", "1Password configuration not found. Please run 'connect' command first.\n")
+			fmt.Fprintf(os.Stderr, "%s\n", "1Password configuration not found. Please run 'connect' command first.\n")
 			return
 		}
 
@@ -354,7 +354,7 @@ var onePasswordLoadCmd = &cobra.Command{
 			VaultID             string `json:"vaultId"`
 		}
 		if err := json.Unmarshal(configData, &config); err != nil {
-			fmt.Fprintf(os.Stdout, "Error parsing config: %v\n", err)
+			fmt.Fprintf(os.Stderr, "Error parsing config: %v\n", err)
 			return
 		}
 
@@ -364,19 +364,19 @@ var onePasswordLoadCmd = &cobra.Command{
 			onepassword.WithIntegrationInfo("Agntcy Identity 1Password Integration", "v0.0.1"),
 		)
 		if err != nil {
-			fmt.Fprintf(os.Stdout, "Error connecting to 1Password: %v\n", err)
+			fmt.Fprintf(os.Stderr, "Error connecting to 1Password: %v\n", err)
 			return
 		}
 
 		// Get the available items in the vault
 		items, err := client.Items().List(context.Background(), config.VaultID)
 		if err != nil {
-			fmt.Fprintf(os.Stdout, "Error listing items: %v\n", err)
+			fmt.Fprintf(os.Stderr, "Error listing items: %v\n", err)
 			return
 		}
 
 		if len(items) == 0 {
-			fmt.Fprintf(os.Stdout, "No items found in the vault.\n\n")
+			fmt.Fprintf(os.Stderr, "No items found in the vault.\n\n")
 			return
 		}
 
@@ -390,11 +390,11 @@ var onePasswordLoadCmd = &cobra.Command{
 		var selectedItemID string
 		_, err = fmt.Scanln(&selectedItemID)
 		if err != nil {
-			fmt.Fprintf(os.Stdout, "Error reading item ID: %v\n", err)
+			fmt.Fprintf(os.Stderr, "Error reading item ID: %v\n", err)
 			return
 		}
 		if selectedItemID == "" {
-			fmt.Fprintf(os.Stdout, "%s\n", "Item ID cannot be empty.")
+			fmt.Fprintf(os.Stderr, "%s\n", "Item ID cannot be empty.")
 			return
 		}
 
@@ -407,14 +407,14 @@ var onePasswordLoadCmd = &cobra.Command{
 			}
 		}
 		if !itemFound {
-			fmt.Fprintf(os.Stdout, "Item with ID %s not found.\n\n", selectedItemID)
+			fmt.Fprintf(os.Stderr, "Item with ID %s not found.\n\n", selectedItemID)
 			return
 		}
 
 		// Update the existing config with the selected item ID
 		configFile, err := os.OpenFile(configPath, os.O_RDWR|os.O_CREATE, filePerm)
 		if err != nil {
-			fmt.Fprintf(os.Stdout, "Error opening config file: %v\n", err)
+			fmt.Fprintf(os.Stderr, "Error opening config file: %v\n", err)
 			return
 		}
 		defer configFile.Close()
@@ -425,7 +425,7 @@ var onePasswordLoadCmd = &cobra.Command{
 			ItemID              string `json:"itemId"`
 		}
 		if err := json.Unmarshal(configData, &existingConfig); err != nil {
-			fmt.Fprintf(os.Stdout, "Error parsing existing config: %v\n", err)
+			fmt.Fprintf(os.Stderr, "Error parsing existing config: %v\n", err)
 			return
 		}
 		// Update the ItemID in the config
@@ -433,20 +433,20 @@ var onePasswordLoadCmd = &cobra.Command{
 		// Marshal the updated config to JSON
 		updatedConfigData, err := json.Marshal(existingConfig)
 		if err != nil {
-			fmt.Fprintf(os.Stdout, "Error marshaling updated config: %v\n", err)
+			fmt.Fprintf(os.Stderr, "Error marshaling updated config: %v\n", err)
 			return
 		}
 		// Write the updated config to file
 		if _, err := configFile.WriteAt(updatedConfigData, 0); err != nil {
-			fmt.Fprintf(os.Stdout, "Error writing updated config file: %v\n", err)
+			fmt.Fprintf(os.Stderr, "Error writing updated config file: %v\n", err)
 			return
 		}
 		if err := configFile.Truncate(int64(len(updatedConfigData))); err != nil {
-			fmt.Fprintf(os.Stdout, "Error truncating config file: %v\n", err)
+			fmt.Fprintf(os.Stderr, "Error truncating config file: %v\n", err)
 			return
 		}
 		if err := configFile.Close(); err != nil {
-			fmt.Fprintf(os.Stdout, "Error closing config file: %v\n", err)
+			fmt.Fprintf(os.Stderr, "Error closing config file: %v\n", err)
 			return
 		}
 
