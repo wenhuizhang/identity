@@ -14,10 +14,12 @@ type Configuration struct {
 	ApiUrl                                                  string        `split_words:"true"`
 	GoEnv                                                   string        `split_words:"true"                 default:"production"`
 	LogLevel                                                string        `split_words:"true"                 default:"InfoLevel"`
-	CouchdbHost                                             string        `split_words:"true" required:"true"`
-	CouchdbPort                                             string        `split_words:"true" required:"true"`
-	CouchdbUsername                                         string        `split_words:"true"`
-	CouchdbPassword                                         string        `split_words:"true"`
+	DbHost                                                  string        `split_words:"true" required:"true"`
+	DbPort                                                  string        `split_words:"true" required:"true"`
+	DbName                                                  string        `split_words:"true" required:"true"`
+	DbUsername                                              string        `split_words:"true"`
+	DbPassword                                              string        `split_words:"true"`
+	DbUseSsl                                                bool          `split_words:"true"                 default:"false"`
 	ServerGrpcKeepAliveEnvorcementPolicyMinTime             int           `split_words:"true"                 default:"300"`
 	ServerGrpcKeepAliveEnvorcementPolicyPermitWithoutStream bool          `split_words:"true"                 default:"false"`
 	ServerGrpcKeepAliveServerParametersMaxConnectionIdle    int           `split_words:"true"                 default:"100"`
