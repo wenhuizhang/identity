@@ -5,6 +5,7 @@ package setup
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/spf13/cobra"
 )
@@ -15,18 +16,17 @@ var NetworkCmd = &cobra.Command{
 	Long: `
 The network command is used to manage your connection to an Identity Network node. With it you can:
 
-- (setup) Setup the connection to an Identity Network node
+- (connect) Setup the connection to an Identity Network node
 - (test) Test the connection to an Identity Network node
 - (forget) Forget the connection to an Identity Network node
 `,
 }
 
 var networkConnectCmd = &cobra.Command{
-	Use:   "setup [identity_node_address]",
+	Use:   "connect [identity_node_address]",
 	Short: "Setup the connection to an Identity Network node",
 	Run: func(cmd *cobra.Command, args []string) {
-		//nolint:forbidigo // Allow print for CLI
-		fmt.Println("Setting up connection to an Identity Network node")
+		fmt.Fprintf(os.Stdout, "%s\n", "Setting up connection to an Identity Network node")
 	},
 }
 
@@ -34,8 +34,7 @@ var networkTestCmd = &cobra.Command{
 	Use:   "test",
 	Short: "Test the connection to an Identity Network node",
 	Run: func(cmd *cobra.Command, args []string) {
-		//nolint:forbidigo // Allow print for CLI
-		fmt.Println("Testing connection to an Identity Network node")
+		fmt.Fprintf(os.Stdout, "%s\n", "Testing connection to an Identity Network node")
 	},
 }
 
@@ -43,8 +42,7 @@ var networkForgetCmd = &cobra.Command{
 	Use:   "forget",
 	Short: "Forget the connection to an Identity Network node",
 	Run: func(cmd *cobra.Command, args []string) {
-		//nolint:forbidigo // Allow print for CLI
-		fmt.Println("Forgetting connection to an Identity Network node")
+		fmt.Fprintf(os.Stdout, "%s\n", "Forgetting connection to an Identity Network node")
 	},
 }
 

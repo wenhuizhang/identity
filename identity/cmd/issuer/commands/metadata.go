@@ -5,6 +5,7 @@ package commands
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/spf13/cobra"
 )
@@ -29,8 +30,7 @@ var metadataListCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List all of your existing metadata",
 	Run: func(cmd *cobra.Command, args []string) {
-		//nolint:forbidigo // Allow print for CLI
-		fmt.Println("Listing all of your existing metadata")
+		fmt.Fprintf(os.Stdout, "%s\n", "Listing all of your existing metadata")
 	},
 }
 
@@ -38,8 +38,7 @@ var metadataShowCmd = &cobra.Command{
 	Use:   "show",
 	Short: "Show the currently loaded metadata",
 	Run: func(cmd *cobra.Command, args []string) {
-		//nolint:forbidigo // Allow print for CLI
-		fmt.Println("Showing the currently loaded metadata")
+		fmt.Fprintf(os.Stdout, "%s\n", "Showing the currently loaded metadata")
 	},
 }
 
@@ -48,8 +47,7 @@ var metadataLoadCmd = &cobra.Command{
 	Short: "Load an existing metadata <metadata_id>",
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		//nolint:forbidigo // Allow print for CLI
-		fmt.Printf("Loading metadata %s\n", args[0])
+		fmt.Fprintf(os.Stdout, "Loading metadata %s\n", args[0])
 	},
 }
 
@@ -57,8 +55,7 @@ var metadataIssueCmd = &cobra.Command{
 	Use:   "issue",
 	Short: "Issues and loads a new metadata",
 	Run: func(cmd *cobra.Command, args []string) {
-		//nolint:forbidigo // Allow print for CLI
-		fmt.Println("Creating a new metadata")
+		fmt.Fprintf(os.Stdout, "%s\n", "Creating a new metadata")
 	},
 }
 
@@ -66,8 +63,7 @@ var metadataForgetCmd = &cobra.Command{
 	Use:   "forget",
 	Short: "Forget the current metadata",
 	Run: func(cmd *cobra.Command, args []string) {
-		//nolint:forbidigo // Allow print for CLI
-		fmt.Println("Forgetting the current metadata")
+		fmt.Fprintf(os.Stdout, "%s\n", "Forgetting the current metadata")
 	},
 }
 
@@ -75,8 +71,7 @@ var metadataPublishCmd = &cobra.Command{
 	Use:   "publish",
 	Short: "Publish the current metadata",
 	Run: func(cmd *cobra.Command, args []string) {
-		//nolint:forbidigo // Allow print for CLI
-		fmt.Println(
+		fmt.Fprintf(os.Stdout, "%s\n",
 			"Publishing the current metadata",
 		)
 	},

@@ -5,6 +5,7 @@ package setup
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/spf13/cobra"
 )
@@ -25,8 +26,7 @@ var idpConnectCmd = &cobra.Command{
 	Use:   "setup [client_id] [client_secret] [issuer_url]",
 	Short: "Setup the connection to an Identity Provider",
 	Run: func(cmd *cobra.Command, args []string) {
-		//nolint:forbidigo // Allow print for CLI
-		fmt.Println("Setting up connection to an Identity Provider")
+		fmt.Fprintf(os.Stdout, "%s\n", "Setting up connection to an Identity Provider")
 	},
 }
 
@@ -34,8 +34,7 @@ var idpTestCmd = &cobra.Command{
 	Use:   "test",
 	Short: "Test the connection to an Identity Provider",
 	Run: func(cmd *cobra.Command, args []string) {
-		//nolint:forbidigo // Allow print for CLI
-		fmt.Println("Testing connection to an Identity Provider")
+		fmt.Fprintf(os.Stdout, "%s\n", "Testing connection to an Identity Provider")
 	},
 }
 
@@ -43,8 +42,7 @@ var idpForgetCmd = &cobra.Command{
 	Use:   "forget",
 	Short: "Forget the connection to an Identity Provider",
 	Run: func(cmd *cobra.Command, args []string) {
-		//nolint:forbidigo // Allow print for CLI
-		fmt.Println("Forgetting connection to an Identity Provider")
+		fmt.Fprintf(os.Stdout, "%s\n", "Forgetting connection to an Identity Provider")
 	},
 }
 

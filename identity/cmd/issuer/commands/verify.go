@@ -5,6 +5,7 @@ package commands
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/spf13/cobra"
 )
@@ -26,8 +27,7 @@ var loadCmd = &cobra.Command{
 	Short: "Load an Agent of MCP Server Badge",
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		//nolint:forbidigo // Allow print for CLI
-		fmt.Printf("Loading Badge")
+		fmt.Fprintf(os.Stdout, "%s\n", "Loading Badge")
 	},
 }
 
@@ -35,8 +35,7 @@ var validateCmd = &cobra.Command{
 	Use:   "validate",
 	Short: "Validate the loaded Agent or MCP Server Badge",
 	Run: func(cmd *cobra.Command, args []string) {
-		//nolint:forbidigo // Allow print for CLI
-		fmt.Println("Validating the loaded Badge")
+		fmt.Fprintf(os.Stdout, "%s\n", "Validating the loaded Badge")
 	},
 }
 
@@ -44,8 +43,7 @@ var forgetCmd = &cobra.Command{
 	Use:   "forget",
 	Short: "Forget the loaded Agent or MCP Server Badge",
 	Run: func(cmd *cobra.Command, args []string) {
-		//nolint:forbidigo // Allow print for CLI
-		fmt.Println("Forgetting the loaded Badge")
+		fmt.Fprintf(os.Stdout, "%s\n", "Forgetting the loaded Badge")
 	},
 }
 

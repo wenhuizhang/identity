@@ -5,6 +5,7 @@ package commands
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/spf13/cobra"
 )
@@ -28,8 +29,7 @@ var badgeListCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List all of your existing badges",
 	Run: func(cmd *cobra.Command, args []string) {
-		//nolint:forbidigo // Allow print for CLI
-		fmt.Println("Listing all of your existing badges")
+		fmt.Fprintf(os.Stdout, "%s\n", "Listing all of your existing badges")
 	},
 }
 
@@ -37,8 +37,7 @@ var badgeShowCmd = &cobra.Command{
 	Use:   "show",
 	Short: "Show the currently loaded badge",
 	Run: func(cmd *cobra.Command, args []string) {
-		//nolint:forbidigo // Allow print for CLI
-		fmt.Println("Showing the currently loaded badge")
+		fmt.Fprintf(os.Stdout, "%s\n", "Showing the currently loaded badge")
 	},
 }
 
@@ -47,8 +46,7 @@ var badgeLoadCmd = &cobra.Command{
 	Short: "Load an existing badge <badge_id>",
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		//nolint:forbidigo // Allow print for CLI
-		fmt.Printf("Loading badge %s\n", args[0])
+		fmt.Fprintf(os.Stdout, "Loading badge %s\n", args[0])
 	},
 }
 
@@ -56,8 +54,7 @@ var badgeIssueCmd = &cobra.Command{
 	Use:   "issue",
 	Short: "Issues and loads a new badge",
 	Run: func(cmd *cobra.Command, args []string) {
-		//nolint:forbidigo // Allow print for CLI
-		fmt.Println("Issuing and loading a new badge")
+		fmt.Fprintf(os.Stdout, "%s\n", "Issuing and loading a new badge")
 	},
 }
 
@@ -65,8 +62,7 @@ var badgeForgetCmd = &cobra.Command{
 	Use:   "forget",
 	Short: "Forget the current badge",
 	Run: func(cmd *cobra.Command, args []string) {
-		//nolint:forbidigo // Allow print for CLI
-		fmt.Println("Forgetting the current badge")
+		fmt.Fprintf(os.Stdout, "%s\n", "Forgetting the current badge")
 	},
 }
 
@@ -74,8 +70,7 @@ var badgePublishCmd = &cobra.Command{
 	Use:   "publish",
 	Short: "Publish the current badge",
 	Run: func(cmd *cobra.Command, args []string) {
-		//nolint:forbidigo // Allow print for CLI
-		fmt.Println(
+		fmt.Fprintf(os.Stdout, "%s\n",
 			"Publishing the current badge",
 		)
 	},
