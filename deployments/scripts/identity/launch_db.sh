@@ -8,5 +8,5 @@ set -Eeuo pipefail
 # Make sure .env file exists in deploy/scripts/ directory
 ./deployments/scripts/identity/env_setup_node.sh
 
-docker compose -f ./deployments/docker-compose/identity/docker-compose.couchdb.yml build --no-cache
-docker compose -f ./deployments/docker-compose/identity/docker-compose.couchdb.yml up -d
+docker compose -f ./deployments/docker-compose/identity/docker-compose.db.yml build --no-cache
+docker compose -f ./deployments/docker-compose/identity/docker-compose.db.yml up -d
