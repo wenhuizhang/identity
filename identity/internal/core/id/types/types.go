@@ -46,6 +46,17 @@ type ResolverMetadata struct {
 	AssertionMethod []string `json:"assertion_method,omitempty"`
 }
 
+func (r *ResolverMetadata) GetJwks() *Jwks {
+	jwks := Jwks{}
+	for _, vm := range r.VerificationMethod {
+		if vm.PublicKeyJwk != nil {
+			jwks.Keys = append(jwks.Keys, vm.PublicKeyJwk)
+		}
+	}
+
+	return &jwks
+}
+
 // JWK represents:
 // - a JSON Web Key (JWK) with the respective fields specific to RSA algorithms.
 // - a Quantum JSON Web Key (QJWK) with the respective fields specific to AKP algorithms.
@@ -107,5 +118,5 @@ type Jwk struct {
 // JWKS represents a set of JSON Web Keys (JWKs).
 type Jwks struct {
 	// Keys represents the list of JSON Web Keys.
-	Keys []Jwk `json:"keys"`
+	Keys []*Jwk `json:"keys"`
 }

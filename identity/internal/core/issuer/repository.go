@@ -17,6 +17,7 @@ type Repository interface {
 		ctx context.Context,
 		issuer *types.Issuer,
 	) (*types.Issuer, error)
+	GetIssuer(ctx context.Context, commonName string) (*types.Issuer, error)
 }
 
 type repository struct {
@@ -44,4 +45,8 @@ func (r *repository) CreateIssuer(
 	}
 
 	return issuer, nil
+}
+
+func (r *repository) GetIssuer(ctx context.Context, commonName string) (*types.Issuer, error) {
+	return nil, nil
 }

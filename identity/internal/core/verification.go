@@ -25,7 +25,7 @@ const (
 // common name verification
 type VerificationService interface {
 	VerifyCommonName(ctx context.Context, commonName *string, proof *vctypes.Proof) error
-	VerifyProof(ctx context.Context, proof *vctypes.Proof) (*string, *string, error)
+	VerifyProof(ctx context.Context, proof *vctypes.Proof) (string, string, error)
 }
 
 // The verificationService struct implements the VerificationService interface
@@ -56,7 +56,7 @@ func (v *verificationService) VerifyCommonName(
 	log.Debug("Verifying common name:", *commonName)
 
 	// Extract the hostname from the issuer
-	url, err := url.Parse(*issuer)
+	url, err := url.Parse(issuer)
 	if err != nil {
 		return err
 	}
@@ -78,10 +78,10 @@ func (v *verificationService) VerifyCommonName(
 func (v *verificationService) VerifyProof(
 	ctx context.Context,
 	proof *vctypes.Proof,
-) (*string, *string, error) {
+) (string, string, error) {
 	// Validate the proof
 	if proof == nil {
-		return nil, nil, errutil.Err(nil, "proof is empty")
+		return "", "", errutil.Err(nil, "proof is empty")
 	}
 
 	log.Debug("Verifying proof of type", proof.Type)
@@ -91,12 +91,12 @@ func (v *verificationService) VerifyProof(
 		// Verify the JWT proof
 		claims, err := v.oidcParser.ParseJwt(ctx, &proof.ProofValue)
 		if err != nil {
-			return nil, nil, err
+			return "", "", err
 		}
 
 		// Return the issuer and subject
-		return &claims.Issuer, &claims.Subject, nil
+		return claims.Issuer, claims.Subject, nil
 	}
 
-	return nil, nil, errutil.Err(nil, fmt.Sprintf("unsupported proof type %s", proof.Type))
+	return "", "", errutil.Err(nil, fmt.Sprintf("unsupported proof type %s", proof.Type))
 }

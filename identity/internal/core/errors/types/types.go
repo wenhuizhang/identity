@@ -15,6 +15,9 @@ const (
 	// has been specified.
 	ERROR_REASON_UNSPECIFIED ErrorReason = iota
 
+	// An internal error, this happens in case of unexpected condition or failure within the service
+	ERROR_READON_INTERNAL
+
 	// The Agent ID is invalid or not found
 	ERROR_REASON_INVALID_ID
 
@@ -36,12 +39,24 @@ const (
 	// The issuer contains one or more invalid fields.
 	ERROR_REASON_INVALID_ISSUER
 
+	// The issuer is not registered in the Node.
+	ERROR_REASON_ISSUER_NOT_REGISTERED
+
 	// The Verifiable Credential is invalid, this can be related to either
 	// invalid format or unable to verify the Data Integrity proof.
 	ERROR_REASON_INVALID_VERIFIABLE_CREDENTIAL
 
 	// Unable to find an VCs for an ID.
 	ERROR_REASON_ID_VCS_NOT_FOUND
+
+	// An issuer is required to have an external IdP
+	ERROR_REASON_IDP_REQUIRED
+
+	// The proof is invalid
+	ERROR_REASON_INVALID_PROOF
+
+	// Unable to resolve an ID to a ResolverMetadata
+	ERROR_REASON_RESOLVER_METADATA_NOT_FOUND
 )
 
 // Describes the cause of the error with structured details.
