@@ -4,51 +4,68 @@
 package commands
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
+
+	vctypes "github.com/agntcy/identity/internal/core/vc/types"
+	issuerVerify "github.com/agntcy/identity/internal/issuer/verify"
 
 	"github.com/spf13/cobra"
 )
 
 var VerifyCmd = &cobra.Command{
-	Use:   "verify",
-	Short: "Load and verify an Agent or MCP Server Badge",
-	Long: `
-The verify command is used to load and verify an Agent or MCP Server Badge. With it you can:
-
-- (load) Load an existing badge
-- (validate) Validate the loaded badge
-- (forget) Forget the loaded badge
-`,
-}
-
-var loadCmd = &cobra.Command{
-	Use:   "load [badge]",
-	Short: "Load an Agent of MCP Server Badge",
+	Use:   "verify [path_to_badge_json]",
+	Short: "Verify an Agent or MCP Server Badge from a JSON file",
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Fprintf(os.Stdout, "%s\n", "Loading Badge")
-	},
-}
 
-var validateCmd = &cobra.Command{
-	Use:   "validate",
-	Short: "Validate the loaded Agent or MCP Server Badge",
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Fprintf(os.Stdout, "%s\n", "Validating the loaded Badge")
-	},
-}
+		badgeFilePath := args[0]
+		if _, err := os.Stat(badgeFilePath); os.IsNotExist(err) {
+			fmt.Fprintf(os.Stderr, "File does not exist: %s\n", badgeFilePath)
+			return
+		}
 
-var forgetCmd = &cobra.Command{
-	Use:   "forget",
-	Short: "Forget the loaded Agent or MCP Server Badge",
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Fprintf(os.Stdout, "%s\n", "Forgetting the loaded Badge")
-	},
-}
+		// read the file
+		file, err := os.Open(badgeFilePath)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error opening file: %v\n", err)
+			return
+		}
+		defer file.Close()
+		// read the file contents
+		fileInfo, err := file.Stat()
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error getting file info: %v\n", err)
+			return
+		}
+		if fileInfo.IsDir() {
+			fmt.Fprintf(os.Stderr, "File is a directory: %s\n", badgeFilePath)
+			return
+		}
 
-func init() {
-	VerifyCmd.AddCommand(loadCmd)
-	VerifyCmd.AddCommand(validateCmd)
-	VerifyCmd.AddCommand(forgetCmd)
+		// read the file contents
+		fileContents := make([]byte, fileInfo.Size())
+		_, err = file.Read(fileContents)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error reading file: %v\n", err)
+			return
+		}
+		// check the file contents are a VerifiableCredential
+		var vc vctypes.VerifiableCredential
+		err = json.Unmarshal(fileContents, &vc)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error unmarshaling file contents: %v\n", err)
+			return
+		}
+
+		// verify the credential
+		_, err = issuerVerify.VerifyCredential(&vc)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error verifying credential: %v\n", err)
+			return
+		}
+		fmt.Fprintf(os.Stdout, "Successfully verified credential: %s\n", vc.ID)
+
+	},
 }

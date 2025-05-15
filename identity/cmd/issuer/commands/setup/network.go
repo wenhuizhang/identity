@@ -8,6 +8,9 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
+
+	issuerSetup "github.com/agntcy/identity/internal/issuer/setup"
+	issuerTypes "github.com/agntcy/identity/internal/issuer/types"
 )
 
 var NetworkCmd = &cobra.Command{
@@ -16,17 +19,32 @@ var NetworkCmd = &cobra.Command{
 	Long: `
 The network command is used to manage your connection to an Identity Network node. With it you can:
 
-- (connect) Setup the connection to an Identity Network node
+- (config) Configure the connection to an Identity Network node
 - (test) Test the connection to an Identity Network node
 - (forget) Forget the connection to an Identity Network node
 `,
 }
 
-var networkConnectCmd = &cobra.Command{
-	Use:   "connect [identity_node_address]",
-	Short: "Setup the connection to an Identity Network node",
+var networkConfigCmd = &cobra.Command{
+	Use:   "config [identity_node_address]",
+	Short: "Configure the connection to an Identity Network node",
+	Long:  "Configure the connection to an Identity Network node using the provided identity node address.",
+	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Fprintf(os.Stdout, "%s\n", "Setting up connection to an Identity Network node")
+
+		identityNodeAddress := args[0]
+
+		config := issuerTypes.IdentityNodeConfig{
+			IdentityNodeAddress: identityNodeAddress,
+		}
+
+		configPath, err := issuerSetup.ConfigureNetwork(config)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error configuring Identity Network node: %v\n", err)
+			return
+		}
+
+		fmt.Fprintf(os.Stdout, "\nSaved Identity Node configuration to %s\n\n", configPath)
 	},
 }
 
@@ -34,7 +52,13 @@ var networkTestCmd = &cobra.Command{
 	Use:   "test",
 	Short: "Test the connection to an Identity Network node",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Fprintf(os.Stdout, "%s\n", "Testing connection to an Identity Network node")
+
+		err := issuerSetup.TestNetworkConnection()
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "\nError testing Identity Network node connection: %v\n", err)
+			return
+		}
+		fmt.Fprintf(os.Stdout, "\nSuccessfully connected to Identity Network node\n\n")
 	},
 }
 
@@ -42,12 +66,19 @@ var networkForgetCmd = &cobra.Command{
 	Use:   "forget",
 	Short: "Forget the connection to an Identity Network node",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Fprintf(os.Stdout, "%s\n", "Forgetting connection to an Identity Network node")
+
+		configPath, err := issuerSetup.ForgetNetworkConnection()
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "\nError forgetting Identity Network node connection: %v\n", err)
+			return
+		}
+
+		fmt.Fprintf(os.Stdout, "\nSuccessfully removed Identity Network node configuration from %s\n\n", configPath)
 	},
 }
 
 func init() {
-	NetworkCmd.AddCommand(networkConnectCmd)
+	NetworkCmd.AddCommand(networkConfigCmd)
 	NetworkCmd.AddCommand(networkTestCmd)
 	NetworkCmd.AddCommand(networkForgetCmd)
 }
