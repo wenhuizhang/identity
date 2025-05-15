@@ -5,7 +5,6 @@ package testing
 
 import (
 	"context"
-	"errors"
 
 	issuercore "github.com/agntcy/identity/internal/core/issuer"
 	issuertypes "github.com/agntcy/identity/internal/core/issuer/types"
@@ -31,5 +30,5 @@ func (r *FakeIssuerRepository) GetIssuer(ctx context.Context, commonName string)
 		return issuer, nil
 	}
 
-	return nil, errors.New("issuer not found")
+	return nil, nil
 }

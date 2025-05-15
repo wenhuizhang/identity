@@ -7,6 +7,7 @@ import (
 	"context"
 	"testing"
 
+	errtypes "github.com/agntcy/identity/internal/core/errors/types"
 	idtesting "github.com/agntcy/identity/internal/core/id/testing"
 	issuertesting "github.com/agntcy/identity/internal/core/issuer/testing"
 	issuertypes "github.com/agntcy/identity/internal/core/issuer/types"
@@ -16,7 +17,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestGenerateID(t *testing.T) {
+func TestGenerateID_Should_Not_Return_Errors(t *testing.T) {
 	verficationSrv := coretesting.NewFakeTruthyVerificationService()
 	idRepo := idtesting.NewFakeIdRepository()
 	issuerRepo := issuertesting.NewFakeIssuerRepository()
@@ -27,9 +28,76 @@ func TestGenerateID(t *testing.T) {
 	}
 	issuerRepo.CreateIssuer(context.Background(), issuer)
 
-	t.Run("should not return an error", func(t *testing.T) {
-		_, err := sut.Generate(t.Context(), issuer, &vctypes.Proof{})
+	_, err := sut.Generate(context.Background(), issuer, &vctypes.Proof{})
 
-		assert.NoError(t, err)
-	})
+	assert.NoError(t, err)
+}
+
+func TestGenerateID_Should_Return_Idp_Required_Error(t *testing.T) {
+	verficationSrv := coretesting.NewFakeTruthyVerificationService()
+	idRepo := idtesting.NewFakeIdRepository()
+	issuerRepo := issuertesting.NewFakeIssuerRepository()
+	sut := node.NewIdService(verficationSrv, idRepo, issuerRepo)
+	issuer := &issuertypes.Issuer{
+		CommonName:   coretesting.ValidProofIssuer,
+		Organization: "Some Org",
+	}
+	issuerRepo.CreateIssuer(context.Background(), issuer)
+
+	_, err := sut.Generate(context.Background(), issuer, nil)
+
+	assertErrorInfoReason(t, err, errtypes.ERROR_REASON_IDP_REQUIRED)
+}
+
+func TestGenerateID_Should_Return_Invalid_Proof_Error(t *testing.T) {
+	verficationSrv := coretesting.NewFalsyProofVerificationServiceStub()
+	idRepo := idtesting.NewFakeIdRepository()
+	issuerRepo := issuertesting.NewFakeIssuerRepository()
+	sut := node.NewIdService(verficationSrv, idRepo, issuerRepo)
+	issuer := &issuertypes.Issuer{
+		CommonName:   coretesting.ValidProofIssuer,
+		Organization: "Some Org",
+	}
+	issuerRepo.CreateIssuer(context.Background(), issuer)
+
+	_, err := sut.Generate(context.Background(), issuer, &vctypes.Proof{})
+
+	assertErrorInfoReason(t, err, errtypes.ERROR_REASON_INVALID_PROOF)
+}
+
+func TestGenerateID_Should_Return_Invalid_Issuer_Error(t *testing.T) {
+	verficationSrv := coretesting.NewFalsyCommonNameVerificationServiceStub()
+	idRepo := idtesting.NewFakeIdRepository()
+	issuerRepo := issuertesting.NewFakeIssuerRepository()
+	sut := node.NewIdService(verficationSrv, idRepo, issuerRepo)
+	issuer := &issuertypes.Issuer{
+		CommonName:   coretesting.ValidProofIssuer,
+		Organization: "Some Org",
+	}
+	issuerRepo.CreateIssuer(context.Background(), issuer)
+
+	_, err := sut.Generate(context.Background(), issuer, &vctypes.Proof{})
+
+	assertErrorInfoReason(t, err, errtypes.ERROR_REASON_INVALID_ISSUER)
+}
+
+func TestGenerateID_Should_Return_Unregistred_Issuer_Error(t *testing.T) {
+	verficationSrv := coretesting.NewFakeTruthyVerificationService()
+	idRepo := idtesting.NewFakeIdRepository()
+	issuerRepo := issuertesting.NewFakeIssuerRepository()
+	sut := node.NewIdService(verficationSrv, idRepo, issuerRepo)
+	issuer := &issuertypes.Issuer{
+		CommonName:   coretesting.ValidProofIssuer,
+		Organization: "Some Org",
+	}
+
+	_, err := sut.Generate(context.Background(), issuer, &vctypes.Proof{})
+
+	assertErrorInfoReason(t, err, errtypes.ERROR_REASON_ISSUER_NOT_REGISTERED)
+}
+
+func assertErrorInfoReason(t *testing.T, err error, reason errtypes.ErrorReason) {
+	var errInfo errtypes.ErrorInfo
+	assert.ErrorAs(t, err, &errInfo)
+	assert.Equal(t, reason, errInfo.Reason)
 }
