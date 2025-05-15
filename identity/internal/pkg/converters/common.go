@@ -32,8 +32,7 @@ func ConvertSlice[S, D any](list []*S) []*D {
 	return responseList
 }
 
-// ListModelToProto converts a slice T of structs implementing ToProto() *S to a slice of *S
-func ListModelToProto[T any, S any](list []T, convert func(T) *S) []*S {
+func ConvertSliceCallback[T any, S any](list []T, convert func(T) *S) []*S {
 	var responseList = make([]*S, 0)
 	for _, obj := range list {
 		responseList = append(responseList, convert(obj))

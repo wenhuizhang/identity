@@ -1,0 +1,82 @@
+package postgres
+
+import (
+	"github.com/agntcy/identity/internal/core/id/types"
+	"github.com/agntcy/identity/internal/pkg/converters"
+	"github.com/google/uuid"
+	"github.com/lib/pq"
+)
+
+type ResolverMetadata struct {
+	ID                 string                `gorm:"primaryKey"`
+	VerificationMethod []*VerificationMethod `gorm:"foreignKey:ResolverMetadataID"`
+	Service            []*Service            `gorm:"foreignKey:ResolverMetadataID"`
+	AssertionMethod    pq.StringArray        `gorm:"type:text[]"`
+}
+
+func (md *ResolverMetadata) ToCoreType() *types.ResolverMetadata {
+	return &types.ResolverMetadata{
+		ID: md.ID,
+		VerificationMethod: converters.ConvertSliceCallback(
+			md.VerificationMethod,
+			func(vm *VerificationMethod) *types.VerificationMethod {
+				return vm.ToCoreType()
+			},
+		),
+		Service: converters.ConvertSliceCallback(
+			md.Service,
+			func(s *Service) *types.Service {
+				return s.ToCoreType()
+			},
+		),
+		AssertionMethod: md.AssertionMethod,
+	}
+}
+
+type VerificationMethod struct {
+	ID                 string     `gorm:"primaryKey"`
+	PublicKeyJwk       *types.Jwk `gorm:"embedded;embeddedPrefix:public_key_jwk_"`
+	ResolverMetadataID string
+}
+
+func (vm *VerificationMethod) ToCoreType() *types.VerificationMethod {
+	return &types.VerificationMethod{
+		ID:           vm.ID,
+		PublicKeyJwk: vm.PublicKeyJwk,
+	}
+}
+
+type Service struct {
+	ID                 string         `gorm:"primaryKey"`
+	ServiceEndpoint    pq.StringArray `gorm:"type:text[]"`
+	ResolverMetadataID string
+}
+
+func (s *Service) ToCoreType() *types.Service {
+	return &types.Service{
+		ServiceEndpoint: s.ServiceEndpoint,
+	}
+}
+
+func newResolverMetadataModel(src *types.ResolverMetadata) *ResolverMetadata {
+	return &ResolverMetadata{
+		ID:                 src.ID,
+		VerificationMethod: converters.ConvertSliceCallback(src.VerificationMethod, newVerificationMethodModel),
+		Service:            converters.ConvertSliceCallback(src.Service, newServiceModel),
+		AssertionMethod:    src.AssertionMethod,
+	}
+}
+
+func newVerificationMethodModel(src *types.VerificationMethod) *VerificationMethod {
+	return &VerificationMethod{
+		ID:           src.ID,
+		PublicKeyJwk: src.PublicKeyJwk,
+	}
+}
+
+func newServiceModel(src *types.Service) *Service {
+	return &Service{
+		ID:              uuid.NewString(),
+		ServiceEndpoint: src.ServiceEndpoint,
+	}
+}

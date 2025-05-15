@@ -98,5 +98,5 @@ func (v *verificationService) VerifyProof(
 		return claims.Issuer, claims.Subject, nil
 	}
 
-	return "", "", errutil.Err(nil, fmt.Sprintf("unsupported proof type %s", proof.Type))
+	return "", "", errutil.Err(nil, fmt.Sprintf("unsupported proof type '%s'", proof.Type))
 }

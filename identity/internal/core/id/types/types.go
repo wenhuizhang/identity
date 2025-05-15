@@ -35,11 +35,11 @@ type ResolverMetadata struct {
 
 	// VerificationMethod is a list of cryptographic public keys, which can be used
 	// to authenticate or authorize interactions with the entities represented by the ID.
-	VerificationMethod []VerificationMethod `json:"verification_method,omitempty"`
+	VerificationMethod []*VerificationMethod `json:"verification_method,omitempty"`
 
 	// Service is used in ResolverMetadatas to express ways of communicating with
 	// the node that published the document.
-	Service []Service `json:"service,omitempty"`
+	Service []*Service `json:"service,omitempty"`
 
 	// AssertionMethod is used to specify how the entity represented by the ID
 	// is expected to express claims, such as for the purposes of issuing a VCs.

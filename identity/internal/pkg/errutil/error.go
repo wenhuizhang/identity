@@ -23,9 +23,10 @@ func Err(err error, customMessage string) error {
 	return err
 }
 
-func ErrInfo(reason errtypes.ErrorReason, message string) errtypes.ErrorInfo {
+func ErrInfo(reason errtypes.ErrorReason, message string, err error) errtypes.ErrorInfo {
 	return errtypes.ErrorInfo{
 		Reason:  reason,
 		Message: message,
+		Err:     err,
 	}
 }

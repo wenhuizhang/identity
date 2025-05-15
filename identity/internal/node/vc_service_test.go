@@ -1,3 +1,6 @@
+// Copyright 2025 AGNTCY Contributors (https://github.com/agntcy)
+// SPDX-License-Identifier: Apache-2.0
+
 package node_test
 
 import (
@@ -42,7 +45,7 @@ func TestPublishVC(t *testing.T) {
 
 	resolverMD := &idtypes.ResolverMetadata{
 		ID: fmt.Sprintf("DUO-%s", coretesting.ValidProofSub),
-		VerificationMethod: []idtypes.VerificationMethod{
+		VerificationMethod: []*idtypes.VerificationMethod{
 			{
 				ID:           pubKey.KID,
 				PublicKeyJwk: pubKey,

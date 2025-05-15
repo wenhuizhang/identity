@@ -4,7 +4,10 @@
 //nolint:errname // Ignore error name for types/proto
 package types
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+)
 
 // Represents the reason for an error, providing a unique
 // constant value for the error.
@@ -16,7 +19,7 @@ const (
 	ERROR_REASON_UNSPECIFIED ErrorReason = iota
 
 	// An internal error, this happens in case of unexpected condition or failure within the service
-	ERROR_READON_INTERNAL
+	ERROR_REASON_INTERNAL
 
 	// The Agent ID is invalid or not found
 	ERROR_REASON_INVALID_ID
@@ -69,8 +72,20 @@ type ErrorInfo struct {
 	// The message describing the error in a human-readable way. This
 	// field gives additional details about the error.
 	Message string `json:"message,omitempty"`
+
+	// The underlying error if present
+	Err error `json:"-" protobuf:"-"`
 }
 
 func (err ErrorInfo) Error() string {
 	return fmt.Sprintf("%s (reason: %d)", err.Message, err.Reason)
+}
+
+func IsErrorInfo(err error, reason ErrorReason) bool {
+	var errInfo ErrorInfo
+	if errors.As(err, &errInfo) {
+		return errInfo.Reason == reason
+	}
+
+	return false
 }
