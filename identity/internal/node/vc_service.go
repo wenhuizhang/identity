@@ -74,7 +74,7 @@ func (s *verifiableCredentialService) Publish(
 		)
 	}
 
-	// TODO: build ID
+	// TODO: revisit this line after working on a better ID generation
 	id := fmt.Sprintf("DUO-%s", sub)
 
 	log.Debug("Resolving the ID into a ResolverMetadata")

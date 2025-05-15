@@ -15,6 +15,7 @@ import (
 	issuertypes "github.com/agntcy/identity/internal/core/issuer/types"
 	vctypes "github.com/agntcy/identity/internal/core/vc/types"
 	"github.com/agntcy/identity/internal/pkg/errutil"
+	"github.com/agntcy/identity/pkg/log"
 	"github.com/google/uuid"
 )
 
@@ -54,10 +55,14 @@ func (s *idService) Generate(
 		)
 	}
 
+	log.Debug("Verifying the proof ", proof.ProofValue)
+
 	_, sub, err := s.verificationService.VerifyProof(ctx, proof)
 	if err != nil {
 		return nil, errutil.ErrInfo(errtypes.ERROR_REASON_INVALID_PROOF, err.Error(), err)
 	}
+
+	log.Debug("Fetching the issuer ", issuer.CommonName)
 
 	iss, err := s.issuerRepository.GetIssuer(ctx, issuer.CommonName)
 	if err != nil {
@@ -70,6 +75,8 @@ func (s *idService) Generate(
 		)
 	}
 
+	log.Debug("Verifying the issuer's common name")
+
 	err = s.verificationService.VerifyCommonName(ctx, &iss.CommonName, proof)
 	if err != nil {
 		return nil, errutil.ErrInfo(
@@ -79,9 +86,14 @@ func (s *idService) Generate(
 		)
 	}
 
-	// TODO: Check when it's Okta or Duo or other IdP
+	log.Debug("Generating a ResolverMetadata")
+
+	// TODO: Think of a better way to do this
+	// Also, check when it's Okta or Duo or other IdP
 	id := fmt.Sprintf("DUO-%s", sub)
 	keyID := fmt.Sprintf("%s#%s", id, uuid.NewString())
+
+	log.Debug("ID generated ", id)
 
 	resolverMetadata := &idtypes.ResolverMetadata{
 		ID: id,
@@ -98,6 +110,8 @@ func (s *idService) Generate(
 			},
 		},
 	}
+
+	log.Debug("Storing the ResolverMetadata")
 
 	_, err = s.idRepository.CreateID(ctx, resolverMetadata)
 	if err != nil {
