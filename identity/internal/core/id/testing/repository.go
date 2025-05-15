@@ -5,7 +5,6 @@ package testing
 
 import (
 	"context"
-	"errors"
 
 	idcore "github.com/agntcy/identity/internal/core/id"
 	idtypes "github.com/agntcy/identity/internal/core/id/types"
@@ -34,5 +33,5 @@ func (r *FakeIdRepository) ResolveID(ctx context.Context, id string) (*idtypes.R
 		return md, nil
 	}
 
-	return nil, errors.New("ResolverMetadata not found")
+	return nil, nil
 }

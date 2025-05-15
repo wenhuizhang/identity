@@ -58,6 +58,14 @@ func (s *verifiableCredentialService) Publish(
 
 	log.Debug("Verifying the ID proof and the issuer")
 
+	if proof == nil {
+		return errutil.ErrInfo(
+			errtypes.ERROR_REASON_IDP_REQUIRED,
+			"issuer without external IdP is not implemented",
+			nil,
+		)
+	}
+
 	iss, sub, err := s.verificationService.VerifyProof(ctx, proof)
 	if err != nil {
 		return errutil.ErrInfo(errtypes.ERROR_REASON_INVALID_PROOF, err.Error(), err)

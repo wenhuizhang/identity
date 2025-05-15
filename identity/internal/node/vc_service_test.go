@@ -11,6 +11,7 @@ import (
 	"fmt"
 	"testing"
 
+	errtypes "github.com/agntcy/identity/internal/core/errors/types"
 	idtesting "github.com/agntcy/identity/internal/core/id/testing"
 	idtypes "github.com/agntcy/identity/internal/core/id/types"
 	issuertesting "github.com/agntcy/identity/internal/core/issuer/testing"
@@ -54,11 +55,43 @@ func TestPublishVC(t *testing.T) {
 	}
 	idRepo.CreateID(context.Background(), resolverMD)
 
-	t.Run("should not return errors for JOSE VC", func(t *testing.T) {
-		err = sut.Publish(context.Background(), envelope, &vctypes.Proof{})
+	err = sut.Publish(context.Background(), envelope, &vctypes.Proof{})
 
-		assert.NoError(t, err)
-	})
+	assert.NoError(t, err)
+}
+
+func TestPublishVC_Should_Return_Invalid_Credential_Format_Error(t *testing.T) {
+	sut := node.NewVerifiableCredentialService(nil, nil, nil, nil)
+	invalidEnvelope := &vctypes.EnvelopedCredential{
+		Value: "",
+	}
+
+	err := sut.Publish(context.Background(), invalidEnvelope, &vctypes.Proof{})
+
+	assertErrorInfoReason(t, err, errtypes.ERROR_REASON_INVALID_CREDENTIAL_ENVELOPE_VALUE_FORMAT)
+}
+
+func TestPublishVC_Should_Return_Idp_Required_Error(t *testing.T) {
+	sut := node.NewVerifiableCredentialService(nil, nil, nil, nil)
+	invalidEnvelope := &vctypes.EnvelopedCredential{
+		Value: "something",
+	}
+
+	err := sut.Publish(context.Background(), invalidEnvelope, nil)
+
+	assertErrorInfoReason(t, err, errtypes.ERROR_REASON_IDP_REQUIRED)
+}
+
+func TestPublishVC_Should_Return_Invalid_Proof_Error(t *testing.T) {
+	verficationSrv := coretesting.NewFalsyProofVerificationServiceStub()
+	sut := node.NewVerifiableCredentialService(verficationSrv, nil, nil, nil)
+	invalidEnvelope := &vctypes.EnvelopedCredential{
+		Value: "something",
+	}
+
+	err := sut.Publish(context.Background(), invalidEnvelope, &vctypes.Proof{})
+
+	assertErrorInfoReason(t, err, errtypes.ERROR_REASON_INVALID_PROOF)
 }
 
 func signVCWithJose(vc *vctypes.VerifiableCredential) (*vctypes.EnvelopedCredential, *idtypes.Jwk, error) {
