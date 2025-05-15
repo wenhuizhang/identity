@@ -1,4 +1,4 @@
-// Copyright 2025  AGNTCY Contributors (https://github.com/agntcy)
+// Copyright 2025 AGNTCY Contributors (https://github.com/agntcy)
 // SPDX-License-Identifier: Apache-2.0
 
 package main
@@ -14,14 +14,12 @@ type Configuration struct {
 	ApiUrl                                                  string        `split_words:"true"`
 	GoEnv                                                   string        `split_words:"true"                 default:"production"`
 	LogLevel                                                string        `split_words:"true"                 default:"InfoLevel"`
-	MongoDbHost                                             string        `split_words:"true" required:"true"`
-	MongoDbPort                                             string        `split_words:"true" required:"true"`
-	MongoDbUsername                                         string        `split_words:"true"`
-	MongoDbPassword                                         string        `split_words:"true"`
-	EnableTracing                                           bool          `split_words:"true"                 default:"false"`
-	EnableDbLogs                                            bool          `split_words:"true"                 default:"false"`
-	JwtLeeway                                               string        `split_words:"true"                 default:"1m"`
-	OtelCollectorHost                                       string        `split_words:"true"`
+	DbHost                                                  string        `split_words:"true" required:"true"`
+	DbPort                                                  string        `split_words:"true" required:"true"`
+	DbName                                                  string        `split_words:"true" required:"true"`
+	DbUsername                                              string        `split_words:"true"`
+	DbPassword                                              string        `split_words:"true"`
+	DbUseSsl                                                bool          `split_words:"true"                 default:"false"`
 	ServerGrpcKeepAliveEnvorcementPolicyMinTime             int           `split_words:"true"                 default:"300"`
 	ServerGrpcKeepAliveEnvorcementPolicyPermitWithoutStream bool          `split_words:"true"                 default:"false"`
 	ServerGrpcKeepAliveServerParametersMaxConnectionIdle    int           `split_words:"true"                 default:"100"`

@@ -1,13 +1,14 @@
-# Copyright 2025  AGNTCY Contributors (https://github.com/agntcy)
+# Copyright 2025 AGNTCY Contributors (https://github.com/agntcy)
 # SPDX-License-Identifier: Apache-2.0
 
+---
 name: identity-node
 services:
   identity-api:
     container_name: identity-node
     build:
       context: ../../../
-      dockerfile: deployments/docker/backend/node/Dockerfile
+      dockerfile: deployments/docker/identity/Dockerfile.node
     restart: always
     ports:
       - "4000:4000"

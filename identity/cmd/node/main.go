@@ -1,4 +1,4 @@
-// Copyright 2025  AGNTCY Contributors (https://github.com/agntcy)
+// Copyright 2025 AGNTCY Contributors (https://github.com/agntcy)
 // SPDX-License-Identifier: Apache-2.0
 
 package main
@@ -12,13 +12,18 @@ import (
 	"time"
 
 	identityapi "github.com/agntcy/identity/api"
+	"github.com/agntcy/identity/internal/core"
+	"github.com/agntcy/identity/internal/core/issuer"
+	issuertypes "github.com/agntcy/identity/internal/core/issuer/types"
 	issuergrpc "github.com/agntcy/identity/internal/issuer/grpc"
+	"github.com/agntcy/identity/internal/node"
 	nodegrpc "github.com/agntcy/identity/internal/node/grpc"
 	"github.com/agntcy/identity/internal/pkg/grpcutil"
+	"github.com/agntcy/identity/internal/pkg/oidc"
 	"github.com/agntcy/identity/pkg/cmd"
+	"github.com/agntcy/identity/pkg/db"
 	"github.com/agntcy/identity/pkg/grpcserver"
 	"github.com/agntcy/identity/pkg/log"
-	"github.com/agntcy/identity/pkg/mongodb"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/rs/cors"
 	"github.com/sirupsen/logrus"
@@ -71,21 +76,31 @@ func main() {
 		) * time.Second, // Wait X second for the ping ack before assuming the connection is dead
 	}
 
-	mongoDbClient, err := mongodb.Connect(
-		ctx,
-		config.MongoDbHost,
-		config.MongoDbPort,
-		config.MongoDbUsername,
-		config.MongoDbPassword,
-		config.EnableTracing,
-		config.EnableDbLogs,
+	// Create a database context
+	dbContext := db.NewContext(
+		config.DbHost,
+		config.DbPort,
+		config.DbName,
+		config.DbUsername,
+		config.DbPassword,
+		config.DbUseSsl,
 	)
+
+	// Connect to the database
+	err = dbContext.Connect()
 	if err != nil {
 		log.Fatal(err)
 	}
 
+	// Migrate the database
+	err = dbContext.AutoMigrate(&issuertypes.Issuer{})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Disconnect the database client when done
 	defer func() {
-		if err = mongodb.Disconnect(ctx, mongoDbClient); err != nil {
+		if err = dbContext.Disconnect(); err != nil {
 			log.Fatal(err)
 		}
 	}()
@@ -108,9 +123,19 @@ func main() {
 		_ = grpcsrv.Shutdown(ctx)
 	}()
 
+	// Create OIDC parser
+	oidcParser := oidc.NewParser()
+
+	// Create repositories
+	issuerRepository := issuer.NewRepository(dbContext)
+
+	// Create internal services
+	verificationService := core.NewVerificationService(oidcParser)
+	nodeIssuerService := node.NewIssuerService(issuerRepository, verificationService)
+
 	register := identityapi.GrpcServiceRegister{
 		IdServiceServer:     nodegrpc.NewIdService(),
-		IssuerServiceServer: nodegrpc.NewIssuerService(),
+		IssuerServiceServer: nodegrpc.NewIssuerService(nodeIssuerService),
 		VcServiceServer:     nodegrpc.NewVcService(),
 		LocalServiceServer:  issuergrpc.NewLocalService(),
 	}

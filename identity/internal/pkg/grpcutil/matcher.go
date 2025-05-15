@@ -1,4 +1,4 @@
-// Copyright 2025  AGNTCY Contributors (https://github.com/agntcy)
+// Copyright 2025 AGNTCY Contributors (https://github.com/agntcy)
 // SPDX-License-Identifier: Apache-2.0
 
 package grpcutil
@@ -8,10 +8,5 @@ import (
 )
 
 func CustomMatcher(key string) (string, bool) {
-	switch key {
-	case "X-Id-Api-Key":
-		return key, true
-	default:
-		return runtime.DefaultHeaderMatcher(key)
-	}
+	return runtime.DefaultHeaderMatcher(key)
 }

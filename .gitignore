@@ -130,13 +130,18 @@ dmypy.json
 
 .DS_Store
 .venv
+.vscode
 
 .scratchpad
-identity/identity
 
+# UI
 !ui/src/lib
 
+# Internal folders
 identity/cmd/issuer/web
 identity/pkg/assets/web
+identity/identity
 
-.vscode
+
+# DB
+test_vc.json
