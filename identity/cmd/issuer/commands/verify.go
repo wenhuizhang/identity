@@ -26,36 +26,23 @@ var VerifyCmd = &cobra.Command{
 			return
 		}
 
-		// read the file
-		file, err := os.Open(badgeFilePath)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error opening file: %v\n", err)
-			return
-		}
-		defer file.Close()
-		// read the file contents
-		fileInfo, err := file.Stat()
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error getting file info: %v\n", err)
-			return
-		}
-		if fileInfo.IsDir() {
-			fmt.Fprintf(os.Stderr, "File is a directory: %s\n", badgeFilePath)
+		// Check if the config file exists
+		if _, err := os.Stat(badgeFilePath); os.IsNotExist(err) {
+			fmt.Fprintf(os.Stderr, "File does not exist: %s\n", badgeFilePath)
 			return
 		}
 
-		// read the file contents
-		fileContents := make([]byte, fileInfo.Size())
-		_, err = file.Read(fileContents)
+		// Read the config file
+		vcData, err := os.ReadFile(badgeFilePath)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error reading file: %v\n", err)
 			return
 		}
-		// check the file contents are a VerifiableCredential
+
+		// Unmarshal the VC data
 		var vc vctypes.VerifiableCredential
-		err = json.Unmarshal(fileContents, &vc)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error unmarshaling file contents: %v\n", err)
+		if err := json.Unmarshal(vcData, &vc); err != nil {
+			fmt.Fprintf(os.Stderr, "Error unmarshaling VC data: %v\n", err)
 			return
 		}
 
