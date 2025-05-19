@@ -12,6 +12,7 @@ import (
 	issuertypes "github.com/agntcy/identity/internal/core/issuer/types"
 	vctypes "github.com/agntcy/identity/internal/core/vc/types"
 	"github.com/agntcy/identity/internal/pkg/errutil"
+	"github.com/agntcy/identity/internal/pkg/jwkutil"
 )
 
 // The IssuerService interface defines the Node methods for Issuers
@@ -55,6 +56,16 @@ func (i *issuerService) Register(
 	}
 
 	// Validate the public key
+	validationErr := jwkutil.ValidatePubKey(
+		issuer.PublicKey,
+	)
+	if validationErr != nil {
+		return nil, errutil.ErrInfo(
+			errtypes.ERROR_REASON_INVALID_ISSUER,
+			"issuer has invalid public key",
+			nil,
+		)
+	}
 
 	// Verify the issuer's common name
 	// Validate the proof exists
