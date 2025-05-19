@@ -32,7 +32,7 @@ The metadata command is used to issue and publish important metadata for your Ag
 var metadataGenerateCmd = &cobra.Command{
 	Use:   "generate [issuer_id] [idp_client_id] [idp_client_secret] [idp_issuer_url]",
 	Short: "Generate new metadata for your Agent and MCP Server identities",
-	Args:  cobra.ExactArgs(3),
+	Args:  cobra.ExactArgs(4),
 	Run: func(cmd *cobra.Command, args []string) {
 
 		issuerId := args[0]
@@ -116,7 +116,7 @@ var metadataForgetCmd = &cobra.Command{
 			fmt.Fprintf(os.Stderr, "Error forgetting metadata: %v\n", err)
 			return
 		}
-		fmt.Fprintf(os.Stdout, "%s\n", "Forgetting the current metadata")
+		fmt.Fprintf(os.Stdout, "Forgot metadata with ID: %s\n", metadataId)
 	},
 }
 

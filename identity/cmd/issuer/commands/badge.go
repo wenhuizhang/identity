@@ -47,7 +47,7 @@ var badgeIssueCmd = &cobra.Command{
 var badgePublishCmd = &cobra.Command{
 	Use:   "publish [issuer_id] [metadata_id] [badge_id]",
 	Short: "Publish the chosen badge",
-	Args:  cobra.ExactArgs(1),
+	Args:  cobra.ExactArgs(3),
 	Run: func(cmd *cobra.Command, args []string) {
 
 		issuerId := args[0]
@@ -102,7 +102,7 @@ var badgeShowCmd = &cobra.Command{
 
 		issuerId := args[0]
 		metadataId := args[1]
-		badgeId := args[3]
+		badgeId := args[2]
 		badge, err := issuerBadge.GetBadge(issuerId, metadataId, badgeId)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error getting badge: %v\n", err)
@@ -131,7 +131,7 @@ var badgeForgetCmd = &cobra.Command{
 			fmt.Fprintf(os.Stderr, "Error forgetting badge: %v\n", err)
 			return
 		}
-		fmt.Fprintf(os.Stdout, "%s\n", "Forgetting the current badge")
+		fmt.Fprintf(os.Stdout, "Forgot badge with ID: %s\n", badgeId)
 	},
 }
 

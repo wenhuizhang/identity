@@ -6,6 +6,7 @@ package issuer
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"log"
 	"os"
 	"path/filepath"
@@ -161,6 +162,12 @@ func ForgetIssuer(issuerId string) error {
 	if err != nil {
 		return err
 	}
+
+	// Check if the issuer directory exists
+	if _, err := os.Stat(issuerDir); os.IsNotExist(err) {
+		return errors.New("Issuer does not exist")
+	}
+
 	// Remove the issuer directory
 	if err := os.RemoveAll(issuerDir); err != nil {
 		return err

@@ -5,6 +5,7 @@ package metadata
 
 import (
 	"encoding/json"
+	"errors"
 	"log"
 	"os"
 	"path/filepath"
@@ -190,6 +191,11 @@ func ForgetMetadata(issuerId, metadataId string) error {
 	metadataIdDir, err := GetMetadataIdDirectory(issuerId, metadataId)
 	if err != nil {
 		return err
+	}
+
+	// Check if the metadata directory exists
+	if _, err := os.Stat(metadataIdDir); os.IsNotExist(err) {
+		return errors.New("Metadata does not exist")
 	}
 
 	// Remove the metadata directory

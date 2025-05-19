@@ -5,6 +5,7 @@ package badge
 
 import (
 	"encoding/json"
+	"errors"
 	"log"
 	"os"
 	"path/filepath"
@@ -57,11 +58,8 @@ func IssueBadge(issuerId, metadataId, badgeValueFilePath string) (*vctypes.Envel
 		return nil, err
 	}
 
-	// Unmarshal the badge value
-	var badgeValue string
-	if err := json.Unmarshal(badgeValueData, &badgeValue); err != nil {
-		return nil, err
-	}
+	// Convert the badge value to a string
+	badgeValue := string(badgeValueData)
 
 	envelopedCredential := vctypes.EnvelopedCredential{
 		EnvelopeType: vctypes.CREDENTIAL_ENVELOPE_TYPE_JOSE,
@@ -186,6 +184,11 @@ func ForgetBadge(issuerId, metadataId, badgeId string) error {
 	badgeIdDir, err := GetBadgeIdDirectory(issuerId, metadataId, badgeId)
 	if err != nil {
 		return err
+	}
+
+	// Check if the badge directory exists
+	if _, err := os.Stat(badgeIdDir); os.IsNotExist(err) {
+		return errors.New("Metadata does not exist")
 	}
 
 	// Remove the badge directory
