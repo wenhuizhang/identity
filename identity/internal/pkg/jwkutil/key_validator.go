@@ -43,20 +43,25 @@ func validateRSAPubKey(j *types.Jwk) error {
 	if j.N == "" || j.E == "" {
 		return errors.New("missing modulus (n) or exponent (e) for RSA public key")
 	}
+
 	n, err := base64.RawURLEncoding.DecodeString(j.N)
 	if err != nil {
 		return errors.New("invalid base64url encoding for modulus (n)")
 	}
+
 	e, err := base64.RawURLEncoding.DecodeString(j.E)
 	if err != nil {
 		return errors.New("invalid base64url encoding for exponent (e)")
 	}
+
 	if new(big.Int).SetBytes(n).Cmp(big.NewInt(0)) <= 0 {
 		return errors.New("modulus (n) must be positive")
 	}
+
 	if new(big.Int).SetBytes(e).Cmp(big.NewInt(0)) <= 0 {
 		return errors.New("exponent (e) must be positive")
 	}
+
 	return nil
 }
 
@@ -112,6 +117,7 @@ func validateRSAPrivKey(j *types.Jwk) error {
 	if err := priv.Validate(); err != nil {
 		return errors.New("invalid RSA private key: " + err.Error())
 	}
+
 	return nil
 }
 
@@ -121,6 +127,7 @@ func validateAKPPubKey(j *types.Jwk) error {
 	if j.PUB == "" {
 		return errors.New("missing pub field for AKP public key")
 	}
+
 	_, err := base64.RawURLEncoding.DecodeString(j.PUB)
 	if err != nil {
 		return errors.New("invalid base64url encoding for pub field")
@@ -129,6 +136,7 @@ func validateAKPPubKey(j *types.Jwk) error {
 	if !strings.HasPrefix(j.ALG, "ML-DSA-") {
 		return errors.New("unsupported AKP algorithm: " + j.ALG)
 	}
+
 	return nil
 }
 
@@ -136,6 +144,7 @@ func validateAKPPrivKey(j *types.Jwk) error {
 	if j.PRIV == "" {
 		return errors.New("missing priv field for AKP private key")
 	}
+
 	_, err := base64.RawURLEncoding.DecodeString(j.PRIV)
 	if err != nil {
 		return errors.New("invalid base64url encoding for priv field")
@@ -144,5 +153,6 @@ func validateAKPPrivKey(j *types.Jwk) error {
 	if !strings.HasPrefix(j.ALG, "ML-DSA-") {
 		return errors.New("unsupported AKP algorithm: " + j.ALG)
 	}
+
 	return nil
 }

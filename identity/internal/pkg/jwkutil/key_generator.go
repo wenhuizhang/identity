@@ -15,72 +15,76 @@ import (
 	"github.com/open-quantum-safe/liboqs-go/oqs"
 )
 
-// GenerateJWK generates a new JWK with the specified algorithm, usage, and ID.
-func GenerateJWK(alg string, use string, id string) (*types.Jwk, error) {
-	// Generate a unique key ID if not provided
+const (
+	rsaBits256 = 2048
+	rsaBits384 = 3072
+	rsaBits512 = 4096
+)
+
+func GenerateJWK(alg, use, id string) (*types.Jwk, error) {
 	if id == "" {
 		id = uuid.NewString()
 	}
 
-	var jwk *types.Jwk
-
 	switch alg {
 	case "RS256", "RS384", "RS512":
-		bits := map[string]int{
-			"RS256": 2048,
-			"RS384": 3072,
-			"RS512": 4096,
-		}[alg]
-
-		privateKey, err := rsa.GenerateKey(rand.Reader, bits)
-		if err != nil {
-			return nil, err
-		}
-
-		// Populate the JWK fields for RSA
-		jwk = &types.Jwk{
-			KID: id,
-			ALG: alg,
-			KTY: "RSA",
-			USE: use,
-			N:   base64.RawURLEncoding.EncodeToString(privateKey.PublicKey.N.Bytes()),
-			E:   base64.RawURLEncoding.EncodeToString(big.NewInt(int64(privateKey.PublicKey.E)).Bytes()),
-			D:   base64.RawURLEncoding.EncodeToString(privateKey.D.Bytes()),
-			P:   base64.RawURLEncoding.EncodeToString(privateKey.Primes[0].Bytes()),
-			Q:   base64.RawURLEncoding.EncodeToString(privateKey.Primes[1].Bytes()),
-			DP:  base64.RawURLEncoding.EncodeToString(privateKey.Precomputed.Dp.Bytes()),
-			DQ:  base64.RawURLEncoding.EncodeToString(privateKey.Precomputed.Dq.Bytes()),
-			QI:  base64.RawURLEncoding.EncodeToString(privateKey.Precomputed.Qinv.Bytes()),
-		}
-
+		return generateRSAJWK(alg, use, id)
 	case "ML-DSA-44", "ML-DSA-65", "ML-DSA-87":
-		sig := oqs.Signature{}
-		if err := sig.Init(alg, nil); err != nil {
-			return nil, err
-		}
-		defer sig.Clean()
-
-		publicKey, err := sig.GenerateKeyPair()
-		if err != nil {
-			return nil, err
-		}
-
-		privKeyBytes := sig.ExportSecretKey()
-
-		// Populate the JWK fields for ML-DSA
-		jwk = &types.Jwk{
-			KID:  id,
-			ALG:  alg,
-			KTY:  "AKP",
-			USE:  use,
-			PUB:  base64.RawURLEncoding.EncodeToString(publicKey),
-			PRIV: base64.RawURLEncoding.EncodeToString(privKeyBytes),
-			SEED: "", // If a seed is used for key derivation, populate it here
-		}
-
+		return generateMLDSAJWK(alg, use, id)
 	default:
 		return nil, errors.New("unsupported algorithm")
 	}
+}
 
-	return jwk, nil
+func generateRSAJWK(alg, use, id string) (*types.Jwk, error) {
+	bits := map[string]int{
+		"RS256": rsaBits256,
+		"RS384": rsaBits384,
+		"RS512": rsaBits512,
+	}[alg]
+
+	privateKey, err := rsa.GenerateKey(rand.Reader, bits)
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.Jwk{
+		KID: id,
+		ALG: alg,
+		KTY: "RSA",
+		USE: use,
+		N:   base64.RawURLEncoding.EncodeToString(privateKey.PublicKey.N.Bytes()),
+		E:   base64.RawURLEncoding.EncodeToString(big.NewInt(int64(privateKey.PublicKey.E)).Bytes()),
+		D:   base64.RawURLEncoding.EncodeToString(privateKey.D.Bytes()),
+		P:   base64.RawURLEncoding.EncodeToString(privateKey.Primes[0].Bytes()),
+		Q:   base64.RawURLEncoding.EncodeToString(privateKey.Primes[1].Bytes()),
+		DP:  base64.RawURLEncoding.EncodeToString(privateKey.Precomputed.Dp.Bytes()),
+		DQ:  base64.RawURLEncoding.EncodeToString(privateKey.Precomputed.Dq.Bytes()),
+		QI:  base64.RawURLEncoding.EncodeToString(privateKey.Precomputed.Qinv.Bytes()),
+	}, nil
+}
+
+func generateMLDSAJWK(alg, use, id string) (*types.Jwk, error) {
+	sig := oqs.Signature{}
+	if err := sig.Init(alg, nil); err != nil {
+		return nil, err
+	}
+	defer sig.Clean()
+
+	publicKey, err := sig.GenerateKeyPair()
+	if err != nil {
+		return nil, err
+	}
+
+	privKeyBytes := sig.ExportSecretKey()
+
+	return &types.Jwk{
+		KID:  id,
+		ALG:  alg,
+		KTY:  "AKP",
+		USE:  use,
+		PUB:  base64.RawURLEncoding.EncodeToString(publicKey),
+		PRIV: base64.RawURLEncoding.EncodeToString(privKeyBytes),
+		SEED: "",
+	}, nil
 }
