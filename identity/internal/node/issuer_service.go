@@ -100,6 +100,19 @@ func (i *issuerService) Register(
 		}
 	}
 
+	// Check if issuer already exists
+	existingIssuer, _ := i.issuerRepository.GetIssuer(
+		ctx,
+		issuer.CommonName,
+	)
+	if existingIssuer != nil {
+		return nil, errutil.ErrInfo(
+			errtypes.ERROR_REASON_INVALID_ISSUER,
+			"issuer already exists",
+			nil,
+		)
+	}
+
 	// Save the issuer in the database
 	_, repositoryErr := i.issuerRepository.CreateIssuer(
 		ctx,
