@@ -11,19 +11,15 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/agntcy/identity/internal/core/issuer/types"
-	vcTypes "github.com/agntcy/identity/internal/core/vc/types"
-	issuerConstants "github.com/agntcy/identity/internal/issuer/constants"
-	issuerTypesInternal "github.com/agntcy/identity/internal/issuer/types"
 	"github.com/coreos/go-oidc"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/clientcredentials"
-)
 
-type registerIssuerRequest struct {
-	Issuer types.Issuer  `json:"issuer"`
-	Proof  vcTypes.Proof `json:"proof"`
-}
+	coreV1alpha "github.com/agntcy/identity/api/agntcy/identity/core/v1alpha1"
+	nodeV1alpha "github.com/agntcy/identity/api/agntcy/identity/node/v1alpha1"
+	internalIssuerConstants "github.com/agntcy/identity/internal/issuer/constants"
+	internalIssuerTypes "github.com/agntcy/identity/internal/issuer/types"
+)
 
 // getIssuersDirectory returns the path to the issuers directory
 func getIssuersDirectory() (string, error) {
@@ -55,7 +51,7 @@ func GetIssuerFilePath(issuerId string) (string, error) {
 	return filepath.Join(issuerIdDir, "issuer.json"), nil
 }
 
-func saveIssuerConfig(identityNodeAddress string, idpConfig issuerTypesInternal.IdpConfig) error {
+func saveIssuerConfig(identityNodeAddress string, idpConfig internalIssuerTypes.IdpConfig) error {
 	// Get the issuer ID directory
 	issuerIdDir, err := GetIssuerIdDirectory(idpConfig.ClientId)
 	if err != nil {
@@ -63,13 +59,13 @@ func saveIssuerConfig(identityNodeAddress string, idpConfig issuerTypesInternal.
 	}
 
 	// Create the issuer ID directory if it doesn't exist
-	if err := os.MkdirAll(issuerIdDir, issuerConstants.DirPerm); err != nil {
+	if err := os.MkdirAll(issuerIdDir, internalIssuerConstants.DirPerm); err != nil {
 		return err
 	}
 
 	// Create the issuer config
-	issuerConfig := issuerTypesInternal.IssuerConfig{
-		IdentityNodeConfig: &issuerTypesInternal.IdentityNodeConfig{
+	issuerConfig := internalIssuerTypes.IssuerConfig{
+		IdentityNodeConfig: &internalIssuerTypes.IdentityNodeConfig{
 			IdentityNodeAddress: identityNodeAddress,
 		},
 		IdpConfig: &idpConfig,
@@ -83,14 +79,14 @@ func saveIssuerConfig(identityNodeAddress string, idpConfig issuerTypesInternal.
 
 	// Write the config to file
 	configFilePath := filepath.Join(issuerIdDir, "idp_config.json")
-	if err := os.WriteFile(configFilePath, configData, issuerConstants.FilePerm); err != nil {
+	if err := os.WriteFile(configFilePath, configData, internalIssuerConstants.FilePerm); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func RegisterIssuer(identityNodeAddress string, idpConfig issuerTypesInternal.IdpConfig) (*types.Issuer, error) {
+func RegisterIssuer(identityNodeAddress string, idpConfig internalIssuerTypes.IdpConfig) (*coreV1alpha.Issuer, error) {
 
 	// Save the issuer config
 	if err := saveIssuerConfig(identityNodeAddress, idpConfig); err != nil {
@@ -102,24 +98,24 @@ func RegisterIssuer(identityNodeAddress string, idpConfig issuerTypesInternal.Id
 	// Check if idp is already created locally
 	// Check if idp is already registered on the identity node
 	// Register idp on the identity node
-	issuer := types.Issuer{
-		Organization:    "AGNTCY",
-		SubOrganization: "AGNTCY",
-		CommonName:      "AGNTCY",
+	issuer := coreV1alpha.Issuer{
+		Organization:    func() *string { s := "AGNTCY"; return &s }(),
+		SubOrganization: func() *string { s := "AGNTCY"; return &s }(),
+		CommonName:      func() *string { s := "AGNTCY"; return &s }(),
 	}
-	proof := vcTypes.Proof{
-		Type:         "RsaSignature2018",
-		ProofPurpose: "assertionMethod",
-		ProofValue:   "example-proof-value",
+	proof := coreV1alpha.Proof{
+		Type:         func() *string { s := "RsaSignature2018"; return &s }(),
+		ProofPurpose: func() *string { s := "assertionMethod"; return &s }(),
+		ProofValue:   func() *string { s := "example-proof-value"; return &s }(),
 	}
 
-	registerIssuerRequest := registerIssuerRequest{
-		Issuer: issuer,
-		Proof:  proof,
+	registerIssuerRequest := nodeV1alpha.RegisterIssuerRequest{
+		Issuer: &issuer,
+		Proof:  &proof,
 	}
 
 	// Call the client to generate metadata
-	log.Default().Println("Registering issuer with request: ", registerIssuerRequest)
+	log.Default().Println("Registering issuer with request: ", &registerIssuerRequest)
 
 	// Create idp locally in the issuer directory
 	issuersDir, err := GetIssuerIdDirectory(idpConfig.ClientId)
@@ -127,7 +123,7 @@ func RegisterIssuer(identityNodeAddress string, idpConfig issuerTypesInternal.Id
 		return nil, err
 	}
 
-	if err := os.MkdirAll(issuersDir, issuerConstants.DirPerm); err != nil {
+	if err := os.MkdirAll(issuersDir, internalIssuerConstants.DirPerm); err != nil {
 		return nil, err
 	}
 
@@ -137,13 +133,13 @@ func RegisterIssuer(identityNodeAddress string, idpConfig issuerTypesInternal.Id
 	}
 
 	// Marshal the config to JSON
-	issuerData, err := json.Marshal(issuer)
+	issuerData, err := json.Marshal(&issuer)
 	if err != nil {
 		return nil, err
 	}
 
 	// Write the issuer to file
-	if err := os.WriteFile(issuerFilePath, issuerData, issuerConstants.FilePerm); err != nil {
+	if err := os.WriteFile(issuerFilePath, issuerData, internalIssuerConstants.FilePerm); err != nil {
 		return nil, err
 	}
 
@@ -175,7 +171,7 @@ func ListIssuerIds() ([]string, error) {
 	return issuerIds, nil
 }
 
-func GetIssuer(issuerId string) (*types.Issuer, error) {
+func GetIssuer(issuerId string) (*coreV1alpha.Issuer, error) {
 	// Get the issuer file path
 	issuerFilePath, err := GetIssuerFilePath(issuerId)
 	if err != nil {
@@ -189,7 +185,7 @@ func GetIssuer(issuerId string) (*types.Issuer, error) {
 	}
 
 	// Unmarshal the issuer data
-	var issuer types.Issuer
+	var issuer coreV1alpha.Issuer
 	if err := json.Unmarshal(issuerData, &issuer); err != nil {
 		return nil, err
 	}

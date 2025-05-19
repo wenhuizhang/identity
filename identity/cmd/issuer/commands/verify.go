@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"os"
 
-	vctypes "github.com/agntcy/identity/internal/core/vc/types"
+	coreV1alpha "github.com/agntcy/identity/api/agntcy/identity/core/v1alpha1"
 	issuerVerify "github.com/agntcy/identity/internal/issuer/verify"
 
 	"github.com/spf13/cobra"
@@ -40,7 +40,7 @@ var VerifyCmd = &cobra.Command{
 		}
 
 		// Unmarshal the badge data
-		var vc vctypes.VerifiableCredential
+		var vc coreV1alpha.VerifiableCredential
 		if err := json.Unmarshal(vcData, &vc); err != nil {
 			fmt.Fprintf(os.Stderr, "Error unmarshaling badge data: %v\n", err)
 			return
@@ -52,7 +52,7 @@ var VerifyCmd = &cobra.Command{
 			fmt.Fprintf(os.Stderr, "Error verifying badge: %v\n", err)
 			return
 		}
-		fmt.Fprintf(os.Stdout, "Successfully verified badge: %s\n", vc.ID)
+		fmt.Fprintf(os.Stdout, "Successfully verified badge: %s\n", *vc.Id)
 
 	},
 }

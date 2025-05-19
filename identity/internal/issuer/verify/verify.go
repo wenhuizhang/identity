@@ -6,9 +6,9 @@ package verify
 import (
 	"errors"
 
-	vctypes "github.com/agntcy/identity/internal/core/vc/types"
+	coreV1alpha "github.com/agntcy/identity/api/agntcy/identity/core/v1alpha1"
 )
 
-func VerifyCredential(credential *vctypes.VerifiableCredential) (bool, error) {
+func VerifyCredential(credential *coreV1alpha.VerifiableCredential) (bool, error) {
 	return false, errors.New("VerifyCredential not implemented yet")
 }

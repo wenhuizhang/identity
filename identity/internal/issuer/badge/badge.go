@@ -10,20 +10,18 @@ import (
 	"os"
 	"path/filepath"
 
-	vctypes "github.com/agntcy/identity/internal/core/vc/types"
-	issuerConstants "github.com/agntcy/identity/internal/issuer/constants"
-	"github.com/agntcy/identity/internal/issuer/metadata"
 	"github.com/google/uuid"
-)
 
-type publishRequest struct {
-	VC    *vctypes.EnvelopedCredential `json:"vc"`
-	Proof *vctypes.Proof               `json:"proof"`
-}
+	internalIssuerMetadata "github.com/agntcy/identity/internal/issuer/metadata"
+
+	coreV1alpha "github.com/agntcy/identity/api/agntcy/identity/core/v1alpha1"
+	nodeV1alpha "github.com/agntcy/identity/api/agntcy/identity/node/v1alpha1"
+	internalIssuerConstants "github.com/agntcy/identity/internal/issuer/constants"
+)
 
 // getBadgeDirectory returns the path to the badges directory for a metadata
 func getBadgesDirectory(issuerId, metadataId string) (string, error) {
-	metadataIdDir, err := metadata.GetMetadataIdDirectory(issuerId, metadataId)
+	metadataIdDir, err := internalIssuerMetadata.GetMetadataIdDirectory(issuerId, metadataId)
 	if err != nil {
 		return "", err
 	}
@@ -51,7 +49,7 @@ func GetBadgeFilePath(issuerId, metadataId, badgeId string) (string, error) {
 	return filepath.Join(badgeIdDir, "badge.json"), nil
 }
 
-func IssueBadge(issuerId, metadataId, badgeValueFilePath string) (*vctypes.EnvelopedCredential, error) {
+func IssueBadge(issuerId, metadataId, badgeValueFilePath string) (*coreV1alpha.EnvelopedCredential, error) {
 	// Read the badge value from the file
 	badgeValueData, err := os.ReadFile(badgeValueFilePath)
 	if err != nil {
@@ -61,9 +59,9 @@ func IssueBadge(issuerId, metadataId, badgeValueFilePath string) (*vctypes.Envel
 	// Convert the badge value to a string
 	badgeValue := string(badgeValueData)
 
-	envelopedCredential := vctypes.EnvelopedCredential{
-		EnvelopeType: vctypes.CREDENTIAL_ENVELOPE_TYPE_JOSE,
-		Value:        badgeValue,
+	envelopedCredential := coreV1alpha.EnvelopedCredential{
+		EnvelopeType: coreV1alpha.CredentialEnvelopeType_CREDENTIAL_ENVELOPE_TYPE_JOSE.Enum(),
+		Value:        &badgeValue,
 	}
 
 	// Ensure badges directory exists
@@ -72,7 +70,7 @@ func IssueBadge(issuerId, metadataId, badgeValueFilePath string) (*vctypes.Envel
 		return nil, err
 	}
 
-	if err := os.MkdirAll(badgesDir, issuerConstants.DirPerm); err != nil {
+	if err := os.MkdirAll(badgesDir, internalIssuerConstants.DirPerm); err != nil {
 		return nil, err
 	}
 
@@ -84,7 +82,7 @@ func IssueBadge(issuerId, metadataId, badgeValueFilePath string) (*vctypes.Envel
 		return nil, err
 	}
 
-	if err := os.MkdirAll(badgesIdDir, issuerConstants.DirPerm); err != nil {
+	if err := os.MkdirAll(badgesIdDir, internalIssuerConstants.DirPerm); err != nil {
 		return nil, err
 	}
 
@@ -94,12 +92,12 @@ func IssueBadge(issuerId, metadataId, badgeValueFilePath string) (*vctypes.Envel
 		return nil, err
 	}
 
-	badgeData, err := json.Marshal(envelopedCredential)
+	badgeData, err := json.Marshal(&envelopedCredential)
 	if err != nil {
 		return nil, err
 	}
 
-	if err := os.WriteFile(badgeFilePath, badgeData, issuerConstants.FilePerm); err != nil {
+	if err := os.WriteFile(badgeFilePath, badgeData, internalIssuerConstants.FilePerm); err != nil {
 		return nil, err
 	}
 
@@ -109,20 +107,20 @@ func IssueBadge(issuerId, metadataId, badgeValueFilePath string) (*vctypes.Envel
 func PublishBadge(
 	issuerId,
 	metadataId string,
-	badge *vctypes.EnvelopedCredential,
-) (*vctypes.EnvelopedCredential, error) {
-	proof := vctypes.Proof{
-		Type:         "RsaSignature2018",
-		ProofPurpose: "assertionMethod",
-		ProofValue:   "example-proof-value",
+	badge *coreV1alpha.EnvelopedCredential,
+) (*coreV1alpha.EnvelopedCredential, error) {
+	proof := coreV1alpha.Proof{
+		Type:         func() *string { s := "RsaSignature2018"; return &s }(),
+		ProofPurpose: func() *string { s := "assertionMethod"; return &s }(),
+		ProofValue:   func() *string { s := "example-proof-value"; return &s }(),
 	}
 
-	publishRequest := publishRequest{
-		VC:    badge,
+	publishRequest := nodeV1alpha.PublishRequest{
+		Vc:    badge,
 		Proof: &proof,
 	}
 
-	log.Default().Println("Publishing badge with request: ", publishRequest)
+	log.Default().Println("Publishing badge with request: ", &publishRequest)
 
 	return badge, nil
 }
@@ -157,7 +155,7 @@ func ListBadgeIds(issuerId, metadataId string) ([]string, error) {
 	return badgeIds, nil
 }
 
-func GetBadge(issuerId, metadataId, badgeId string) (*vctypes.EnvelopedCredential, error) {
+func GetBadge(issuerId, metadataId, badgeId string) (*coreV1alpha.EnvelopedCredential, error) {
 	// Get the badge file path
 	badgeFilePath, err := GetBadgeFilePath(issuerId, metadataId, badgeId)
 	if err != nil {
@@ -171,7 +169,7 @@ func GetBadge(issuerId, metadataId, badgeId string) (*vctypes.EnvelopedCredentia
 	}
 
 	// Unmarshal the badge data
-	var badge vctypes.EnvelopedCredential
+	var badge coreV1alpha.EnvelopedCredential
 	if err := json.Unmarshal(badgeData, &badge); err != nil {
 		return nil, err
 	}

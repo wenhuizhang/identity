@@ -10,19 +10,15 @@ import (
 	"os"
 	"path/filepath"
 
-	idTypes "github.com/agntcy/identity/internal/core/id/types"
-	"github.com/agntcy/identity/internal/core/issuer/types"
-	vcTypes "github.com/agntcy/identity/internal/core/vc/types"
-	issuerConstants "github.com/agntcy/identity/internal/issuer/constants"
-	"github.com/agntcy/identity/internal/issuer/issuer"
-	issuerTypes "github.com/agntcy/identity/internal/issuer/types"
 	"github.com/google/uuid"
-)
 
-type generateMetadataRequest struct {
-	Issuer types.Issuer  `json:"issuer"`
-	Proof  vcTypes.Proof `json:"proof"`
-}
+	"github.com/agntcy/identity/internal/issuer/issuer"
+
+	coreV1alpha "github.com/agntcy/identity/api/agntcy/identity/core/v1alpha1"
+	nodeV1alpha "github.com/agntcy/identity/api/agntcy/identity/node/v1alpha1"
+	internalIssuerConstants "github.com/agntcy/identity/internal/issuer/constants"
+	internalIssuerTypes "github.com/agntcy/identity/internal/issuer/types"
+)
 
 func getMetadataDirectory(issuerId string) (string, error) {
 	issuerIdDir, err := issuer.GetIssuerIdDirectory(issuerId)
@@ -52,29 +48,29 @@ func GetMetadataFilePath(issuerId, metadataId string) (string, error) {
 }
 
 // SaveMetadata creates the necessary directories and saves metadata to file
-func saveMetadata(issuerId string, resolverMetadata *idTypes.ResolverMetadata) error {
+func saveMetadata(issuerId string, resolverMetadata *coreV1alpha.ResolverMetadata) error {
 	// Ensure metadata directory exists
 	metadataDir, err := getMetadataDirectory(issuerId)
 	if err != nil {
 		return err
 	}
 
-	if err := os.MkdirAll(metadataDir, issuerConstants.DirPerm); err != nil {
+	if err := os.MkdirAll(metadataDir, internalIssuerConstants.DirPerm); err != nil {
 		return err
 	}
 
 	// Create metadata ID directory
-	metadataIdDir, err := GetMetadataIdDirectory(issuerId, resolverMetadata.ID)
+	metadataIdDir, err := GetMetadataIdDirectory(issuerId, *resolverMetadata.Id)
 	if err != nil {
 		return err
 	}
 
-	if err := os.MkdirAll(metadataIdDir, issuerConstants.DirPerm); err != nil {
+	if err := os.MkdirAll(metadataIdDir, internalIssuerConstants.DirPerm); err != nil {
 		return err
 	}
 
 	// Save metadata to file
-	metadataFilePath, err := GetMetadataFilePath(issuerId, resolverMetadata.ID)
+	metadataFilePath, err := GetMetadataFilePath(issuerId, *resolverMetadata.Id)
 	if err != nil {
 		return err
 	}
@@ -84,10 +80,10 @@ func saveMetadata(issuerId string, resolverMetadata *idTypes.ResolverMetadata) e
 		return err
 	}
 
-	return os.WriteFile(metadataFilePath, metadataData, issuerConstants.FilePerm)
+	return os.WriteFile(metadataFilePath, metadataData, internalIssuerConstants.FilePerm)
 }
 
-func GenerateMetadata(issuerId string, idpConfig *issuerTypes.IdpConfig) (*idTypes.ResolverMetadata, error) {
+func GenerateMetadata(issuerId string, idpConfig *internalIssuerTypes.IdpConfig) (*coreV1alpha.ResolverMetadata, error) {
 	// load the issuer from the local storage
 	issuerFilePath, err := issuer.GetIssuerFilePath(issuerId)
 	if err != nil {
@@ -100,38 +96,38 @@ func GenerateMetadata(issuerId string, idpConfig *issuerTypes.IdpConfig) (*idTyp
 	}
 
 	// Unmarshal the issuer data
-	var issuer types.Issuer
+	var issuer coreV1alpha.Issuer
 	if err := json.Unmarshal(issuerData, &issuer); err != nil {
 		return nil, err
 	}
 
-	proof := vcTypes.Proof{
-		Type:         "RsaSignature2018",
-		ProofPurpose: "assertionMethod",
-		ProofValue:   "example-proof-value",
+	proof := coreV1alpha.Proof{
+		Type:         func() *string { s := "RsaSignature2018"; return &s }(),
+		ProofPurpose: func() *string { s := "assertionMethod"; return &s }(),
+		ProofValue:   func() *string { s := "example-proof-value"; return &s }(),
 	}
 
-	generateMetadataRequest := generateMetadataRequest{
-		Issuer: issuer,
-		Proof:  proof,
+	generateMetadataRequest := nodeV1alpha.GenerateRequest{
+		Issuer: &issuer,
+		Proof:  &proof,
 	}
 
 	// Call the client to generate metadata
-	log.Default().Println("Generating metadata with request: ", generateMetadataRequest)
+	log.Default().Println("Generating metadata with request: ", &generateMetadataRequest)
 
-	resolverMetadata := &idTypes.ResolverMetadata{
-		ID:                 uuid.New().String(),
+	resolverMetadata := coreV1alpha.ResolverMetadata{
+		Id:                 func() *string { s := uuid.New().String(); return &s }(),
 		VerificationMethod: nil,
 		Service:            nil,
 		AssertionMethod:    nil,
 	}
 
 	// Save the metadata to disk
-	if err := saveMetadata(issuerId, resolverMetadata); err != nil {
+	if err := saveMetadata(issuerId, &resolverMetadata); err != nil {
 		return nil, err
 	}
 
-	return resolverMetadata, nil
+	return &resolverMetadata, nil
 }
 
 func ListMetadataIds(issuerId string) ([]string, error) {
@@ -164,7 +160,7 @@ func ListMetadataIds(issuerId string) ([]string, error) {
 	return metadataIds, nil
 }
 
-func GetMetadata(issuerId, metadataId string) (*idTypes.ResolverMetadata, error) {
+func GetMetadata(issuerId, metadataId string) (*coreV1alpha.ResolverMetadata, error) {
 	// Get the metadata file path
 	metadataFilePath, err := GetMetadataFilePath(issuerId, metadataId)
 	if err != nil {
@@ -178,7 +174,7 @@ func GetMetadata(issuerId, metadataId string) (*idTypes.ResolverMetadata, error)
 	}
 
 	// Unmarshal the metadata data
-	var metadata idTypes.ResolverMetadata
+	var metadata coreV1alpha.ResolverMetadata
 	if err := json.Unmarshal(metadataData, &metadata); err != nil {
 		return nil, err
 	}
