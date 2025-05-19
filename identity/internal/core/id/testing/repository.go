@@ -6,6 +6,7 @@ package testing
 import (
 	"context"
 
+	errcore "github.com/agntcy/identity/internal/core/errors"
 	idcore "github.com/agntcy/identity/internal/core/id"
 	idtypes "github.com/agntcy/identity/internal/core/id/types"
 )
@@ -33,5 +34,5 @@ func (r *FakeIdRepository) ResolveID(ctx context.Context, id string) (*idtypes.R
 		return md, nil
 	}
 
-	return nil, nil
+	return nil, errcore.ErrResourceNotFound
 }

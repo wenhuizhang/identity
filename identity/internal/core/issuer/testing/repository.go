@@ -6,9 +6,9 @@ package testing
 import (
 	"context"
 
+	"github.com/agntcy/identity/internal/core/errors"
 	issuercore "github.com/agntcy/identity/internal/core/issuer"
 	issuertypes "github.com/agntcy/identity/internal/core/issuer/types"
-	"github.com/agntcy/identity/internal/pkg/errutil"
 )
 
 type FakeIssuerRepository struct {
@@ -37,7 +37,5 @@ func (r *FakeIssuerRepository) GetIssuer(
 		return issuer, nil
 	}
 
-	return nil, errutil.Err(
-		nil, "issuer not found",
-	)
+	return nil, errors.ErrResourceNotFound
 }

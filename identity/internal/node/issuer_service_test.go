@@ -21,15 +21,18 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestRegisterIssuerShouldNotRegisterSameIssuerTwice(t *testing.T) {
+func TestRegisterIssuer_Should_Not_Register_Same_Issuer_Twice(t *testing.T) {
+	t.Parallel()
+
 	verficationSrv := coretesting.NewFakeTruthyVerificationService()
 	issuerRepo := issuertesting.NewFakeIssuerRepository()
 	sut := node.NewIssuerService(issuerRepo, verficationSrv)
+	pubKey, _ := generatePubKey()
 
 	issuer := &issuertypes.Issuer{
 		CommonName:   coretesting.ValidProofIssuer,
 		Organization: "Some Org",
-		PublicKey:    generatePubKey(),
+		PublicKey:    pubKey,
 	}
 
 	proof := &vctypes.Proof{
@@ -46,18 +49,38 @@ func TestRegisterIssuerShouldNotRegisterSameIssuerTwice(t *testing.T) {
 	assert.Error(t, err)
 }
 
-func generatePubKey() *idtypes.Jwk {
+func generatePubKey() (*idtypes.Jwk, error) {
 	pk, err := rsa.GenerateKey(rand.Reader, 2048)
 	if err != nil {
-		return nil
+		return nil, err
 	}
-	pubkey, _ := jwk.PublicRawKeyOf(pk)
-	key, _ := jwk.Import(pubkey)
-	key.Set(jwk.AlgorithmKey, jwa.RS256())
-	keyAsJson, _ := json.Marshal(key)
+
+	pubkey, err := jwk.PublicRawKeyOf(pk)
+	if err != nil {
+		return nil, err
+	}
+
+	key, err := jwk.Import(pubkey)
+	if err != nil {
+		return nil, err
+	}
+
+	err = key.Set(jwk.AlgorithmKey, jwa.RS256())
+	if err != nil {
+		return nil, err
+	}
+
+	keyAsJson, err := json.Marshal(key)
+	if err != nil {
+		return nil, err
+	}
 
 	var k idtypes.Jwk
-	_ = json.Unmarshal(keyAsJson, &k)
 
-	return &k
+	err = json.Unmarshal(keyAsJson, &k)
+	if err != nil {
+		return nil, err
+	}
+
+	return &k, nil
 }

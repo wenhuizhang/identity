@@ -19,6 +19,8 @@ import (
 )
 
 func TestGenerateID_Should_Not_Return_Errors(t *testing.T) {
+	t.Parallel()
+
 	verficationSrv := coretesting.NewFakeTruthyVerificationService()
 	idRepo := idtesting.NewFakeIdRepository()
 	issuerRepo := issuertesting.NewFakeIssuerRepository()
@@ -27,7 +29,7 @@ func TestGenerateID_Should_Not_Return_Errors(t *testing.T) {
 		CommonName:   coretesting.ValidProofIssuer,
 		Organization: "Some Org",
 	}
-	issuerRepo.CreateIssuer(context.Background(), issuer)
+	_, _ = issuerRepo.CreateIssuer(context.Background(), issuer)
 
 	_, err := sut.Generate(context.Background(), issuer, &vctypes.Proof{})
 
@@ -35,6 +37,8 @@ func TestGenerateID_Should_Not_Return_Errors(t *testing.T) {
 }
 
 func TestGenerateID_Should_Return_Idp_Required_Error(t *testing.T) {
+	t.Parallel()
+
 	sut := node.NewIdService(nil, nil, nil)
 	issuer := &issuertypes.Issuer{
 		CommonName:   coretesting.ValidProofIssuer,
@@ -47,6 +51,8 @@ func TestGenerateID_Should_Return_Idp_Required_Error(t *testing.T) {
 }
 
 func TestGenerateID_Should_Return_Invalid_Proof_Error(t *testing.T) {
+	t.Parallel()
+
 	verficationSrv := coretesting.NewFalsyProofVerificationServiceStub()
 	sut := node.NewIdService(verficationSrv, nil, nil)
 	issuer := &issuertypes.Issuer{
@@ -60,6 +66,8 @@ func TestGenerateID_Should_Return_Invalid_Proof_Error(t *testing.T) {
 }
 
 func TestGenerateID_Should_Return_Invalid_Issuer_Error(t *testing.T) {
+	t.Parallel()
+
 	verficationSrv := coretesting.NewFalsyCommonNameVerificationServiceStub()
 	issuerRepo := issuertesting.NewFakeIssuerRepository()
 	sut := node.NewIdService(verficationSrv, nil, issuerRepo)
@@ -67,7 +75,7 @@ func TestGenerateID_Should_Return_Invalid_Issuer_Error(t *testing.T) {
 		CommonName:   coretesting.ValidProofIssuer,
 		Organization: "Some Org",
 	}
-	issuerRepo.CreateIssuer(context.Background(), issuer)
+	_, _ = issuerRepo.CreateIssuer(context.Background(), issuer)
 
 	_, err := sut.Generate(context.Background(), issuer, &vctypes.Proof{})
 
@@ -75,6 +83,8 @@ func TestGenerateID_Should_Return_Invalid_Issuer_Error(t *testing.T) {
 }
 
 func TestGenerateID_Should_Return_Unregistred_Issuer_Error(t *testing.T) {
+	t.Parallel()
+
 	verficationSrv := coretesting.NewFakeTruthyVerificationService()
 	issuerRepo := issuertesting.NewFakeIssuerRepository()
 	sut := node.NewIdService(verficationSrv, nil, issuerRepo)
@@ -89,12 +99,14 @@ func TestGenerateID_Should_Return_Unregistred_Issuer_Error(t *testing.T) {
 }
 
 func TestResolveID_Should_Return_Resolver_Metadata(t *testing.T) {
+	t.Parallel()
+
 	idRepo := idtesting.NewFakeIdRepository()
 	sut := node.NewIdService(nil, idRepo, nil)
 	md := &idtypes.ResolverMetadata{
 		ID: "SOME_ID",
 	}
-	idRepo.CreateID(context.Background(), md)
+	_, _ = idRepo.CreateID(context.Background(), md)
 
 	_, err := sut.Resolve(context.Background(), md.ID)
 
@@ -102,6 +114,8 @@ func TestResolveID_Should_Return_Resolver_Metadata(t *testing.T) {
 }
 
 func TestResolveID_Should_Return_Resolver_Metadata_Not_Found_Error(t *testing.T) {
+	t.Parallel()
+
 	idRepo := idtesting.NewFakeIdRepository()
 	sut := node.NewIdService(nil, idRepo, nil)
 
@@ -111,6 +125,8 @@ func TestResolveID_Should_Return_Resolver_Metadata_Not_Found_Error(t *testing.T)
 }
 
 func assertErrorInfoReason(t *testing.T, err error, reason errtypes.ErrorReason) {
+	t.Helper()
+
 	var errInfo errtypes.ErrorInfo
 	assert.ErrorAs(t, err, &errInfo)
 	assert.Equal(t, reason, errInfo.Reason)

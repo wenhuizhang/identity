@@ -27,6 +27,8 @@ import (
 )
 
 func TestPublishVC(t *testing.T) {
+	t.Parallel()
+
 	verficationSrv := coretesting.NewFakeTruthyVerificationService()
 	idRepo := idtesting.NewFakeIdRepository()
 	issuerRepo := issuertesting.NewFakeIssuerRepository()
@@ -36,7 +38,7 @@ func TestPublishVC(t *testing.T) {
 		CommonName:   coretesting.ValidProofIssuer,
 		Organization: "Some Org",
 	}
-	issuerRepo.CreateIssuer(context.Background(), issuer)
+	_, _ = issuerRepo.CreateIssuer(context.Background(), issuer)
 	credential := &vctypes.VerifiableCredential{
 		ID: "VC_ID",
 	}
@@ -53,7 +55,7 @@ func TestPublishVC(t *testing.T) {
 			},
 		},
 	}
-	idRepo.CreateID(context.Background(), resolverMD)
+	_, _ = idRepo.CreateID(context.Background(), resolverMD)
 
 	err = sut.Publish(context.Background(), envelope, &vctypes.Proof{})
 
@@ -61,6 +63,8 @@ func TestPublishVC(t *testing.T) {
 }
 
 func TestPublishVC_Should_Return_Invalid_Credential_Format_Error(t *testing.T) {
+	t.Parallel()
+
 	sut := node.NewVerifiableCredentialService(nil, nil, nil, nil)
 	invalidEnvelope := &vctypes.EnvelopedCredential{
 		Value: "",
@@ -72,6 +76,8 @@ func TestPublishVC_Should_Return_Invalid_Credential_Format_Error(t *testing.T) {
 }
 
 func TestPublishVC_Should_Return_Idp_Required_Error(t *testing.T) {
+	t.Parallel()
+
 	sut := node.NewVerifiableCredentialService(nil, nil, nil, nil)
 	invalidEnvelope := &vctypes.EnvelopedCredential{
 		Value: "something",
@@ -83,6 +89,8 @@ func TestPublishVC_Should_Return_Idp_Required_Error(t *testing.T) {
 }
 
 func TestPublishVC_Should_Return_Invalid_Proof_Error(t *testing.T) {
+	t.Parallel()
+
 	verficationSrv := coretesting.NewFalsyProofVerificationServiceStub()
 	sut := node.NewVerifiableCredentialService(verficationSrv, nil, nil, nil)
 	invalidEnvelope := &vctypes.EnvelopedCredential{
@@ -106,19 +114,44 @@ func signVCWithJose(vc *vctypes.VerifiableCredential) (*vctypes.EnvelopedCredent
 	}
 
 	hdrs := jws.NewHeaders()
-	hdrs.Set(jws.KeyIDKey, "KEY-ID")
+
+	err = hdrs.Set(jws.KeyIDKey, "KEY-ID")
+	if err != nil {
+		return nil, nil, err
+	}
+
 	signed, err := jws.Sign(payload, jws.WithKey(jwa.RS256(), pk, jws.WithProtectedHeaders(hdrs)))
 	if err != nil {
 		return nil, nil, err
 	}
 
-	pubkey, _ := jwk.PublicRawKeyOf(pk)
-	key, _ := jwk.Import(pubkey)
-	key.Set(jwk.AlgorithmKey, jwa.RS256())
-	keyAsJson, _ := json.Marshal(key)
+	pubkey, err := jwk.PublicRawKeyOf(pk)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	key, err := jwk.Import(pubkey)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	err = key.Set(jwk.AlgorithmKey, jwa.RS256())
+	if err != nil {
+		return nil, nil, err
+	}
+
+	keyAsJson, err := json.Marshal(key)
+	if err != nil {
+		return nil, nil, err
+	}
 
 	var k idtypes.Jwk
-	_ = json.Unmarshal(keyAsJson, &k)
+
+	err = json.Unmarshal(keyAsJson, &k)
+	if err != nil {
+		return nil, nil, err
+	}
+
 	k.KID, _ = hdrs.KeyID()
 
 	return &vctypes.EnvelopedCredential{

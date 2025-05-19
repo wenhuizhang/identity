@@ -4,22 +4,22 @@
 package assets
 
 import (
-	"io/fs"
+	iofs "io/fs"
 	"path/filepath"
 )
 
 type HttpStaticFS struct {
-	fs fs.FS
+	fs iofs.FS
 }
 
-func NewHttpStaticFS(fs fs.FS) *HttpStaticFS {
+func NewHttpStaticFS(fs iofs.FS) *HttpStaticFS {
 	return &HttpStaticFS{
 		fs: fs,
 	}
 }
 
 // Implements the interface fs.FS
-func (w HttpStaticFS) Open(name string) (fs.File, error) {
+func (w HttpStaticFS) Open(name string) (iofs.File, error) {
 	file, err := w.fs.Open(name)
 	if err != nil {
 		return nil, err

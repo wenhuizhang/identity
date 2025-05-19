@@ -7,6 +7,7 @@ import (
 	"context"
 	"errors"
 
+	errcore "github.com/agntcy/identity/internal/core/errors"
 	idcore "github.com/agntcy/identity/internal/core/id"
 	idtypes "github.com/agntcy/identity/internal/core/id/types"
 	"github.com/agntcy/identity/internal/pkg/errutil"
@@ -45,10 +46,11 @@ func (r *idPostgresRepository) ResolveID(
 	id string,
 ) (*idtypes.ResolverMetadata, error) {
 	var metadata ResolverMetadata
+
 	result := r.dbContext.Client().First(&metadata, id)
 	if result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-			return nil, nil
+			return nil, errcore.ErrResourceNotFound
 		}
 
 		return nil, errutil.Err(
