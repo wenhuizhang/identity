@@ -5,17 +5,10 @@ package verify
 
 import (
 	"errors"
-	"fmt"
 
-	vctypes "github.com/agntcy/identity/internal/core/vc/types"
-	issuerSetup "github.com/agntcy/identity/internal/issuer/setup"
+	coreV1alpha "github.com/agntcy/identity/api/agntcy/identity/core/v1alpha1"
 )
 
-func VerifyCredential(credential *vctypes.VerifiableCredential) (bool, error) {
-	_, err := issuerSetup.ReadNetworkConfig()
-	if err != nil {
-		return false, fmt.Errorf("error reading network config: %w", err)
-	}
-
+func VerifyCredential(credential *coreV1alpha.VerifiableCredential) (bool, error) {
 	return false, errors.New("VerifyCredential not implemented yet")
 }

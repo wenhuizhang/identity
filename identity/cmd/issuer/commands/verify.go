@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"os"
 
-	vctypes "github.com/agntcy/identity/internal/core/vc/types"
+	coreV1alpha "github.com/agntcy/identity/api/agntcy/identity/core/v1alpha1"
 	issuerVerify "github.com/agntcy/identity/internal/issuer/verify"
 
 	"github.com/spf13/cobra"
@@ -26,33 +26,33 @@ var VerifyCmd = &cobra.Command{
 			return
 		}
 
-		// Check if the config file exists
+		// Check if the badge file exists
 		if _, err := os.Stat(badgeFilePath); os.IsNotExist(err) {
 			fmt.Fprintf(os.Stderr, "File does not exist: %s\n", badgeFilePath)
 			return
 		}
 
-		// Read the config file
+		// Read the badge file
 		vcData, err := os.ReadFile(badgeFilePath)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error reading file: %v\n", err)
 			return
 		}
 
-		// Unmarshal the VC data
-		var vc vctypes.VerifiableCredential
+		// Unmarshal the badge data
+		var vc coreV1alpha.VerifiableCredential
 		if err := json.Unmarshal(vcData, &vc); err != nil {
-			fmt.Fprintf(os.Stderr, "Error unmarshaling VC data: %v\n", err)
+			fmt.Fprintf(os.Stderr, "Error unmarshaling badge data: %v\n", err)
 			return
 		}
 
-		// verify the credential
+		// Verify the badge
 		_, err = issuerVerify.VerifyCredential(&vc)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error verifying credential: %v\n", err)
+			fmt.Fprintf(os.Stderr, "Error verifying badge: %v\n", err)
 			return
 		}
-		fmt.Fprintf(os.Stdout, "Successfully verified credential: %s\n", vc.ID)
+		fmt.Fprintf(os.Stdout, "Successfully verified badge: %s\n", *vc.Id)
 
 	},
 }

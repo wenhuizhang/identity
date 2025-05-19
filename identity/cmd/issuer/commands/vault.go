@@ -1,10 +1,10 @@
 // Copyright 2025 AGNTCY Contributors (https://github.com/agntcy)
 // SPDX-License-Identifier: Apache-2.0
 
-package setup
+package commands
 
 import (
-	"github.com/agntcy/identity/cmd/issuer/commands/setup/vault"
+	"github.com/agntcy/identity/cmd/issuer/commands/vaults"
 	"github.com/spf13/cobra"
 )
 
@@ -19,6 +19,6 @@ The vault command is used to manage your vault and generate cryptographic keys. 
 }
 
 func init() {
-	VaultCmd.AddCommand(vault.TxtCmd)
-	VaultCmd.AddCommand(vault.OnePasswordCmd)
+	VaultCmd.AddCommand(vaults.TxtCmd)
+	VaultCmd.AddCommand(vaults.OnePasswordCmd)
 }
