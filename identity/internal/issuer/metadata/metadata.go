@@ -20,8 +20,8 @@ import (
 	internalIssuerTypes "github.com/agntcy/identity/internal/issuer/types"
 )
 
-func getMetadataDirectory(issuerId string) (string, error) {
-	issuerIdDir, err := issuer.GetIssuerIdDirectory(issuerId)
+func getMetadataDirectory(vaultId, issuerId string) (string, error) {
+	issuerIdDir, err := issuer.GetIssuerIdDirectory(vaultId, issuerId)
 	if err != nil {
 		return "", err
 	}
@@ -29,8 +29,8 @@ func getMetadataDirectory(issuerId string) (string, error) {
 	return filepath.Join(issuerIdDir, "metadata"), nil
 }
 
-func GetMetadataIdDirectory(issuerId, metadataId string) (string, error) {
-	metadataDir, err := getMetadataDirectory(issuerId)
+func GetMetadataIdDirectory(vaultId, issuerId, metadataId string) (string, error) {
+	metadataDir, err := getMetadataDirectory(vaultId, issuerId)
 	if err != nil {
 		return "", err
 	}
@@ -38,8 +38,8 @@ func GetMetadataIdDirectory(issuerId, metadataId string) (string, error) {
 	return filepath.Join(metadataDir, metadataId), nil
 }
 
-func GetMetadataFilePath(issuerId, metadataId string) (string, error) {
-	metadataIdDir, err := GetMetadataIdDirectory(issuerId, metadataId)
+func GetMetadataFilePath(vaultId, issuerId, metadataId string) (string, error) {
+	metadataIdDir, err := GetMetadataIdDirectory(vaultId, issuerId, metadataId)
 	if err != nil {
 		return "", err
 	}
@@ -48,9 +48,9 @@ func GetMetadataFilePath(issuerId, metadataId string) (string, error) {
 }
 
 // SaveMetadata creates the necessary directories and saves metadata to file
-func saveMetadata(issuerId string, resolverMetadata *coreV1alpha.ResolverMetadata) error {
+func saveMetadata(vaultId, issuerId string, resolverMetadata *coreV1alpha.ResolverMetadata) error {
 	// Ensure metadata directory exists
-	metadataDir, err := getMetadataDirectory(issuerId)
+	metadataDir, err := getMetadataDirectory(vaultId, issuerId)
 	if err != nil {
 		return err
 	}
@@ -60,7 +60,7 @@ func saveMetadata(issuerId string, resolverMetadata *coreV1alpha.ResolverMetadat
 	}
 
 	// Create metadata ID directory
-	metadataIdDir, err := GetMetadataIdDirectory(issuerId, *resolverMetadata.Id)
+	metadataIdDir, err := GetMetadataIdDirectory(vaultId, issuerId, *resolverMetadata.Id)
 	if err != nil {
 		return err
 	}
@@ -70,7 +70,7 @@ func saveMetadata(issuerId string, resolverMetadata *coreV1alpha.ResolverMetadat
 	}
 
 	// Save metadata to file
-	metadataFilePath, err := GetMetadataFilePath(issuerId, *resolverMetadata.Id)
+	metadataFilePath, err := GetMetadataFilePath(vaultId, issuerId, *resolverMetadata.Id)
 	if err != nil {
 		return err
 	}
@@ -84,11 +84,10 @@ func saveMetadata(issuerId string, resolverMetadata *coreV1alpha.ResolverMetadat
 }
 
 func GenerateMetadata(
-	issuerId string,
-	idpConfig *internalIssuerTypes.IdpConfig,
+	vaultId, issuerId string, idpConfig *internalIssuerTypes.IdpConfig,
 ) (*coreV1alpha.ResolverMetadata, error) {
 	// load the issuer from the local storage
-	issuerFilePath, err := issuer.GetIssuerFilePath(issuerId)
+	issuerFilePath, err := issuer.GetIssuerFilePath(vaultId, issuerId)
 	if err != nil {
 		return nil, err
 	}
@@ -126,16 +125,16 @@ func GenerateMetadata(
 	}
 
 	// Save the metadata to disk
-	if err := saveMetadata(issuerId, &resolverMetadata); err != nil {
+	if err := saveMetadata(vaultId, issuerId, &resolverMetadata); err != nil {
 		return nil, err
 	}
 
 	return &resolverMetadata, nil
 }
 
-func ListMetadataIds(issuerId string) ([]string, error) {
+func ListMetadataIds(vaultId, issuerId string) ([]string, error) {
 	// Get the metadata directory
-	metadataDir, err := getMetadataDirectory(issuerId)
+	metadataDir, err := getMetadataDirectory(vaultId, issuerId)
 	if err != nil {
 		return nil, err
 	}
@@ -163,9 +162,9 @@ func ListMetadataIds(issuerId string) ([]string, error) {
 	return metadataIds, nil
 }
 
-func GetMetadata(issuerId, metadataId string) (*coreV1alpha.ResolverMetadata, error) {
+func GetMetadata(vaultId, issuerId, metadataId string) (*coreV1alpha.ResolverMetadata, error) {
 	// Get the metadata file path
-	metadataFilePath, err := GetMetadataFilePath(issuerId, metadataId)
+	metadataFilePath, err := GetMetadataFilePath(vaultId, issuerId, metadataId)
 	if err != nil {
 		return nil, err
 	}
@@ -185,9 +184,9 @@ func GetMetadata(issuerId, metadataId string) (*coreV1alpha.ResolverMetadata, er
 	return &metadata, nil
 }
 
-func ForgetMetadata(issuerId, metadataId string) error {
+func ForgetMetadata(vaultId, issuerId, metadataId string) error {
 	// Get the metadata directory
-	metadataIdDir, err := GetMetadataIdDirectory(issuerId, metadataId)
+	metadataIdDir, err := GetMetadataIdDirectory(vaultId, issuerId, metadataId)
 	if err != nil {
 		return err
 	}

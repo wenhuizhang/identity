@@ -19,22 +19,23 @@ import (
 	nodeV1alpha "github.com/agntcy/identity/api/agntcy/identity/node/v1alpha1"
 	internalIssuerConstants "github.com/agntcy/identity/internal/issuer/constants"
 	internalIssuerTypes "github.com/agntcy/identity/internal/issuer/types"
+	"github.com/agntcy/identity/internal/issuer/vault"
 	"github.com/agntcy/identity/internal/pkg/ptrutil"
 )
 
 // getIssuersDirectory returns the path to the issuers directory
-func getIssuersDirectory() (string, error) {
-	homeDir, err := os.UserHomeDir()
+func getIssuersDirectory(vaultId string) (string, error) {
+	vaultIdDir, err := vault.GetVaultIdDirectory(vaultId)
 	if err != nil {
 		return "", err
 	}
 
-	return filepath.Join(homeDir, ".identity", "issuers"), nil
+	return filepath.Join(vaultIdDir, "issuers"), nil
 }
 
 // GetIssuerIdDirectory returns the path to the issuer ID directory
-func GetIssuerIdDirectory(issuerId string) (string, error) {
-	issuersDir, err := getIssuersDirectory()
+func GetIssuerIdDirectory(vaultId, issuerId string) (string, error) {
+	issuersDir, err := getIssuersDirectory(vaultId)
 	if err != nil {
 		return "", err
 	}
@@ -43,8 +44,8 @@ func GetIssuerIdDirectory(issuerId string) (string, error) {
 }
 
 // GetIssuerFilePath returns the path to the issuer file
-func GetIssuerFilePath(issuerId string) (string, error) {
-	issuerIdDir, err := GetIssuerIdDirectory(issuerId)
+func GetIssuerFilePath(vaultId, issuerId string) (string, error) {
+	issuerIdDir, err := GetIssuerIdDirectory(vaultId, issuerId)
 	if err != nil {
 		return "", err
 	}
@@ -52,9 +53,9 @@ func GetIssuerFilePath(issuerId string) (string, error) {
 	return filepath.Join(issuerIdDir, "issuer.json"), nil
 }
 
-func saveIssuerConfig(identityNodeAddress string, idpConfig internalIssuerTypes.IdpConfig) error {
+func saveIssuerConfig(vaultId, identityNodeAddress string, idpConfig internalIssuerTypes.IdpConfig) error {
 	// Get the issuer ID directory
-	issuerIdDir, err := GetIssuerIdDirectory(idpConfig.ClientId)
+	issuerIdDir, err := GetIssuerIdDirectory(vaultId, idpConfig.ClientId)
 	if err != nil {
 		return err
 	}
@@ -92,11 +93,11 @@ func getMockIssuerInfo() *string {
 }
 
 func RegisterIssuer(
-	identityNodeAddress string,
+	vaultId, identityNodeAddress string,
 	idpConfig internalIssuerTypes.IdpConfig,
 ) (*coreV1alpha.Issuer, error) {
 	// Save the issuer config
-	if err := saveIssuerConfig(identityNodeAddress, idpConfig); err != nil {
+	if err := saveIssuerConfig(vaultId, identityNodeAddress, idpConfig); err != nil {
 		return nil, err
 	}
 
@@ -125,7 +126,7 @@ func RegisterIssuer(
 	log.Default().Println("Registering issuer with request: ", &registerIssuerRequest)
 
 	// Create idp locally in the issuer directory
-	issuersDir, err := GetIssuerIdDirectory(idpConfig.ClientId)
+	issuersDir, err := GetIssuerIdDirectory(vaultId, idpConfig.ClientId)
 	if err != nil {
 		return nil, err
 	}
@@ -134,7 +135,7 @@ func RegisterIssuer(
 		return nil, err
 	}
 
-	issuerFilePath, err := GetIssuerFilePath(idpConfig.ClientId)
+	issuerFilePath, err := GetIssuerFilePath(vaultId, idpConfig.ClientId)
 	if err != nil {
 		return nil, err
 	}
@@ -153,9 +154,9 @@ func RegisterIssuer(
 	return &issuer, nil
 }
 
-func ListIssuerIds() ([]string, error) {
+func ListIssuerIds(vaultId string) ([]string, error) {
 	// Get the issuers directory
-	issuersDir, err := getIssuersDirectory()
+	issuersDir, err := getIssuersDirectory(vaultId)
 	if err != nil {
 		return nil, err
 	}
@@ -178,9 +179,9 @@ func ListIssuerIds() ([]string, error) {
 	return issuerIds, nil
 }
 
-func GetIssuer(issuerId string) (*coreV1alpha.Issuer, error) {
+func GetIssuer(vaultId, issuerId string) (*coreV1alpha.Issuer, error) {
 	// Get the issuer file path
-	issuerFilePath, err := GetIssuerFilePath(issuerId)
+	issuerFilePath, err := GetIssuerFilePath(vaultId, issuerId)
 	if err != nil {
 		return nil, err
 	}
@@ -200,9 +201,9 @@ func GetIssuer(issuerId string) (*coreV1alpha.Issuer, error) {
 	return &issuer, nil
 }
 
-func ForgetIssuer(issuerId string) error {
+func ForgetIssuer(vaultId, issuerId string) error {
 	// Get the issuer directory
-	issuerDir, err := GetIssuerIdDirectory(issuerId)
+	issuerDir, err := GetIssuerIdDirectory(vaultId, issuerId)
 	if err != nil {
 		return err
 	}

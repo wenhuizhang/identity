@@ -28,15 +28,16 @@ The setup command is used to configure your local environment for the Identity C
 
 //nolint:mnd // Allow magic number for args
 var issuerRegisterCmd = &cobra.Command{
-	Use:   "register [identity_node_address] [idp_client_id] [idp_client_secret] [idp_issuer_url]",
+	Use:   "register [vault_id] [identity_node_address] [idp_client_id] [idp_client_secret] [idp_issuer_url]",
 	Short: "Register as an Issuer",
 	Long:  "Register as an Issuer with an Identity Network using the provided client ID, client secret, and issuer URL.",
-	Args:  cobra.ExactArgs(4),
+	Args:  cobra.ExactArgs(5),
 	Run: func(cmd *cobra.Command, args []string) {
-		identityNodeAddress := args[0]
-		clientID := args[1]
-		clientSecret := args[2]
-		issuerURL := args[3]
+		vaultId := args[0]
+		identityNodeAddress := args[1]
+		clientID := args[2]
+		clientSecret := args[3]
+		issuerURL := args[4]
 
 		config := issuerTypes.IdpConfig{
 			ClientId:     clientID,
@@ -44,7 +45,7 @@ var issuerRegisterCmd = &cobra.Command{
 			IssuerUrl:    issuerURL,
 		}
 
-		_, err := issuer.RegisterIssuer(identityNodeAddress, config)
+		_, err := issuer.RegisterIssuer(vaultId, identityNodeAddress, config)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error registering as an Issuer: %v\n", err)
 			return
@@ -55,11 +56,14 @@ var issuerRegisterCmd = &cobra.Command{
 }
 
 var issuerListCmd = &cobra.Command{
-	Use:   "list",
+	Use:   "list [vault_id]",
 	Short: "List your existing issuer configurations",
+	Long:  "List your existing issuer configurations",
+	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 
-		issuers, err := issuer.ListIssuerIds()
+		vaultId := args[0]
+		issuers, err := issuer.ListIssuerIds(vaultId)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error listing issuers: %v\n", err)
 			return
@@ -75,13 +79,15 @@ var issuerListCmd = &cobra.Command{
 	},
 }
 var issuerShowCmd = &cobra.Command{
-	Use:   "show [issuer_id]",
+	Use:   "show [vault_id] [issuer_id]",
 	Short: "Show details of an issuer configuration",
-	Args:  cobra.ExactArgs(1),
+	Args:  cobra.ExactArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {
 
-		issuerId := args[0]
-		issuer, err := issuer.GetIssuer(issuerId)
+		vaultId := args[0]
+		issuerId := args[1]
+
+		issuer, err := issuer.GetIssuer(vaultId, issuerId)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error getting issuer: %v\n", err)
 			return
@@ -101,13 +107,15 @@ var issuerShowCmd = &cobra.Command{
 }
 
 var issuerForgetCmd = &cobra.Command{
-	Use:   "forget [issuer_id]",
+	Use:   "forget [vault_id] [issuer_id]",
 	Short: "Forget an issuer configuration",
-	Args:  cobra.ExactArgs(1),
+	Args:  cobra.ExactArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {
 
-		issuerId := args[0]
-		err := issuer.ForgetIssuer(issuerId)
+		vaultId := args[0]
+		issuerId := args[1]
+
+		err := issuer.ForgetIssuer(vaultId, issuerId)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error forgetting issuer: %v\n", err)
 			return

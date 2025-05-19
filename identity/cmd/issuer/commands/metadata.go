@@ -30,22 +30,22 @@ The metadata command is used to issue and publish important metadata for your Ag
 
 //nolint:mnd // Allow magic number for args
 var metadataGenerateCmd = &cobra.Command{
-	Use:   "generate [issuer_id] [idp_client_id] [idp_client_secret] [idp_issuer_url]",
+	Use:   "generate [vault_id] [issuer_id] [idp_client_id] [idp_client_secret] [idp_issuer_url]",
 	Short: "Generate new metadata for your Agent and MCP Server identities",
-	Args:  cobra.ExactArgs(4),
+	Args:  cobra.ExactArgs(5),
 	Run: func(cmd *cobra.Command, args []string) {
-
-		issuerId := args[0]
-		clientID := args[1]
-		clientSecret := args[2]
-		issuerURL := args[3]
+		vaultId := args[0]
+		issuerId := args[1]
+		clientID := args[2]
+		clientSecret := args[3]
+		issuerURL := args[4]
 		idpConfig := issuerTypes.IdpConfig{
 			ClientId:     clientID,
 			ClientSecret: clientSecret,
 			IssuerUrl:    issuerURL,
 		}
 
-		_, err := issuerMetadata.GenerateMetadata(issuerId, &idpConfig)
+		_, err := issuerMetadata.GenerateMetadata(vaultId, issuerId, &idpConfig)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error generating metadata: %v\n", err)
 			return
@@ -55,14 +55,15 @@ var metadataGenerateCmd = &cobra.Command{
 }
 
 var metadataListCmd = &cobra.Command{
-	Use:   "list [issuer_id]",
+	Use:   "list [vault_id] [issuer_id]",
 	Short: "List your existing metadata",
-	Args:  cobra.ExactArgs(1),
+	Args:  cobra.ExactArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {
 
-		issuerId := args[0]
+		vaultId := args[0]
+		issuerId := args[1]
 
-		metadataIds, err := issuerMetadata.ListMetadataIds(issuerId)
+		metadataIds, err := issuerMetadata.ListMetadataIds(vaultId, issuerId)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error listing metadata: %v\n", err)
 			return
@@ -80,15 +81,16 @@ var metadataListCmd = &cobra.Command{
 
 //nolint:mnd // Allow magic number for args
 var metadataShowCmd = &cobra.Command{
-	Use:   "show [issuer_id] [metadata_id]",
+	Use:   "show [vault_id] [issuer_id] [metadata_id]",
 	Short: "Show the chosen metadata",
-	Args:  cobra.ExactArgs(2),
+	Args:  cobra.ExactArgs(3),
 	Run: func(cmd *cobra.Command, args []string) {
 
-		issuerId := args[0]
-		metadataId := args[1]
+		vaultId := args[0]
+		issuerId := args[1]
+		metadataId := args[2]
 
-		metadata, err := issuerMetadata.GetMetadata(issuerId, metadataId)
+		metadata, err := issuerMetadata.GetMetadata(vaultId, issuerId, metadataId)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error getting metadata: %v\n", err)
 			return
@@ -104,14 +106,15 @@ var metadataShowCmd = &cobra.Command{
 
 //nolint:mnd // Allow magic number for args
 var metadataForgetCmd = &cobra.Command{
-	Use:   "forget [issuer_id] [metadata_id]",
+	Use:   "forget [vault_id] [issuer_id] [metadata_id]",
 	Short: "Forget the chosen metadata",
-	Args:  cobra.ExactArgs(2),
+	Args:  cobra.ExactArgs(3),
 	Run: func(cmd *cobra.Command, args []string) {
-		issuerId := args[0]
-		metadataId := args[1]
+		vaultId := args[0]
+		issuerId := args[1]
+		metadataId := args[2]
 
-		err := issuerMetadata.ForgetMetadata(issuerId, metadataId)
+		err := issuerMetadata.ForgetMetadata(vaultId, issuerId, metadataId)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error forgetting metadata: %v\n", err)
 			return

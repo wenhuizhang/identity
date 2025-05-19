@@ -20,8 +20,8 @@ import (
 )
 
 // getBadgeDirectory returns the path to the badges directory for a metadata
-func getBadgesDirectory(issuerId, metadataId string) (string, error) {
-	metadataIdDir, err := internalIssuerMetadata.GetMetadataIdDirectory(issuerId, metadataId)
+func getBadgesDirectory(vaultId, issuerId, metadataId string) (string, error) {
+	metadataIdDir, err := internalIssuerMetadata.GetMetadataIdDirectory(vaultId, issuerId, metadataId)
 	if err != nil {
 		return "", err
 	}
@@ -30,8 +30,8 @@ func getBadgesDirectory(issuerId, metadataId string) (string, error) {
 }
 
 // GetBadgeIdDirectory returns the path to the badge ID directory
-func GetBadgeIdDirectory(issuerId, metadataId, badgeId string) (string, error) {
-	badgesDir, err := getBadgesDirectory(issuerId, metadataId)
+func GetBadgeIdDirectory(vaultId, issuerId, metadataId, badgeId string) (string, error) {
+	badgesDir, err := getBadgesDirectory(vaultId, issuerId, metadataId)
 	if err != nil {
 		return "", err
 	}
@@ -40,8 +40,8 @@ func GetBadgeIdDirectory(issuerId, metadataId, badgeId string) (string, error) {
 }
 
 // GetBadgeFilePath returns the path to the badge file
-func GetBadgeFilePath(issuerId, metadataId, badgeId string) (string, error) {
-	badgeIdDir, err := GetBadgeIdDirectory(issuerId, metadataId, badgeId)
+func GetBadgeFilePath(vaultId, issuerId, metadataId, badgeId string) (string, error) {
+	badgeIdDir, err := GetBadgeIdDirectory(vaultId, issuerId, metadataId, badgeId)
 	if err != nil {
 		return "", err
 	}
@@ -49,7 +49,7 @@ func GetBadgeFilePath(issuerId, metadataId, badgeId string) (string, error) {
 	return filepath.Join(badgeIdDir, "badge.json"), nil
 }
 
-func IssueBadge(issuerId, metadataId, badgeValueFilePath string) (*coreV1alpha.EnvelopedCredential, error) {
+func IssueBadge(vaultId, issuerId, metadataId, badgeValueFilePath string) (*coreV1alpha.EnvelopedCredential, error) {
 	// Read the badge value from the file
 	badgeValueData, err := os.ReadFile(badgeValueFilePath)
 	if err != nil {
@@ -65,7 +65,7 @@ func IssueBadge(issuerId, metadataId, badgeValueFilePath string) (*coreV1alpha.E
 	}
 
 	// Ensure badges directory exists
-	badgesDir, err := getBadgesDirectory(issuerId, metadataId)
+	badgesDir, err := getBadgesDirectory(vaultId, issuerId, metadataId)
 	if err != nil {
 		return nil, err
 	}
@@ -77,7 +77,7 @@ func IssueBadge(issuerId, metadataId, badgeValueFilePath string) (*coreV1alpha.E
 	// Create badge ID directory with a unique ID
 	badgeId := uuid.New().String()
 
-	badgesIdDir, err := GetBadgeIdDirectory(issuerId, metadataId, badgeId)
+	badgesIdDir, err := GetBadgeIdDirectory(vaultId, issuerId, metadataId, badgeId)
 	if err != nil {
 		return nil, err
 	}
@@ -87,7 +87,7 @@ func IssueBadge(issuerId, metadataId, badgeValueFilePath string) (*coreV1alpha.E
 	}
 
 	// Save badge to file
-	badgeFilePath, err := GetBadgeFilePath(issuerId, metadataId, badgeId)
+	badgeFilePath, err := GetBadgeFilePath(vaultId, issuerId, metadataId, badgeId)
 	if err != nil {
 		return nil, err
 	}
@@ -105,6 +105,7 @@ func IssueBadge(issuerId, metadataId, badgeValueFilePath string) (*coreV1alpha.E
 }
 
 func PublishBadge(
+	vaultId,
 	issuerId,
 	metadataId string,
 	badge *coreV1alpha.EnvelopedCredential,
@@ -125,9 +126,9 @@ func PublishBadge(
 	return badge, nil
 }
 
-func ListBadgeIds(issuerId, metadataId string) ([]string, error) {
+func ListBadgeIds(vaultId, issuerId, metadataId string) ([]string, error) {
 	// Get the badges directory
-	badgesDir, err := getBadgesDirectory(issuerId, metadataId)
+	badgesDir, err := getBadgesDirectory(vaultId, issuerId, metadataId)
 	if err != nil {
 		return nil, err
 	}
@@ -155,9 +156,9 @@ func ListBadgeIds(issuerId, metadataId string) ([]string, error) {
 	return badgeIds, nil
 }
 
-func GetBadge(issuerId, metadataId, badgeId string) (*coreV1alpha.EnvelopedCredential, error) {
+func GetBadge(vaultId, issuerId, metadataId, badgeId string) (*coreV1alpha.EnvelopedCredential, error) {
 	// Get the badge file path
-	badgeFilePath, err := GetBadgeFilePath(issuerId, metadataId, badgeId)
+	badgeFilePath, err := GetBadgeFilePath(vaultId, issuerId, metadataId, badgeId)
 	if err != nil {
 		return nil, err
 	}
@@ -177,9 +178,9 @@ func GetBadge(issuerId, metadataId, badgeId string) (*coreV1alpha.EnvelopedCrede
 	return &badge, nil
 }
 
-func ForgetBadge(issuerId, metadataId, badgeId string) error {
+func ForgetBadge(vaultId, issuerId, metadataId, badgeId string) error {
 	// Get the badge directory
-	badgeIdDir, err := GetBadgeIdDirectory(issuerId, metadataId, badgeId)
+	badgeIdDir, err := GetBadgeIdDirectory(vaultId, issuerId, metadataId, badgeId)
 	if err != nil {
 		return err
 	}

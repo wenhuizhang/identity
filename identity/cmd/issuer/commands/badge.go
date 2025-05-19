@@ -28,14 +28,15 @@ The badge command is used to issue and publish badges for your Agent and MCP Ser
 
 //nolint:mnd // Allow magic number for args
 var badgeIssueCmd = &cobra.Command{
-	Use:   "issue [issuer_id] [metadata_id] [badge_file_path]",
+	Use:   "issue [vault_id] [issuer_id] [metadata_id] [badge_file_path]",
 	Short: "Issue a new badge for the current metadata",
-	Args:  cobra.ExactArgs(3),
+	Args:  cobra.ExactArgs(4),
 	Run: func(cmd *cobra.Command, args []string) {
-		issuerId := args[0]
-		metadataId := args[1]
-		badgeFilePath := args[2]
-		_, err := issuerBadge.IssueBadge(issuerId, metadataId, badgeFilePath)
+		vaultId := args[0]
+		issuerId := args[1]
+		metadataId := args[2]
+		badgeFilePath := args[3]
+		_, err := issuerBadge.IssueBadge(vaultId, issuerId, metadataId, badgeFilePath)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error issuing badge: %v\n", err)
 			return
@@ -46,22 +47,23 @@ var badgeIssueCmd = &cobra.Command{
 
 //nolint:mnd // Allow magic number for args
 var badgePublishCmd = &cobra.Command{
-	Use:   "publish [issuer_id] [metadata_id] [badge_id]",
+	Use:   "publish [vault_id] [issuer_id] [metadata_id] [badge_id]",
 	Short: "Publish the chosen badge",
-	Args:  cobra.ExactArgs(3),
+	Args:  cobra.ExactArgs(4),
 	Run: func(cmd *cobra.Command, args []string) {
 
-		issuerId := args[0]
-		metadataId := args[1]
-		badgeId := args[2]
+		vaultId := args[0]
+		issuerId := args[1]
+		metadataId := args[2]
+		badgeId := args[3]
 
-		badge, err := issuerBadge.GetBadge(issuerId, metadataId, badgeId)
+		badge, err := issuerBadge.GetBadge(vaultId, issuerId, metadataId, badgeId)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error getting badge: %v\n", err)
 			return
 		}
 
-		_, err = issuerBadge.PublishBadge(issuerId, metadataId, badge)
+		_, err = issuerBadge.PublishBadge(vaultId, issuerId, metadataId, badge)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error publishing badge: %v\n", err)
 			return
@@ -72,13 +74,16 @@ var badgePublishCmd = &cobra.Command{
 
 //nolint:mnd // Allow magic number for args
 var badgeListCmd = &cobra.Command{
-	Use:   "list [issuer_id] [metadata_id]",
+	Use:   "list [vault_id] [issuer_id] [metadata_id]",
 	Short: "List your existing badges for the current metadata",
-	Args:  cobra.ExactArgs(2),
+	Args:  cobra.ExactArgs(3),
 	Run: func(cmd *cobra.Command, args []string) {
-		issuerId := args[0]
-		metadataId := args[1]
-		badgeIds, err := issuerBadge.ListBadgeIds(issuerId, metadataId)
+
+		vaultId := args[0]
+		issuerId := args[1]
+		metadataId := args[2]
+
+		badgeIds, err := issuerBadge.ListBadgeIds(vaultId, issuerId, metadataId)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error listing badges: %v\n", err)
 			return
@@ -96,15 +101,17 @@ var badgeListCmd = &cobra.Command{
 
 //nolint:mnd // Allow magic number for args
 var badgeShowCmd = &cobra.Command{
-	Use:   "show [issuer_id] [metadata_id] [badge_id]",
+	Use:   "show [vault_id] [issuer_id] [metadata_id] [badge_id]",
 	Short: "Show details of the chosen badge",
-	Args:  cobra.ExactArgs(3),
+	Args:  cobra.ExactArgs(4),
 	Run: func(cmd *cobra.Command, args []string) {
 
-		issuerId := args[0]
-		metadataId := args[1]
-		badgeId := args[2]
-		badge, err := issuerBadge.GetBadge(issuerId, metadataId, badgeId)
+		vaultId := args[0]
+		issuerId := args[1]
+		metadataId := args[2]
+		badgeId := args[3]
+
+		badge, err := issuerBadge.GetBadge(vaultId, issuerId, metadataId, badgeId)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error getting badge: %v\n", err)
 			return
@@ -120,14 +127,17 @@ var badgeShowCmd = &cobra.Command{
 
 //nolint:mnd // Allow magic number for args
 var badgeForgetCmd = &cobra.Command{
-	Use:   "forget [issuer_id] [metadata_id] [badge_id]",
+	Use:   "forget [vault_id] [issuer_id] [metadata_id] [badge_id]",
 	Short: "Forget the chosen badge",
-	Args:  cobra.ExactArgs(3),
+	Args:  cobra.ExactArgs(4),
 	Run: func(cmd *cobra.Command, args []string) {
-		issuerId := args[0]
-		metadataId := args[1]
-		badgeId := args[2]
-		err := issuerBadge.ForgetBadge(issuerId, metadataId, badgeId)
+
+		vaultId := args[0]
+		issuerId := args[1]
+		metadataId := args[2]
+		badgeId := args[3]
+
+		err := issuerBadge.ForgetBadge(vaultId, issuerId, metadataId, badgeId)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error forgetting badge: %v\n", err)
 			return
