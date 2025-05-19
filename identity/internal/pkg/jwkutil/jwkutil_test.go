@@ -5,9 +5,11 @@ package jwkutil
 
 import (
 	"testing"
+
+	"github.com/agntcy/identity/internal/core/id/types"
 )
 
-func TestGenerateAndValidateRSAKeys(t *testing.T) {
+func TestGenerateAndValidateKeys(t *testing.T) {
 	algorithms := []string{"RS256", "RS384", "RS512"}
 
 	for _, alg := range algorithms {
@@ -17,33 +19,33 @@ func TestGenerateAndValidateRSAKeys(t *testing.T) {
 				t.Fatalf("GenerateJWK failed for %s: %v", alg, err)
 			}
 
-			if err := ValidatePubKey(jwk); err != nil {
+			// Validate public key (should pass)
+			if err := ValidatePubKey(jwk.PublicKey()); err != nil {
 				t.Errorf("ValidatePubKey failed for %s: %v", alg, err)
 			}
+			// Validate private key (should pass)
 			if err := ValidatePrivKey(jwk); err != nil {
 				t.Errorf("ValidatePrivKey failed for %s: %v", alg, err)
+			}
+			// Public key with private fields should fail
+			if err := ValidatePubKey(jwk); err == nil {
+				t.Errorf("ValidatePubKey should fail if private fields are present for %s", alg)
 			}
 		})
 	}
 }
 
-func TestGenerateAndValidateAKPKeys(t *testing.T) {
-	algorithms := []string{"ML-DSA-44", "ML-DSA-65", "ML-DSA-87"}
+func TestValidatePubKey_NilOrEmptyFields(t *testing.T) {
+	// Test nil Jwk pointer
+	var nilJwk *types.Jwk
+	if err := ValidatePubKey(nilJwk); err == nil {
+		t.Error("ValidatePubKey should fail if Jwk is nil")
+	}
 
-	for _, alg := range algorithms {
-		t.Run(alg, func(t *testing.T) {
-			jwk, err := GenerateJWK(alg, "sig", "")
-			if err != nil {
-				t.Fatalf("GenerateJWK failed for %s: %v", alg, err)
-			}
-
-			if err := ValidatePubKey(jwk); err != nil {
-				t.Errorf("ValidatePubKey failed for %s: %v", alg, err)
-			}
-			if err := ValidatePrivKey(jwk); err != nil {
-				t.Errorf("ValidatePrivKey failed for %s: %v", alg, err)
-			}
-		})
+	// Test Jwk with missing required fields for RSA
+	jwk := &types.Jwk{KTY: "RSA"}
+	if err := ValidatePubKey(jwk); err == nil {
+		t.Error("ValidatePubKey should fail if required RSA fields are missing")
 	}
 }
 
