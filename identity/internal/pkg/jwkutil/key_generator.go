@@ -12,7 +12,6 @@ import (
 
 	"github.com/agntcy/identity/internal/core/id/types"
 	"github.com/google/uuid"
-	"github.com/open-quantum-safe/liboqs-go/oqs"
 )
 
 const (
@@ -29,8 +28,6 @@ func GenerateJWK(alg, use, id string) (*types.Jwk, error) {
 	switch alg {
 	case "RS256", "RS384", "RS512":
 		return generateRSAJWK(alg, use, id)
-	case "ML-DSA-44", "ML-DSA-65", "ML-DSA-87":
-		return generateMLDSAJWK(alg, use, id)
 	default:
 		return nil, errors.New("unsupported algorithm")
 	}
@@ -61,30 +58,5 @@ func generateRSAJWK(alg, use, id string) (*types.Jwk, error) {
 		DP:  base64.RawURLEncoding.EncodeToString(privateKey.Precomputed.Dp.Bytes()),
 		DQ:  base64.RawURLEncoding.EncodeToString(privateKey.Precomputed.Dq.Bytes()),
 		QI:  base64.RawURLEncoding.EncodeToString(privateKey.Precomputed.Qinv.Bytes()),
-	}, nil
-}
-
-func generateMLDSAJWK(alg, use, id string) (*types.Jwk, error) {
-	sig := oqs.Signature{}
-	if err := sig.Init(alg, nil); err != nil {
-		return nil, err
-	}
-	defer sig.Clean()
-
-	publicKey, err := sig.GenerateKeyPair()
-	if err != nil {
-		return nil, err
-	}
-
-	privKeyBytes := sig.ExportSecretKey()
-
-	return &types.Jwk{
-		KID:  id,
-		ALG:  alg,
-		KTY:  "AKP",
-		USE:  use,
-		PUB:  base64.RawURLEncoding.EncodeToString(publicKey),
-		PRIV: base64.RawURLEncoding.EncodeToString(privKeyBytes),
-		SEED: "",
 	}, nil
 }

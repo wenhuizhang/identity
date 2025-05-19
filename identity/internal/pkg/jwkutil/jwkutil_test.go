@@ -10,7 +10,7 @@ import (
 )
 
 func TestGenerateAndValidateKeys(t *testing.T) {
-	algorithms := []string{"RS256", "RS384", "RS512", "ML-DSA-44", "ML-DSA-65", "ML-DSA-87"}
+	algorithms := []string{"RS256", "RS384", "RS512"}
 
 	for _, alg := range algorithms {
 		t.Run(alg, func(t *testing.T) {
@@ -46,12 +46,6 @@ func TestValidatePubKey_NilOrEmptyFields(t *testing.T) {
 	jwk := &types.Jwk{KTY: "RSA"}
 	if err := ValidatePubKey(jwk); err == nil {
 		t.Error("ValidatePubKey should fail if required RSA fields are missing")
-	}
-
-	// Test Jwk with missing required fields for AKP
-	jwk = &types.Jwk{KTY: "AKP"}
-	if err := ValidatePubKey(jwk); err == nil {
-		t.Error("ValidatePubKey should fail if required AKP fields are missing")
 	}
 }
 

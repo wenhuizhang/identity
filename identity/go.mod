@@ -25,7 +25,6 @@ require (
 	github.com/google/uuid v1.6.0
 	github.com/lestrrat-go/jwx/v3 v3.0.1
 	github.com/lib/pq v1.10.9
-	github.com/open-quantum-safe/liboqs-go v0.0.0-20250119172907-28b5301df438
 	github.com/stretchr/testify v1.10.0
 	golang.org/x/oauth2 v0.26.0
 	gorm.io/driver/postgres v1.5.11

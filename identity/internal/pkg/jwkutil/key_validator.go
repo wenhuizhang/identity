@@ -26,12 +26,6 @@ func ValidatePubKey(j *types.Jwk) error {
 		}
 
 		return validateRSAPubKey(j)
-	case "AKP":
-		if j.PRIV != "" {
-			return errors.New("private key field must not be present in AKP public key")
-		}
-
-		return validateAKPPubKey(j)
 	default:
 		return errors.New("unsupported key type for public key validation")
 	}
@@ -46,8 +40,6 @@ func ValidatePrivKey(j *types.Jwk) error {
 	switch strings.ToUpper(j.KTY) {
 	case "RSA":
 		return validateRSAPrivKey(j)
-	case "AKP":
-		return validateAKPPrivKey(j)
 	default:
 		return errors.New("unsupported key type for private key validation")
 	}
@@ -132,42 +124,6 @@ func validateRSAPrivKey(j *types.Jwk) error {
 	}
 	if err := priv.Validate(); err != nil {
 		return errors.New("invalid RSA private key: " + err.Error())
-	}
-
-	return nil
-}
-
-// --- AKP (Post-Quantum) Validation ---
-
-func validateAKPPubKey(j *types.Jwk) error {
-	if j.PUB == "" {
-		return errors.New("missing pub field for AKP public key")
-	}
-
-	_, err := base64.RawURLEncoding.DecodeString(j.PUB)
-	if err != nil {
-		return errors.New("invalid base64url encoding for pub field")
-	}
-	// Optionally, check ALG for known ML-DSA variants
-	if !strings.HasPrefix(j.ALG, "ML-DSA-") {
-		return errors.New("unsupported AKP algorithm: " + j.ALG)
-	}
-
-	return nil
-}
-
-func validateAKPPrivKey(j *types.Jwk) error {
-	if j.PRIV == "" {
-		return errors.New("missing priv field for AKP private key")
-	}
-
-	_, err := base64.RawURLEncoding.DecodeString(j.PRIV)
-	if err != nil {
-		return errors.New("invalid base64url encoding for priv field")
-	}
-	// Optionally, check ALG for known ML-DSA variants
-	if !strings.HasPrefix(j.ALG, "ML-DSA-") {
-		return errors.New("unsupported AKP algorithm: " + j.ALG)
 	}
 
 	return nil
