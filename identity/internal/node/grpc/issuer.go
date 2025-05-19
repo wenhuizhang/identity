@@ -6,13 +6,14 @@ package grpc
 import (
 	"context"
 
+	coreapi "github.com/agntcy/identity/api/agntcy/identity/core/v1alpha1"
 	nodeapi "github.com/agntcy/identity/api/agntcy/identity/node/v1alpha1"
 	issuertypes "github.com/agntcy/identity/internal/core/issuer/types"
 	vctypes "github.com/agntcy/identity/internal/core/vc/types"
 	"github.com/agntcy/identity/internal/node"
 	converters "github.com/agntcy/identity/internal/pkg/converters"
-	"github.com/agntcy/identity/internal/pkg/errutil"
 	grpcutil "github.com/agntcy/identity/internal/pkg/grpcutil"
+	"github.com/agntcy/identity/pkg/log"
 )
 
 type issuerService struct {
@@ -30,6 +31,8 @@ func (i *issuerService) Register(
 	ctx context.Context,
 	req *nodeapi.RegisterIssuerRequest,
 ) (*nodeapi.RegisterIssuerResponse, error) {
+	log.Debug("RegisterIssuer: ", req.Issuer.CommonName)
+
 	// Convert entities and call the node service
 	uri, err := i.nodeIssuerService.Register(
 		ctx,
@@ -52,5 +55,15 @@ func (i *issuerService) GetWellKnown(
 	ctx context.Context,
 	req *nodeapi.GetIssuerWellKnownRequest,
 ) (*nodeapi.GetIssuerWellKnownResponse, error) {
-	return nil, errutil.Err(nil, "not implemented")
+	log.Debug("GetIssuerWellKnown: ", req.CommonName)
+
+	// Get the issuer's public keys by common name
+	jwks, err := i.nodeIssuerService.GetJwks(ctx, req.CommonName)
+	if err != nil {
+		return nil, grpcutil.BadRequestError(err)
+	}
+
+	return &nodeapi.GetIssuerWellKnownResponse{
+		Jwks: converters.Convert[coreapi.Jwks](jwks),
+	}, nil
 }

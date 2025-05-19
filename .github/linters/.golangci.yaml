@@ -5,6 +5,8 @@
 linters-settings:
   cyclop:
     max-complexity: 15
+  funlen:
+    lines: 100
   goconst:
     min-len: 2
     min-occurrences: 3
