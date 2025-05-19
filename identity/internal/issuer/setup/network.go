@@ -13,49 +13,13 @@ import (
 	issuerTypes "github.com/agntcy/identity/internal/issuer/types"
 )
 
-// GetConfigPath returns the path to the identity node config file
-func GetConfigPath() (string, error) {
+func ConfigureNetwork(identityNodeConfig issuerTypes.IdentityNodeConfig) (string, error) {
+
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
 		return "", err
 	}
-
-	return filepath.Join(homeDir, ".identity", "id_node_config.json"), nil
-}
-
-// ReadNetworkConfig reads and parses the identity node config file
-func ReadNetworkConfig() (issuerTypes.IdentityNodeConfig, error) {
-	var config issuerTypes.IdentityNodeConfig
-
-	configPath, err := GetConfigPath()
-	if err != nil {
-		return config, err
-	}
-
-	// Check if the config file exists
-	if _, err := os.Stat(configPath); os.IsNotExist(err) {
-		return config, err
-	}
-
-	// Read the config file
-	configData, err := os.ReadFile(configPath)
-	if err != nil {
-		return config, err
-	}
-
-	// Unmarshal the config data
-	if err := json.Unmarshal(configData, &config); err != nil {
-		return config, err
-	}
-
-	return config, nil
-}
-
-func ConfigureNetwork(identityNodeConfig issuerTypes.IdentityNodeConfig) (string, error) {
-	configPath, err := GetConfigPath()
-	if err != nil {
-		return "", err
-	}
+	configPath := filepath.Join(homeDir, ".identity", "id_node_config.json")
 
 	// Create directories if they don't exist
 	configDir := filepath.Dir(configPath)
@@ -78,19 +42,38 @@ func ConfigureNetwork(identityNodeConfig issuerTypes.IdentityNodeConfig) (string
 }
 
 func TestNetworkConnection() error {
-	_, err := ReadNetworkConfig()
+	homeDir, err := os.UserHomeDir()
 	if err != nil {
 		return err
 	}
+	configPath := filepath.Join(homeDir, ".identity", "id_node_config.json")
+	// Check if the config file exists
+	if _, err := os.Stat(configPath); os.IsNotExist(err) {
+		return err
+	}
+	// Read the config file
+	configData, err := os.ReadFile(configPath)
+	if err != nil {
+		return err
+	}
+	// Unmarshal the config data
+	var config issuerTypes.IdentityNodeConfig
+	if err := json.Unmarshal(configData, &config); err != nil {
+		return err
+	}
+
+	// TODO: Implement the connection test logic
 
 	return errors.New("TestNetworkConnection not implemented yet")
+
 }
 
 func ForgetNetworkConnection() (string, error) {
-	configPath, err := GetConfigPath()
+	homeDir, err := os.UserHomeDir()
 	if err != nil {
 		return "", err
 	}
+	configPath := filepath.Join(homeDir, ".identity", "id_node_config.json")
 
 	// Check if the config file exists
 	if _, err := os.Stat(configPath); errors.Is(err, os.ErrNotExist) {

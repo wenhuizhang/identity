@@ -22,6 +22,7 @@ require (
 	github.com/coreos/go-oidc v2.3.0+incompatible
 	github.com/eko/gocache/store/freecache/v4 v4.2.2
 	github.com/google/gnostic-models v0.6.9
+	github.com/google/uuid v1.6.0
 	github.com/lestrrat-go/jwx/v3 v3.0.1
 	golang.org/x/oauth2 v0.26.0
 	gorm.io/driver/postgres v1.5.11

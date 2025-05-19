@@ -21,7 +21,8 @@ The Identity CLI tool is a command line interface for generating, publishing and
 
 With it you can:
 
-- (setup) Connect to a local vault, link to an identity provider and register with an identity network
+- (vault) Manage your vault and generate cryptographic keys
+- (issuer) Register as an Issuer with an Identity Network
 - (metadata) Issue and publish important metadata for your Agent and MCP Server identities
 - (badge) Issue and publish badges for your Agent and MCP Server identities
 - (verify) Verify the identity of other Agents and MCP Servers via their resolver metadata and badges
@@ -44,7 +45,8 @@ func main() {
 }
 
 func init() {
-	rootCmd.AddCommand(commands.SetupCmd)
+	rootCmd.AddCommand(commands.VaultCmd)
+	rootCmd.AddCommand(commands.IssuerCmd)
 	rootCmd.AddCommand(commands.MetadataCmd)
 	rootCmd.AddCommand(commands.BadgeCmd)
 	rootCmd.AddCommand(commands.VerifyCmd)

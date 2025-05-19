@@ -4,10 +4,14 @@
 package commands
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 
 	"github.com/spf13/cobra"
+
+	issuerMetadata "github.com/agntcy/identity/internal/issuer/metadata"
+	issuerTypes "github.com/agntcy/identity/internal/issuer/types"
 )
 
 //nolint:lll // Allow long lines for CLI
@@ -17,71 +21,105 @@ var MetadataCmd = &cobra.Command{
 	Long: `
 The metadata command is used to issue and publish important metadata for your Agent and MCP Server identities. With it you can:
 
-- (issue) Issue and load a new metadata
-- (publish) Publish the current metadata
-- (list) List all of your existing metadata
-- (load) Load an existing metadata
-- (show) Show the currently loaded metadata
-- (forget) Forget the current metadata
+- (generate) Generate new metadata
+- (list) List all of the existing metadata for the issuer
+- (show) Show details of a specific metadata
+- (forget) Forget a specific metadata
 `,
 }
 
-var metadataListCmd = &cobra.Command{
-	Use:   "list",
-	Short: "List all of your existing metadata",
+var metadataGenerateCmd = &cobra.Command{
+	Use:   "generate [issuer_id] [idp_client_id] [idp_client_secret] [idp_issuer_url]",
+	Short: "Generate new metadata for your Agent and MCP Server identities",
+	Args:  cobra.ExactArgs(3),
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Fprintf(os.Stdout, "%s\n", "Listing all of your existing metadata")
-	},
-}
 
-var metadataShowCmd = &cobra.Command{
-	Use:   "show",
-	Short: "Show the currently loaded metadata",
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Fprintf(os.Stdout, "%s\n", "Showing the currently loaded metadata")
-	},
-}
+		issuerId := args[0]
+		clientID := args[1]
+		clientSecret := args[2]
+		issuerURL := args[3]
+		idpConfig := issuerTypes.IdpConfig{
+			ClientId:     clientID,
+			ClientSecret: clientSecret,
+			IssuerUrl:    issuerURL,
+		}
 
-var metadataLoadCmd = &cobra.Command{
-	Use:   "load [metadata_id]",
-	Short: "Load an existing metadata <metadata_id>",
-	Args:  cobra.ExactArgs(1),
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Fprintf(os.Stdout, "Loading metadata %s\n", args[0])
-	},
-}
-
-var metadataIssueCmd = &cobra.Command{
-	Use:   "issue",
-	Short: "Issues and loads a new metadata",
-	Run: func(cmd *cobra.Command, args []string) {
+		_, err := issuerMetadata.GenerateMetadata(issuerId, &idpConfig)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error generating metadata: %v\n", err)
+			return
+		}
 		fmt.Fprintf(os.Stdout, "%s\n", "Creating a new metadata")
 	},
 }
 
-var metadataForgetCmd = &cobra.Command{
-	Use:   "forget",
-	Short: "Forget the current metadata",
+var metadataListCmd = &cobra.Command{
+	Use:   "list [issuer_id]",
+	Short: "List your existing metadata",
+	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
+
+		issuerId := args[0]
+
+		metadataIds, err := issuerMetadata.ListMetadataIds(issuerId)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error listing metadata: %v\n", err)
+			return
+		}
+		if len(metadataIds) == 0 {
+			fmt.Fprintf(os.Stdout, "%s\n", "No metadata found")
+			return
+		}
+		fmt.Fprintf(os.Stdout, "%s\n", "Existing metadata ids:")
+		for _, metadataId := range metadataIds {
+			fmt.Fprintf(os.Stdout, "- %s\n", metadataId)
+		}
+	},
+}
+
+var metadataShowCmd = &cobra.Command{
+	Use:   "show [issuer_id] [metadata_id]",
+	Short: "Show the chosen metadata",
+	Args:  cobra.ExactArgs(2),
+	Run: func(cmd *cobra.Command, args []string) {
+
+		issuerId := args[0]
+		metadataId := args[1]
+
+		metadata, err := issuerMetadata.GetMetadata(issuerId, metadataId)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error getting metadata: %v\n", err)
+			return
+		}
+		metadataJSON, err := json.MarshalIndent(metadata, "", "  ")
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error marshaling metadata to JSON: %v\n", err)
+			return
+		}
+		fmt.Fprintf(os.Stdout, "%s\n", string(metadataJSON))
+	},
+}
+
+var metadataForgetCmd = &cobra.Command{
+	Use:   "forget [issuer_id] [metadata_id]",
+	Short: "Forget the chosen metadata",
+	Args:  cobra.ExactArgs(2),
+	Run: func(cmd *cobra.Command, args []string) {
+		issuerId := args[0]
+		metadataId := args[1]
+
+		err := issuerMetadata.ForgetMetadata(issuerId, metadataId)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error forgetting metadata: %v\n", err)
+			return
+		}
 		fmt.Fprintf(os.Stdout, "%s\n", "Forgetting the current metadata")
 	},
 }
 
-var metadataPublishCmd = &cobra.Command{
-	Use:   "publish",
-	Short: "Publish the current metadata",
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Fprintf(os.Stdout, "%s\n",
-			"Publishing the current metadata",
-		)
-	},
-}
-
 func init() {
+	MetadataCmd.AddCommand(metadataGenerateCmd)
 	MetadataCmd.AddCommand(metadataListCmd)
-	MetadataCmd.AddCommand(metadataLoadCmd)
 	MetadataCmd.AddCommand(metadataShowCmd)
-	MetadataCmd.AddCommand(metadataIssueCmd)
 	MetadataCmd.AddCommand(metadataForgetCmd)
-	MetadataCmd.AddCommand(metadataPublishCmd)
 }
