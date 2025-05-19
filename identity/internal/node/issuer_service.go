@@ -90,7 +90,11 @@ func (i *issuerService) Register(
 		issuer,
 	)
 	if repositoryErr != nil {
-		return nil, errutil.ErrInfo(errtypes.ERROR_REASON_INTERNAL, "unexpected error", repositoryErr)
+		return nil, errutil.ErrInfo(
+			errtypes.ERROR_REASON_INTERNAL,
+			"unexpected error",
+			repositoryErr,
+		)
 	}
 
 	//nolint:nilnil // Ignore linting for nil return, means no action uri

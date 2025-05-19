@@ -43,12 +43,18 @@ func (r *repository) CreateIssuer(
 	return issuer, nil
 }
 
-func (r *repository) GetIssuer(ctx context.Context, commonName string) (*issuertypes.Issuer, error) {
+func (r *repository) GetIssuer(
+	ctx context.Context,
+	commonName string,
+) (*issuertypes.Issuer, error) {
 	var isser Issuer
+
 	result := r.dbContext.Client().First(&isser, commonName)
 	if result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-			return nil, nil
+			return nil, errutil.Err(
+				result.Error, "issuer not found",
+			)
 		}
 
 		return nil, errutil.Err(
