@@ -14,7 +14,6 @@ import (
 )
 
 func ConfigureNetwork(identityNodeConfig issuerTypes.IdentityNodeConfig) (string, error) {
-
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
 		return "", err
@@ -62,10 +61,9 @@ func TestNetworkConnection() error {
 		return err
 	}
 
-	// TODO: Implement the connection test logic
+	// Implement the connection test logic
 
 	return errors.New("TestNetworkConnection not implemented yet")
-
 }
 
 func ForgetNetworkConnection() (string, error) {

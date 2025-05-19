@@ -13,7 +13,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-//nolint:lll // Allow long lines for CLI
 var IssuerCmd = &cobra.Command{
 	Use:   "issuer",
 	Short: "Setup your issuer environment, including your vault, identity provider, and identity network",
@@ -27,7 +26,7 @@ The setup command is used to configure your local environment for the Identity C
 `,
 }
 
-//nolint:mnd // Allow magic number 3 for args
+//nolint:mnd // Allow magic number for args
 var issuerRegisterCmd = &cobra.Command{
 	Use:   "register [identity_node_address] [idp_client_id] [idp_client_secret] [idp_issuer_url]",
 	Short: "Register as an Issuer",
@@ -45,14 +44,13 @@ var issuerRegisterCmd = &cobra.Command{
 			IssuerUrl:    issuerURL,
 		}
 
-		configPath, err := issuer.RegisterIssuer(identityNodeAddress, config)
+		_, err := issuer.RegisterIssuer(identityNodeAddress, config)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error registering as an Issuer: %v\n", err)
 			return
 		}
 
 		fmt.Fprintf(os.Stdout, "\nRegistered as an Issuer with Identity Network node at %s\n", identityNodeAddress)
-		fmt.Fprintf(os.Stdout, "Saved Identity Provider configuration to %s\n\n", configPath)
 	},
 }
 

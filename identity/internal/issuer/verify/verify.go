@@ -10,6 +10,5 @@ import (
 )
 
 func VerifyCredential(credential *vctypes.VerifiableCredential) (bool, error) {
-
 	return false, errors.New("VerifyCredential not implemented yet")
 }

@@ -11,7 +11,6 @@ import (
 	"path/filepath"
 
 	"github.com/agntcy/identity/internal/core/issuer/types"
-	issuerTypes "github.com/agntcy/identity/internal/core/issuer/types"
 	vcTypes "github.com/agntcy/identity/internal/core/vc/types"
 	issuerConstants "github.com/agntcy/identity/internal/issuer/constants"
 	issuerTypesInternal "github.com/agntcy/identity/internal/issuer/types"
@@ -21,8 +20,8 @@ import (
 )
 
 type registerIssuerRequest struct {
-	Issuer issuerTypes.Issuer `json:"issuer"`
-	Proof  vcTypes.Proof      `json:"proof"`
+	Issuer types.Issuer  `json:"issuer"`
+	Proof  vcTypes.Proof `json:"proof"`
 }
 
 // getIssuersDirectory returns the path to the issuers directory
@@ -56,17 +55,12 @@ func GetIssuerFilePath(issuerId string) (string, error) {
 }
 
 func RegisterIssuer(identityNodeAddress string, idpConfig issuerTypesInternal.IdpConfig) (*types.Issuer, error) {
-
 	// Check connection to identity node
-
 	// Check connection to idp
-
 	// Check if idp is already created locally
-
 	// Check if idp is already registered on the identity node
-
 	// Register idp on the identity node
-	issuer := issuerTypes.Issuer{
+	issuer := types.Issuer{
 		Organization:    "AGNTCY",
 		SubOrganization: "AGNTCY",
 		CommonName:      "AGNTCY",
@@ -90,9 +84,11 @@ func RegisterIssuer(identityNodeAddress string, idpConfig issuerTypesInternal.Id
 	if err != nil {
 		return nil, err
 	}
+
 	if err := os.MkdirAll(issuersDir, issuerConstants.DirPerm); err != nil {
 		return nil, err
 	}
+
 	issuerFilePath, err := GetIssuerFilePath(idpConfig.ClientId)
 	if err != nil {
 		return nil, err
@@ -113,7 +109,6 @@ func RegisterIssuer(identityNodeAddress string, idpConfig issuerTypesInternal.Id
 }
 
 func ListIssuerIds() ([]string, error) {
-
 	// Get the issuers directory
 	issuersDir, err := getIssuersDirectory()
 	if err != nil {
@@ -128,16 +123,17 @@ func ListIssuerIds() ([]string, error) {
 
 	// List the issuer IDs
 	var issuerIds []string
+
 	for _, file := range files {
 		if file.IsDir() {
 			issuerIds = append(issuerIds, file.Name())
 		}
 	}
+
 	return issuerIds, nil
 }
 
 func GetIssuer(issuerId string) (*types.Issuer, error) {
-
 	// Get the issuer file path
 	issuerFilePath, err := GetIssuerFilePath(issuerId)
 	if err != nil {
@@ -160,7 +156,6 @@ func GetIssuer(issuerId string) (*types.Issuer, error) {
 }
 
 func ForgetIssuer(issuerId string) error {
-
 	// Get the issuer directory
 	issuerDir, err := GetIssuerIdDirectory(issuerId)
 	if err != nil {
@@ -174,8 +169,7 @@ func ForgetIssuer(issuerId string) error {
 	return nil
 }
 
-func TestIdpConnection(clientId string, clientSecret string, issuerUrl string) (*oauth2.Token, error) {
-
+func TestIdpConnection(clientId, clientSecret, issuerUrl string) (*oauth2.Token, error) {
 	// Test the connection to the Identity Provider
 	ctx := context.Background()
 

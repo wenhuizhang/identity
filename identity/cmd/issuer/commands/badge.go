@@ -26,6 +26,7 @@ The badge command is used to issue and publish badges for your Agent and MCP Ser
 `,
 }
 
+//nolint:mnd // Allow magic number for args
 var badgeIssueCmd = &cobra.Command{
 	Use:   "issue [issuer_id] [metadata_id] [badge_file_path]",
 	Short: "Issue a new badge for the current metadata",
@@ -68,6 +69,7 @@ var badgePublishCmd = &cobra.Command{
 	},
 }
 
+//nolint:mnd // Allow magic number for args
 var badgeListCmd = &cobra.Command{
 	Use:   "list [issuer_id] [metadata_id]",
 	Short: "List your existing badges for the current metadata",
@@ -91,6 +93,7 @@ var badgeListCmd = &cobra.Command{
 	},
 }
 
+//nolint:mnd // Allow magic number for args
 var badgeShowCmd = &cobra.Command{
 	Use:   "show [issuer_id] [metadata_id] [badge_id]",
 	Short: "Show details of the chosen badge",
@@ -114,6 +117,7 @@ var badgeShowCmd = &cobra.Command{
 	},
 }
 
+//nolint:mnd // Allow magic number for args
 var badgeForgetCmd = &cobra.Command{
 	Use:   "forget [issuer_id] [metadata_id] [badge_id]",
 	Short: "Forget the chosen badge",

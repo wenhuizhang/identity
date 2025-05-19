@@ -28,6 +28,7 @@ The metadata command is used to issue and publish important metadata for your Ag
 `,
 }
 
+//nolint:mnd // Allow magic number for args
 var metadataGenerateCmd = &cobra.Command{
 	Use:   "generate [issuer_id] [idp_client_id] [idp_client_secret] [idp_issuer_url]",
 	Short: "Generate new metadata for your Agent and MCP Server identities",
@@ -77,6 +78,7 @@ var metadataListCmd = &cobra.Command{
 	},
 }
 
+//nolint:mnd // Allow magic number for args
 var metadataShowCmd = &cobra.Command{
 	Use:   "show [issuer_id] [metadata_id]",
 	Short: "Show the chosen metadata",
@@ -100,6 +102,7 @@ var metadataShowCmd = &cobra.Command{
 	},
 }
 
+//nolint:mnd // Allow magic number for args
 var metadataForgetCmd = &cobra.Command{
 	Use:   "forget [issuer_id] [metadata_id]",
 	Short: "Forget the chosen metadata",

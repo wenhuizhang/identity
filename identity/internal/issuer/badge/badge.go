@@ -21,34 +21,36 @@ type publishRequest struct {
 }
 
 // getBadgeDirectory returns the path to the badges directory for a metadata
-func getBadgesDirectory(issuerId string, metadataId string) (string, error) {
+func getBadgesDirectory(issuerId, metadataId string) (string, error) {
 	metadataIdDir, err := metadata.GetMetadataIdDirectory(issuerId, metadataId)
 	if err != nil {
 		return "", err
 	}
+
 	return filepath.Join(metadataIdDir, "badges"), nil
 }
 
 // GetBadgeIdDirectory returns the path to the badge ID directory
-func GetBadgeIdDirectory(issuerId string, metadataId string, badgeId string) (string, error) {
+func GetBadgeIdDirectory(issuerId, metadataId, badgeId string) (string, error) {
 	badgesDir, err := getBadgesDirectory(issuerId, metadataId)
 	if err != nil {
 		return "", err
 	}
+
 	return filepath.Join(badgesDir, badgeId), nil
 }
 
 // GetBadgeFilePath returns the path to the badge file
-func GetBadgeFilePath(issuerId string, metadataId string, badgeId string) (string, error) {
+func GetBadgeFilePath(issuerId, metadataId, badgeId string) (string, error) {
 	badgeIdDir, err := GetBadgeIdDirectory(issuerId, metadataId, badgeId)
 	if err != nil {
 		return "", err
 	}
+
 	return filepath.Join(badgeIdDir, "badge.json"), nil
 }
 
-func IssueBadge(issuerId string, metadataId string, badgeValueFilePath string) (*vctypes.EnvelopedCredential, error) {
-
+func IssueBadge(issuerId, metadataId, badgeValueFilePath string) (*vctypes.EnvelopedCredential, error) {
 	// Read the badge value from the file
 	badgeValueData, err := os.ReadFile(badgeValueFilePath)
 	if err != nil {
@@ -71,16 +73,19 @@ func IssueBadge(issuerId string, metadataId string, badgeValueFilePath string) (
 	if err != nil {
 		return nil, err
 	}
+
 	if err := os.MkdirAll(badgesDir, issuerConstants.DirPerm); err != nil {
 		return nil, err
 	}
 
 	// Create badge ID directory with a unique ID
 	badgeId := uuid.New().String()
+
 	badgesIdDir, err := GetBadgeIdDirectory(issuerId, metadataId, badgeId)
 	if err != nil {
 		return nil, err
 	}
+
 	if err := os.MkdirAll(badgesIdDir, issuerConstants.DirPerm); err != nil {
 		return nil, err
 	}
@@ -96,16 +101,18 @@ func IssueBadge(issuerId string, metadataId string, badgeValueFilePath string) (
 		return nil, err
 	}
 
-	if err := os.WriteFile(badgeFilePath, badgeData, 0644); err != nil {
+	if err := os.WriteFile(badgeFilePath, badgeData, issuerConstants.FilePerm); err != nil {
 		return nil, err
 	}
 
 	return &envelopedCredential, nil
-
 }
 
-func PublishBadge(issuerId string, metadataId string, badge *vctypes.EnvelopedCredential) (*vctypes.EnvelopedCredential, error) {
-
+func PublishBadge(
+	issuerId,
+	metadataId string,
+	badge *vctypes.EnvelopedCredential,
+) (*vctypes.EnvelopedCredential, error) {
 	proof := vctypes.Proof{
 		Type:         "RsaSignature2018",
 		ProofPurpose: "assertionMethod",
@@ -122,7 +129,7 @@ func PublishBadge(issuerId string, metadataId string, badge *vctypes.EnvelopedCr
 	return badge, nil
 }
 
-func ListBadgeIds(issuerId string, metadataId string) ([]string, error) {
+func ListBadgeIds(issuerId, metadataId string) ([]string, error) {
 	// Get the badges directory
 	badgesDir, err := getBadgesDirectory(issuerId, metadataId)
 	if err != nil {
@@ -142,15 +149,17 @@ func ListBadgeIds(issuerId string, metadataId string) ([]string, error) {
 
 	// List the badge IDs
 	var badgeIds []string
+
 	for _, file := range files {
 		if file.IsDir() {
 			badgeIds = append(badgeIds, file.Name())
 		}
 	}
+
 	return badgeIds, nil
 }
 
-func GetBadge(issuerId string, metadataId string, badgeId string) (*vctypes.EnvelopedCredential, error) {
+func GetBadge(issuerId, metadataId, badgeId string) (*vctypes.EnvelopedCredential, error) {
 	// Get the badge file path
 	badgeFilePath, err := GetBadgeFilePath(issuerId, metadataId, badgeId)
 	if err != nil {
@@ -172,7 +181,7 @@ func GetBadge(issuerId string, metadataId string, badgeId string) (*vctypes.Enve
 	return &badge, nil
 }
 
-func ForgetBadge(issuerId string, metadataId string, badgeId string) error {
+func ForgetBadge(issuerId, metadataId, badgeId string) error {
 	// Get the badge directory
 	badgeIdDir, err := GetBadgeIdDirectory(issuerId, metadataId, badgeId)
 	if err != nil {
