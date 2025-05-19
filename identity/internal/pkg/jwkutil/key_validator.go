@@ -15,10 +15,22 @@ import (
 
 // ValidatePubKey validates the public key fields of the JWK according to its algorithm.
 func ValidatePubKey(j *types.Jwk) error {
+	if j == nil {
+		return errors.New("jwk is nil")
+	}
+
 	switch strings.ToUpper(j.KTY) {
 	case "RSA":
+		if j.D != "" || j.P != "" || j.Q != "" || j.DP != "" || j.DQ != "" || j.QI != "" {
+			return errors.New("private key fields must not be present in RSA public key")
+		}
+
 		return validateRSAPubKey(j)
 	case "AKP":
+		if j.PRIV != "" {
+			return errors.New("private key field must not be present in AKP public key")
+		}
+
 		return validateAKPPubKey(j)
 	default:
 		return errors.New("unsupported key type for public key validation")
@@ -27,6 +39,10 @@ func ValidatePubKey(j *types.Jwk) error {
 
 // ValidatePrivKey validates the private key fields of the JWK according to its algorithm.
 func ValidatePrivKey(j *types.Jwk) error {
+	if j == nil {
+		return errors.New("jwk is nil")
+	}
+
 	switch strings.ToUpper(j.KTY) {
 	case "RSA":
 		return validateRSAPrivKey(j)

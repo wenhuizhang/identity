@@ -38,6 +38,7 @@ func InternalError(err error) error {
 func newStatusWithDetails(c codes.Code, err error) error {
 	st := status.New(c, err.Error())
 	var errInfo errtypes.ErrorInfo
+
 	if errors.As(err, &errInfo) {
 		st, _ = st.WithDetails(&coreapi.ErrorInfo{
 			Reason: ptrutil.Ptr(coreapi.ErrorReason(errInfo.Reason)),

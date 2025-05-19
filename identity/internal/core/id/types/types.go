@@ -3,6 +3,8 @@
 
 package types
 
+import "strings"
+
 // VerificationMethod expresses verification methods, such as cryptographic
 // public keys, which can be used to authenticate or authorize interactions
 // with the entities represented by the ID. It is a part of the ResolverMetadata.
@@ -48,6 +50,7 @@ type ResolverMetadata struct {
 
 func (r *ResolverMetadata) GetJwks() *Jwks {
 	jwks := Jwks{}
+
 	for _, vm := range r.VerificationMethod {
 		if vm.PublicKeyJwk != nil {
 			jwks.Keys = append(jwks.Keys, vm.PublicKeyJwk)
@@ -113,6 +116,30 @@ type Jwk struct {
 
 	// The first CRT coefficient for the RSA private key.
 	QI string `json:"qi,omitempty"`
+}
+
+// PublicKey returns a copy of the private Jwk containing only the public fields.
+func (j *Jwk) PublicKey() *Jwk {
+	if j == nil {
+		return nil
+	}
+
+	pub := &Jwk{
+		ALG: j.ALG,
+		KTY: j.KTY,
+		USE: j.USE,
+		KID: j.KID,
+	}
+
+	switch strings.ToUpper(j.KTY) {
+	case "RSA":
+		pub.N = j.N
+		pub.E = j.E
+	case "AKP":
+		pub.PUB = j.PUB
+	}
+
+	return pub
 }
 
 // JWKS represents a set of JSON Web Keys (JWKs).
