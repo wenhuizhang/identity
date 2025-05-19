@@ -52,6 +52,7 @@ func Verify(
 	}
 
 	var validatedVC vctypes.VerifiableCredential
+
 	err = json.Unmarshal(raw.Payload(), &validatedVC)
 	if err != nil {
 		return nil, errutil.ErrInfo(

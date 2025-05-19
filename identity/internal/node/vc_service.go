@@ -5,9 +5,11 @@ package node
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/agntcy/identity/internal/core"
+	errcore "github.com/agntcy/identity/internal/core/errors"
 	errtypes "github.com/agntcy/identity/internal/core/errors/types"
 	idcore "github.com/agntcy/identity/internal/core/id"
 	issuercore "github.com/agntcy/identity/internal/core/issuer"
@@ -19,7 +21,11 @@ import (
 )
 
 type VerifiableCredentialService interface {
-	Publish(ctx context.Context, credential *vctypes.EnvelopedCredential, proof *vctypes.Proof) error
+	Publish(
+		ctx context.Context,
+		credential *vctypes.EnvelopedCredential,
+		proof *vctypes.Proof,
+	) error
 }
 
 type verifiableCredentialService struct {
@@ -56,32 +62,12 @@ func (s *verifiableCredentialService) Publish(
 		)
 	}
 
-	log.Debug("Verifying the ID proof and the issuer")
-
-	if proof == nil {
-		return errutil.ErrInfo(
-			errtypes.ERROR_REASON_IDP_REQUIRED,
-			"issuer without external IdP is not implemented",
-			nil,
-		)
-	}
-
-	iss, sub, err := s.verificationService.VerifyProof(ctx, proof)
+	sub, err := s.verifyProof(ctx, proof)
 	if err != nil {
-		return errutil.ErrInfo(errtypes.ERROR_REASON_INVALID_PROOF, err.Error(), err)
+		return err
 	}
 
-	storedIss, err := s.issuerRepository.GetIssuer(ctx, iss)
-	if err != nil {
-		return errutil.ErrInfo(errtypes.ERROR_REASON_INTERNAL, "unexpected error", err)
-	} else if storedIss == nil {
-		return errutil.ErrInfo(
-			errtypes.ERROR_REASON_ISSUER_NOT_REGISTERED,
-			fmt.Sprintf("the issuer %s is not registered", iss),
-			err,
-		)
-	}
-
+	//nolint:godox // I'll fix them in the next PR
 	// TODO: revisit this line after working on a better ID generation
 	id := fmt.Sprintf("DUO-%s", sub)
 
@@ -89,13 +75,15 @@ func (s *verifiableCredentialService) Publish(
 
 	resolverMD, err := s.idRepository.ResolveID(ctx, id)
 	if err != nil {
+		if errors.Is(err, errcore.ErrResourceNotFound) {
+			return errutil.ErrInfo(
+				errtypes.ERROR_REASON_RESOLVER_METADATA_NOT_FOUND,
+				fmt.Sprintf("could not resolve the ID (%s) to a resolver metadata", id),
+				err,
+			)
+		}
+
 		return errutil.ErrInfo(errtypes.ERROR_REASON_INTERNAL, "unexpected error", err)
-	} else if resolverMD == nil {
-		return errutil.ErrInfo(
-			errtypes.ERROR_REASON_RESOLVER_METADATA_NOT_FOUND,
-			fmt.Sprintf("could not resolve the ID (%s) to a resolver metadata", id),
-			err,
-		)
 	}
 
 	var validatedVC *vctypes.VerifiableCredential
@@ -138,4 +126,39 @@ func (s *verifiableCredentialService) Publish(
 	}
 
 	return nil
+}
+
+func (s *verifiableCredentialService) verifyProof(
+	ctx context.Context,
+	proof *vctypes.Proof,
+) (string, error) {
+	log.Debug("Verifying the ID proof and the issuer")
+
+	if proof == nil {
+		return "", errutil.ErrInfo(
+			errtypes.ERROR_REASON_IDP_REQUIRED,
+			"issuer without external IdP is not implemented",
+			nil,
+		)
+	}
+
+	iss, sub, err := s.verificationService.VerifyProof(ctx, proof)
+	if err != nil {
+		return "", errutil.ErrInfo(errtypes.ERROR_REASON_INVALID_PROOF, err.Error(), err)
+	}
+
+	_, err = s.issuerRepository.GetIssuer(ctx, iss)
+	if err != nil {
+		if errors.Is(err, errcore.ErrResourceNotFound) {
+			return "", errutil.ErrInfo(
+				errtypes.ERROR_REASON_ISSUER_NOT_REGISTERED,
+				fmt.Sprintf("the issuer %s is not registered", iss),
+				err,
+			)
+		}
+
+		return "", errutil.ErrInfo(errtypes.ERROR_REASON_INTERNAL, "unexpected error", err)
+	}
+
+	return sub, nil
 }

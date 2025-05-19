@@ -56,15 +56,15 @@ func (v *verificationService) VerifyCommonName(
 	log.Debug("Verifying common name:", *commonName)
 
 	// Extract the hostname from the issuer
-	url, err := url.Parse(issuer)
+	u, err := url.Parse(issuer)
 	if err != nil {
 		return err
 	}
 
-	log.Debug("Issuer hostname:", url.Hostname())
+	log.Debug("Issuer hostname:", u.Hostname())
 
 	// Verify common name is the same as the issuer's hostname
-	if url.Hostname() != *commonName {
+	if u.Hostname() != *commonName {
 		return errutil.Err(nil, "common name does not match issuer")
 	}
 

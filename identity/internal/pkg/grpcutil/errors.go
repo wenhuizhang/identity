@@ -41,13 +41,12 @@ func newStatusWithDetails(c codes.Code, err error) error {
 
 	if errors.As(err, &errInfo) {
 		st, _ = st.WithDetails(&coreapi.ErrorInfo{
+			//nolint:gosec // disable G115
 			Reason: ptrutil.Ptr(coreapi.ErrorReason(errInfo.Reason)),
 		})
 
 		switch errInfo.Reason {
-		case errtypes.ERROR_REASON_UNSPECIFIED:
-			fallthrough
-		case errtypes.ERROR_REASON_INTERNAL:
+		case errtypes.ERROR_REASON_UNSPECIFIED, errtypes.ERROR_REASON_INTERNAL:
 			log.WithFields(logrus.Fields{log.ErrorField: err}).Error(err.Error())
 		default:
 			log.WithFields(logrus.Fields{log.ErrorField: err}).Warn(err.Error())

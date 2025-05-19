@@ -7,6 +7,7 @@ import (
 	"context"
 	"errors"
 
+	errcore "github.com/agntcy/identity/internal/core/errors"
 	issuercore "github.com/agntcy/identity/internal/core/issuer"
 	issuertypes "github.com/agntcy/identity/internal/core/issuer/types"
 	"github.com/agntcy/identity/internal/pkg/errutil"
@@ -54,9 +55,7 @@ func (r *repository) GetIssuer(
 	})
 	if result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-			return nil, errutil.Err(
-				result.Error, "issuer not found",
-			)
+			return nil, errcore.ErrResourceNotFound
 		}
 
 		return nil, errutil.Err(

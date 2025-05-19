@@ -5,11 +5,13 @@ package node
 
 import (
 	"context"
+	"errors"
 
 	"github.com/agntcy/identity/internal/core"
+	errcore "github.com/agntcy/identity/internal/core/errors"
 	errtypes "github.com/agntcy/identity/internal/core/errors/types"
 	idtypes "github.com/agntcy/identity/internal/core/id/types"
-	"github.com/agntcy/identity/internal/core/issuer"
+	issuercore "github.com/agntcy/identity/internal/core/issuer"
 	issuertypes "github.com/agntcy/identity/internal/core/issuer/types"
 	vctypes "github.com/agntcy/identity/internal/core/vc/types"
 	"github.com/agntcy/identity/internal/pkg/errutil"
@@ -29,13 +31,13 @@ type IssuerService interface {
 
 // The issuerService struct implements the IssuerService interface
 type issuerService struct {
-	issuerRepository   issuer.Repository
+	issuerRepository   issuercore.Repository
 	verficationService core.VerificationService
 }
 
 // NewIssuerService creates a new instance of the IssuerService
 func NewIssuerService(
-	issuerRepository issuer.Repository,
+	issuerRepository issuercore.Repository,
 	verficationService core.VerificationService,
 ) IssuerService {
 	return &issuerService{
@@ -148,16 +150,18 @@ func (i *issuerService) GetJwks(
 	// Find the issuer by common name
 	issuer, err := i.issuerRepository.GetIssuer(ctx, commonName)
 	if err != nil {
+		if errors.Is(err, errcore.ErrResourceNotFound) {
+			return nil, errutil.ErrInfo(
+				errtypes.ERROR_REASON_ISSUER_NOT_REGISTERED,
+				"the issuer is not registered",
+				nil,
+			)
+		}
+
 		return nil, errutil.ErrInfo(
 			errtypes.ERROR_REASON_INTERNAL,
 			"unexpected error",
 			err,
-		)
-	} else if issuer == nil {
-		return nil, errutil.ErrInfo(
-			errtypes.ERROR_REASON_ISSUER_NOT_REGISTERED,
-			"the issuer is not registered",
-			nil,
 		)
 	}
 

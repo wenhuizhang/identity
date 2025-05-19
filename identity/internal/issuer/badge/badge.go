@@ -186,7 +186,7 @@ func ForgetBadge(issuerId, metadataId, badgeId string) error {
 
 	// Check if the badge directory exists
 	if _, err := os.Stat(badgeIdDir); os.IsNotExist(err) {
-		return errors.New("Metadata does not exist")
+		return errors.New("metadata does not exist")
 	}
 
 	// Remove the badge directory

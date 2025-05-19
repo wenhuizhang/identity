@@ -83,7 +83,10 @@ func saveMetadata(issuerId string, resolverMetadata *coreV1alpha.ResolverMetadat
 	return os.WriteFile(metadataFilePath, metadataData, internalIssuerConstants.FilePerm)
 }
 
-func GenerateMetadata(issuerId string, idpConfig *internalIssuerTypes.IdpConfig) (*coreV1alpha.ResolverMetadata, error) {
+func GenerateMetadata(
+	issuerId string,
+	idpConfig *internalIssuerTypes.IdpConfig,
+) (*coreV1alpha.ResolverMetadata, error) {
 	// load the issuer from the local storage
 	issuerFilePath, err := issuer.GetIssuerFilePath(issuerId)
 	if err != nil {
@@ -95,9 +98,9 @@ func GenerateMetadata(issuerId string, idpConfig *internalIssuerTypes.IdpConfig)
 		return nil, err
 	}
 
-	// Unmarshal the issuer data
-	var issuer coreV1alpha.Issuer
-	if err := json.Unmarshal(issuerData, &issuer); err != nil {
+	// Unmarshal the iss data
+	var iss coreV1alpha.Issuer
+	if err := json.Unmarshal(issuerData, &iss); err != nil {
 		return nil, err
 	}
 
@@ -108,7 +111,7 @@ func GenerateMetadata(issuerId string, idpConfig *internalIssuerTypes.IdpConfig)
 	}
 
 	generateMetadataRequest := nodeV1alpha.GenerateRequest{
-		Issuer: &issuer,
+		Issuer: &iss,
 		Proof:  &proof,
 	}
 
@@ -191,7 +194,7 @@ func ForgetMetadata(issuerId, metadataId string) error {
 
 	// Check if the metadata directory exists
 	if _, err := os.Stat(metadataIdDir); os.IsNotExist(err) {
-		return errors.New("Metadata does not exist")
+		return errors.New("metadata does not exist")
 	}
 
 	// Remove the metadata directory

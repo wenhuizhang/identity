@@ -5,9 +5,11 @@ package node
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/agntcy/identity/internal/core"
+	errcore "github.com/agntcy/identity/internal/core/errors"
 	errtypes "github.com/agntcy/identity/internal/core/errors/types"
 	idcore "github.com/agntcy/identity/internal/core/id"
 	idtypes "github.com/agntcy/identity/internal/core/id/types"
@@ -20,8 +22,15 @@ import (
 )
 
 type IdService interface {
-	Generate(ctx context.Context, issuer *issuertypes.Issuer, proof *vctypes.Proof) (*idtypes.ResolverMetadata, error)
-	Resolve(ctx context.Context, id string) (*idtypes.ResolverMetadata, error)
+	Generate(
+		ctx context.Context,
+		issuer *issuertypes.Issuer,
+		proof *vctypes.Proof,
+	) (*idtypes.ResolverMetadata, error)
+	Resolve(
+		ctx context.Context,
+		id string,
+	) (*idtypes.ResolverMetadata, error)
 }
 
 type idService struct {
@@ -62,32 +71,14 @@ func (s *idService) Generate(
 		return nil, errutil.ErrInfo(errtypes.ERROR_REASON_INVALID_PROOF, err.Error(), err)
 	}
 
-	log.Debug("Fetching the issuer ", issuer.CommonName)
-
-	iss, err := s.issuerRepository.GetIssuer(ctx, issuer.CommonName)
+	iss, err := s.fetchAndVerifyIssuer(ctx, issuer, proof)
 	if err != nil {
-		return nil, errutil.ErrInfo(errtypes.ERROR_REASON_INTERNAL, "unexpected error", err)
-	} else if iss == nil {
-		return nil, errutil.ErrInfo(
-			errtypes.ERROR_REASON_ISSUER_NOT_REGISTERED,
-			fmt.Sprintf("the issuer %s is not registered", issuer.CommonName),
-			err,
-		)
-	}
-
-	log.Debug("Verifying the issuer's common name")
-
-	err = s.verificationService.VerifyCommonName(ctx, &iss.CommonName, proof)
-	if err != nil {
-		return nil, errutil.ErrInfo(
-			errtypes.ERROR_REASON_INVALID_ISSUER,
-			"failed to verify issuer common name",
-			err,
-		)
+		return nil, err
 	}
 
 	log.Debug("Generating a ResolverMetadata")
 
+	//nolint:godox // I'll fix them in the next PR
 	// TODO: Think of a better way to do this
 	// Also, check when it's Okta or Duo or other IdP
 	id := fmt.Sprintf("DUO-%s", sub)
@@ -121,16 +112,52 @@ func (s *idService) Generate(
 	return resolverMetadata, nil
 }
 
+func (s *idService) fetchAndVerifyIssuer(
+	ctx context.Context,
+	issuer *issuertypes.Issuer,
+	proof *vctypes.Proof,
+) (*issuertypes.Issuer, error) {
+	log.Debug("Fetching the issuer ", issuer.CommonName)
+
+	iss, err := s.issuerRepository.GetIssuer(ctx, issuer.CommonName)
+	if err != nil {
+		if errors.Is(err, errcore.ErrResourceNotFound) {
+			return nil, errutil.ErrInfo(
+				errtypes.ERROR_REASON_ISSUER_NOT_REGISTERED,
+				fmt.Sprintf("the issuer %s is not registered", issuer.CommonName),
+				err,
+			)
+		}
+
+		return nil, errutil.ErrInfo(errtypes.ERROR_REASON_INTERNAL, "unexpected error", err)
+	}
+
+	log.Debug("Verifying the issuer's common name")
+
+	err = s.verificationService.VerifyCommonName(ctx, &iss.CommonName, proof)
+	if err != nil {
+		return nil, errutil.ErrInfo(
+			errtypes.ERROR_REASON_INVALID_ISSUER,
+			"failed to verify issuer common name",
+			err,
+		)
+	}
+
+	return iss, nil
+}
+
 func (s *idService) Resolve(ctx context.Context, id string) (*idtypes.ResolverMetadata, error) {
 	resolverMD, err := s.idRepository.ResolveID(ctx, id)
 	if err != nil {
+		if errors.Is(err, errcore.ErrResourceNotFound) {
+			return nil, errutil.ErrInfo(
+				errtypes.ERROR_REASON_RESOLVER_METADATA_NOT_FOUND,
+				fmt.Sprintf("could not resolve the ID (%s) to a resolver metadata", id),
+				err,
+			)
+		}
+
 		return nil, errutil.ErrInfo(errtypes.ERROR_REASON_INTERNAL, "unexpected error", err)
-	} else if resolverMD == nil {
-		return nil, errutil.ErrInfo(
-			errtypes.ERROR_REASON_RESOLVER_METADATA_NOT_FOUND,
-			fmt.Sprintf("could not resolve the ID (%s) to a resolver metadata", id),
-			err,
-		)
 	}
 
 	return resolverMD, nil

@@ -19,6 +19,7 @@ import (
 	nodeV1alpha "github.com/agntcy/identity/api/agntcy/identity/node/v1alpha1"
 	internalIssuerConstants "github.com/agntcy/identity/internal/issuer/constants"
 	internalIssuerTypes "github.com/agntcy/identity/internal/issuer/types"
+	"github.com/agntcy/identity/internal/pkg/ptrutil"
 )
 
 // getIssuersDirectory returns the path to the issuers directory
@@ -86,8 +87,14 @@ func saveIssuerConfig(identityNodeAddress string, idpConfig internalIssuerTypes.
 	return nil
 }
 
-func RegisterIssuer(identityNodeAddress string, idpConfig internalIssuerTypes.IdpConfig) (*coreV1alpha.Issuer, error) {
+func getMockIssuerInfo() *string {
+	return ptrutil.Ptr("AGNTCY")
+}
 
+func RegisterIssuer(
+	identityNodeAddress string,
+	idpConfig internalIssuerTypes.IdpConfig,
+) (*coreV1alpha.Issuer, error) {
 	// Save the issuer config
 	if err := saveIssuerConfig(identityNodeAddress, idpConfig); err != nil {
 		return nil, err
@@ -99,9 +106,9 @@ func RegisterIssuer(identityNodeAddress string, idpConfig internalIssuerTypes.Id
 	// Check if idp is already registered on the identity node
 	// Register idp on the identity node
 	issuer := coreV1alpha.Issuer{
-		Organization:    func() *string { s := "AGNTCY"; return &s }(),
-		SubOrganization: func() *string { s := "AGNTCY"; return &s }(),
-		CommonName:      func() *string { s := "AGNTCY"; return &s }(),
+		Organization:    getMockIssuerInfo(),
+		SubOrganization: getMockIssuerInfo(),
+		CommonName:      getMockIssuerInfo(),
 	}
 	proof := coreV1alpha.Proof{
 		Type:         func() *string { s := "RsaSignature2018"; return &s }(),
@@ -202,7 +209,7 @@ func ForgetIssuer(issuerId string) error {
 
 	// Check if the issuer directory exists
 	if _, err := os.Stat(issuerDir); os.IsNotExist(err) {
-		return errors.New("Issuer does not exist")
+		return errors.New("issuer does not exist")
 	}
 
 	// Remove the issuer directory
