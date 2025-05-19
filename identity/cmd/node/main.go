@@ -13,8 +13,9 @@ import (
 
 	identityapi "github.com/agntcy/identity/api"
 	"github.com/agntcy/identity/internal/core"
-	"github.com/agntcy/identity/internal/core/issuer"
-	issuertypes "github.com/agntcy/identity/internal/core/issuer/types"
+	idpg "github.com/agntcy/identity/internal/core/id/postgres"
+	issuerpg "github.com/agntcy/identity/internal/core/issuer/postgres"
+	vcpg "github.com/agntcy/identity/internal/core/vc/postgres"
 	issuergrpc "github.com/agntcy/identity/internal/issuer/grpc"
 	"github.com/agntcy/identity/internal/node"
 	nodegrpc "github.com/agntcy/identity/internal/node/grpc"
@@ -93,7 +94,14 @@ func main() {
 	}
 
 	// Migrate the database
-	err = dbContext.AutoMigrate(&issuertypes.Issuer{})
+	err = dbContext.AutoMigrate(
+		&issuerpg.Issuer{},
+		&idpg.ResolverMetadata{},
+		&idpg.Service{},
+		&idpg.VerificationMethod{},
+		&vcpg.VerifiableCredential{},
+		&vcpg.CredentialSchema{},
+	)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -127,16 +135,25 @@ func main() {
 	oidcParser := oidc.NewParser()
 
 	// Create repositories
-	issuerRepository := issuer.NewRepository(dbContext)
+	issuerRepository := issuerpg.NewRepository(dbContext)
+	idRepository := idpg.NewIdRepository(dbContext)
+	vcRepository := vcpg.NewRepository(dbContext)
 
 	// Create internal services
 	verificationService := core.NewVerificationService(oidcParser)
 	nodeIssuerService := node.NewIssuerService(issuerRepository, verificationService)
+	nodeIdService := node.NewIdService(verificationService, idRepository, issuerRepository)
+	nodeVcService := node.NewVerifiableCredentialService(
+		verificationService,
+		idRepository,
+		issuerRepository,
+		vcRepository,
+	)
 
 	register := identityapi.GrpcServiceRegister{
-		IdServiceServer:     nodegrpc.NewIdService(),
+		IdServiceServer:     nodegrpc.NewIdService(nodeIdService),
 		IssuerServiceServer: nodegrpc.NewIssuerService(nodeIssuerService),
-		VcServiceServer:     nodegrpc.NewVcService(),
+		VcServiceServer:     nodegrpc.NewVcService(nodeVcService),
 		LocalServiceServer:  issuergrpc.NewLocalService(),
 	}
 

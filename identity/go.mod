@@ -18,14 +18,15 @@ require (
 )
 
 require (
-	github.com/google/gnostic-models v0.6.9
-	github.com/google/uuid v1.6.0
-	github.com/open-quantum-safe/liboqs-go v0.0.0-20250119172907-28b5301df438
 	github.com/coocood/freecache v1.2.4
 	github.com/coreos/go-oidc v2.3.0+incompatible
 	github.com/eko/gocache/store/freecache/v4 v4.2.2
 	github.com/google/gnostic-models v0.6.9
+	github.com/google/uuid v1.6.0
 	github.com/lestrrat-go/jwx/v3 v3.0.1
+	github.com/lib/pq v1.10.9
+	github.com/open-quantum-safe/liboqs-go v0.0.0-20250119172907-28b5301df438
+	github.com/stretchr/testify v1.10.0
 	golang.org/x/oauth2 v0.26.0
 	gorm.io/driver/postgres v1.5.11
 	gorm.io/gorm v1.26.1

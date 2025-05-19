@@ -5,29 +5,65 @@ package grpc
 
 import (
 	"context"
-	"fmt"
 
+	coreapi "github.com/agntcy/identity/api/agntcy/identity/core/v1alpha1"
 	nodeapi "github.com/agntcy/identity/api/agntcy/identity/node/v1alpha1"
+	errtypes "github.com/agntcy/identity/internal/core/errors/types"
+	issuertypes "github.com/agntcy/identity/internal/core/issuer/types"
+	vctypes "github.com/agntcy/identity/internal/core/vc/types"
+	"github.com/agntcy/identity/internal/node"
+	converters "github.com/agntcy/identity/internal/pkg/converters"
+	"github.com/agntcy/identity/internal/pkg/grpcutil"
 )
 
-type idService struct{}
+type idService struct {
+	idSrv node.IdService
+}
 
-func NewIdService() nodeapi.IdServiceServer {
-	return &idService{}
+func NewIdService(idSrv node.IdService) nodeapi.IdServiceServer {
+	return &idService{
+		idSrv: idSrv,
+	}
 }
 
 // Generate an Id and its corresponding ResolverMetadata for the specified Issuer
-func (idService) Generate(
+func (s *idService) Generate(
 	ctx context.Context,
 	req *nodeapi.GenerateRequest,
 ) (*nodeapi.GenerateResponse, error) {
-	return nil, fmt.Errorf("not implemented")
+	md, err := s.idSrv.Generate(
+		ctx,
+		converters.Convert[issuertypes.Issuer](req.Issuer),
+		converters.Convert[vctypes.Proof](req.Proof),
+	)
+	if err != nil {
+		if errtypes.IsErrorInfo(err, errtypes.ERROR_REASON_INTERNAL) {
+			return nil, grpcutil.InternalError(err)
+		}
+
+		return nil, grpcutil.BadRequestError(err)
+	}
+
+	return &nodeapi.GenerateResponse{
+		ResolverMetadata: converters.Convert[coreapi.ResolverMetadata](md),
+	}, nil
 }
 
 // Resolve a specified Id to its corresponding ResolverMetadata
-func (idService) Resolve(
+func (s *idService) Resolve(
 	ctx context.Context,
 	req *nodeapi.ResolveRequest,
 ) (*nodeapi.ResolveResponse, error) {
-	return nil, fmt.Errorf("not implemented")
+	md, err := s.idSrv.Resolve(ctx, req.Id)
+	if err != nil {
+		if errtypes.IsErrorInfo(err, errtypes.ERROR_REASON_RESOLVER_METADATA_NOT_FOUND) {
+			return nil, grpcutil.NotFoundError(err)
+		}
+
+		return nil, grpcutil.InternalError(err)
+	}
+
+	return &nodeapi.ResolveResponse{
+		ResolverMetadata: converters.Convert[coreapi.ResolverMetadata](md),
+	}, nil
 }

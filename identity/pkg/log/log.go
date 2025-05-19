@@ -12,7 +12,6 @@ import (
 // Commonly used field names here
 const (
 	ErrorField string = "error"
-	DepIDField string = "deployment"
 )
 
 func Init(_ string) {

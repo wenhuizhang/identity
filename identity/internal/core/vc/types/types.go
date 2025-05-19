@@ -102,7 +102,7 @@ type VerifiableCredential struct {
 	ExpirationDate string `json:"expiration_date,omitempty"`
 
 	// https://www.w3.org/TR/vc-data-model-2.0/#data-schemas
-	CredentialSchema []CredentialSchema `json:"credential_schema,omitempty"`
+	CredentialSchema []*CredentialSchema `json:"credential_schema,omitempty"`
 
 	// https://w3id.org/security#proof
 	Proof *Proof `json:"proof,omitempty"`
