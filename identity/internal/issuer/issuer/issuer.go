@@ -55,7 +55,48 @@ func GetIssuerFilePath(issuerId string) (string, error) {
 	return filepath.Join(issuerIdDir, "issuer.json"), nil
 }
 
+func saveIssuerConfig(identityNodeAddress string, idpConfig issuerTypesInternal.IdpConfig) error {
+	// Get the issuer ID directory
+	issuerIdDir, err := GetIssuerIdDirectory(idpConfig.ClientId)
+	if err != nil {
+		return err
+	}
+
+	// Create the issuer ID directory if it doesn't exist
+	if err := os.MkdirAll(issuerIdDir, issuerConstants.DirPerm); err != nil {
+		return err
+	}
+
+	// Create the issuer config
+	issuerConfig := issuerTypesInternal.IssuerConfig{
+		IdentityNodeConfig: &issuerTypesInternal.IdentityNodeConfig{
+			IdentityNodeAddress: identityNodeAddress,
+		},
+		IdpConfig: &idpConfig,
+	}
+
+	// Marshal the config to JSON
+	configData, err := json.Marshal(issuerConfig)
+	if err != nil {
+		return err
+	}
+
+	// Write the config to file
+	configFilePath := filepath.Join(issuerIdDir, "idp_config.json")
+	if err := os.WriteFile(configFilePath, configData, issuerConstants.FilePerm); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func RegisterIssuer(identityNodeAddress string, idpConfig issuerTypesInternal.IdpConfig) (*types.Issuer, error) {
+
+	// Save the issuer config
+	if err := saveIssuerConfig(identityNodeAddress, idpConfig); err != nil {
+		return nil, err
+	}
+
 	// Check connection to identity node
 	// Check connection to idp
 	// Check if idp is already created locally
@@ -101,7 +142,7 @@ func RegisterIssuer(identityNodeAddress string, idpConfig issuerTypesInternal.Id
 		return nil, err
 	}
 
-	// Write the config to file
+	// Write the issuer to file
 	if err := os.WriteFile(issuerFilePath, issuerData, issuerConstants.FilePerm); err != nil {
 		return nil, err
 	}
