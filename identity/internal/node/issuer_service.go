@@ -7,11 +7,11 @@ import (
 	"context"
 
 	"github.com/agntcy/identity/internal/core"
+	errtypes "github.com/agntcy/identity/internal/core/errors/types"
 	"github.com/agntcy/identity/internal/core/issuer"
 	issuertypes "github.com/agntcy/identity/internal/core/issuer/types"
 	vctypes "github.com/agntcy/identity/internal/core/vc/types"
 	"github.com/agntcy/identity/internal/pkg/errutil"
-	"github.com/agntcy/identity/internal/pkg/grpcutil"
 )
 
 // The IssuerService interface defines the Node methods for Issuers
@@ -47,8 +47,10 @@ func (i *issuerService) Register(
 ) (*string, error) {
 	// Validate the issuer
 	if issuer == nil || issuer.CommonName == "" {
-		return nil, grpcutil.BadRequestError(
-			errutil.Err(nil, "issuer is empty or has invalid common name"),
+		return nil, errutil.ErrInfo(
+			errtypes.ERROR_REASON_INVALID_ISSUER,
+			"issuer is empty or has invalid common name",
+			nil,
 		)
 	}
 
@@ -61,8 +63,10 @@ func (i *issuerService) Register(
 		// This service should return an actionable URI
 		// to the caller to finalize the registration
 		// This is currently not supported
-		return nil, grpcutil.UnimplementedError(
-			errutil.Err(nil, "issuer without external IdP is not implemented"),
+		return nil, errutil.ErrInfo(
+			errtypes.ERROR_REASON_IDP_REQUIRED,
+			"issuer without external IdP is not implemented",
+			nil,
 		)
 	} else {
 		verificationErr := i.verficationService.VerifyCommonName(
@@ -72,8 +76,10 @@ func (i *issuerService) Register(
 		)
 
 		if verificationErr != nil {
-			return nil, grpcutil.BadRequestError(
-				errutil.Err(verificationErr, "failed to verify common name"),
+			return nil, errutil.ErrInfo(
+				errtypes.ERROR_REASON_INVALID_ISSUER,
+				"failed to verify common name",
+				verificationErr,
 			)
 		}
 	}
@@ -84,9 +90,7 @@ func (i *issuerService) Register(
 		issuer,
 	)
 	if repositoryErr != nil {
-		return nil, grpcutil.InternalError(
-			errutil.Err(repositoryErr, ""),
-		)
+		return nil, errutil.ErrInfo(errtypes.ERROR_REASON_INTERNAL, "unexpected error", repositoryErr)
 	}
 
 	//nolint:nilnil // Ignore linting for nil return, means no action uri

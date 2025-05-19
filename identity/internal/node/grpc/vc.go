@@ -8,21 +8,43 @@ import (
 	"fmt"
 
 	nodeapi "github.com/agntcy/identity/api/agntcy/identity/node/v1alpha1"
+	errtypes "github.com/agntcy/identity/internal/core/errors/types"
+	vctypes "github.com/agntcy/identity/internal/core/vc/types"
+	"github.com/agntcy/identity/internal/node"
+	"github.com/agntcy/identity/internal/pkg/converters"
+	"github.com/agntcy/identity/internal/pkg/grpcutil"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
-type vcService struct{}
+type vcService struct {
+	vcSrv node.VerifiableCredentialService
+}
 
-func NewVcService() nodeapi.VcServiceServer {
-	return &vcService{}
+func NewVcService(vcSrv node.VerifiableCredentialService) nodeapi.VcServiceServer {
+	return &vcService{
+		vcSrv: vcSrv,
+	}
 }
 
 // Publish an issued Verifiable Credential
-func (vcService) Publish(
+func (s *vcService) Publish(
 	ctx context.Context,
 	req *nodeapi.PublishRequest,
 ) (*emptypb.Empty, error) {
-	return nil, fmt.Errorf("not implemented")
+	err := s.vcSrv.Publish(
+		ctx,
+		converters.Convert[vctypes.EnvelopedCredential](req.Vc),
+		converters.Convert[vctypes.Proof](req.Proof),
+	)
+	if err != nil {
+		if errtypes.IsErrorInfo(err, errtypes.ERROR_REASON_INTERNAL) {
+			return nil, grpcutil.InternalError(err)
+		}
+
+		return nil, grpcutil.BadRequestError(err)
+	}
+
+	return &emptypb.Empty{}, nil
 }
 
 // Verify an existing Verifiable Credential
