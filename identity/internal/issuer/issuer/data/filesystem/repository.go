@@ -15,7 +15,7 @@ import (
 	internalIssuerConstants "github.com/agntcy/identity/internal/issuer/constants"
 	"github.com/agntcy/identity/internal/issuer/issuer/data"
 	internalIssuerTypes "github.com/agntcy/identity/internal/issuer/types"
-	"github.com/agntcy/identity/internal/issuer/vault"
+	vaultFilesystemRepository "github.com/agntcy/identity/internal/issuer/vault/data/filesystem"
 	"github.com/agntcy/identity/internal/pkg/ptrutil"
 )
 
@@ -27,7 +27,7 @@ func NewIssuerFilesystemRepository() data.IssuerRepository {
 
 // getIssuersDirectory returns the path to the issuers directory
 func getIssuersDirectory(vaultId string) (string, error) {
-	vaultIdDir, err := vault.GetVaultIdDirectory(vaultId)
+	vaultIdDir, err := vaultFilesystemRepository.GetVaultIdDirectory(vaultId)
 	if err != nil {
 		return "", err
 	}
