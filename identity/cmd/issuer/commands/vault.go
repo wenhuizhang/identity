@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"os"
 
+	cliCache "github.com/agntcy/identity/cmd/issuer/cache"
 	"github.com/agntcy/identity/cmd/issuer/commands/vaults"
 	"github.com/agntcy/identity/internal/issuer/vault"
 	"github.com/agntcy/identity/internal/issuer/vault/data/filesystem"
@@ -26,6 +27,7 @@ The setup command is used to configure your local environment for the Identity C
 - (connect) Manage your vault and generate cryptographic keys
 - (list) List your existing vault configurations
 - (show) Show details of a vault configuration
+- (load) Load a vault configuration
 - (forget) Forget a vault configuration
 `,
 }
@@ -99,7 +101,48 @@ var vaultForgetCmd = &cobra.Command{
 			fmt.Fprintf(os.Stderr, "Error forgetting vault: %v\n", err)
 			return
 		}
+
+		// Remove the cache
+		err = cliCache.ClearCache()
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error removing cache: %v\n", err)
+			return
+		}
+
 		fmt.Fprintf(os.Stdout, "Forgot vault with ID: %s\n", vaultId)
+	},
+}
+
+var vaultLoadCmd = &cobra.Command{
+	Use:   "load [vault_id]",
+	Short: "Load a vault configuration",
+	Args:  cobra.ExactArgs(1),
+	Run: func(cmd *cobra.Command, args []string) {
+
+		// check the vault id is valid
+		vaultId := args[0]
+		vault, err := vaultService.GetVault(vaultId)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error getting vault: %v\n", err)
+			return
+		}
+		if vault == nil {
+			fmt.Fprintf(os.Stdout, "No vault found with ID: %s\n", vaultId)
+			return
+		}
+
+		// save the vault id to the cache
+		err = cliCache.SaveCache(
+			&cliCache.Cache{
+				VaultId: vault.Id,
+			},
+		)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error saving cache: %v\n", err)
+			return
+		}
+		fmt.Fprintf(os.Stdout, "Loaded vault with ID: %s\n", vaultId)
+
 	},
 }
 
@@ -113,4 +156,5 @@ func init() {
 	VaultCmd.AddCommand(vaultListCmd)
 	VaultCmd.AddCommand(vaultShowCmd)
 	VaultCmd.AddCommand(vaultForgetCmd)
+	VaultCmd.AddCommand(vaultLoadCmd)
 }

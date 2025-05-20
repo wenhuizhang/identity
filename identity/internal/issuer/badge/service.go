@@ -10,7 +10,7 @@ import (
 )
 
 type BadgeService interface {
-	IssueBadge(vaultId, issuerId, metadataId, badgeValueFilePath string) (*coreV1alpha.EnvelopedCredential, error)
+	IssueBadge(vaultId, issuerId, metadataId, badgeValueFilePath string) (string, error)
 	PublishBadge(vaultId, issuerId, metadataId string, badge *coreV1alpha.EnvelopedCredential) (*coreV1alpha.EnvelopedCredential, error)
 	ListBadgeIds(vaultId, issuerId, metadataId string) ([]string, error)
 	GetBadge(vaultId, issuerId, metadataId, badgeId string) (*coreV1alpha.EnvelopedCredential, error)
@@ -29,13 +29,13 @@ func NewBadgeService(
 	}
 }
 
-func (s *badgeService) IssueBadge(vaultId, issuerId, metadataId, badgeValueFilePath string) (*coreV1alpha.EnvelopedCredential, error) {
-	envelopedCredential, err := s.badgeRepository.IssueBadge(vaultId, issuerId, metadataId, badgeValueFilePath)
+func (s *badgeService) IssueBadge(vaultId, issuerId, metadataId, badgeValueFilePath string) (string, error) {
+	badgeId, err := s.badgeRepository.IssueBadge(vaultId, issuerId, metadataId, badgeValueFilePath)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
-	return envelopedCredential, nil
+	return badgeId, nil
 }
 
 func (s *badgeService) PublishBadge(vaultId, issuerId, metadataId string, badge *coreV1alpha.EnvelopedCredential) (*coreV1alpha.EnvelopedCredential, error) {

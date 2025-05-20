@@ -5,5 +5,5 @@ package types
 
 type IdentityNodeConfig struct {
 	// The address of the identity node
-	IdentityNodeAddress string `json:"identity_node_address,omitempty" gorm:"not null;type:varchar(256);"`
+	IdentityNodeAddress string `json:"identity_node_address,omitempty"`
 }

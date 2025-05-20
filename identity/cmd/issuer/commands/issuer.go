@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"os"
 
+	cliCache "github.com/agntcy/identity/cmd/issuer/cache"
 	issuer "github.com/agntcy/identity/internal/issuer/issuer"
 	"github.com/agntcy/identity/internal/issuer/issuer/data/filesystem"
 	issuerTypes "github.com/agntcy/identity/internal/issuer/types"
@@ -26,22 +27,34 @@ The setup command is used to configure your local environment for the Identity C
 - (register) Register with an identity provider, such as DUO or Okta, to manage your Agent and MCP identities
 - (list) List your existing issuer configurations
 - (show) Show details of an issuer configuration
+- (load) Load an issuer configuration
 - (forget) Forget an issuer configuration
 `,
 }
 
 //nolint:mnd // Allow magic number for args
 var issuerRegisterCmd = &cobra.Command{
-	Use:   "register [vault_id] [identity_node_address] [idp_client_id] [idp_client_secret] [idp_issuer_url]",
+	Use:   "register [identity_node_address] [idp_client_id] [idp_client_secret] [idp_issuer_url]",
 	Short: "Register as an Issuer",
 	Long:  "Register as an Issuer with an Identity Network using the provided client ID, client secret, and issuer URL.",
-	Args:  cobra.ExactArgs(5),
+	Args:  cobra.ExactArgs(4),
 	Run: func(cmd *cobra.Command, args []string) {
-		vaultId := args[0]
-		identityNodeAddress := args[1]
-		clientID := args[2]
-		clientSecret := args[3]
-		issuerURL := args[4]
+
+		// load the cache to get the vault id
+		cache, err := cliCache.LoadCache()
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error loading cache: %v\n", err)
+			return
+		}
+		if cache == nil || cache.VaultId == "" {
+			fmt.Fprintf(os.Stderr, "No vault found in cache. Please load an existing vault or connect to a new vault first.\n")
+			return
+		}
+
+		identityNodeAddress := args[0]
+		clientID := args[1]
+		clientSecret := args[2]
+		issuerURL := args[3]
 
 		config := issuerTypes.IdpConfig{
 			ClientId:     clientID,
@@ -49,25 +62,43 @@ var issuerRegisterCmd = &cobra.Command{
 			IssuerUrl:    issuerURL,
 		}
 
-		_, err := issuerService.RegisterIssuer(vaultId, identityNodeAddress, config)
+		issuerId, err := issuerService.RegisterIssuer(cache.VaultId, identityNodeAddress, config)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error registering as an Issuer: %v\n", err)
 			return
 		}
 
-		fmt.Fprintf(os.Stdout, "\nRegistered as an Issuer with Identity Network node at %s\n", identityNodeAddress)
+		fmt.Fprintf(os.Stdout, "\nSuccessfully registered as an Issuer with ID: %s\n", issuerId)
+
+		// Update the cache with the new issuer ID
+		cache.IssuerId = issuerId
+		err = cliCache.SaveCache(cache)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error saving cache: %v\n", err)
+			return
+		}
 	},
 }
 
 var issuerListCmd = &cobra.Command{
-	Use:   "list [vault_id]",
+	Use:   "list",
 	Short: "List your existing issuer configurations",
 	Long:  "List your existing issuer configurations",
-	Args:  cobra.ExactArgs(1),
+	Args:  cobra.ExactArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 
-		vaultId := args[0]
-		issuers, err := issuerService.ListIssuerIds(vaultId)
+		// load the cache to get the vault id
+		cache, err := cliCache.LoadCache()
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error loading cache: %v\n", err)
+			return
+		}
+		if cache == nil || cache.VaultId == "" {
+			fmt.Fprintf(os.Stderr, "No vault found in cache. Please load an existing vault or connect to a new vault first.\n")
+			return
+		}
+
+		issuers, err := issuerService.ListIssuerIds(cache.VaultId)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error listing issuers: %v\n", err)
 			return
@@ -83,15 +114,25 @@ var issuerListCmd = &cobra.Command{
 	},
 }
 var issuerShowCmd = &cobra.Command{
-	Use:   "show [vault_id] [issuer_id]",
+	Use:   "show [issuer_id]",
 	Short: "Show details of an issuer configuration",
-	Args:  cobra.ExactArgs(2),
+	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 
-		vaultId := args[0]
-		issuerId := args[1]
+		// load the cache to get the vault id
+		cache, err := cliCache.LoadCache()
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error loading cache: %v\n", err)
+			return
+		}
+		if cache == nil || cache.VaultId == "" {
+			fmt.Fprintf(os.Stderr, "No vault found in cache. Please load an existing vault or connect to a new vault first.\n")
+			return
+		}
 
-		issuer, err := issuerService.GetIssuer(vaultId, issuerId)
+		issuerId := args[0]
+
+		issuer, err := issuerService.GetIssuer(cache.VaultId, issuerId)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error getting issuer: %v\n", err)
 			return
@@ -111,20 +152,85 @@ var issuerShowCmd = &cobra.Command{
 }
 
 var issuerForgetCmd = &cobra.Command{
-	Use:   "forget [vault_id] [issuer_id]",
+	Use:   "forget [issuer_id]",
 	Short: "Forget an issuer configuration",
-	Args:  cobra.ExactArgs(2),
+	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 
-		vaultId := args[0]
-		issuerId := args[1]
+		// load the cache to get the vault id
+		cache, err := cliCache.LoadCache()
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error loading cache: %v\n", err)
+			return
+		}
+		if cache == nil || cache.VaultId == "" {
+			fmt.Fprintf(os.Stderr, "No vault found in cache. Please load an existing vault or connect to a new vault first.\n")
+			return
+		}
 
-		err := issuerService.ForgetIssuer(vaultId, issuerId)
+		issuerId := args[0]
+
+		err = issuerService.ForgetIssuer(cache.VaultId, issuerId)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error forgetting issuer: %v\n", err)
 			return
 		}
+
+		// If the issuer was the current issuer in the cache, clear the cache of issuer, metadata, and badge IDs
+		if cache.IssuerId == issuerId {
+			cache.IssuerId = ""
+			cache.MetadataId = ""
+			cache.BadgeId = ""
+			err = cliCache.SaveCache(cache)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "Error saving cache: %v\n", err)
+				return
+			}
+		}
+
 		fmt.Fprintf(os.Stdout, "Forgot issuer with ID: %s\n", issuerId)
+	},
+}
+
+var issuerLoadCmd = &cobra.Command{
+	Use:   "load [issuer_id]",
+	Short: "Load an issuer configuration",
+	Args:  cobra.ExactArgs(1),
+	Run: func(cmd *cobra.Command, args []string) {
+
+		// load the cache to get the vault id
+		cache, err := cliCache.LoadCache()
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error loading cache: %v\n", err)
+			return
+		}
+		if cache == nil || cache.VaultId == "" {
+			fmt.Fprintf(os.Stderr, "No vault found in cache. Please load an existing vault or connect to a new vault first.\n")
+			return
+		}
+
+		issuerId := args[0]
+
+		// check the issuer id is valid
+		issuer, err := issuerService.GetIssuer(cache.VaultId, issuerId)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error getting issuer: %v\n", err)
+			return
+		}
+		if issuer == nil {
+			fmt.Fprintf(os.Stderr, "No issuer found with ID: %s\n", issuerId)
+			return
+		}
+
+		// save the issuer id to the cache
+		cache.IssuerId = issuerId
+		err = cliCache.SaveCache(cache)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error saving cache: %v\n", err)
+			return
+		}
+		fmt.Fprintf(os.Stdout, "Loaded issuer with ID: %s\n", issuerId)
+
 	},
 }
 
@@ -133,4 +239,5 @@ func init() {
 	IssuerCmd.AddCommand(issuerListCmd)
 	IssuerCmd.AddCommand(issuerShowCmd)
 	IssuerCmd.AddCommand(issuerForgetCmd)
+	IssuerCmd.AddCommand(issuerLoadCmd)
 }

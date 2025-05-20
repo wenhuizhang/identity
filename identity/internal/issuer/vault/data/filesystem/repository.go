@@ -56,7 +56,7 @@ func saveVaultConfig() error {
 	return nil
 }
 
-func (r *vaultFilesystemRepository) ConnectVault() (*internalIssuerTypes.Vault, error) {
+func (r *vaultFilesystemRepository) ConnectVault(vault *internalIssuerTypes.Vault) (*internalIssuerTypes.Vault, error) {
 
 	// Save the vault config
 	if err := saveVaultConfig(); err != nil {
@@ -64,10 +64,6 @@ func (r *vaultFilesystemRepository) ConnectVault() (*internalIssuerTypes.Vault, 
 	}
 
 	vaultId := uuid.New().String()
-
-	vault := internalIssuerTypes.Vault{
-		Id: vaultId,
-	}
 
 	// Create idp locally in the vault directory
 	vaultsDir, err := GetVaultIdDirectory(vaultId)
@@ -95,7 +91,7 @@ func (r *vaultFilesystemRepository) ConnectVault() (*internalIssuerTypes.Vault, 
 		return nil, err
 	}
 
-	return &vault, nil
+	return vault, nil
 }
 
 func (r *vaultFilesystemRepository) ListVaultIds() ([]string, error) {

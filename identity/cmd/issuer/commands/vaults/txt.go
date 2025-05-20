@@ -7,52 +7,42 @@ import (
 	"fmt"
 	"os"
 
+	cliCache "github.com/agntcy/identity/cmd/issuer/cache"
+	internalIssuerTypes "github.com/agntcy/identity/internal/issuer/types"
+	"github.com/agntcy/identity/internal/issuer/vault"
+	"github.com/agntcy/identity/internal/issuer/vault/data/filesystem"
 	"github.com/spf13/cobra"
 )
 
 var TxtCmd = &cobra.Command{
-	Use:   "txt",
+	Use:   "txt [output_path]",
 	Short: "Connect to .txt file",
 	Long:  "Connect to .txt file",
-}
-
-var txtConnectCmd = &cobra.Command{
-	Use:   "connect",
-	Short: "Connect to an existing .txt file",
+	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Fprintf(os.Stdout, "%s\n", "Connecting to local .txt file")
+
+		vaultFilesystemRepository := filesystem.NewVaultFilesystemRepository()
+		vaultService := vault.NewVaultService(vaultFilesystemRepository)
+
+		txtConfig := internalIssuerTypes.VaultTxt{
+			Path: args[0],
+		}
+		var config internalIssuerTypes.VaultConfig = &txtConfig
+
+		vault, err := vaultService.ConnectVault(internalIssuerTypes.VaultTypeTxt, &config)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error connecting to vault: %v\n", err)
+			return
+		}
+
+		cmd.Printf("Successfully connected to vault: %s\n", vault.Id)
+
+		cliCache.SaveCache(
+			&cliCache.Cache{
+				VaultId: vault.Id,
+			},
+		)
 	},
 }
 
-var txtForgetCmd = &cobra.Command{
-	Use:   "forget",
-	Short: "Forget the current .txt file by deleting the config file",
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Fprintf(os.Stdout, "%s\n", "Forgetting the current .txt file by deleting the config file")
-	},
-}
-
-var txtGenerateCmd = &cobra.Command{
-	Use:   "generate",
-	Short: "Generate keys and store them in your .txt file",
-	Long:  `Generate keys and store them in your .txt file`,
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Fprintf(os.Stdout, "%s\n", "Generating keys and storing them in your .txt file")
-	},
-}
-
-var txtLoadCmd = &cobra.Command{
-	Use:   "load",
-	Short: "Load a key from your .txt file",
-	Long:  `Load a key from your .txt file`,
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Fprintf(os.Stdout, "%s\n", "Loading a key from your .txt file")
-	},
-}
-
-func init() {
-	TxtCmd.AddCommand(txtConnectCmd)
-	TxtCmd.AddCommand(txtForgetCmd)
-	TxtCmd.AddCommand(txtGenerateCmd)
-	TxtCmd.AddCommand(txtLoadCmd)
-}
+func init() {}

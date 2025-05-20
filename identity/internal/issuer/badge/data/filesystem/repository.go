@@ -55,11 +55,11 @@ func GetBadgeFilePath(vaultId, issuerId, metadataId, badgeId string) (string, er
 	return filepath.Join(badgeIdDir, "badge.json"), nil
 }
 
-func (r *badgeFilesystemRepository) IssueBadge(vaultId, issuerId, metadataId, badgeValueFilePath string) (*coreV1alpha.EnvelopedCredential, error) {
+func (r *badgeFilesystemRepository) IssueBadge(vaultId, issuerId, metadataId, badgeValueFilePath string) (string, error) {
 	// Read the badge value from the file
 	badgeValueData, err := os.ReadFile(badgeValueFilePath)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
 	// Convert the badge value to a string
@@ -73,11 +73,11 @@ func (r *badgeFilesystemRepository) IssueBadge(vaultId, issuerId, metadataId, ba
 	// Ensure badges directory exists
 	badgesDir, err := getBadgesDirectory(vaultId, issuerId, metadataId)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
 	if err := os.MkdirAll(badgesDir, internalIssuerConstants.DirPerm); err != nil {
-		return nil, err
+		return "", err
 	}
 
 	// Create badge ID directory with a unique ID
@@ -85,29 +85,29 @@ func (r *badgeFilesystemRepository) IssueBadge(vaultId, issuerId, metadataId, ba
 
 	badgesIdDir, err := GetBadgeIdDirectory(vaultId, issuerId, metadataId, badgeId)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
 	if err := os.MkdirAll(badgesIdDir, internalIssuerConstants.DirPerm); err != nil {
-		return nil, err
+		return "", err
 	}
 
 	// Save badge to file
 	badgeFilePath, err := GetBadgeFilePath(vaultId, issuerId, metadataId, badgeId)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
 	badgeData, err := json.Marshal(&envelopedCredential)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
 	if err := os.WriteFile(badgeFilePath, badgeData, internalIssuerConstants.FilePerm); err != nil {
-		return nil, err
+		return "", err
 	}
 
-	return &envelopedCredential, nil
+	return badgeId, nil
 }
 
 func (r *badgeFilesystemRepository) PublishBadge(vaultId, issuerId, metadataId string, badge *coreV1alpha.EnvelopedCredential) (*coreV1alpha.EnvelopedCredential, error) {

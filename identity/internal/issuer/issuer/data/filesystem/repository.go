@@ -93,12 +93,14 @@ func saveIssuerConfig(vaultId, identityNodeAddress string, idpConfig internalIss
 func getMockIssuerInfo() *string {
 	return ptrutil.Ptr("AGNTCY")
 }
+
 func (r *issuerFilesystemRepository) RegisterIssuer(
 	vaultId, identityNodeAddress string, idpConfig internalIssuerTypes.IdpConfig,
-) (*coreV1alpha.Issuer, error) {
+) (string, error) {
+
 	// Save the issuer config
 	if err := saveIssuerConfig(vaultId, identityNodeAddress, idpConfig); err != nil {
-		return nil, err
+		return "", err
 	}
 
 	// Check connection to identity node
@@ -128,30 +130,30 @@ func (r *issuerFilesystemRepository) RegisterIssuer(
 	// Create idp locally in the issuer directory
 	issuersDir, err := GetIssuerIdDirectory(vaultId, idpConfig.ClientId)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
 	if err := os.MkdirAll(issuersDir, internalIssuerConstants.DirPerm); err != nil {
-		return nil, err
+		return "", err
 	}
 
 	issuerFilePath, err := GetIssuerFilePath(vaultId, idpConfig.ClientId)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
 	// Marshal the config to JSON
 	issuerData, err := json.Marshal(&issuer)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
 	// Write the issuer to file
 	if err := os.WriteFile(issuerFilePath, issuerData, internalIssuerConstants.FilePerm); err != nil {
-		return nil, err
+		return "", err
 	}
 
-	return &issuer, nil
+	return idpConfig.ClientId, nil
 }
 
 func (r *issuerFilesystemRepository) ListIssuerIds(vaultId string) ([]string, error) {
