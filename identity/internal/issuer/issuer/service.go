@@ -16,7 +16,7 @@ import (
 )
 
 type IssuerService interface {
-	RegisterIssuer(vaultId, identityNodeAddress string, idpConfig internalIssuerTypes.IdpConfig) (*coreV1alpha.Issuer, error)
+	RegisterIssuer(vaultId, identityNodeAddress string, idpConfig internalIssuerTypes.IdpConfig) (string, error)
 	ListIssuerIds(vaultId string) ([]string, error)
 	GetIssuer(vaultId, issuerId string) (*coreV1alpha.Issuer, error)
 	ForgetIssuer(vaultId, issuerId string) error
@@ -34,18 +34,18 @@ func NewIssuerService(
 	}
 }
 
-func (s *issuerService) RegisterIssuer(vaultId, identityNodeAddress string, idpConfig internalIssuerTypes.IdpConfig) (*coreV1alpha.Issuer, error) {
-
-	issuer, err := s.issuerRepository.RegisterIssuer(vaultId, identityNodeAddress, idpConfig)
+func (s *issuerService) RegisterIssuer(
+	vaultId, identityNodeAddress string, idpConfig internalIssuerTypes.IdpConfig,
+) (string, error) {
+	issuerId, err := s.issuerRepository.RegisterIssuer(vaultId, identityNodeAddress, idpConfig)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
-	return issuer, nil
+	return issuerId, nil
 }
 
 func (s *issuerService) ListIssuerIds(vaultId string) ([]string, error) {
-
 	issuerIds, err := s.issuerRepository.ListIssuerIds(vaultId)
 	if err != nil {
 		return nil, err
@@ -55,7 +55,6 @@ func (s *issuerService) ListIssuerIds(vaultId string) ([]string, error) {
 }
 
 func (s *issuerService) GetIssuer(vaultId, issuerId string) (*coreV1alpha.Issuer, error) {
-
 	issuer, err := s.issuerRepository.GetIssuer(vaultId, issuerId)
 	if err != nil {
 		return nil, err
@@ -65,7 +64,6 @@ func (s *issuerService) GetIssuer(vaultId, issuerId string) (*coreV1alpha.Issuer
 }
 
 func (s *issuerService) ForgetIssuer(vaultId, issuerId string) error {
-
 	err := s.issuerRepository.ForgetIssuer(vaultId, issuerId)
 	if err != nil {
 		return err

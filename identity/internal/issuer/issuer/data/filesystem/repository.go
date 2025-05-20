@@ -97,7 +97,6 @@ func getMockIssuerInfo() *string {
 func (r *issuerFilesystemRepository) RegisterIssuer(
 	vaultId, identityNodeAddress string, idpConfig internalIssuerTypes.IdpConfig,
 ) (string, error) {
-
 	// Save the issuer config
 	if err := saveIssuerConfig(vaultId, identityNodeAddress, idpConfig); err != nil {
 		return "", err

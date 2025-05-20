@@ -31,7 +31,6 @@ The badge command is used to issue and publish badges for your Agent and MCP Ser
 `,
 }
 
-//nolint:mnd // Allow magic number for args
 var badgeIssueCmd = &cobra.Command{
 	Use:   "issue [badge_file_path]",
 	Short: "Issue a new badge for the current metadata",
@@ -45,15 +44,21 @@ var badgeIssueCmd = &cobra.Command{
 			return
 		}
 		if cache == nil || cache.VaultId == "" {
-			fmt.Fprintf(os.Stderr, "No vault found in cache. Please load an existing vault or connect to a new vault first.\n")
+			fmt.Fprintf(
+				os.Stderr,
+				"No vault found in cache. Please load an existing vault or connect to a new vault first.\n")
 			return
 		}
 		if cache.IssuerId == "" {
-			fmt.Fprintf(os.Stderr, "No issuer found in cache. Please load and existing issuer or register a new issuer first.\n")
+			fmt.Fprintf(
+				os.Stderr,
+				"No issuer found in cache. Please load and existing issuer or register a new issuer first.\n")
 			return
 		}
 		if cache.MetadataId == "" {
-			fmt.Fprintf(os.Stderr, "No metadata found in cache. Please load and existing metadata or generate a new metadata first.\n")
+			fmt.Fprintf(
+				os.Stderr,
+				"No metadata found in cache. Please load and existing metadata or generate a new metadata first.\n")
 			return
 		}
 
@@ -90,19 +95,27 @@ var badgePublishCmd = &cobra.Command{
 			return
 		}
 		if cache == nil || cache.VaultId == "" {
-			fmt.Fprintf(os.Stderr, "No vault found in cache. Please load an existing vault or connect to a new vault first.\n")
+			fmt.Fprintf(
+				os.Stderr,
+				"No vault found in cache. Please load an existing vault or connect to a new vault first.\n")
 			return
 		}
 		if cache.IssuerId == "" {
-			fmt.Fprintf(os.Stderr, "No issuer found in cache. Please load and existing issuer or register a new issuer first.\n")
+			fmt.Fprintf(
+				os.Stderr,
+				"No issuer found in cache. Please load and existing issuer or register a new issuer first.\n")
 			return
 		}
 		if cache.MetadataId == "" {
-			fmt.Fprintf(os.Stderr, "No metadata found in cache. Please load and existing metadata or generate a new metadata first.\n")
+			fmt.Fprintf(
+				os.Stderr,
+				"No metadata found in cache. Please load and existing metadata or generate a new metadata first.\n")
 			return
 		}
 		if cache.BadgeId == "" {
-			fmt.Fprintf(os.Stderr, "No badge found in cache. Please load and existing badge or issue a new badge first.\n")
+			fmt.Fprintf(
+				os.Stderr,
+				"No badge found in cache. Please load and existing badge or issue a new badge first.\n")
 			return
 		}
 
@@ -121,7 +134,6 @@ var badgePublishCmd = &cobra.Command{
 	},
 }
 
-//nolint:mnd // Allow magic number for args
 var badgeListCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List your existing badges for the current metadata",
@@ -135,15 +147,21 @@ var badgeListCmd = &cobra.Command{
 			return
 		}
 		if cache == nil || cache.VaultId == "" {
-			fmt.Fprintf(os.Stderr, "No vault found in cache. Please load an existing vault or connect to a new vault first.\n")
+			fmt.Fprintf(
+				os.Stderr,
+				"No vault found in cache. Please load an existing vault or connect to a new vault first.\n")
 			return
 		}
 		if cache.IssuerId == "" {
-			fmt.Fprintf(os.Stderr, "No issuer found in cache. Please load and existing issuer or register a new issuer first.\n")
+			fmt.Fprintf(
+				os.Stderr,
+				"No issuer found in cache. Please load and existing issuer or register a new issuer first.\n")
 			return
 		}
 		if cache.MetadataId == "" {
-			fmt.Fprintf(os.Stderr, "No metadata found in cache. Please load and existing metadata or generate a new metadata first.\n")
+			fmt.Fprintf(
+				os.Stderr,
+				"No metadata found in cache. Please load and existing metadata or generate a new metadata first.\n")
 			return
 		}
 
@@ -163,7 +181,6 @@ var badgeListCmd = &cobra.Command{
 	},
 }
 
-//nolint:mnd // Allow magic number for args
 var badgeShowCmd = &cobra.Command{
 	Use:   "show [badge_id]",
 	Short: "Show details of the chosen badge",
@@ -177,15 +194,21 @@ var badgeShowCmd = &cobra.Command{
 			return
 		}
 		if cache == nil || cache.VaultId == "" {
-			fmt.Fprintf(os.Stderr, "No vault found in cache. Please load an existing vault or connect to a new vault first.\n")
+			fmt.Fprintf(
+				os.Stderr,
+				"No vault found in cache. Please load an existing vault or connect to a new vault first.\n")
 			return
 		}
 		if cache.IssuerId == "" {
-			fmt.Fprintf(os.Stderr, "No issuer found in cache. Please load and existing issuer or register a new issuer first.\n")
+			fmt.Fprintf(
+				os.Stderr,
+				"No issuer found in cache. Please load and existing issuer or register a new issuer first.\n")
 			return
 		}
 		if cache.MetadataId == "" {
-			fmt.Fprintf(os.Stderr, "No metadata found in cache. Please load and existing metadata or generate a new metadata first.\n")
+			fmt.Fprintf(
+				os.Stderr,
+				"No metadata found in cache. Please load and existing metadata or generate a new metadata first.\n")
 			return
 		}
 
@@ -205,7 +228,6 @@ var badgeShowCmd = &cobra.Command{
 	},
 }
 
-//nolint:mnd // Allow magic number for args
 var badgeForgetCmd = &cobra.Command{
 	Use:   "forget [badge_id]",
 	Short: "Forget the chosen badge",
@@ -219,15 +241,21 @@ var badgeForgetCmd = &cobra.Command{
 			return
 		}
 		if cache == nil || cache.VaultId == "" {
-			fmt.Fprintf(os.Stderr, "No vault found in cache. Please load an existing vault or connect to a new vault first.\n")
+			fmt.Fprintf(
+				os.Stderr,
+				"No vault found in cache. Please load an existing vault or connect to a new vault first.\n")
 			return
 		}
 		if cache.IssuerId == "" {
-			fmt.Fprintf(os.Stderr, "No issuer found in cache. Please load and existing issuer or register a new issuer first.\n")
+			fmt.Fprintf(
+				os.Stderr,
+				"No issuer found in cache. Please load and existing issuer or register a new issuer first.\n")
 			return
 		}
 		if cache.MetadataId == "" {
-			fmt.Fprintf(os.Stderr, "No metadata found in cache. Please load and existing metadata or generate a new metadata first.\n")
+			fmt.Fprintf(
+				os.Stderr,
+				"No metadata found in cache. Please load and existing metadata or generate a new metadata first.\n")
 			return
 		}
 		badgeId := args[1]
@@ -265,15 +293,21 @@ var badgeLoadCmd = &cobra.Command{
 			return
 		}
 		if cache == nil || cache.VaultId == "" {
-			fmt.Fprintf(os.Stderr, "No vault found in cache. Please load an existing vault or connect to a new vault first.\n")
+			fmt.Fprintf(
+				os.Stderr,
+				"No vault found in cache. Please load an existing vault or connect to a new vault first.\n")
 			return
 		}
 		if cache.IssuerId == "" {
-			fmt.Fprintf(os.Stderr, "No issuer found in cache. Please load and existing issuer or register a new issuer first.\n")
+			fmt.Fprintf(
+				os.Stderr,
+				"No issuer found in cache. Please load and existing issuer or register a new issuer first.\n")
 			return
 		}
 		if cache.MetadataId == "" {
-			fmt.Fprintf(os.Stderr, "No metadata found in cache. Please load and existing metadata or generate a new metadata first.\n")
+			fmt.Fprintf(
+				os.Stderr,
+				"No metadata found in cache. Please load and existing metadata or generate a new metadata first.\n")
 			return
 		}
 		badgeId := args[1]
@@ -307,4 +341,5 @@ func init() {
 	BadgeCmd.AddCommand(badgeListCmd)
 	BadgeCmd.AddCommand(badgeShowCmd)
 	BadgeCmd.AddCommand(badgeForgetCmd)
+	BadgeCmd.AddCommand(badgeLoadCmd)
 }

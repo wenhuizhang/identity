@@ -14,6 +14,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+//nolint:mnd // Allow magic number for args
 var OnePasswordCmd = &cobra.Command{
 	Use:   "1password [service-account-token] [vault-id] [item-id]",
 	Short: "Connect to your 1Password account",
@@ -35,7 +36,7 @@ var OnePasswordCmd = &cobra.Command{
 		}
 		var config internalIssuerTypes.VaultConfig = &onePasswordConfig
 
-		vault, err := vaultService.ConnectVault(internalIssuerTypes.VaultType1Password, &config)
+		vault, err := vaultService.ConnectVault(internalIssuerTypes.VaultType1Password, config)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error connecting to vault: %v\n", err)
 			return
@@ -43,11 +44,15 @@ var OnePasswordCmd = &cobra.Command{
 
 		cmd.Printf("Successfully connected to vault: %s\n", vault.Id)
 
-		cliCache.SaveCache(
+		err = cliCache.SaveCache(
 			&cliCache.Cache{
 				VaultId: vault.Id,
 			},
 		)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error saving cache: %v\n", err)
+			return
+		}
 
 	},
 }

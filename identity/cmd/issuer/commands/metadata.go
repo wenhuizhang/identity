@@ -120,7 +120,6 @@ var metadataListCmd = &cobra.Command{
 	},
 }
 
-//nolint:mnd // Allow magic number for args
 var metadataShowCmd = &cobra.Command{
 	Use:   "show [metadata_id]",
 	Short: "Show the chosen metadata",
@@ -158,7 +157,6 @@ var metadataShowCmd = &cobra.Command{
 	},
 }
 
-//nolint:mnd // Allow magic number for args
 var metadataForgetCmd = &cobra.Command{
 	Use:   "forget [metadata_id]",
 	Short: "Forget the chosen metadata",

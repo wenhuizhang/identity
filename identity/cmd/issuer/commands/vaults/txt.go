@@ -29,7 +29,7 @@ var TxtCmd = &cobra.Command{
 		}
 		var config internalIssuerTypes.VaultConfig = &txtConfig
 
-		vault, err := vaultService.ConnectVault(internalIssuerTypes.VaultTypeTxt, &config)
+		vault, err := vaultService.ConnectVault(internalIssuerTypes.VaultTypeTxt, config)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error connecting to vault: %v\n", err)
 			return
@@ -37,11 +37,15 @@ var TxtCmd = &cobra.Command{
 
 		cmd.Printf("Successfully connected to vault: %s\n", vault.Id)
 
-		cliCache.SaveCache(
+		err = cliCache.SaveCache(
 			&cliCache.Cache{
 				VaultId: vault.Id,
 			},
 		)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error saving cache: %v\n", err)
+			return
+		}
 	},
 }
 

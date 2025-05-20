@@ -169,7 +169,9 @@ func (r *metadataFilesystemRepository) ListMetadataIds(vaultId, issuerId string)
 	return metadataIds, nil
 }
 
-func (r *metadataFilesystemRepository) GetMetadata(vaultId, issuerId, metadataId string) (*coreV1alpha.ResolverMetadata, error) {
+func (r *metadataFilesystemRepository) GetMetadata(
+	vaultId, issuerId, metadataId string,
+) (*coreV1alpha.ResolverMetadata, error) {
 	// Get the metadata file path
 	metadataFilePath, err := GetMetadataFilePath(vaultId, issuerId, metadataId)
 	if err != nil {

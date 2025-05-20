@@ -32,7 +32,6 @@ The setup command is used to configure your local environment for the Identity C
 `,
 }
 
-//nolint:mnd // Allow magic number for args
 var vaultConnectCmd = &cobra.Command{
 	Use:   "connect",
 	Short: "Manage your vault and generate cryptographic keys",
@@ -147,7 +146,6 @@ var vaultLoadCmd = &cobra.Command{
 }
 
 func init() {
-
 	// Add the vault types to the vault connect command
 	vaultConnectCmd.AddCommand(vaults.TxtCmd)
 	vaultConnectCmd.AddCommand(vaults.OnePasswordCmd)

@@ -65,6 +65,7 @@ func LoadCache() (*Cache, error) {
 	defer file.Close()
 
 	var cache Cache
+
 	decoder := json.NewDecoder(file)
 	if err := decoder.Decode(&cache); err != nil {
 		return nil, err

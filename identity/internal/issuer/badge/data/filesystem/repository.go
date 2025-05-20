@@ -55,7 +55,9 @@ func GetBadgeFilePath(vaultId, issuerId, metadataId, badgeId string) (string, er
 	return filepath.Join(badgeIdDir, "badge.json"), nil
 }
 
-func (r *badgeFilesystemRepository) IssueBadge(vaultId, issuerId, metadataId, badgeValueFilePath string) (string, error) {
+func (r *badgeFilesystemRepository) IssueBadge(
+	vaultId, issuerId, metadataId, badgeValueFilePath string,
+) (string, error) {
 	// Read the badge value from the file
 	badgeValueData, err := os.ReadFile(badgeValueFilePath)
 	if err != nil {
@@ -110,7 +112,9 @@ func (r *badgeFilesystemRepository) IssueBadge(vaultId, issuerId, metadataId, ba
 	return badgeId, nil
 }
 
-func (r *badgeFilesystemRepository) PublishBadge(vaultId, issuerId, metadataId string, badge *coreV1alpha.EnvelopedCredential) (*coreV1alpha.EnvelopedCredential, error) {
+func (r *badgeFilesystemRepository) PublishBadge(
+	vaultId, issuerId, metadataId string, badge *coreV1alpha.EnvelopedCredential,
+) (*coreV1alpha.EnvelopedCredential, error) {
 	proof := coreV1alpha.Proof{
 		Type:         func() *string { s := "RsaSignature2018"; return &s }(),
 		ProofPurpose: func() *string { s := "assertionMethod"; return &s }(),
@@ -157,7 +161,9 @@ func (r *badgeFilesystemRepository) ListBadgeIds(vaultId, issuerId, metadataId s
 	return badgeIds, nil
 }
 
-func (r *badgeFilesystemRepository) GetBadge(vaultId, issuerId, metadataId, badgeId string) (*coreV1alpha.EnvelopedCredential, error) {
+func (r *badgeFilesystemRepository) GetBadge(
+	vaultId, issuerId, metadataId, badgeId string,
+) (*coreV1alpha.EnvelopedCredential, error) {
 	// Get the badge file path
 	badgeFilePath, err := GetBadgeFilePath(vaultId, issuerId, metadataId, badgeId)
 	if err != nil {

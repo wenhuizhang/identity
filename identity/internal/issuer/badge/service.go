@@ -11,7 +11,9 @@ import (
 
 type BadgeService interface {
 	IssueBadge(vaultId, issuerId, metadataId, badgeValueFilePath string) (string, error)
-	PublishBadge(vaultId, issuerId, metadataId string, badge *coreV1alpha.EnvelopedCredential) (*coreV1alpha.EnvelopedCredential, error)
+	PublishBadge(
+		vaultId, issuerId, metadataId string, badge *coreV1alpha.EnvelopedCredential,
+	) (*coreV1alpha.EnvelopedCredential, error)
 	ListBadgeIds(vaultId, issuerId, metadataId string) ([]string, error)
 	GetBadge(vaultId, issuerId, metadataId, badgeId string) (*coreV1alpha.EnvelopedCredential, error)
 	ForgetBadge(vaultId, issuerId, metadataId, badgeId string) error
@@ -38,8 +40,9 @@ func (s *badgeService) IssueBadge(vaultId, issuerId, metadataId, badgeValueFileP
 	return badgeId, nil
 }
 
-func (s *badgeService) PublishBadge(vaultId, issuerId, metadataId string, badge *coreV1alpha.EnvelopedCredential) (*coreV1alpha.EnvelopedCredential, error) {
-
+func (s *badgeService) PublishBadge(
+	vaultId, issuerId, metadataId string, badge *coreV1alpha.EnvelopedCredential,
+) (*coreV1alpha.EnvelopedCredential, error) {
 	badge, err := s.badgeRepository.PublishBadge(vaultId, issuerId, metadataId, badge)
 	if err != nil {
 		return nil, err
@@ -49,7 +52,6 @@ func (s *badgeService) PublishBadge(vaultId, issuerId, metadataId string, badge 
 }
 
 func (s *badgeService) ListBadgeIds(vaultId, issuerId, metadataId string) ([]string, error) {
-
 	badgeIds, err := s.badgeRepository.ListBadgeIds(vaultId, issuerId, metadataId)
 	if err != nil {
 		return nil, err
@@ -58,8 +60,9 @@ func (s *badgeService) ListBadgeIds(vaultId, issuerId, metadataId string) ([]str
 	return badgeIds, nil
 }
 
-func (s *badgeService) GetBadge(vaultId, issuerId, metadataId, badgeId string) (*coreV1alpha.EnvelopedCredential, error) {
-
+func (s *badgeService) GetBadge(
+	vaultId, issuerId, metadataId, badgeId string,
+) (*coreV1alpha.EnvelopedCredential, error) {
 	badge, err := s.badgeRepository.GetBadge(vaultId, issuerId, metadataId, badgeId)
 	if err != nil {
 		return nil, err
@@ -69,7 +72,6 @@ func (s *badgeService) GetBadge(vaultId, issuerId, metadataId, badgeId string) (
 }
 
 func (s *badgeService) ForgetBadge(vaultId, issuerId, metadataId, badgeId string) error {
-
 	err := s.badgeRepository.ForgetBadge(vaultId, issuerId, metadataId, badgeId)
 	if err != nil {
 		return err

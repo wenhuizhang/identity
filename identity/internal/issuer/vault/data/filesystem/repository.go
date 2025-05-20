@@ -52,12 +52,10 @@ func GetVaultFilePath(vaultId string) (string, error) {
 }
 
 func saveVaultConfig() error {
-
 	return nil
 }
 
 func (r *vaultFilesystemRepository) ConnectVault(vault *internalIssuerTypes.Vault) (*internalIssuerTypes.Vault, error) {
-
 	// Save the vault config
 	if err := saveVaultConfig(); err != nil {
 		return nil, err
@@ -150,7 +148,7 @@ func (r *vaultFilesystemRepository) ForgetVault(vaultId string) error {
 
 	// Check if the vault directory exists
 	if _, err := os.Stat(vaultDir); os.IsNotExist(err) {
-		return errors.New("Vault does not exist")
+		return errors.New("vault does not exist")
 	}
 
 	// Remove the vault directory

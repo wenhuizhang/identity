@@ -10,7 +10,9 @@ import (
 )
 
 type MetadataService interface {
-	GenerateMetadata(vaultId, issuerId string, idpConfig *internalIssuerTypes.IdpConfig) (*coreV1alpha.ResolverMetadata, error)
+	GenerateMetadata(
+		vaultId, issuerId string, idpConfig *internalIssuerTypes.IdpConfig,
+	) (*coreV1alpha.ResolverMetadata, error)
 	ListMetadataIds(vaultId, issuerId string) ([]string, error)
 	GetMetadata(vaultId, issuerId, metadataId string) (*coreV1alpha.ResolverMetadata, error)
 	ForgetMetadata(vaultId, issuerId, metadataId string) error
@@ -28,8 +30,9 @@ func NewMetadataService(
 	}
 }
 
-func (s *metadataService) GenerateMetadata(vaultId, issuerId string, idpConfig *internalIssuerTypes.IdpConfig) (*coreV1alpha.ResolverMetadata, error) {
-
+func (s *metadataService) GenerateMetadata(
+	vaultId, issuerId string, idpConfig *internalIssuerTypes.IdpConfig,
+) (*coreV1alpha.ResolverMetadata, error) {
 	metadata, err := s.metadataRepository.GenerateMetadata(vaultId, issuerId, idpConfig)
 	if err != nil {
 		return nil, err
@@ -39,7 +42,6 @@ func (s *metadataService) GenerateMetadata(vaultId, issuerId string, idpConfig *
 }
 
 func (s *metadataService) ListMetadataIds(vaultId, issuerId string) ([]string, error) {
-
 	metadataIds, err := s.metadataRepository.ListMetadataIds(vaultId, issuerId)
 	if err != nil {
 		return nil, err
@@ -49,7 +51,6 @@ func (s *metadataService) ListMetadataIds(vaultId, issuerId string) ([]string, e
 }
 
 func (s *metadataService) GetMetadata(vaultId, issuerId, metadataId string) (*coreV1alpha.ResolverMetadata, error) {
-
 	metadata, err := s.metadataRepository.GetMetadata(vaultId, issuerId, metadataId)
 	if err != nil {
 		return nil, err
@@ -59,7 +60,6 @@ func (s *metadataService) GetMetadata(vaultId, issuerId, metadataId string) (*co
 }
 
 func (s *metadataService) ForgetMetadata(vaultId, issuerId, metadataId string) error {
-
 	err := s.metadataRepository.ForgetMetadata(vaultId, issuerId, metadataId)
 	if err != nil {
 		return err
