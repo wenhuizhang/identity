@@ -10,8 +10,12 @@ import (
 
 	"github.com/agntcy/identity/cmd/issuer/commands/vaults"
 	"github.com/agntcy/identity/internal/issuer/vault"
+	"github.com/agntcy/identity/internal/issuer/vault/data/filesystem"
 	"github.com/spf13/cobra"
 )
+
+var vaultFilesystemRepository = filesystem.NewVaultFilesystemRepository()
+var vaultService = vault.NewVaultService(vaultFilesystemRepository)
 
 var VaultCmd = &cobra.Command{
 	Use:   "vault",
@@ -42,7 +46,7 @@ var vaultListCmd = &cobra.Command{
 	Short: "List your existing vault configurations",
 	Run: func(cmd *cobra.Command, args []string) {
 
-		vaults, err := vault.ListVaultIds()
+		vaults, err := vaultService.ListVaultIds()
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error listing vaults: %v\n", err)
 			return
@@ -64,7 +68,7 @@ var vaultShowCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 
 		vaultId := args[0]
-		vault, err := vault.GetVault(vaultId)
+		vault, err := vaultService.GetVault(vaultId)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error getting vault: %v\n", err)
 			return
@@ -90,7 +94,7 @@ var vaultForgetCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 
 		vaultId := args[0]
-		err := vault.ForgetVault(vaultId)
+		err := vaultService.ForgetVault(vaultId)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error forgetting vault: %v\n", err)
 			return

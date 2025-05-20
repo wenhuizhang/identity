@@ -10,9 +10,13 @@ import (
 
 	"github.com/spf13/cobra"
 
-	issuerMetadata "github.com/agntcy/identity/internal/issuer/metadata"
+	"github.com/agntcy/identity/internal/issuer/metadata"
+	"github.com/agntcy/identity/internal/issuer/metadata/data/filesystem"
 	issuerTypes "github.com/agntcy/identity/internal/issuer/types"
 )
+
+var metadataFilesystemRepository = filesystem.NewMetadataFilesystemRepository()
+var metadataService = metadata.NewMetadataService(metadataFilesystemRepository)
 
 //nolint:lll // Allow long lines for CLI
 var MetadataCmd = &cobra.Command{
@@ -45,7 +49,7 @@ var metadataGenerateCmd = &cobra.Command{
 			IssuerUrl:    issuerURL,
 		}
 
-		_, err := issuerMetadata.GenerateMetadata(vaultId, issuerId, &idpConfig)
+		_, err := metadataService.GenerateMetadata(vaultId, issuerId, &idpConfig)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error generating metadata: %v\n", err)
 			return
@@ -63,7 +67,7 @@ var metadataListCmd = &cobra.Command{
 		vaultId := args[0]
 		issuerId := args[1]
 
-		metadataIds, err := issuerMetadata.ListMetadataIds(vaultId, issuerId)
+		metadataIds, err := metadataService.ListMetadataIds(vaultId, issuerId)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error listing metadata: %v\n", err)
 			return
@@ -90,7 +94,7 @@ var metadataShowCmd = &cobra.Command{
 		issuerId := args[1]
 		metadataId := args[2]
 
-		metadata, err := issuerMetadata.GetMetadata(vaultId, issuerId, metadataId)
+		metadata, err := metadataService.GetMetadata(vaultId, issuerId, metadataId)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error getting metadata: %v\n", err)
 			return
@@ -114,7 +118,7 @@ var metadataForgetCmd = &cobra.Command{
 		issuerId := args[1]
 		metadataId := args[2]
 
-		err := issuerMetadata.ForgetMetadata(vaultId, issuerId, metadataId)
+		err := metadataService.ForgetMetadata(vaultId, issuerId, metadataId)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error forgetting metadata: %v\n", err)
 			return

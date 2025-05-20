@@ -1,27 +1,29 @@
 // Copyright 2025 AGNTCY Contributors (https://github.com/agntcy)
 // SPDX-License-Identifier: Apache-2.0
 
-package issuer
+package filesystem
 
 import (
-	"context"
 	"encoding/json"
 	"errors"
 	"log"
 	"os"
 	"path/filepath"
 
-	"github.com/coreos/go-oidc"
-	"golang.org/x/oauth2"
-	"golang.org/x/oauth2/clientcredentials"
-
 	coreV1alpha "github.com/agntcy/identity/api/agntcy/identity/core/v1alpha1"
 	nodeV1alpha "github.com/agntcy/identity/api/agntcy/identity/node/v1alpha1"
 	internalIssuerConstants "github.com/agntcy/identity/internal/issuer/constants"
+	"github.com/agntcy/identity/internal/issuer/issuer/data"
 	internalIssuerTypes "github.com/agntcy/identity/internal/issuer/types"
 	"github.com/agntcy/identity/internal/issuer/vault"
 	"github.com/agntcy/identity/internal/pkg/ptrutil"
 )
+
+type issuerFilesystemRepository struct{}
+
+func NewIssuerFilesystemRepository() data.IssuerRepository {
+	return &issuerFilesystemRepository{}
+}
 
 // getIssuersDirectory returns the path to the issuers directory
 func getIssuersDirectory(vaultId string) (string, error) {
@@ -91,10 +93,8 @@ func saveIssuerConfig(vaultId, identityNodeAddress string, idpConfig internalIss
 func getMockIssuerInfo() *string {
 	return ptrutil.Ptr("AGNTCY")
 }
-
-func RegisterIssuer(
-	vaultId, identityNodeAddress string,
-	idpConfig internalIssuerTypes.IdpConfig,
+func (r *issuerFilesystemRepository) RegisterIssuer(
+	vaultId, identityNodeAddress string, idpConfig internalIssuerTypes.IdpConfig,
 ) (*coreV1alpha.Issuer, error) {
 	// Save the issuer config
 	if err := saveIssuerConfig(vaultId, identityNodeAddress, idpConfig); err != nil {
@@ -154,7 +154,7 @@ func RegisterIssuer(
 	return &issuer, nil
 }
 
-func ListIssuerIds(vaultId string) ([]string, error) {
+func (r *issuerFilesystemRepository) ListIssuerIds(vaultId string) ([]string, error) {
 	// Get the issuers directory
 	issuersDir, err := getIssuersDirectory(vaultId)
 	if err != nil {
@@ -179,7 +179,7 @@ func ListIssuerIds(vaultId string) ([]string, error) {
 	return issuerIds, nil
 }
 
-func GetIssuer(vaultId, issuerId string) (*coreV1alpha.Issuer, error) {
+func (r *issuerFilesystemRepository) GetIssuer(vaultId, issuerId string) (*coreV1alpha.Issuer, error) {
 	// Get the issuer file path
 	issuerFilePath, err := GetIssuerFilePath(vaultId, issuerId)
 	if err != nil {
@@ -201,7 +201,7 @@ func GetIssuer(vaultId, issuerId string) (*coreV1alpha.Issuer, error) {
 	return &issuer, nil
 }
 
-func ForgetIssuer(vaultId, issuerId string) error {
+func (r *issuerFilesystemRepository) ForgetIssuer(vaultId, issuerId string) error {
 	// Get the issuer directory
 	issuerDir, err := GetIssuerIdDirectory(vaultId, issuerId)
 	if err != nil {
@@ -219,31 +219,4 @@ func ForgetIssuer(vaultId, issuerId string) error {
 	}
 
 	return nil
-}
-
-func TestIdpConnection(clientId, clientSecret, issuerUrl string) (*oauth2.Token, error) {
-	// Test the connection to the Identity Provider
-	ctx := context.Background()
-
-	// Discover OIDC provider config
-	provider, err := oidc.NewProvider(ctx, issuerUrl)
-	if err != nil {
-		return nil, err
-	}
-
-	// Set up the OAuth2 client credentials config
-	conf := clientcredentials.Config{
-		ClientID:     clientId,
-		ClientSecret: clientSecret,
-		TokenURL:     provider.Endpoint().TokenURL,
-		Scopes:       []string{},
-	}
-
-	// Retrieve a token
-	token, err := conf.Token(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	return token, nil
 }

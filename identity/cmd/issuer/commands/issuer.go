@@ -9,9 +9,13 @@ import (
 	"os"
 
 	issuer "github.com/agntcy/identity/internal/issuer/issuer"
+	"github.com/agntcy/identity/internal/issuer/issuer/data/filesystem"
 	issuerTypes "github.com/agntcy/identity/internal/issuer/types"
 	"github.com/spf13/cobra"
 )
+
+var issuerFilesystemRepository = filesystem.NewIssuerFilesystemRepository()
+var issuerService = issuer.NewIssuerService(issuerFilesystemRepository)
 
 var IssuerCmd = &cobra.Command{
 	Use:   "issuer",
@@ -45,7 +49,7 @@ var issuerRegisterCmd = &cobra.Command{
 			IssuerUrl:    issuerURL,
 		}
 
-		_, err := issuer.RegisterIssuer(vaultId, identityNodeAddress, config)
+		_, err := issuerService.RegisterIssuer(vaultId, identityNodeAddress, config)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error registering as an Issuer: %v\n", err)
 			return
@@ -63,7 +67,7 @@ var issuerListCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 
 		vaultId := args[0]
-		issuers, err := issuer.ListIssuerIds(vaultId)
+		issuers, err := issuerService.ListIssuerIds(vaultId)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error listing issuers: %v\n", err)
 			return
@@ -87,7 +91,7 @@ var issuerShowCmd = &cobra.Command{
 		vaultId := args[0]
 		issuerId := args[1]
 
-		issuer, err := issuer.GetIssuer(vaultId, issuerId)
+		issuer, err := issuerService.GetIssuer(vaultId, issuerId)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error getting issuer: %v\n", err)
 			return
@@ -115,7 +119,7 @@ var issuerForgetCmd = &cobra.Command{
 		vaultId := args[0]
 		issuerId := args[1]
 
-		err := issuer.ForgetIssuer(vaultId, issuerId)
+		err := issuerService.ForgetIssuer(vaultId, issuerId)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error forgetting issuer: %v\n", err)
 			return

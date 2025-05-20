@@ -1,7 +1,7 @@
 // Copyright 2025 AGNTCY Contributors (https://github.com/agntcy)
 // SPDX-License-Identifier: Apache-2.0
 
-package badge
+package filesystem
 
 import (
 	"encoding/json"
@@ -12,16 +12,22 @@ import (
 
 	"github.com/google/uuid"
 
-	internalIssuerMetadata "github.com/agntcy/identity/internal/issuer/metadata"
-
 	coreV1alpha "github.com/agntcy/identity/api/agntcy/identity/core/v1alpha1"
 	nodeV1alpha "github.com/agntcy/identity/api/agntcy/identity/node/v1alpha1"
+	"github.com/agntcy/identity/internal/issuer/badge/data"
 	internalIssuerConstants "github.com/agntcy/identity/internal/issuer/constants"
+	metadataFilesystemRepository "github.com/agntcy/identity/internal/issuer/metadata/data/filesystem"
 )
+
+type badgeFilesystemRepository struct{}
+
+func NewBadgeFilesystemRepository() data.BadgeRepository {
+	return &badgeFilesystemRepository{}
+}
 
 // getBadgeDirectory returns the path to the badges directory for a metadata
 func getBadgesDirectory(vaultId, issuerId, metadataId string) (string, error) {
-	metadataIdDir, err := internalIssuerMetadata.GetMetadataIdDirectory(vaultId, issuerId, metadataId)
+	metadataIdDir, err := metadataFilesystemRepository.GetMetadataIdDirectory(vaultId, issuerId, metadataId)
 	if err != nil {
 		return "", err
 	}
@@ -49,7 +55,7 @@ func GetBadgeFilePath(vaultId, issuerId, metadataId, badgeId string) (string, er
 	return filepath.Join(badgeIdDir, "badge.json"), nil
 }
 
-func IssueBadge(vaultId, issuerId, metadataId, badgeValueFilePath string) (*coreV1alpha.EnvelopedCredential, error) {
+func (r *badgeFilesystemRepository) IssueBadge(vaultId, issuerId, metadataId, badgeValueFilePath string) (*coreV1alpha.EnvelopedCredential, error) {
 	// Read the badge value from the file
 	badgeValueData, err := os.ReadFile(badgeValueFilePath)
 	if err != nil {
@@ -104,12 +110,7 @@ func IssueBadge(vaultId, issuerId, metadataId, badgeValueFilePath string) (*core
 	return &envelopedCredential, nil
 }
 
-func PublishBadge(
-	vaultId,
-	issuerId,
-	metadataId string,
-	badge *coreV1alpha.EnvelopedCredential,
-) (*coreV1alpha.EnvelopedCredential, error) {
+func (r *badgeFilesystemRepository) PublishBadge(vaultId, issuerId, metadataId string, badge *coreV1alpha.EnvelopedCredential) (*coreV1alpha.EnvelopedCredential, error) {
 	proof := coreV1alpha.Proof{
 		Type:         func() *string { s := "RsaSignature2018"; return &s }(),
 		ProofPurpose: func() *string { s := "assertionMethod"; return &s }(),
@@ -126,7 +127,7 @@ func PublishBadge(
 	return badge, nil
 }
 
-func ListBadgeIds(vaultId, issuerId, metadataId string) ([]string, error) {
+func (r *badgeFilesystemRepository) ListBadgeIds(vaultId, issuerId, metadataId string) ([]string, error) {
 	// Get the badges directory
 	badgesDir, err := getBadgesDirectory(vaultId, issuerId, metadataId)
 	if err != nil {
@@ -156,7 +157,7 @@ func ListBadgeIds(vaultId, issuerId, metadataId string) ([]string, error) {
 	return badgeIds, nil
 }
 
-func GetBadge(vaultId, issuerId, metadataId, badgeId string) (*coreV1alpha.EnvelopedCredential, error) {
+func (r *badgeFilesystemRepository) GetBadge(vaultId, issuerId, metadataId, badgeId string) (*coreV1alpha.EnvelopedCredential, error) {
 	// Get the badge file path
 	badgeFilePath, err := GetBadgeFilePath(vaultId, issuerId, metadataId, badgeId)
 	if err != nil {
@@ -178,7 +179,7 @@ func GetBadge(vaultId, issuerId, metadataId, badgeId string) (*coreV1alpha.Envel
 	return &badge, nil
 }
 
-func ForgetBadge(vaultId, issuerId, metadataId, badgeId string) error {
+func (r *badgeFilesystemRepository) ForgetBadge(vaultId, issuerId, metadataId, badgeId string) error {
 	// Get the badge directory
 	badgeIdDir, err := GetBadgeIdDirectory(vaultId, issuerId, metadataId, badgeId)
 	if err != nil {

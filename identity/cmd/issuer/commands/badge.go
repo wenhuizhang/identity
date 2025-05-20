@@ -8,9 +8,13 @@ import (
 	"fmt"
 	"os"
 
-	issuerBadge "github.com/agntcy/identity/internal/issuer/badge"
+	badge "github.com/agntcy/identity/internal/issuer/badge"
+	"github.com/agntcy/identity/internal/issuer/badge/data/filesystem"
 	"github.com/spf13/cobra"
 )
+
+var badgeFilesystemRepository = filesystem.NewBadgeFilesystemRepository()
+var badgeService = badge.NewBadgeService(badgeFilesystemRepository)
 
 var BadgeCmd = &cobra.Command{
 	Use:   "badge",
@@ -36,7 +40,7 @@ var badgeIssueCmd = &cobra.Command{
 		issuerId := args[1]
 		metadataId := args[2]
 		badgeFilePath := args[3]
-		_, err := issuerBadge.IssueBadge(vaultId, issuerId, metadataId, badgeFilePath)
+		_, err := badgeService.IssueBadge(vaultId, issuerId, metadataId, badgeFilePath)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error issuing badge: %v\n", err)
 			return
@@ -57,13 +61,13 @@ var badgePublishCmd = &cobra.Command{
 		metadataId := args[2]
 		badgeId := args[3]
 
-		badge, err := issuerBadge.GetBadge(vaultId, issuerId, metadataId, badgeId)
+		badge, err := badgeService.GetBadge(vaultId, issuerId, metadataId, badgeId)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error getting badge: %v\n", err)
 			return
 		}
 
-		_, err = issuerBadge.PublishBadge(vaultId, issuerId, metadataId, badge)
+		_, err = badgeService.PublishBadge(vaultId, issuerId, metadataId, badge)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error publishing badge: %v\n", err)
 			return
@@ -83,7 +87,7 @@ var badgeListCmd = &cobra.Command{
 		issuerId := args[1]
 		metadataId := args[2]
 
-		badgeIds, err := issuerBadge.ListBadgeIds(vaultId, issuerId, metadataId)
+		badgeIds, err := badgeService.ListBadgeIds(vaultId, issuerId, metadataId)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error listing badges: %v\n", err)
 			return
@@ -111,7 +115,7 @@ var badgeShowCmd = &cobra.Command{
 		metadataId := args[2]
 		badgeId := args[3]
 
-		badge, err := issuerBadge.GetBadge(vaultId, issuerId, metadataId, badgeId)
+		badge, err := badgeService.GetBadge(vaultId, issuerId, metadataId, badgeId)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error getting badge: %v\n", err)
 			return
@@ -137,7 +141,7 @@ var badgeForgetCmd = &cobra.Command{
 		metadataId := args[2]
 		badgeId := args[3]
 
-		err := issuerBadge.ForgetBadge(vaultId, issuerId, metadataId, badgeId)
+		err := badgeService.ForgetBadge(vaultId, issuerId, metadataId, badgeId)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error forgetting badge: %v\n", err)
 			return
