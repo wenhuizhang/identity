@@ -6,17 +6,14 @@ package filesystem
 import (
 	"encoding/json"
 	"errors"
-	"log"
 	"os"
 	"path/filepath"
 
 	coreV1alpha "github.com/agntcy/identity/api/agntcy/identity/core/v1alpha1"
-	nodeV1alpha "github.com/agntcy/identity/api/agntcy/identity/node/v1alpha1"
 	internalIssuerConstants "github.com/agntcy/identity/internal/issuer/constants"
 	"github.com/agntcy/identity/internal/issuer/issuer/data"
 	internalIssuerTypes "github.com/agntcy/identity/internal/issuer/types"
 	vaultFilesystemRepository "github.com/agntcy/identity/internal/issuer/vault/data/filesystem"
-	"github.com/agntcy/identity/internal/pkg/ptrutil"
 )
 
 type issuerFilesystemRepository struct{}
@@ -90,36 +87,9 @@ func saveIssuerConfig(vaultId, identityNodeAddress string, idpConfig internalIss
 	return nil
 }
 
-func getMockIssuerInfo() *string {
-	return ptrutil.Ptr("AGNTCY")
-}
-
 func (r *issuerFilesystemRepository) AddIssuer(
 	vaultId, identityNodeAddress string, idpConfig internalIssuerTypes.IdpConfig, issuer *coreV1alpha.Issuer,
 ) (string, error) {
-	// Save the issuer config
-	if err := saveIssuerConfig(vaultId, identityNodeAddress, idpConfig); err != nil {
-		return "", err
-	}
-
-	// Check connection to identity node
-	// Check connection to idp
-	// Check if idp is already created locally
-	// Check if idp is already registered on the identity node
-	// Register idp on the identity node
-	proof := coreV1alpha.Proof{
-		Type:         func() *string { s := "RsaSignature2018"; return &s }(),
-		ProofPurpose: func() *string { s := "assertionMethod"; return &s }(),
-		ProofValue:   func() *string { s := "example-proof-value"; return &s }(),
-	}
-
-	registerIssuerRequest := nodeV1alpha.RegisterIssuerRequest{
-		Issuer: &issuer,
-		Proof:  &proof,
-	}
-
-	// Call the client to generate metadata
-	log.Default().Println("Registering issuer with request: ", &registerIssuerRequest)
 
 	// Create idp locally in the issuer directory
 	issuersDir, err := GetIssuerIdDirectory(vaultId, idpConfig.ClientId)
