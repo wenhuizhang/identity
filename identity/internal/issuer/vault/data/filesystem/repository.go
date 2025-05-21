@@ -107,7 +107,6 @@ func (r *vaultFilesystemRepository) GetAllVaults() ([]*internalIssuerTypes.Vault
 
 	for _, file := range files {
 		if file.IsDir() {
-
 			// Get the vault file path
 			vault, err := r.GetVault(file.Name())
 			if err != nil {

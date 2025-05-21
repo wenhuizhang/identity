@@ -95,9 +95,8 @@ func getMockIssuerInfo() *string {
 }
 
 func (r *issuerFilesystemRepository) AddIssuer(
-	vaultId, identityNodeAddress string, idpConfig internalIssuerTypes.IdpConfig, issuer coreV1alpha.Issuer,
+	vaultId, identityNodeAddress string, idpConfig internalIssuerTypes.IdpConfig, issuer *coreV1alpha.Issuer,
 ) (string, error) {
-
 	// Save the issuer config
 	if err := saveIssuerConfig(vaultId, identityNodeAddress, idpConfig); err != nil {
 		return "", err
@@ -169,7 +168,6 @@ func (r *issuerFilesystemRepository) GetAllIssuers(vaultId string) ([]*internalI
 
 	for _, file := range files {
 		if file.IsDir() {
-
 			coreIssuer, err := r.GetIssuer(vaultId, file.Name())
 			if err != nil {
 				return nil, err

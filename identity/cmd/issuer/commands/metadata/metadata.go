@@ -117,7 +117,7 @@ var metadataListCmd = &cobra.Command{
 		}
 		fmt.Fprintf(os.Stdout, "%s\n", "Existing metadata ids:")
 		for _, metadata := range allMetadata {
-			fmt.Fprintf(os.Stdout, "- %s\n", metadata.Id)
+			fmt.Fprintf(os.Stdout, "- %s\n", *metadata.Id)
 		}
 	},
 }

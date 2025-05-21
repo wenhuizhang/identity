@@ -57,7 +57,6 @@ func GetBadgeFilePath(vaultId, issuerId, metadataId, badgeId string) (string, er
 func (r *badgeFilesystemRepository) AddBadge(
 	vaultId, issuerId, metadataId string, envelopedCredential *coreV1alpha.EnvelopedCredential,
 ) (string, error) {
-
 	// Ensure badges directory exists
 	badgesDir, err := getBadgesDirectory(vaultId, issuerId, metadataId)
 	if err != nil {
@@ -98,7 +97,9 @@ func (r *badgeFilesystemRepository) AddBadge(
 	return badgeId, nil
 }
 
-func (r *badgeFilesystemRepository) GetAllBadges(vaultId, issuerId, metadataId string) ([]*internalIssuerTypes.Badge, error) {
+func (r *badgeFilesystemRepository) GetAllBadges(
+	vaultId, issuerId, metadataId string,
+) ([]*internalIssuerTypes.Badge, error) {
 	// Get the badges directory
 	badgesDir, err := getBadgesDirectory(vaultId, issuerId, metadataId)
 	if err != nil {

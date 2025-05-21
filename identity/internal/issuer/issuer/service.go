@@ -39,7 +39,6 @@ func NewIssuerService(
 func (s *issuerService) RegisterIssuer(
 	vaultId, identityNodeAddress string, idpConfig internalIssuerTypes.IdpConfig,
 ) (string, error) {
-
 	// Check connection to identity node
 	// Check connection to idp
 	// Check if idp is already created locally
@@ -64,7 +63,7 @@ func (s *issuerService) RegisterIssuer(
 	// Call the client to generate metadata
 	log.Default().Println("Registering issuer with request: ", &registerIssuerRequest)
 
-	issuerId, err := s.issuerRepository.AddIssuer(vaultId, identityNodeAddress, idpConfig, issuer)
+	issuerId, err := s.issuerRepository.AddIssuer(vaultId, identityNodeAddress, idpConfig, &issuer)
 	if err != nil {
 		return "", err
 	}

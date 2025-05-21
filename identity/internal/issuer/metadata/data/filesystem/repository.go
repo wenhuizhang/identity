@@ -53,7 +53,6 @@ func GetMetadataFilePath(vaultId, issuerId, metadataId string) (string, error) {
 func (r *metadataFilesystemRepository) AddMetadata(
 	vaultId, issuerId string, idpConfig *internalIssuerTypes.IdpConfig, resolverMetadata *coreV1alpha.ResolverMetadata,
 ) (*coreV1alpha.ResolverMetadata, error) {
-
 	metadataDir, err := getMetadataDirectory(vaultId, issuerId)
 	if err != nil {
 		return nil, err
@@ -95,10 +94,12 @@ func (r *metadataFilesystemRepository) AddMetadata(
 	}
 
 	metadataConfigFilePath := filepath.Join(metadataIdDir, "idp_config.json")
+
 	metadataConfigData, err := json.Marshal(metadataConfig)
 	if err != nil {
 		return nil, err
 	}
+
 	err = os.WriteFile(metadataConfigFilePath, metadataConfigData, internalIssuerConstants.FilePerm)
 	if err != nil {
 		return nil, err
@@ -107,7 +108,9 @@ func (r *metadataFilesystemRepository) AddMetadata(
 	return resolverMetadata, nil
 }
 
-func (r *metadataFilesystemRepository) GetAllMetadata(vaultId, issuerId string) ([]*coreV1alpha.ResolverMetadata, error) {
+func (r *metadataFilesystemRepository) GetAllMetadata(
+	vaultId, issuerId string,
+) ([]*coreV1alpha.ResolverMetadata, error) {
 	// Get the metadata directory
 	metadataDir, err := getMetadataDirectory(vaultId, issuerId)
 	if err != nil {

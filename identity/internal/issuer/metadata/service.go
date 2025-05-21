@@ -41,7 +41,6 @@ func NewMetadataService(
 func (s *metadataService) GenerateMetadata(
 	vaultId, issuerId string, idpConfig *internalIssuerTypes.IdpConfig,
 ) (*coreV1alpha.ResolverMetadata, error) {
-
 	// load the issuer
 	issuer, err := s.issuerRepository.GetIssuer(vaultId, issuerId)
 	if err != nil {

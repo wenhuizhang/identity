@@ -37,7 +37,6 @@ func NewBadgeService(
 }
 
 func (s *badgeService) IssueBadge(vaultId, issuerId, metadataId, badgeValueFilePath string) (string, error) {
-
 	badgeValueData, err := os.ReadFile(badgeValueFilePath)
 	if err != nil {
 		return "", err
@@ -62,7 +61,6 @@ func (s *badgeService) IssueBadge(vaultId, issuerId, metadataId, badgeValueFileP
 func (s *badgeService) PublishBadge(
 	vaultId, issuerId, metadataId string, badge *coreV1alpha.EnvelopedCredential,
 ) (*coreV1alpha.EnvelopedCredential, error) {
-
 	proof := coreV1alpha.Proof{
 		Type:         func() *string { s := "RsaSignature2018"; return &s }(),
 		ProofPurpose: func() *string { s := "assertionMethod"; return &s }(),

@@ -9,7 +9,9 @@ import (
 )
 
 type IssuerRepository interface {
-	AddIssuer(vaultId, identityNodeAddress string, idpConfig internalIssuerTypes.IdpConfig, issuer coreV1alpha.Issuer) (string, error)
+	AddIssuer(
+		vaultId, identityNodeAddress string, idpConfig internalIssuerTypes.IdpConfig, issuer *coreV1alpha.Issuer,
+	) (string, error)
 	GetAllIssuers(vaultId string) ([]*internalIssuerTypes.Issuer, error)
 	GetIssuer(vaultId, issuerId string) (*coreV1alpha.Issuer, error)
 	RemoveIssuer(vaultId, issuerId string) error
