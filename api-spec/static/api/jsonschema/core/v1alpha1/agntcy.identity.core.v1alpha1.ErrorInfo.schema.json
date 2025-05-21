@@ -27,7 +27,6 @@
             "ERROR_REASON_INVALID_PROOF",
             "ERROR_REASON_RESOLVER_METADATA_NOT_FOUND"
           ],
-          "title": "Error Reason",
           "type": "string"
         },
         {
@@ -36,7 +35,8 @@
           "type": "integer"
         }
       ],
-      "description": "The reason of the error, as defined by the ErrorReason enum.\n This is a constant unique value that helps identify the cause of\n the error."
+      "description": "The reason of the error, as defined by the ErrorReason enum.\n This is a constant unique value that helps identify the cause of\n the error.",
+      "title": "Error Reason"
     }
   },
   "title": "Error Info",

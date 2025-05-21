@@ -35,6 +35,10 @@ const (
 	// OASF: https://schema.oasf.agntcy.org/schema/objects/agent
 	// Google A2A: https://github.com/google/A2A/blob/main/specification/json/a2a.json
 	CredentialContentType_CREDENTIAL_CONTENT_TYPE_AGENT_BADGE CredentialContentType = 1
+	// McpBadge Content Type.
+	// The MCP content representation following a defined schema
+	// The schema is defined in the MCP specification as the MCPServer type
+	CredentialContentType_CREDENTIAL_CONTENT_TYPE_MCP_BADGE CredentialContentType = 2
 )
 
 // Enum value maps for CredentialContentType.
@@ -42,10 +46,12 @@ var (
 	CredentialContentType_name = map[int32]string{
 		0: "CREDENTIAL_CONTENT_TYPE_UNSPECIFIED",
 		1: "CREDENTIAL_CONTENT_TYPE_AGENT_BADGE",
+		2: "CREDENTIAL_CONTENT_TYPE_MCP_BADGE",
 	}
 	CredentialContentType_value = map[string]int32{
 		"CREDENTIAL_CONTENT_TYPE_UNSPECIFIED": 0,
 		"CREDENTIAL_CONTENT_TYPE_AGENT_BADGE": 1,
+		"CREDENTIAL_CONTENT_TYPE_MCP_BADGE":   2,
 	}
 )
 
@@ -608,10 +614,11 @@ const file_agntcy_identity_core_v1alpha1_vc_proto_rawDesc = "" +
 	"\x04type\x18\x02 \x03(\tR\x04type\x12h\n" +
 	"\x15verifiable_credential\x18\x03 \x03(\v23.agntcy.identity.core.v1alpha1.VerifiableCredentialR\x14verifiableCredential\x12?\n" +
 	"\x05proof\x18\x04 \x01(\v2$.agntcy.identity.core.v1alpha1.ProofH\x00R\x05proof\x88\x01\x01B\b\n" +
-	"\x06_proof*i\n" +
+	"\x06_proof*\x90\x01\n" +
 	"\x15CredentialContentType\x12'\n" +
 	"#CREDENTIAL_CONTENT_TYPE_UNSPECIFIED\x10\x00\x12'\n" +
-	"#CREDENTIAL_CONTENT_TYPE_AGENT_BADGE\x10\x01*\x92\x01\n" +
+	"#CREDENTIAL_CONTENT_TYPE_AGENT_BADGE\x10\x01\x12%\n" +
+	"!CREDENTIAL_CONTENT_TYPE_MCP_BADGE\x10\x02*\x92\x01\n" +
 	"\x16CredentialEnvelopeType\x12(\n" +
 	"$CREDENTIAL_ENVELOPE_TYPE_UNSPECIFIED\x10\x00\x12+\n" +
 	"'CREDENTIAL_ENVELOPE_TYPE_EMBEDDED_PROOF\x10\x01\x12!\n" +

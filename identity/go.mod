@@ -25,6 +25,7 @@ require (
 	github.com/google/uuid v1.6.0
 	github.com/lestrrat-go/jwx/v3 v3.0.1
 	github.com/lib/pq v1.10.9
+	github.com/mark3labs/mcp-go v0.29.0
 	github.com/stretchr/testify v1.10.0
 	golang.org/x/oauth2 v0.28.0
 	gorm.io/driver/postgres v1.5.11
@@ -59,7 +60,9 @@ require (
 	github.com/prometheus/common v0.62.0 // indirect
 	github.com/prometheus/procfs v0.15.1 // indirect
 	github.com/segmentio/asm v1.2.0 // indirect
+	github.com/spf13/cast v1.7.1 // indirect
 	github.com/spf13/pflag v1.0.6 // indirect
+	github.com/yosida95/uritemplate/v3 v3.0.2 // indirect
 	go.opentelemetry.io/auto/sdk v1.1.0 // indirect
 	go.opentelemetry.io/otel/metric v1.34.0 // indirect
 	go.uber.org/mock v0.5.0 // indirect
