@@ -76,7 +76,7 @@ var metadataGenerateCmd = &cobra.Command{
 		fmt.Fprintf(os.Stdout, "Generated metadata with ID: %s\n", metadataId)
 
 		// Update the cache with the new metadata ID
-		cache.MetadataId = *metadataId.Id
+		cache.MetadataId = metadataId
 		err = cliCache.SaveCache(cache)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error saving cache: %v\n", err)
@@ -117,7 +117,7 @@ var metadataListCmd = &cobra.Command{
 		}
 		fmt.Fprintf(os.Stdout, "%s\n", "Existing metadata ids:")
 		for _, metadata := range allMetadata {
-			fmt.Fprintf(os.Stdout, "- %s\n", *metadata.Id)
+			fmt.Fprintf(os.Stdout, "- %s\n", metadata.Id)
 		}
 	},
 }
@@ -239,7 +239,7 @@ var metadataLoadCmd = &cobra.Command{
 		}
 
 		// save the metadata id to the cache
-		cache.MetadataId = *metadata.Id
+		cache.MetadataId = metadata.Id
 		err = cliCache.SaveCache(cache)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error saving cache: %v\n", err)

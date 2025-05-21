@@ -4,15 +4,12 @@
 package data
 
 import (
-	coreV1alpha "github.com/agntcy/identity/api/agntcy/identity/core/v1alpha1"
 	internalIssuerTypes "github.com/agntcy/identity/internal/issuer/types"
 )
 
 type IssuerRepository interface {
-	AddIssuer(
-		vaultId, identityNodeAddress string, idpConfig internalIssuerTypes.IdpConfig, issuer *coreV1alpha.Issuer,
-	) (string, error)
+	AddIssuer(vaultId string, issuer *internalIssuerTypes.Issuer) (string, error)
 	GetAllIssuers(vaultId string) ([]*internalIssuerTypes.Issuer, error)
-	GetIssuer(vaultId, issuerId string) (*coreV1alpha.Issuer, error)
+	GetIssuer(vaultId, issuerId string) (*internalIssuerTypes.Issuer, error)
 	RemoveIssuer(vaultId, issuerId string) error
 }

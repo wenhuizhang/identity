@@ -17,9 +17,9 @@ import (
 type MetadataService interface {
 	GenerateMetadata(
 		vaultId, issuerId string, idpConfig *internalIssuerTypes.IdpConfig,
-	) (*coreV1alpha.ResolverMetadata, error)
-	GetAllMetadata(vaultId, issuerId string) ([]*coreV1alpha.ResolverMetadata, error)
-	GetMetadata(vaultId, issuerId, metadataId string) (*coreV1alpha.ResolverMetadata, error)
+	) (string, error)
+	GetAllMetadata(vaultId, issuerId string) ([]*internalIssuerTypes.Metadata, error)
+	GetMetadata(vaultId, issuerId, metadataId string) (*internalIssuerTypes.Metadata, error)
 	ForgetMetadata(vaultId, issuerId, metadataId string) error
 }
 
@@ -40,11 +40,11 @@ func NewMetadataService(
 
 func (s *metadataService) GenerateMetadata(
 	vaultId, issuerId string, idpConfig *internalIssuerTypes.IdpConfig,
-) (*coreV1alpha.ResolverMetadata, error) {
+) (string, error) {
 	// load the issuer
 	issuer, err := s.issuerRepository.GetIssuer(vaultId, issuerId)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
 	proof := coreV1alpha.Proof{
@@ -54,7 +54,7 @@ func (s *metadataService) GenerateMetadata(
 	}
 
 	generateMetadataRequest := nodeV1alpha.GenerateRequest{
-		Issuer: issuer,
+		Issuer: issuer.Issuer,
 		Proof:  &proof,
 	}
 
@@ -68,15 +68,21 @@ func (s *metadataService) GenerateMetadata(
 		AssertionMethod:    nil,
 	}
 
-	metadata, err := s.metadataRepository.AddMetadata(vaultId, issuerId, idpConfig, &resolverMetadata)
-	if err != nil {
-		return nil, err
+	metadata := internalIssuerTypes.Metadata{
+		Id:               uuid.New().String(),
+		ResolverMetadata: &resolverMetadata,
+		IdpConfig:        idpConfig,
 	}
 
-	return metadata, nil
+	metadataId, err := s.metadataRepository.AddMetadata(vaultId, issuerId, &metadata)
+	if err != nil {
+		return "", err
+	}
+
+	return metadataId, nil
 }
 
-func (s *metadataService) GetAllMetadata(vaultId, issuerId string) ([]*coreV1alpha.ResolverMetadata, error) {
+func (s *metadataService) GetAllMetadata(vaultId, issuerId string) ([]*internalIssuerTypes.Metadata, error) {
 	metadata, err := s.metadataRepository.GetAllMetadata(vaultId, issuerId)
 	if err != nil {
 		return nil, err
@@ -85,7 +91,7 @@ func (s *metadataService) GetAllMetadata(vaultId, issuerId string) ([]*coreV1alp
 	return metadata, nil
 }
 
-func (s *metadataService) GetMetadata(vaultId, issuerId, metadataId string) (*coreV1alpha.ResolverMetadata, error) {
+func (s *metadataService) GetMetadata(vaultId, issuerId, metadataId string) (*internalIssuerTypes.Metadata, error) {
 	metadata, err := s.metadataRepository.GetMetadata(vaultId, issuerId, metadataId)
 	if err != nil {
 		return nil, err

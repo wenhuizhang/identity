@@ -4,13 +4,12 @@
 package data
 
 import (
-	coreV1alpha "github.com/agntcy/identity/api/agntcy/identity/core/v1alpha1"
 	internalIssuerTypes "github.com/agntcy/identity/internal/issuer/types"
 )
 
 type BadgeRepository interface {
-	AddBadge(vaultId, issuerId, metadataId string, envelopedCredential *coreV1alpha.EnvelopedCredential) (string, error)
+	AddBadge(vaultId, issuerId, metadataId string, envelopedCredential *internalIssuerTypes.Badge) (string, error)
 	GetAllBadges(vaultId, issuerId, metadataId string) ([]*internalIssuerTypes.Badge, error)
-	GetBadge(vaultId, issuerId, metadataId, badgeId string) (*coreV1alpha.EnvelopedCredential, error)
+	GetBadge(vaultId, issuerId, metadataId, badgeId string) (*internalIssuerTypes.Badge, error)
 	RemoveBadge(vaultId, issuerId, metadataId, badgeId string) error
 }

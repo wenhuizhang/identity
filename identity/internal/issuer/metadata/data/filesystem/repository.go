@@ -11,7 +11,6 @@ import (
 
 	"github.com/agntcy/identity/internal/issuer/metadata/data"
 
-	coreV1alpha "github.com/agntcy/identity/api/agntcy/identity/core/v1alpha1"
 	internalIssuerConstants "github.com/agntcy/identity/internal/issuer/constants"
 	issuerFilesystemRepository "github.com/agntcy/identity/internal/issuer/issuer/data/filesystem"
 	internalIssuerTypes "github.com/agntcy/identity/internal/issuer/types"
@@ -51,66 +50,49 @@ func GetMetadataFilePath(vaultId, issuerId, metadataId string) (string, error) {
 }
 
 func (r *metadataFilesystemRepository) AddMetadata(
-	vaultId, issuerId string, idpConfig *internalIssuerTypes.IdpConfig, resolverMetadata *coreV1alpha.ResolverMetadata,
-) (*coreV1alpha.ResolverMetadata, error) {
+	vaultId, issuerId string, metadata *internalIssuerTypes.Metadata,
+) (string, error) {
 	metadataDir, err := getMetadataDirectory(vaultId, issuerId)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
 	if err := os.MkdirAll(metadataDir, internalIssuerConstants.DirPerm); err != nil {
-		return nil, err
+		return "", err
 	}
 
 	// Create metadata ID directory
-	metadataIdDir, err := GetMetadataIdDirectory(vaultId, issuerId, *resolverMetadata.Id)
+	metadataIdDir, err := GetMetadataIdDirectory(vaultId, issuerId, metadata.Id)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
 	if err := os.MkdirAll(metadataIdDir, internalIssuerConstants.DirPerm); err != nil {
-		return nil, err
+		return "", err
 	}
 
 	// Save metadata to file
-	metadataFilePath, err := GetMetadataFilePath(vaultId, issuerId, *resolverMetadata.Id)
+	metadataFilePath, err := GetMetadataFilePath(vaultId, issuerId, metadata.Id)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
-	metadataData, err := json.Marshal(resolverMetadata)
+	metadataData, err := json.Marshal(metadata)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
 	err = os.WriteFile(metadataFilePath, metadataData, internalIssuerConstants.FilePerm)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
-	// Save the metadata config
-	metadataConfig := internalIssuerTypes.MetadataConfig{
-		IdpConfig: idpConfig,
-	}
-
-	metadataConfigFilePath := filepath.Join(metadataIdDir, "idp_config.json")
-
-	metadataConfigData, err := json.Marshal(metadataConfig)
-	if err != nil {
-		return nil, err
-	}
-
-	err = os.WriteFile(metadataConfigFilePath, metadataConfigData, internalIssuerConstants.FilePerm)
-	if err != nil {
-		return nil, err
-	}
-
-	return resolverMetadata, nil
+	return metadata.Id, nil
 }
 
 func (r *metadataFilesystemRepository) GetAllMetadata(
 	vaultId, issuerId string,
-) ([]*coreV1alpha.ResolverMetadata, error) {
+) ([]*internalIssuerTypes.Metadata, error) {
 	// Get the metadata directory
 	metadataDir, err := getMetadataDirectory(vaultId, issuerId)
 	if err != nil {
@@ -124,7 +106,7 @@ func (r *metadataFilesystemRepository) GetAllMetadata(
 	}
 
 	// List the metadata IDs
-	var allMetadata []*coreV1alpha.ResolverMetadata
+	var allMetadata []*internalIssuerTypes.Metadata
 
 	for _, file := range files {
 		if file.IsDir() {
@@ -143,7 +125,7 @@ func (r *metadataFilesystemRepository) GetAllMetadata(
 
 func (r *metadataFilesystemRepository) GetMetadata(
 	vaultId, issuerId, metadataId string,
-) (*coreV1alpha.ResolverMetadata, error) {
+) (*internalIssuerTypes.Metadata, error) {
 	// Get the metadata file path
 	metadataFilePath, err := GetMetadataFilePath(vaultId, issuerId, metadataId)
 	if err != nil {
@@ -157,7 +139,7 @@ func (r *metadataFilesystemRepository) GetMetadata(
 	}
 
 	// Unmarshal the metadata data
-	var metadata coreV1alpha.ResolverMetadata
+	var metadata internalIssuerTypes.Metadata
 	if err := json.Unmarshal(metadataData, &metadata); err != nil {
 		return nil, err
 	}

@@ -7,12 +7,18 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"regexp"
 
+	coreV1alpha "github.com/agntcy/identity/api/agntcy/identity/core/v1alpha1"
 	cliCache "github.com/agntcy/identity/cmd/issuer/cache"
 	issuer "github.com/agntcy/identity/internal/issuer/issuer"
 	"github.com/agntcy/identity/internal/issuer/issuer/data/filesystem"
 	issuerTypes "github.com/agntcy/identity/internal/issuer/types"
 	"github.com/spf13/cobra"
+)
+
+const (
+	defaultNodeAddress = "http://localhost:4000"
 )
 
 var issuerFilesystemRepository = filesystem.NewIssuerFilesystemRepository()
@@ -34,10 +40,10 @@ The setup command is used to configure your local environment for the Identity C
 
 //nolint:mnd // Allow magic number for args
 var issuerRegisterCmd = &cobra.Command{
-	Use:   "register [identity_node_address] [idp_client_id] [idp_client_secret] [idp_issuer_url]",
+	Use:   "register",
 	Short: "Register as an Issuer",
 	Long:  "Register as an Issuer with an Identity Network using the provided client ID, client secret, and issuer URL.",
-	Args:  cobra.ExactArgs(4),
+	Args:  cobra.ExactArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 
 		// load the cache to get the vault id
@@ -51,18 +57,123 @@ var issuerRegisterCmd = &cobra.Command{
 			return
 		}
 
-		identityNodeAddress := args[0]
-		clientID := args[1]
-		clientSecret := args[2]
-		issuerURL := args[3]
+		// prompt user for identity node address, default to localhost:4000 if not provided
+		fmt.Fprintf(os.Stdout, "Enter the identity node address (default %s: ", defaultNodeAddress)
+		var identityNodeAddress string
+		_, err = fmt.Scanln(&identityNodeAddress)
+		if err != nil {
+			// If the user just presses Enter, identityNodeAddress will be "" and err will be an "unexpected newline" error.
+			// We should allow this and use the default value.
+			if err.Error() != "unexpected newline" {
+				fmt.Fprintf(os.Stderr, "Error reading identity node address: %v\n", err)
+				return
+			}
+		}
 
-		config := issuerTypes.IdpConfig{
+		// If no address was entered (input was empty or only whitespace), use the default.
+		if identityNodeAddress == "" {
+			identityNodeAddress = defaultNodeAddress
+		}
+
+		// prompt user for client ID, client secret, and issuer URL
+		fmt.Fprintf(os.Stdout, "Enter the IdP client ID: ")
+		var clientID string
+		_, err = fmt.Scanln(&clientID)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error reading IdP client ID: %v\n", err)
+			return
+		}
+		if clientID == "" {
+			fmt.Fprintf(os.Stderr, "IdP Client ID cannot be empty.\n")
+			return
+		}
+
+		fmt.Fprintf(os.Stdout, "Enter the IdP client secret: ")
+		var clientSecret string
+		_, err = fmt.Scanln(&clientSecret)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error reading IdP client secret: %v\n", err)
+			return
+		}
+		if clientSecret == "" {
+			fmt.Fprintf(os.Stderr, "IdP Client secret cannot be empty.\n")
+			return
+		}
+
+		fmt.Fprintf(os.Stdout, "Enter the IdP issuer URL: ")
+		var issuerURL string
+		_, err = fmt.Scanln(&issuerURL)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error reading IdP issuer URL: %v\n", err)
+			return
+		}
+		if issuerURL == "" {
+			fmt.Fprintf(os.Stderr, "IdP issuer URL cannot be empty.\n")
+			return
+		}
+
+		idpConfig := issuerTypes.IdpConfig{
 			ClientId:     clientID,
 			ClientSecret: clientSecret,
 			IssuerUrl:    issuerURL,
 		}
 
-		issuerId, err := issuerService.RegisterIssuer(cache.VaultId, identityNodeAddress, config)
+		// extract the root url from the issuer URL as the common name
+		commonNamePattern := `^https?://([^/]+)`
+		re := regexp.MustCompile(commonNamePattern)
+		commonNameMatches := re.FindStringSubmatch(idpConfig.IssuerUrl)
+		if len(commonNameMatches) < 2 {
+			fmt.Fprintf(os.Stderr, "Error extracting common name from issuer URL: %s\n", idpConfig.IssuerUrl)
+			return
+		}
+		commonName := commonNameMatches[1]
+
+		// prompt user for organization and sub-organization
+		fmt.Fprintf(os.Stdout, "Enter your organization name: ")
+		var organization string
+		_, err = fmt.Scanln(&organization)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error reading organization name: %v\n", err)
+			return
+		}
+		if organization == "" {
+			fmt.Fprintf(os.Stderr, "Organization name cannot be empty.\n")
+			return
+		}
+		fmt.Fprintf(os.Stdout, "Enter your sub-organization name (default %s): ", organization)
+		var subOrganization string
+		_, err = fmt.Scanln(&subOrganization)
+		if err != nil {
+			// If the user just presses Enter, subOrganization will be "" and err will be an "unexpected newline" error.
+			// We should allow this and use the organization default value.
+			if err.Error() != "unexpected newline" {
+				fmt.Fprintf(os.Stderr, "Error reading sub-organization name: %v\n", err)
+				return
+			}
+		}
+		// If no sub-organization was entered (input was empty or only whitespace), use the organization as the default.
+		if subOrganization == "" {
+			subOrganization = organization
+		}
+
+		coreIssuer := coreV1alpha.Issuer{
+			Organization:    &organization,
+			SubOrganization: &subOrganization,
+			CommonName:      &commonName,
+		}
+
+		identityNodeConfig := issuerTypes.IdentityNodeConfig{
+			IdentityNodeAddress: identityNodeAddress,
+		}
+
+		issuer := issuerTypes.Issuer{
+			Id:                 idpConfig.ClientId,
+			Issuer:             &coreIssuer,
+			IdentityNodeConfig: &identityNodeConfig,
+			IdpConfig:          &idpConfig,
+		}
+
+		issuerId, err := issuerService.RegisterIssuer(cache.VaultId, &issuer)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error registering as an Issuer: %v\n", err)
 			return

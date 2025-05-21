@@ -32,7 +32,7 @@ type Vault struct {
 
 type VaultTxt struct {
 	// The text file vault path
-	Path string `json:"path,omitempty"`
+	FilePath string `json:"path,omitempty"`
 }
 
 // GetVaultType returns the type of this vault implementation

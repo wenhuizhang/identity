@@ -8,7 +8,7 @@ import (
 )
 
 type VaultRepository interface {
-	AddVault(vault *internalIssuerTypes.Vault) (*internalIssuerTypes.Vault, error)
+	AddVault(vault *internalIssuerTypes.Vault) (string, error)
 	GetAllVaults() ([]*internalIssuerTypes.Vault, error)
 	GetVault(vaultId string) (*internalIssuerTypes.Vault, error)
 	RemoveVault(vaultId string) error

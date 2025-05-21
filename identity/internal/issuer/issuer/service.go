@@ -18,9 +18,9 @@ import (
 )
 
 type IssuerService interface {
-	RegisterIssuer(vaultId, identityNodeAddress string, idpConfig internalIssuerTypes.IdpConfig) (string, error)
+	RegisterIssuer(vaultId string, issuer *internalIssuerTypes.Issuer) (string, error)
 	GetAllIssuers(vaultId string) ([]*internalIssuerTypes.Issuer, error)
-	GetIssuer(vaultId, issuerId string) (*coreV1alpha.Issuer, error)
+	GetIssuer(vaultId, issuerId string) (*internalIssuerTypes.Issuer, error)
 	ForgetIssuer(vaultId, issuerId string) error
 }
 
@@ -37,18 +37,13 @@ func NewIssuerService(
 }
 
 func (s *issuerService) RegisterIssuer(
-	vaultId, identityNodeAddress string, idpConfig internalIssuerTypes.IdpConfig,
+	vaultId string, issuer *internalIssuerTypes.Issuer,
 ) (string, error) {
 	// Check connection to identity node
 	// Check connection to idp
 	// Check if idp is already created locally
 	// Check if idp is already registered on the identity node
 	// Register idp on the identity node
-	issuer := coreV1alpha.Issuer{
-		Organization:    func() *string { s := "AGNTCY1"; return &s }(),
-		SubOrganization: func() *string { s := "AGNTCY2"; return &s }(),
-		CommonName:      func() *string { s := "AGNTCY3"; return &s }(),
-	}
 	proof := coreV1alpha.Proof{
 		Type:         func() *string { s := "RsaSignature2018"; return &s }(),
 		ProofPurpose: func() *string { s := "assertionMethod"; return &s }(),
@@ -56,14 +51,14 @@ func (s *issuerService) RegisterIssuer(
 	}
 
 	registerIssuerRequest := nodeV1alpha.RegisterIssuerRequest{
-		Issuer: &issuer,
+		Issuer: issuer.Issuer,
 		Proof:  &proof,
 	}
 
 	// Call the client to generate metadata
 	log.Default().Println("Registering issuer with request: ", &registerIssuerRequest)
 
-	issuerId, err := s.issuerRepository.AddIssuer(vaultId, identityNodeAddress, idpConfig, &issuer)
+	issuerId, err := s.issuerRepository.AddIssuer(vaultId, issuer)
 	if err != nil {
 		return "", err
 	}
@@ -80,7 +75,7 @@ func (s *issuerService) GetAllIssuers(vaultId string) ([]*internalIssuerTypes.Is
 	return issuers, nil
 }
 
-func (s *issuerService) GetIssuer(vaultId, issuerId string) (*coreV1alpha.Issuer, error) {
+func (s *issuerService) GetIssuer(vaultId, issuerId string) (*internalIssuerTypes.Issuer, error) {
 	issuer, err := s.issuerRepository.GetIssuer(vaultId, issuerId)
 	if err != nil {
 		return nil, err
