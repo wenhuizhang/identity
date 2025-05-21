@@ -86,20 +86,20 @@ func (i *issuerService) Register(
 			"issuer without external IdP is not implemented",
 			nil,
 		)
-	} else {
-		verificationErr := i.verficationService.VerifyCommonName(
-			ctx,
-			&issuer.CommonName,
-			proof,
-		)
+	}
 
-		if verificationErr != nil {
-			return nil, errutil.ErrInfo(
-				errtypes.ERROR_REASON_INVALID_ISSUER,
-				"failed to verify common name",
-				verificationErr,
-			)
-		}
+	verificationErr := i.verficationService.VerifyCommonName(
+		ctx,
+		&issuer.CommonName,
+		proof,
+	)
+
+	if verificationErr != nil {
+		return nil, errutil.ErrInfo(
+			errtypes.ERROR_REASON_INVALID_ISSUER,
+			"failed to verify common name",
+			verificationErr,
+		)
 	}
 
 	// Check if issuer already exists

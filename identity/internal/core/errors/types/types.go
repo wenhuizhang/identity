@@ -58,8 +58,14 @@ const (
 	// The proof is invalid
 	ERROR_REASON_INVALID_PROOF
 
+	// The proof type is not supported
+	ERROR_REASON_UNSUPPORTED_PROOF
+
 	// Unable to resolve an ID to a ResolverMetadata
 	ERROR_REASON_RESOLVER_METADATA_NOT_FOUND
+
+	// Unknown Identity Provider
+	ERROR_REASON_UNKNOWN_IDP
 )
 
 // Describes the cause of the error with structured details.

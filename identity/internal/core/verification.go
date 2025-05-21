@@ -7,18 +7,11 @@ import (
 	"context"
 	"fmt"
 	"net/url"
-	"slices"
-	"strings"
 
 	vctypes "github.com/agntcy/identity/internal/core/vc/types"
 	"github.com/agntcy/identity/internal/pkg/errutil"
 	"github.com/agntcy/identity/internal/pkg/oidc"
 	"github.com/agntcy/identity/pkg/log"
-)
-
-const (
-	// ProofTypeJWT is the proof type for JWT
-	ProofTypeJWT = "JWT,JWTToken,Jwk,JwkToken,JwtToken,JwkToken,Jwt"
 )
 
 // The VerificationService interface defines the core methods for
@@ -87,15 +80,15 @@ func (v *verificationService) VerifyProof(
 	log.Debug("Verifying proof of type", proof.Type)
 
 	// Check the proof type
-	if slices.Contains(strings.Split(ProofTypeJWT, ","), proof.Type) {
+	if proof.IsJWT() {
 		// Verify the JWT proof
-		claims, err := v.oidcParser.ParseJwt(ctx, &proof.ProofValue)
+		jwt, err := v.oidcParser.ParseJwt(ctx, &proof.ProofValue)
 		if err != nil {
 			return "", "", err
 		}
 
 		// Return the issuer and subject
-		return claims.Issuer, claims.Subject, nil
+		return jwt.Claims.Issuer, jwt.Claims.Subject, nil
 	}
 
 	return "", "", errutil.Err(nil, fmt.Sprintf("unsupported proof type '%s'", proof.Type))

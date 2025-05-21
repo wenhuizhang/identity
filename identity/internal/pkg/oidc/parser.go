@@ -25,6 +25,24 @@ type Claims struct {
 	Subject string `json:"sub"`
 }
 
+type ProviderName int
+
+const (
+	UnknownProviderName ProviderName = iota
+	OktaProviderName
+	DuoProviderName
+)
+
+type ParsedJWT struct {
+	Claims   *Claims
+	Provider ProviderName
+}
+
+type providerMetadata struct {
+	Issuer  string `json:"issuer"`
+	JWKSURL string `json:"jwks_uri"`
+}
+
 const defaultCacheSize = 10 * 1024 * 1024 // 10MB
 const defaultCacheExpiration = 24         // 24 hours
 
@@ -34,7 +52,7 @@ type CachedJwks struct {
 
 // The Parser defines different methods for the PARSER standard
 type Parser interface {
-	ParseJwt(ctx context.Context, jwtString *string) (*Claims, error)
+	ParseJwt(ctx context.Context, jwtString *string) (*ParsedJWT, error)
 }
 
 // The parser struct implements the Parser interface
@@ -56,7 +74,7 @@ func NewParser() Parser {
 }
 
 // ParseJwt parses the JWT, validates the signature and returns the claims
-func (p *parser) ParseJwt(ctx context.Context, jwtString *string) (*Claims, error) {
+func (p *parser) ParseJwt(ctx context.Context, jwtString *string) (*ParsedJWT, error) {
 	// Check if the JWT string is empty
 	if jwtString == nil || *jwtString == "" {
 		return nil, errutil.Err(nil, "JWT string is empty")
@@ -75,8 +93,18 @@ func (p *parser) ParseJwt(ctx context.Context, jwtString *string) (*Claims, erro
 		return nil, errutil.Err(nil, "failed to decode JWT: missing 'iss' claim")
 	}
 
+	provider, err := p.getProviderMetadata(ctx, issuer)
+	if err != nil {
+		return nil, err
+	}
+
 	// Get the JWKS from the issuer
-	jwks, err := p.getJwks(ctx, issuer)
+	jwks, err := p.getJwks(ctx, provider)
+	if err != nil {
+		return nil, err
+	}
+
+	providerName, err := p.detectProviderName(ctx, provider)
 	if err != nil {
 		return nil, err
 	}
@@ -93,9 +121,12 @@ func (p *parser) ParseJwt(ctx context.Context, jwtString *string) (*Claims, erro
 		return nil, errutil.Err(nil, "failed to decode JWT: missing 'sub' claim")
 	}
 
-	return &Claims{
-		Issuer:  issuer,
-		Subject: subject,
+	return &ParsedJWT{
+		Claims: &Claims{
+			Issuer:  issuer,
+			Subject: subject,
+		},
+		Provider: providerName,
 	}, nil
 }
 
@@ -103,50 +134,37 @@ func (p *parser) getWellKnownURL(issuer string) string {
 	return issuer + "/.well-known/openid-configuration"
 }
 
-func (p *parser) getJwksURI(ctx context.Context, issuer string) (*string, error) {
+func (p *parser) getProviderMetadata(ctx context.Context, issuer string) (*providerMetadata, error) {
 	// Get the raw data from the issuer
-	var metadata map[string]string
+	var metadata providerMetadata
 
 	// Get the well-known URL from the issuer
 	wellKnownURL := p.getWellKnownURL(issuer)
 	log.Debug("Getting metadata from issuer:", issuer, " with URL:", wellKnownURL)
 
 	// Get the metadata from the issuer
-	httputil.GetData(ctx, wellKnownURL, &metadata)
+	err := httputil.GetJSON(ctx, wellKnownURL, &metadata)
+	if err != nil {
+		return nil, errutil.Err(err, "failed to get metadata from issuer")
+	}
 
 	log.Debug("Got metadata from issuer:", metadata)
 
-	if metadata == nil {
-		return nil, errutil.Err(nil, "failed to get metadata from issuer")
-	}
-
-	// Get the JWKS URI from the metadata
-	jwksURI, ok := metadata["jwks_uri"]
-	if !ok {
-		return nil, errutil.Err(nil, "failed to decode JWT: missing 'jwks_uri' from metadata")
-	}
-
-	return &jwksURI, nil
+	return &metadata, nil
 }
 
-func (p *parser) getJwks(ctx context.Context, issuer string) (jwk.Set, error) {
+func (p *parser) getJwks(ctx context.Context, provider *providerMetadata) (jwk.Set, error) {
 	// Try to get the cached JWKS
-	cachedEntry, found := identitycache.GetFromCache[CachedJwks](ctx, p.jwksCache, issuer)
+	cachedEntry, found := identitycache.GetFromCache[CachedJwks](ctx, p.jwksCache, provider.Issuer)
 	if found {
 		return p.parseJwks(&cachedEntry.Jwks)
-	}
-
-	// Get the JWKS URI from the issuer
-	jwksURI, err := p.getJwksURI(ctx, issuer)
-	if err != nil {
-		return nil, err
 	}
 
 	// Get the raw data from the JWKS URI
 	var jwksString string
 
-	// Get the metadata from the issuer
-	err = httputil.GetRawDataWithHeaders(ctx, *jwksURI, nil, &jwksString)
+	// Get the JWKs
+	err := httputil.GetWithRawBody(ctx, provider.JWKSURL, nil, &jwksString)
 	if err != nil {
 		return nil, errutil.Err(err, "failed to get JWKS from issuer")
 	}
@@ -157,7 +175,10 @@ func (p *parser) getJwks(ctx context.Context, issuer string) (jwk.Set, error) {
 	}
 
 	// Cache the JWKS
-	_ = identitycache.AddToCache(ctx, p.jwksCache, issuer, &CachedJwks{Jwks: jwksString})
+	err = identitycache.AddToCache(ctx, p.jwksCache, provider.Issuer, &CachedJwks{Jwks: jwksString})
+	if err != nil {
+		log.Warn(err)
+	}
 
 	return jwks, nil
 }
