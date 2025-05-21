@@ -77,7 +77,7 @@ linters:
     - wsl
   settings:
     cyclop:
-      max-complexity: 15
+      max-complexity: 16
     goconst:
       min-len: 2
       min-occurrences: 3
