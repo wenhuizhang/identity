@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/agntcy/identity/internal/issuer/mcp"
+	mcptesting "github.com/agntcy/identity/internal/core/mcp/testing"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -20,7 +20,7 @@ func TestShouldDiscoverADeployedServer(t *testing.T) {
 	t.Parallel()
 
 	// Create a new discovery client
-	discoveryClient := mcp.NewDiscoveryClient()
+	discoveryClient := mcptesting.NewFakeDiscoveryClient()
 	mcpServer, err := discoveryClient.Discover(
 		context.Background(),
 		"test-server",
@@ -29,5 +29,5 @@ func TestShouldDiscoverADeployedServer(t *testing.T) {
 
 	t.Logf("MCP Server: %+v", mcpServer)
 
-	assert.Error(t, err)
+	assert.NoError(t, err)
 }
