@@ -35,7 +35,7 @@ func (d *discoveryClient) Discover(
 ) (*mcptypes.McpServer, error) {
 	// Create streameable http client
 	// We only support streamable http client for now
-	client, err := client.NewStreamableHttpClient(fmt.Sprintf("%s/mcp", url))
+	mcpClient, err := client.NewStreamableHttpClient(fmt.Sprintf("%s/mcp", url))
 	if err != nil {
 		return nil, errutil.Err(
 			err,
@@ -44,7 +44,7 @@ func (d *discoveryClient) Discover(
 	}
 
 	// Initialize the client
-	_, err = client.Initialize(ctx, mcp.InitializeRequest{})
+	_, err = mcpClient.Initialize(ctx, mcp.InitializeRequest{})
 	if err != nil {
 		return nil, errutil.Err(
 			err,
@@ -52,13 +52,13 @@ func (d *discoveryClient) Discover(
 		)
 	}
 
-	defer client.Close()
+	defer mcpClient.Close()
 
 	// Discover MCP server
 	// First the tools
 	toolsRequest := mcp.ListToolsRequest{}
 
-	toolsList, err := client.ListTools(ctx, toolsRequest)
+	toolsList, err := mcpClient.ListTools(ctx, toolsRequest)
 	if err != nil {
 		return nil, errutil.Err(
 			err,
@@ -69,7 +69,7 @@ func (d *discoveryClient) Discover(
 	// After that the resources
 	resourcesRequest := mcp.ListResourcesRequest{}
 
-	resourcesList, err := client.ListResources(ctx, resourcesRequest)
+	resourcesList, err := mcpClient.ListResources(ctx, resourcesRequest)
 	if err != nil {
 		return nil, errutil.Err(
 			err,
@@ -81,7 +81,9 @@ func (d *discoveryClient) Discover(
 	// Get the first batch of tools
 	availableTools := make([]*mcptypes.McpTool, 0)
 
-	for _, tool := range toolsList.Tools {
+	for index := range toolsList.Tools {
+		tool := toolsList.Tools[index]
+
 		// Convert parameters to JSON string
 		jsonParams, err := json.Marshal(tool.InputSchema)
 		if err != nil {
@@ -98,7 +100,9 @@ func (d *discoveryClient) Discover(
 	// Get the first batch of resources
 	availableResources := make([]*mcptypes.McpResource, 0)
 
-	for _, resource := range resourcesList.Resources {
+	for index := range resourcesList.Resources {
+		resource := resourcesList.Resources[index]
+
 		availableResources = append(availableResources, &mcptypes.McpResource{
 			Name:        resource.Name,
 			Description: resource.Description,
