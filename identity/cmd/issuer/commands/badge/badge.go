@@ -81,7 +81,6 @@ var badgeIssueCmd = &cobra.Command{
 	},
 }
 
-//nolint:mnd // Allow magic number for args
 var badgePublishCmd = &cobra.Command{
 	Use:   "publish",
 	Short: "Publish the chosen badge",

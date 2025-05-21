@@ -52,45 +52,9 @@ func GetIssuerFilePath(vaultId, issuerId string) (string, error) {
 	return filepath.Join(issuerIdDir, "issuer.json"), nil
 }
 
-func saveIssuerConfig(vaultId, identityNodeAddress string, idpConfig internalIssuerTypes.IdpConfig) error {
-	// Get the issuer ID directory
-	issuerIdDir, err := GetIssuerIdDirectory(vaultId, idpConfig.ClientId)
-	if err != nil {
-		return err
-	}
-
-	// Create the issuer ID directory if it doesn't exist
-	if err := os.MkdirAll(issuerIdDir, internalIssuerConstants.DirPerm); err != nil {
-		return err
-	}
-
-	// Create the issuer config
-	issuerConfig := internalIssuerTypes.IssuerConfig{
-		IdentityNodeConfig: &internalIssuerTypes.IdentityNodeConfig{
-			IdentityNodeAddress: identityNodeAddress,
-		},
-		IdpConfig: &idpConfig,
-	}
-
-	// Marshal the config to JSON
-	configData, err := json.Marshal(issuerConfig)
-	if err != nil {
-		return err
-	}
-
-	// Write the config to file
-	configFilePath := filepath.Join(issuerIdDir, "idp_config.json")
-	if err := os.WriteFile(configFilePath, configData, internalIssuerConstants.FilePerm); err != nil {
-		return err
-	}
-
-	return nil
-}
-
 func (r *issuerFilesystemRepository) AddIssuer(
 	vaultId, identityNodeAddress string, idpConfig internalIssuerTypes.IdpConfig, issuer *coreV1alpha.Issuer,
 ) (string, error) {
-
 	// Create idp locally in the issuer directory
 	issuersDir, err := GetIssuerIdDirectory(vaultId, idpConfig.ClientId)
 	if err != nil {
@@ -114,6 +78,26 @@ func (r *issuerFilesystemRepository) AddIssuer(
 
 	// Write the issuer to file
 	if err := os.WriteFile(issuerFilePath, issuerData, internalIssuerConstants.FilePerm); err != nil {
+		return "", err
+	}
+
+	// Save the issuer config
+	issuerConfig := internalIssuerTypes.IssuerConfig{
+		IdentityNodeConfig: &internalIssuerTypes.IdentityNodeConfig{
+			IdentityNodeAddress: identityNodeAddress,
+		},
+		IdpConfig: &idpConfig,
+	}
+
+	issuerConfigFilePath := filepath.Join(idpConfig.ClientId, "idp_config.json")
+
+	issuerConfigData, err := json.Marshal(issuerConfig)
+	if err != nil {
+		return "", err
+	}
+
+	err = os.WriteFile(issuerConfigFilePath, issuerConfigData, internalIssuerConstants.FilePerm)
+	if err != nil {
 		return "", err
 	}
 
