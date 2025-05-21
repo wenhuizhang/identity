@@ -8,6 +8,7 @@ import (
 	"os"
 
 	"github.com/agntcy/identity/internal/issuer/badge/data"
+	"github.com/google/uuid"
 
 	coreV1alpha "github.com/agntcy/identity/api/agntcy/identity/core/v1alpha1"
 	nodeV1alpha "github.com/agntcy/identity/api/agntcy/identity/node/v1alpha1"
@@ -17,10 +18,10 @@ import (
 type BadgeService interface {
 	IssueBadge(vaultId, issuerId, metadataId, badgeValueFilePath string) (string, error)
 	PublishBadge(
-		vaultId, issuerId, metadataId string, badge *coreV1alpha.EnvelopedCredential,
-	) (*coreV1alpha.EnvelopedCredential, error)
+		vaultId, issuerId, metadataId string, badge *internalIssuerTypes.Badge,
+	) (*internalIssuerTypes.Badge, error)
 	GetAllBadges(vaultId, issuerId, metadataId string) ([]*internalIssuerTypes.Badge, error)
-	GetBadge(vaultId, issuerId, metadataId, badgeId string) (*coreV1alpha.EnvelopedCredential, error)
+	GetBadge(vaultId, issuerId, metadataId, badgeId string) (*internalIssuerTypes.Badge, error)
 	ForgetBadge(vaultId, issuerId, metadataId, badgeId string) error
 }
 
@@ -50,7 +51,12 @@ func (s *badgeService) IssueBadge(vaultId, issuerId, metadataId, badgeValueFileP
 		Value:        &badgeValue,
 	}
 
-	badgeId, err := s.badgeRepository.AddBadge(vaultId, issuerId, metadataId, &envelopedCredential)
+	badge := internalIssuerTypes.Badge{
+		Id:                  uuid.New().String(),
+		EnvelopedCredential: &envelopedCredential,
+	}
+
+	badgeId, err := s.badgeRepository.AddBadge(vaultId, issuerId, metadataId, &badge)
 	if err != nil {
 		return "", err
 	}
@@ -59,8 +65,8 @@ func (s *badgeService) IssueBadge(vaultId, issuerId, metadataId, badgeValueFileP
 }
 
 func (s *badgeService) PublishBadge(
-	vaultId, issuerId, metadataId string, badge *coreV1alpha.EnvelopedCredential,
-) (*coreV1alpha.EnvelopedCredential, error) {
+	vaultId, issuerId, metadataId string, badge *internalIssuerTypes.Badge,
+) (*internalIssuerTypes.Badge, error) {
 	proof := coreV1alpha.Proof{
 		Type:         func() *string { s := "RsaSignature2018"; return &s }(),
 		ProofPurpose: func() *string { s := "assertionMethod"; return &s }(),
@@ -68,7 +74,7 @@ func (s *badgeService) PublishBadge(
 	}
 
 	publishRequest := nodeV1alpha.PublishRequest{
-		Vc:    badge,
+		Vc:    badge.EnvelopedCredential,
 		Proof: &proof,
 	}
 
@@ -88,7 +94,7 @@ func (s *badgeService) GetAllBadges(vaultId, issuerId, metadataId string) ([]*in
 
 func (s *badgeService) GetBadge(
 	vaultId, issuerId, metadataId, badgeId string,
-) (*coreV1alpha.EnvelopedCredential, error) {
+) (*internalIssuerTypes.Badge, error) {
 	badge, err := s.badgeRepository.GetBadge(vaultId, issuerId, metadataId, badgeId)
 	if err != nil {
 		return nil, err

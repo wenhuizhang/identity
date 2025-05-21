@@ -9,7 +9,6 @@ import (
 	"os"
 	"path/filepath"
 
-	coreV1alpha "github.com/agntcy/identity/api/agntcy/identity/core/v1alpha1"
 	internalIssuerConstants "github.com/agntcy/identity/internal/issuer/constants"
 	"github.com/agntcy/identity/internal/issuer/issuer/data"
 	internalIssuerTypes "github.com/agntcy/identity/internal/issuer/types"
@@ -53,10 +52,10 @@ func GetIssuerFilePath(vaultId, issuerId string) (string, error) {
 }
 
 func (r *issuerFilesystemRepository) AddIssuer(
-	vaultId, identityNodeAddress string, idpConfig internalIssuerTypes.IdpConfig, issuer *coreV1alpha.Issuer,
+	vaultId string, issuer *internalIssuerTypes.Issuer,
 ) (string, error) {
 	// Create idp locally in the issuer directory
-	issuersDir, err := GetIssuerIdDirectory(vaultId, idpConfig.ClientId)
+	issuersDir, err := GetIssuerIdDirectory(vaultId, issuer.Id)
 	if err != nil {
 		return "", err
 	}
@@ -65,7 +64,7 @@ func (r *issuerFilesystemRepository) AddIssuer(
 		return "", err
 	}
 
-	issuerFilePath, err := GetIssuerFilePath(vaultId, idpConfig.ClientId)
+	issuerFilePath, err := GetIssuerFilePath(vaultId, issuer.Id)
 	if err != nil {
 		return "", err
 	}
@@ -81,27 +80,7 @@ func (r *issuerFilesystemRepository) AddIssuer(
 		return "", err
 	}
 
-	// Save the issuer config
-	issuerConfig := internalIssuerTypes.IssuerConfig{
-		IdentityNodeConfig: &internalIssuerTypes.IdentityNodeConfig{
-			IdentityNodeAddress: identityNodeAddress,
-		},
-		IdpConfig: &idpConfig,
-	}
-
-	issuerConfigFilePath := filepath.Join(idpConfig.ClientId, "idp_config.json")
-
-	issuerConfigData, err := json.Marshal(issuerConfig)
-	if err != nil {
-		return "", err
-	}
-
-	err = os.WriteFile(issuerConfigFilePath, issuerConfigData, internalIssuerConstants.FilePerm)
-	if err != nil {
-		return "", err
-	}
-
-	return idpConfig.ClientId, nil
+	return issuer.Id, nil
 }
 
 func (r *issuerFilesystemRepository) GetAllIssuers(vaultId string) ([]*internalIssuerTypes.Issuer, error) {
@@ -122,22 +101,19 @@ func (r *issuerFilesystemRepository) GetAllIssuers(vaultId string) ([]*internalI
 
 	for _, file := range files {
 		if file.IsDir() {
-			coreIssuer, err := r.GetIssuer(vaultId, file.Name())
+			issuer, err := r.GetIssuer(vaultId, file.Name())
 			if err != nil {
 				return nil, err
 			}
 			// Append the issuer to the list
-			issuers = append(issuers, &internalIssuerTypes.Issuer{
-				Id:     file.Name(),
-				Issuer: coreIssuer,
-			})
+			issuers = append(issuers, issuer)
 		}
 	}
 
 	return issuers, nil
 }
 
-func (r *issuerFilesystemRepository) GetIssuer(vaultId, issuerId string) (*coreV1alpha.Issuer, error) {
+func (r *issuerFilesystemRepository) GetIssuer(vaultId, issuerId string) (*internalIssuerTypes.Issuer, error) {
 	// Get the issuer file path
 	issuerFilePath, err := GetIssuerFilePath(vaultId, issuerId)
 	if err != nil {
@@ -151,7 +127,7 @@ func (r *issuerFilesystemRepository) GetIssuer(vaultId, issuerId string) (*coreV
 	}
 
 	// Unmarshal the issuer data
-	var issuer coreV1alpha.Issuer
+	var issuer internalIssuerTypes.Issuer
 	if err := json.Unmarshal(issuerData, &issuer); err != nil {
 		return nil, err
 	}

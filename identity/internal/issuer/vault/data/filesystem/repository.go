@@ -54,39 +54,39 @@ func saveVaultConfig() error {
 	return nil
 }
 
-func (r *vaultFilesystemRepository) AddVault(vault *internalIssuerTypes.Vault) (*internalIssuerTypes.Vault, error) {
+func (r *vaultFilesystemRepository) AddVault(vault *internalIssuerTypes.Vault) (string, error) {
 	// Save the vault config
 	if err := saveVaultConfig(); err != nil {
-		return nil, err
+		return "", err
 	}
 
 	// Create idp locally in the vault directory
 	vaultsDir, err := GetVaultIdDirectory(vault.Id)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
 	if err := os.MkdirAll(vaultsDir, internalIssuerConstants.DirPerm); err != nil {
-		return nil, err
+		return "", err
 	}
 
 	vaultFilePath, err := GetVaultFilePath(vault.Id)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
 	// Marshal the config to JSON
 	vaultData, err := json.Marshal(&vault)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
 	// Write the vault to file
 	if err := os.WriteFile(vaultFilePath, vaultData, internalIssuerConstants.FilePerm); err != nil {
-		return nil, err
+		return "", err
 	}
 
-	return vault, nil
+	return vault.Id, nil
 }
 
 func (r *vaultFilesystemRepository) GetAllVaults() ([]*internalIssuerTypes.Vault, error) {

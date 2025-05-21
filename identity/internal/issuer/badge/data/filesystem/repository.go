@@ -9,9 +9,6 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/google/uuid"
-
-	coreV1alpha "github.com/agntcy/identity/api/agntcy/identity/core/v1alpha1"
 	"github.com/agntcy/identity/internal/issuer/badge/data"
 	internalIssuerConstants "github.com/agntcy/identity/internal/issuer/constants"
 	metadataFilesystemRepository "github.com/agntcy/identity/internal/issuer/metadata/data/filesystem"
@@ -55,7 +52,7 @@ func GetBadgeFilePath(vaultId, issuerId, metadataId, badgeId string) (string, er
 }
 
 func (r *badgeFilesystemRepository) AddBadge(
-	vaultId, issuerId, metadataId string, envelopedCredential *coreV1alpha.EnvelopedCredential,
+	vaultId, issuerId, metadataId string, badge *internalIssuerTypes.Badge,
 ) (string, error) {
 	// Ensure badges directory exists
 	badgesDir, err := getBadgesDirectory(vaultId, issuerId, metadataId)
@@ -67,10 +64,7 @@ func (r *badgeFilesystemRepository) AddBadge(
 		return "", err
 	}
 
-	// Create badge ID directory with a unique ID
-	badgeId := uuid.New().String()
-
-	badgesIdDir, err := GetBadgeIdDirectory(vaultId, issuerId, metadataId, badgeId)
+	badgesIdDir, err := GetBadgeIdDirectory(vaultId, issuerId, metadataId, badge.Id)
 	if err != nil {
 		return "", err
 	}
@@ -80,12 +74,12 @@ func (r *badgeFilesystemRepository) AddBadge(
 	}
 
 	// Save badge to file
-	badgeFilePath, err := GetBadgeFilePath(vaultId, issuerId, metadataId, badgeId)
+	badgeFilePath, err := GetBadgeFilePath(vaultId, issuerId, metadataId, badge.Id)
 	if err != nil {
 		return "", err
 	}
 
-	badgeData, err := json.Marshal(&envelopedCredential)
+	badgeData, err := json.Marshal(&badge)
 	if err != nil {
 		return "", err
 	}
@@ -94,7 +88,7 @@ func (r *badgeFilesystemRepository) AddBadge(
 		return "", err
 	}
 
-	return badgeId, nil
+	return badge.Id, nil
 }
 
 func (r *badgeFilesystemRepository) GetAllBadges(
@@ -122,10 +116,7 @@ func (r *badgeFilesystemRepository) GetAllBadges(
 				return nil, err
 			}
 			// Append the badge to the list
-			badges = append(badges, &internalIssuerTypes.Badge{
-				Id:    file.Name(),
-				Badge: badge,
-			})
+			badges = append(badges, badge)
 		}
 	}
 
@@ -134,7 +125,7 @@ func (r *badgeFilesystemRepository) GetAllBadges(
 
 func (r *badgeFilesystemRepository) GetBadge(
 	vaultId, issuerId, metadataId, badgeId string,
-) (*coreV1alpha.EnvelopedCredential, error) {
+) (*internalIssuerTypes.Badge, error) {
 	// Get the badge file path
 	badgeFilePath, err := GetBadgeFilePath(vaultId, issuerId, metadataId, badgeId)
 	if err != nil {
@@ -148,7 +139,7 @@ func (r *badgeFilesystemRepository) GetBadge(
 	}
 
 	// Unmarshal the badge data
-	var badge coreV1alpha.EnvelopedCredential
+	var badge internalIssuerTypes.Badge
 	if err := json.Unmarshal(badgeData, &badge); err != nil {
 		return nil, err
 	}

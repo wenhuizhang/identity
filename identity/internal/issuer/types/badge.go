@@ -11,5 +11,5 @@ type Badge struct {
 	// The badge ID
 	Id string `json:"id,omitempty"`
 	// The verifiable credential
-	Badge *coreV1alpha.EnvelopedCredential `json:"issuer,omitempty"`
+	EnvelopedCredential *coreV1alpha.EnvelopedCredential `json:"issuer,omitempty"`
 }
