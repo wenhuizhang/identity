@@ -1,13 +1,16 @@
-// Copyright 2025 AGNTCY Contributors (https://github.com/agntcy)
+// Copyright 2025 Copyright AGNTCY Contributors (https://github.com/agntcy)
 // SPDX-License-Identifier: Apache-2.0
 
 package app_grpc_register
 
 import (
-	"context"
-
 	v1alpha1 "github.com/agntcy/identity/api/agntcy/identity/issuer/v1alpha1"
 	v1alpha11 "github.com/agntcy/identity/api/agntcy/identity/node/v1alpha1"
+)
+
+import (
+	"context"
+
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
 )
