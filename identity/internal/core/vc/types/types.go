@@ -36,6 +36,11 @@ const (
 	// OASF: https://schema.oasf.agntcy.org/schema/objects/agent
 	// Google A2A: https://github.com/google/A2A/blob/main/specification/json/a2a.json
 	CREDENTIAL_CONTENT_TYPE_AGENT_BADGE
+
+	// McpBadge Content Type.
+	// The MCP content representation following a defined schema
+	// The schema is defined in the MCP specification as the MCPServer type
+	CREDENTIAL_CONTENT_TYPE_MCP_BADGE
 )
 
 // EnvelopedCredential represents a Credential enveloped in a specific format.
