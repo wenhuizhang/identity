@@ -9,10 +9,10 @@ import (
 )
 
 type MetadataRepository interface {
-	GenerateMetadata(
-		vaultId, issuerId string, idpConfig *internalIssuerTypes.IdpConfig,
+	AddMetadata(
+		vaultId, issuerId string, idpConfig *internalIssuerTypes.IdpConfig, resolverMetadata *coreV1alpha.ResolverMetadata,
 	) (*coreV1alpha.ResolverMetadata, error)
-	ListMetadataIds(vaultId, issuerId string) ([]string, error)
+	GetAllMetadata(vaultId, issuerId string) ([]*coreV1alpha.ResolverMetadata, error)
 	GetMetadata(vaultId, issuerId, metadataId string) (*coreV1alpha.ResolverMetadata, error)
-	ForgetMetadata(vaultId, issuerId, metadataId string) error
+	RemoveMetadata(vaultId, issuerId, metadataId string) error
 }

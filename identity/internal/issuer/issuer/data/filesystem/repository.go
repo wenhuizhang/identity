@@ -94,9 +94,10 @@ func getMockIssuerInfo() *string {
 	return ptrutil.Ptr("AGNTCY")
 }
 
-func (r *issuerFilesystemRepository) RegisterIssuer(
-	vaultId, identityNodeAddress string, idpConfig internalIssuerTypes.IdpConfig,
+func (r *issuerFilesystemRepository) AddIssuer(
+	vaultId, identityNodeAddress string, idpConfig internalIssuerTypes.IdpConfig, issuer coreV1alpha.Issuer,
 ) (string, error) {
+
 	// Save the issuer config
 	if err := saveIssuerConfig(vaultId, identityNodeAddress, idpConfig); err != nil {
 		return "", err
@@ -107,11 +108,6 @@ func (r *issuerFilesystemRepository) RegisterIssuer(
 	// Check if idp is already created locally
 	// Check if idp is already registered on the identity node
 	// Register idp on the identity node
-	issuer := coreV1alpha.Issuer{
-		Organization:    getMockIssuerInfo(),
-		SubOrganization: getMockIssuerInfo(),
-		CommonName:      getMockIssuerInfo(),
-	}
 	proof := coreV1alpha.Proof{
 		Type:         func() *string { s := "RsaSignature2018"; return &s }(),
 		ProofPurpose: func() *string { s := "assertionMethod"; return &s }(),
@@ -155,7 +151,7 @@ func (r *issuerFilesystemRepository) RegisterIssuer(
 	return idpConfig.ClientId, nil
 }
 
-func (r *issuerFilesystemRepository) ListIssuerIds(vaultId string) ([]string, error) {
+func (r *issuerFilesystemRepository) GetAllIssuers(vaultId string) ([]*internalIssuerTypes.Issuer, error) {
 	// Get the issuers directory
 	issuersDir, err := getIssuersDirectory(vaultId)
 	if err != nil {
@@ -169,15 +165,24 @@ func (r *issuerFilesystemRepository) ListIssuerIds(vaultId string) ([]string, er
 	}
 
 	// List the issuer IDs
-	var issuerIds []string
+	var issuers []*internalIssuerTypes.Issuer
 
 	for _, file := range files {
 		if file.IsDir() {
-			issuerIds = append(issuerIds, file.Name())
+
+			coreIssuer, err := r.GetIssuer(vaultId, file.Name())
+			if err != nil {
+				return nil, err
+			}
+			// Append the issuer to the list
+			issuers = append(issuers, &internalIssuerTypes.Issuer{
+				Id:     file.Name(),
+				Issuer: coreIssuer,
+			})
 		}
 	}
 
-	return issuerIds, nil
+	return issuers, nil
 }
 
 func (r *issuerFilesystemRepository) GetIssuer(vaultId, issuerId string) (*coreV1alpha.Issuer, error) {
@@ -202,7 +207,7 @@ func (r *issuerFilesystemRepository) GetIssuer(vaultId, issuerId string) (*coreV
 	return &issuer, nil
 }
 
-func (r *issuerFilesystemRepository) ForgetIssuer(vaultId, issuerId string) error {
+func (r *issuerFilesystemRepository) RemoveIssuer(vaultId, issuerId string) error {
 	// Get the issuer directory
 	issuerDir, err := GetIssuerIdDirectory(vaultId, issuerId)
 	if err != nil {

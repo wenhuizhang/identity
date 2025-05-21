@@ -4,9 +4,14 @@
 package node
 
 import (
+	"log"
+	"os"
+
 	"github.com/agntcy/identity/internal/issuer/badge/data"
 
 	coreV1alpha "github.com/agntcy/identity/api/agntcy/identity/core/v1alpha1"
+	nodeV1alpha "github.com/agntcy/identity/api/agntcy/identity/node/v1alpha1"
+	internalIssuerTypes "github.com/agntcy/identity/internal/issuer/types"
 )
 
 type BadgeService interface {
@@ -14,7 +19,7 @@ type BadgeService interface {
 	PublishBadge(
 		vaultId, issuerId, metadataId string, badge *coreV1alpha.EnvelopedCredential,
 	) (*coreV1alpha.EnvelopedCredential, error)
-	ListBadgeIds(vaultId, issuerId, metadataId string) ([]string, error)
+	GetAllBadges(vaultId, issuerId, metadataId string) ([]*internalIssuerTypes.Badge, error)
 	GetBadge(vaultId, issuerId, metadataId, badgeId string) (*coreV1alpha.EnvelopedCredential, error)
 	ForgetBadge(vaultId, issuerId, metadataId, badgeId string) error
 }
@@ -32,7 +37,21 @@ func NewBadgeService(
 }
 
 func (s *badgeService) IssueBadge(vaultId, issuerId, metadataId, badgeValueFilePath string) (string, error) {
-	badgeId, err := s.badgeRepository.IssueBadge(vaultId, issuerId, metadataId, badgeValueFilePath)
+
+	badgeValueData, err := os.ReadFile(badgeValueFilePath)
+	if err != nil {
+		return "", err
+	}
+
+	// Convert the badge value to a string
+	badgeValue := string(badgeValueData)
+
+	envelopedCredential := coreV1alpha.EnvelopedCredential{
+		EnvelopeType: coreV1alpha.CredentialEnvelopeType_CREDENTIAL_ENVELOPE_TYPE_JOSE.Enum(),
+		Value:        &badgeValue,
+	}
+
+	badgeId, err := s.badgeRepository.AddBadge(vaultId, issuerId, metadataId, &envelopedCredential)
 	if err != nil {
 		return "", err
 	}
@@ -43,21 +62,30 @@ func (s *badgeService) IssueBadge(vaultId, issuerId, metadataId, badgeValueFileP
 func (s *badgeService) PublishBadge(
 	vaultId, issuerId, metadataId string, badge *coreV1alpha.EnvelopedCredential,
 ) (*coreV1alpha.EnvelopedCredential, error) {
-	badge, err := s.badgeRepository.PublishBadge(vaultId, issuerId, metadataId, badge)
-	if err != nil {
-		return nil, err
+
+	proof := coreV1alpha.Proof{
+		Type:         func() *string { s := "RsaSignature2018"; return &s }(),
+		ProofPurpose: func() *string { s := "assertionMethod"; return &s }(),
+		ProofValue:   func() *string { s := "example-proof-value"; return &s }(),
 	}
+
+	publishRequest := nodeV1alpha.PublishRequest{
+		Vc:    badge,
+		Proof: &proof,
+	}
+
+	log.Default().Println("Publishing badge with request: ", &publishRequest)
 
 	return badge, nil
 }
 
-func (s *badgeService) ListBadgeIds(vaultId, issuerId, metadataId string) ([]string, error) {
-	badgeIds, err := s.badgeRepository.ListBadgeIds(vaultId, issuerId, metadataId)
+func (s *badgeService) GetAllBadges(vaultId, issuerId, metadataId string) ([]*internalIssuerTypes.Badge, error) {
+	badges, err := s.badgeRepository.GetAllBadges(vaultId, issuerId, metadataId)
 	if err != nil {
 		return nil, err
 	}
 
-	return badgeIds, nil
+	return badges, nil
 }
 
 func (s *badgeService) GetBadge(
@@ -72,7 +100,7 @@ func (s *badgeService) GetBadge(
 }
 
 func (s *badgeService) ForgetBadge(vaultId, issuerId, metadataId, badgeId string) error {
-	err := s.badgeRepository.ForgetBadge(vaultId, issuerId, metadataId, badgeId)
+	err := s.badgeRepository.RemoveBadge(vaultId, issuerId, metadataId, badgeId)
 	if err != nil {
 		return err
 	}

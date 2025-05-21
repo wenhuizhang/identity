@@ -1,7 +1,7 @@
 // Copyright 2025 AGNTCY Contributors (https://github.com/agntcy)
 // SPDX-License-Identifier: Apache-2.0
 
-package commands
+package issuer
 
 import (
 	"encoding/json"
@@ -98,7 +98,7 @@ var issuerListCmd = &cobra.Command{
 			return
 		}
 
-		issuers, err := issuerService.ListIssuerIds(cache.VaultId)
+		issuers, err := issuerService.GetAllIssuers(cache.VaultId)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error listing issuers: %v\n", err)
 			return
@@ -109,7 +109,7 @@ var issuerListCmd = &cobra.Command{
 		}
 		fmt.Fprintf(os.Stdout, "Existing issuers:\n")
 		for _, issuer := range issuers {
-			fmt.Fprintf(os.Stdout, "- %s\n", issuer)
+			fmt.Fprintf(os.Stdout, "- %s, %s\n", issuer.Id, *issuer.Issuer.CommonName)
 		}
 	},
 }

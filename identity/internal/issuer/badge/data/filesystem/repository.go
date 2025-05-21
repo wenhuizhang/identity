@@ -6,17 +6,16 @@ package filesystem
 import (
 	"encoding/json"
 	"errors"
-	"log"
 	"os"
 	"path/filepath"
 
 	"github.com/google/uuid"
 
 	coreV1alpha "github.com/agntcy/identity/api/agntcy/identity/core/v1alpha1"
-	nodeV1alpha "github.com/agntcy/identity/api/agntcy/identity/node/v1alpha1"
 	"github.com/agntcy/identity/internal/issuer/badge/data"
 	internalIssuerConstants "github.com/agntcy/identity/internal/issuer/constants"
 	metadataFilesystemRepository "github.com/agntcy/identity/internal/issuer/metadata/data/filesystem"
+	internalIssuerTypes "github.com/agntcy/identity/internal/issuer/types"
 )
 
 type badgeFilesystemRepository struct{}
@@ -55,22 +54,9 @@ func GetBadgeFilePath(vaultId, issuerId, metadataId, badgeId string) (string, er
 	return filepath.Join(badgeIdDir, "badge.json"), nil
 }
 
-func (r *badgeFilesystemRepository) IssueBadge(
-	vaultId, issuerId, metadataId, badgeValueFilePath string,
+func (r *badgeFilesystemRepository) AddBadge(
+	vaultId, issuerId, metadataId string, envelopedCredential *coreV1alpha.EnvelopedCredential,
 ) (string, error) {
-	// Read the badge value from the file
-	badgeValueData, err := os.ReadFile(badgeValueFilePath)
-	if err != nil {
-		return "", err
-	}
-
-	// Convert the badge value to a string
-	badgeValue := string(badgeValueData)
-
-	envelopedCredential := coreV1alpha.EnvelopedCredential{
-		EnvelopeType: coreV1alpha.CredentialEnvelopeType_CREDENTIAL_ENVELOPE_TYPE_JOSE.Enum(),
-		Value:        &badgeValue,
-	}
 
 	// Ensure badges directory exists
 	badgesDir, err := getBadgesDirectory(vaultId, issuerId, metadataId)
@@ -112,35 +98,11 @@ func (r *badgeFilesystemRepository) IssueBadge(
 	return badgeId, nil
 }
 
-func (r *badgeFilesystemRepository) PublishBadge(
-	vaultId, issuerId, metadataId string, badge *coreV1alpha.EnvelopedCredential,
-) (*coreV1alpha.EnvelopedCredential, error) {
-	proof := coreV1alpha.Proof{
-		Type:         func() *string { s := "RsaSignature2018"; return &s }(),
-		ProofPurpose: func() *string { s := "assertionMethod"; return &s }(),
-		ProofValue:   func() *string { s := "example-proof-value"; return &s }(),
-	}
-
-	publishRequest := nodeV1alpha.PublishRequest{
-		Vc:    badge,
-		Proof: &proof,
-	}
-
-	log.Default().Println("Publishing badge with request: ", &publishRequest)
-
-	return badge, nil
-}
-
-func (r *badgeFilesystemRepository) ListBadgeIds(vaultId, issuerId, metadataId string) ([]string, error) {
+func (r *badgeFilesystemRepository) GetAllBadges(vaultId, issuerId, metadataId string) ([]*internalIssuerTypes.Badge, error) {
 	// Get the badges directory
 	badgesDir, err := getBadgesDirectory(vaultId, issuerId, metadataId)
 	if err != nil {
 		return nil, err
-	}
-
-	// Create directory if it doesn't exist
-	if _, err := os.Stat(badgesDir); os.IsNotExist(err) {
-		return []string{}, nil
 	}
 
 	// Read the badges directory
@@ -150,15 +112,23 @@ func (r *badgeFilesystemRepository) ListBadgeIds(vaultId, issuerId, metadataId s
 	}
 
 	// List the badge IDs
-	var badgeIds []string
+	var badges []*internalIssuerTypes.Badge
 
 	for _, file := range files {
 		if file.IsDir() {
-			badgeIds = append(badgeIds, file.Name())
+			badge, err := r.GetBadge(vaultId, issuerId, metadataId, file.Name())
+			if err != nil {
+				return nil, err
+			}
+			// Append the badge to the list
+			badges = append(badges, &internalIssuerTypes.Badge{
+				Id:    file.Name(),
+				Badge: badge,
+			})
 		}
 	}
 
-	return badgeIds, nil
+	return badges, nil
 }
 
 func (r *badgeFilesystemRepository) GetBadge(
@@ -185,7 +155,7 @@ func (r *badgeFilesystemRepository) GetBadge(
 	return &badge, nil
 }
 
-func (r *badgeFilesystemRepository) ForgetBadge(vaultId, issuerId, metadataId, badgeId string) error {
+func (r *badgeFilesystemRepository) RemoveBadge(vaultId, issuerId, metadataId, badgeId string) error {
 	// Get the badge directory
 	badgeIdDir, err := GetBadgeIdDirectory(vaultId, issuerId, metadataId, badgeId)
 	if err != nil {

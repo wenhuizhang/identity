@@ -12,7 +12,6 @@ import (
 	internalIssuerConstants "github.com/agntcy/identity/internal/issuer/constants"
 	internalIssuerTypes "github.com/agntcy/identity/internal/issuer/types"
 	"github.com/agntcy/identity/internal/issuer/vault/data"
-	"github.com/google/uuid"
 )
 
 type vaultFilesystemRepository struct{}
@@ -55,16 +54,14 @@ func saveVaultConfig() error {
 	return nil
 }
 
-func (r *vaultFilesystemRepository) ConnectVault(vault *internalIssuerTypes.Vault) (*internalIssuerTypes.Vault, error) {
+func (r *vaultFilesystemRepository) AddVault(vault *internalIssuerTypes.Vault) (*internalIssuerTypes.Vault, error) {
 	// Save the vault config
 	if err := saveVaultConfig(); err != nil {
 		return nil, err
 	}
 
-	vaultId := uuid.New().String()
-
 	// Create idp locally in the vault directory
-	vaultsDir, err := GetVaultIdDirectory(vaultId)
+	vaultsDir, err := GetVaultIdDirectory(vault.Id)
 	if err != nil {
 		return nil, err
 	}
@@ -73,7 +70,7 @@ func (r *vaultFilesystemRepository) ConnectVault(vault *internalIssuerTypes.Vaul
 		return nil, err
 	}
 
-	vaultFilePath, err := GetVaultFilePath(vaultId)
+	vaultFilePath, err := GetVaultFilePath(vault.Id)
 	if err != nil {
 		return nil, err
 	}
@@ -92,7 +89,7 @@ func (r *vaultFilesystemRepository) ConnectVault(vault *internalIssuerTypes.Vaul
 	return vault, nil
 }
 
-func (r *vaultFilesystemRepository) ListVaultIds() ([]string, error) {
+func (r *vaultFilesystemRepository) GetAllVaults() ([]*internalIssuerTypes.Vault, error) {
 	// Get the vaults directory
 	vaultsDir, err := getVaultsDirectory()
 	if err != nil {
@@ -106,11 +103,19 @@ func (r *vaultFilesystemRepository) ListVaultIds() ([]string, error) {
 	}
 
 	// List the vault IDs
-	var vaultIds []string
+	var vaultIds []*internalIssuerTypes.Vault
 
 	for _, file := range files {
 		if file.IsDir() {
-			vaultIds = append(vaultIds, file.Name())
+
+			// Get the vault file path
+			vault, err := r.GetVault(file.Name())
+			if err != nil {
+				return nil, err
+			}
+
+			// Append the vault to the list
+			vaultIds = append(vaultIds, vault)
 		}
 	}
 
@@ -130,16 +135,16 @@ func (r *vaultFilesystemRepository) GetVault(vaultId string) (*internalIssuerTyp
 		return nil, err
 	}
 
-	// Unmarshal the vault data
+	// Unmarshal the vault data depending on the vault type
 	var vault internalIssuerTypes.Vault
-	if err := json.Unmarshal(vaultData, &vault); err != nil {
+	if err := vault.UnmarshalVault(vaultData); err != nil {
 		return nil, err
 	}
 
 	return &vault, nil
 }
 
-func (r *vaultFilesystemRepository) ForgetVault(vaultId string) error {
+func (r *vaultFilesystemRepository) RemoveVault(vaultId string) error {
 	// Get the vault directory
 	vaultDir, err := GetVaultIdDirectory(vaultId)
 	if err != nil {

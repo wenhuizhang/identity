@@ -8,8 +8,8 @@ import (
 )
 
 type VaultRepository interface {
-	ConnectVault(vault *internalIssuerTypes.Vault) (*internalIssuerTypes.Vault, error)
-	ListVaultIds() ([]string, error)
+	AddVault(vault *internalIssuerTypes.Vault) (*internalIssuerTypes.Vault, error)
+	GetAllVaults() ([]*internalIssuerTypes.Vault, error)
 	GetVault(vaultId string) (*internalIssuerTypes.Vault, error)
-	ForgetVault(vaultId string) error
+	RemoveVault(vaultId string) error
 }

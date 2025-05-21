@@ -9,8 +9,8 @@ import (
 )
 
 type IssuerRepository interface {
-	RegisterIssuer(vaultId, identityNodeAddress string, idpConfig internalIssuerTypes.IdpConfig) (string, error)
-	ListIssuerIds(vaultId string) ([]string, error)
+	AddIssuer(vaultId, identityNodeAddress string, idpConfig internalIssuerTypes.IdpConfig, issuer coreV1alpha.Issuer) (string, error)
+	GetAllIssuers(vaultId string) ([]*internalIssuerTypes.Issuer, error)
 	GetIssuer(vaultId, issuerId string) (*coreV1alpha.Issuer, error)
-	ForgetIssuer(vaultId, issuerId string) error
+	RemoveIssuer(vaultId, issuerId string) error
 }

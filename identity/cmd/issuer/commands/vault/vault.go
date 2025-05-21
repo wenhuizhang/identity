@@ -1,7 +1,7 @@
 // Copyright 2025 AGNTCY Contributors (https://github.com/agntcy)
 // SPDX-License-Identifier: Apache-2.0
 
-package commands
+package vault
 
 import (
 	"encoding/json"
@@ -9,7 +9,6 @@ import (
 	"os"
 
 	cliCache "github.com/agntcy/identity/cmd/issuer/cache"
-	"github.com/agntcy/identity/cmd/issuer/commands/vaults"
 	"github.com/agntcy/identity/internal/issuer/vault"
 	"github.com/agntcy/identity/internal/issuer/vault/data/filesystem"
 	"github.com/spf13/cobra"
@@ -47,7 +46,7 @@ var vaultListCmd = &cobra.Command{
 	Short: "List your existing vault configurations",
 	Run: func(cmd *cobra.Command, args []string) {
 
-		vaults, err := vaultService.ListVaultIds()
+		vaults, err := vaultService.GetAllVaults()
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error listing vaults: %v\n", err)
 			return
@@ -58,7 +57,7 @@ var vaultListCmd = &cobra.Command{
 		}
 		fmt.Fprintf(os.Stdout, "Existing vaults:\n")
 		for _, vault := range vaults {
-			fmt.Fprintf(os.Stdout, "- %s\n", vault)
+			fmt.Fprintf(os.Stdout, "- %s, %s vault\n", vault.Id, vault.Type)
 		}
 	},
 }
@@ -147,8 +146,7 @@ var vaultLoadCmd = &cobra.Command{
 
 func init() {
 	// Add the vault types to the vault connect command
-	vaultConnectCmd.AddCommand(vaults.TxtCmd)
-	vaultConnectCmd.AddCommand(vaults.OnePasswordCmd)
+	vaultConnectCmd.AddCommand(TxtCmd)
 
 	VaultCmd.AddCommand(vaultConnectCmd)
 	VaultCmd.AddCommand(vaultListCmd)

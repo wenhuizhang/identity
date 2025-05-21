@@ -6,16 +6,12 @@ package filesystem
 import (
 	"encoding/json"
 	"errors"
-	"log"
 	"os"
 	"path/filepath"
-
-	"github.com/google/uuid"
 
 	"github.com/agntcy/identity/internal/issuer/metadata/data"
 
 	coreV1alpha "github.com/agntcy/identity/api/agntcy/identity/core/v1alpha1"
-	nodeV1alpha "github.com/agntcy/identity/api/agntcy/identity/node/v1alpha1"
 	internalIssuerConstants "github.com/agntcy/identity/internal/issuer/constants"
 	issuerFilesystemRepository "github.com/agntcy/identity/internal/issuer/issuer/data/filesystem"
 	internalIssuerTypes "github.com/agntcy/identity/internal/issuer/types"
@@ -54,101 +50,68 @@ func GetMetadataFilePath(vaultId, issuerId, metadataId string) (string, error) {
 	return filepath.Join(metadataIdDir, "metadata.json"), nil
 }
 
-// SaveMetadata creates the necessary directories and saves metadata to file
-func saveMetadata(vaultId, issuerId string, resolverMetadata *coreV1alpha.ResolverMetadata) error {
-	// Ensure metadata directory exists
+func (r *metadataFilesystemRepository) AddMetadata(
+	vaultId, issuerId string, idpConfig *internalIssuerTypes.IdpConfig, resolverMetadata *coreV1alpha.ResolverMetadata,
+) (*coreV1alpha.ResolverMetadata, error) {
+
 	metadataDir, err := getMetadataDirectory(vaultId, issuerId)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if err := os.MkdirAll(metadataDir, internalIssuerConstants.DirPerm); err != nil {
-		return err
+		return nil, err
 	}
 
 	// Create metadata ID directory
 	metadataIdDir, err := GetMetadataIdDirectory(vaultId, issuerId, *resolverMetadata.Id)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if err := os.MkdirAll(metadataIdDir, internalIssuerConstants.DirPerm); err != nil {
-		return err
+		return nil, err
 	}
 
 	// Save metadata to file
 	metadataFilePath, err := GetMetadataFilePath(vaultId, issuerId, *resolverMetadata.Id)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	metadataData, err := json.Marshal(resolverMetadata)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	return os.WriteFile(metadataFilePath, metadataData, internalIssuerConstants.FilePerm)
-}
-
-func (r *metadataFilesystemRepository) GenerateMetadata(
-	vaultId, issuerId string, idpConfig *internalIssuerTypes.IdpConfig,
-) (*coreV1alpha.ResolverMetadata, error) {
-	// load the issuer from the local storage
-	issuerFilePath, err := issuerFilesystemRepository.GetIssuerFilePath(vaultId, issuerId)
+	err = os.WriteFile(metadataFilePath, metadataData, internalIssuerConstants.FilePerm)
 	if err != nil {
 		return nil, err
 	}
 
-	issuerData, err := os.ReadFile(issuerFilePath)
+	// Save the metadata config
+	metadataConfig := internalIssuerTypes.MetadataConfig{
+		IdpConfig: idpConfig,
+	}
+
+	metadataConfigFilePath := filepath.Join(metadataIdDir, "idp_config.json")
+	metadataConfigData, err := json.Marshal(metadataConfig)
+	if err != nil {
+		return nil, err
+	}
+	err = os.WriteFile(metadataConfigFilePath, metadataConfigData, internalIssuerConstants.FilePerm)
 	if err != nil {
 		return nil, err
 	}
 
-	// Unmarshal the iss data
-	var iss coreV1alpha.Issuer
-	if err := json.Unmarshal(issuerData, &iss); err != nil {
-		return nil, err
-	}
-
-	proof := coreV1alpha.Proof{
-		Type:         func() *string { s := "RsaSignature2018"; return &s }(),
-		ProofPurpose: func() *string { s := "assertionMethod"; return &s }(),
-		ProofValue:   func() *string { s := "example-proof-value"; return &s }(),
-	}
-
-	generateMetadataRequest := nodeV1alpha.GenerateRequest{
-		Issuer: &iss,
-		Proof:  &proof,
-	}
-
-	// Call the client to generate metadata
-	log.Default().Println("Generating metadata with request: ", &generateMetadataRequest)
-
-	resolverMetadata := coreV1alpha.ResolverMetadata{
-		Id:                 func() *string { s := uuid.New().String(); return &s }(),
-		VerificationMethod: nil,
-		Service:            nil,
-		AssertionMethod:    nil,
-	}
-
-	// Save the metadata to disk
-	if err := saveMetadata(vaultId, issuerId, &resolverMetadata); err != nil {
-		return nil, err
-	}
-
-	return &resolverMetadata, nil
+	return resolverMetadata, nil
 }
 
-func (r *metadataFilesystemRepository) ListMetadataIds(vaultId, issuerId string) ([]string, error) {
+func (r *metadataFilesystemRepository) GetAllMetadata(vaultId, issuerId string) ([]*coreV1alpha.ResolverMetadata, error) {
 	// Get the metadata directory
 	metadataDir, err := getMetadataDirectory(vaultId, issuerId)
 	if err != nil {
 		return nil, err
-	}
-
-	// Create directory if it doesn't exist
-	if _, err := os.Stat(metadataDir); os.IsNotExist(err) {
-		return []string{}, nil
 	}
 
 	// Read the metadata directory
@@ -158,15 +121,21 @@ func (r *metadataFilesystemRepository) ListMetadataIds(vaultId, issuerId string)
 	}
 
 	// List the metadata IDs
-	var metadataIds []string
+	var allMetadata []*coreV1alpha.ResolverMetadata
 
 	for _, file := range files {
 		if file.IsDir() {
-			metadataIds = append(metadataIds, file.Name())
+			metadata, err := r.GetMetadata(vaultId, issuerId, file.Name())
+			if err != nil {
+				return nil, err
+			}
+
+			// Append the metadata to the list
+			allMetadata = append(allMetadata, metadata)
 		}
 	}
 
-	return metadataIds, nil
+	return allMetadata, nil
 }
 
 func (r *metadataFilesystemRepository) GetMetadata(
@@ -193,7 +162,7 @@ func (r *metadataFilesystemRepository) GetMetadata(
 	return &metadata, nil
 }
 
-func (r *metadataFilesystemRepository) ForgetMetadata(vaultId, issuerId, metadataId string) error {
+func (r *metadataFilesystemRepository) RemoveMetadata(vaultId, issuerId, metadataId string) error {
 	// Get the metadata directory
 	metadataIdDir, err := GetMetadataIdDirectory(vaultId, issuerId, metadataId)
 	if err != nil {

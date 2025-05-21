@@ -1,0 +1,26 @@
+{
+    "context": [
+        "https://www.w3.org/2018/credentials/v1",
+        "https://www.w3.org/2018/credentials/examples/v1"
+    ],
+    "type": [
+        "VerifiableCredential",
+        "AgentBadgeCredential"
+    ],
+    "issuer": "did:example:123456789abcdefghi",
+    "credential_subject": "testing testing 123",
+    "id": "http://example.edu/credentials/3732",
+    "issuance_date": "2025-05-14T12:00:00Z",
+    "expiration_date": "2026-05-14T12:00:00Z",
+    "credential_schema": [
+        {
+            "type": "JsonSchemaValidator2018",
+            "id": "https://schema.oasf.agntcy.org/schema/objects/agent"
+        }
+    ],
+    "proof": {
+        "type": "Ed25519Signature2020",
+        "proof_purpose": "assertionMethod",
+        "proof_value": "z58DAdFfa9SkqZMVPxAQpic7ndSayn1PzZs6ZjWp1CktyGesjuTdwCBnhQ9PyRbgxgFQQX7nJxPWYyuiBzwLRZ6i"
+    }
+}

@@ -13,7 +13,7 @@ type VaultService interface {
 	ConnectVault(
 		vaultType internalIssuerTypes.VaultType, config internalIssuerTypes.VaultConfig,
 	) (*internalIssuerTypes.Vault, error)
-	ListVaultIds() ([]string, error)
+	GetAllVaults() ([]*internalIssuerTypes.Vault, error)
 	GetVault(vaultId string) (*internalIssuerTypes.Vault, error)
 	ForgetVault(vaultId string) error
 }
@@ -39,7 +39,7 @@ func (s *vaultService) ConnectVault(
 		Config: config,
 	}
 
-	_, err := s.vaultRepository.ConnectVault(&vault)
+	_, err := s.vaultRepository.AddVault(&vault)
 	if err != nil {
 		return nil, err
 	}
@@ -47,13 +47,13 @@ func (s *vaultService) ConnectVault(
 	return &vault, nil
 }
 
-func (s *vaultService) ListVaultIds() ([]string, error) {
-	vaultIds, err := s.vaultRepository.ListVaultIds()
+func (s *vaultService) GetAllVaults() ([]*internalIssuerTypes.Vault, error) {
+	vaults, err := s.vaultRepository.GetAllVaults()
 	if err != nil {
 		return nil, err
 	}
 
-	return vaultIds, nil
+	return vaults, nil
 }
 
 func (s *vaultService) GetVault(vaultId string) (*internalIssuerTypes.Vault, error) {
@@ -66,7 +66,7 @@ func (s *vaultService) GetVault(vaultId string) (*internalIssuerTypes.Vault, err
 }
 
 func (s *vaultService) ForgetVault(vaultId string) error {
-	err := s.vaultRepository.ForgetVault(vaultId)
+	err := s.vaultRepository.RemoveVault(vaultId)
 	if err != nil {
 		return err
 	}

@@ -3,6 +3,11 @@
 
 package types
 
+import (
+	"encoding/json"
+	"fmt"
+)
+
 // VaultType represents the type of vault
 type VaultType string
 
@@ -47,4 +52,51 @@ type Vault1Password struct {
 // GetVaultType returns the type of this vault implementation
 func (v *Vault1Password) GetVaultType() VaultType {
 	return VaultType1Password
+}
+
+// UnmarshalVault implements custom JSON unmarshaling for Vault
+func (v *Vault) UnmarshalVault(data []byte) error {
+	// Temporary struct to decode the JSON data
+	type tempVault struct {
+		Id     string          `json:"id,omitempty"`
+		Type   VaultType       `json:"type,omitempty"`
+		Config json.RawMessage `json:"config,omitempty"`
+	}
+
+	var temp tempVault
+	if err := json.Unmarshal(data, &temp); err != nil {
+		return err
+	}
+
+	// Assign basic fields
+	v.Id = temp.Id
+	v.Type = temp.Type
+
+	// Skip if no config is provided
+	if len(temp.Config) == 0 {
+		v.Config = nil
+		return nil
+	}
+
+	// Create the appropriate VaultConfig based on the Type
+	switch temp.Type {
+	case VaultTypeTxt:
+		var config VaultTxt
+		if err := json.Unmarshal(temp.Config, &config); err != nil {
+			return err
+		}
+		v.Config = &config
+
+	case VaultType1Password:
+		var config Vault1Password
+		if err := json.Unmarshal(temp.Config, &config); err != nil {
+			return err
+		}
+		v.Config = &config
+
+	default:
+		return fmt.Errorf("unknown vault type: %s", temp.Type)
+	}
+
+	return nil
 }

@@ -1,7 +1,7 @@
 // Copyright 2025 AGNTCY Contributors (https://github.com/agntcy)
 // SPDX-License-Identifier: Apache-2.0
 
-package commands
+package badge
 
 import (
 	"encoding/json"
@@ -165,18 +165,18 @@ var badgeListCmd = &cobra.Command{
 			return
 		}
 
-		badgeIds, err := badgeService.ListBadgeIds(cache.VaultId, cache.IssuerId, cache.MetadataId)
+		badges, err := badgeService.GetAllBadges(cache.VaultId, cache.IssuerId, cache.MetadataId)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error listing badges: %v\n", err)
 			return
 		}
-		if len(badgeIds) == 0 {
+		if len(badges) == 0 {
 			fmt.Fprintf(os.Stdout, "%s\n", "No badges found")
 			return
 		}
 		fmt.Fprintf(os.Stdout, "%s\n", "Existing badge ids:")
-		for _, badgeId := range badgeIds {
-			fmt.Fprintf(os.Stdout, "- %s\n", badgeId)
+		for _, badge := range badges {
+			fmt.Fprintf(os.Stdout, "- %s\n", badge.Id)
 		}
 	},
 }

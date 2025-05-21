@@ -1,7 +1,7 @@
 // Copyright 2025 AGNTCY Contributors (https://github.com/agntcy)
 // SPDX-License-Identifier: Apache-2.0
 
-package commands
+package metadata
 
 import (
 	"encoding/json"
@@ -11,13 +11,15 @@ import (
 	"github.com/spf13/cobra"
 
 	cliCache "github.com/agntcy/identity/cmd/issuer/cache"
+	issuerFilesystem "github.com/agntcy/identity/internal/issuer/issuer/data/filesystem"
 	"github.com/agntcy/identity/internal/issuer/metadata"
-	"github.com/agntcy/identity/internal/issuer/metadata/data/filesystem"
+	metadataFilesystem "github.com/agntcy/identity/internal/issuer/metadata/data/filesystem"
 	issuerTypes "github.com/agntcy/identity/internal/issuer/types"
 )
 
-var metadataFilesystemRepository = filesystem.NewMetadataFilesystemRepository()
-var metadataService = metadata.NewMetadataService(metadataFilesystemRepository)
+var metadataFilesystemRepository = metadataFilesystem.NewMetadataFilesystemRepository()
+var issuerFilesystemRepository = issuerFilesystem.NewIssuerFilesystemRepository()
+var metadataService = metadata.NewMetadataService(metadataFilesystemRepository, issuerFilesystemRepository)
 
 //nolint:lll // Allow long lines for CLI
 var MetadataCmd = &cobra.Command{
@@ -104,18 +106,18 @@ var metadataListCmd = &cobra.Command{
 			return
 		}
 
-		metadataIds, err := metadataService.ListMetadataIds(cache.VaultId, cache.IssuerId)
+		allMetadata, err := metadataService.GetAllMetadata(cache.VaultId, cache.IssuerId)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error listing metadata: %v\n", err)
 			return
 		}
-		if len(metadataIds) == 0 {
+		if len(allMetadata) == 0 {
 			fmt.Fprintf(os.Stdout, "%s\n", "No metadata found")
 			return
 		}
 		fmt.Fprintf(os.Stdout, "%s\n", "Existing metadata ids:")
-		for _, metadataId := range metadataIds {
-			fmt.Fprintf(os.Stdout, "- %s\n", metadataId)
+		for _, metadata := range allMetadata {
+			fmt.Fprintf(os.Stdout, "- %s\n", metadata.Id)
 		}
 	},
 }
