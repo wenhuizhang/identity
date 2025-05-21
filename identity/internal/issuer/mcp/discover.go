@@ -8,10 +8,10 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/ThinkInAIXYZ/go-mcp/client"
-	"github.com/ThinkInAIXYZ/go-mcp/transport"
 	mcptypes "github.com/agntcy/identity/internal/core/mcp/types"
 	"github.com/agntcy/identity/internal/pkg/errutil"
+	"github.com/mark3labs/mcp-go/client"
+	"github.com/mark3labs/mcp-go/mcp"
 )
 
 // The discoverClient interface defines the core methods for
@@ -35,29 +35,30 @@ func (d *discoveryClient) Discover(
 ) (*mcptypes.McpServer, error) {
 	// Create streameable http client
 	// We only support streamable http client for now
-	transportClient, err := transport.NewStreamableHTTPClientTransport(fmt.Sprintf("%s/mcp", url))
-	if err != nil {
-		return nil, errutil.Err(
-			err,
-			"failed to create streamable http client transport",
-		)
-	}
-
-	// Initialize MCP client
-	mcpClient, err := client.NewClient(
-		transportClient,
-	)
+	client, err := client.NewStreamableHttpClient(fmt.Sprintf("%s/mcp", url))
 	if err != nil {
 		return nil, errutil.Err(
 			err,
 			"failed to create mcp client",
 		)
 	}
-	defer mcpClient.Close()
+
+	// Initialize the client
+	_, err = client.Initialize(ctx, mcp.InitializeRequest{})
+	if err != nil {
+		return nil, errutil.Err(
+			err,
+			"failed to initialize mcp client",
+		)
+	}
+
+	defer client.Close()
 
 	// Discover MCP server
 	// First the tools
-	toolsList, err := mcpClient.ListTools(ctx)
+	toolsRequest := mcp.ListToolsRequest{}
+
+	toolsList, err := client.ListTools(ctx, toolsRequest)
 	if err != nil {
 		return nil, errutil.Err(
 			err,
@@ -66,7 +67,9 @@ func (d *discoveryClient) Discover(
 	}
 
 	// After that the resources
-	resourcesList, err := mcpClient.ListResources(ctx)
+	resourcesRequest := mcp.ListResourcesRequest{}
+
+	resourcesList, err := client.ListResources(ctx, resourcesRequest)
 	if err != nil {
 		return nil, errutil.Err(
 			err,
