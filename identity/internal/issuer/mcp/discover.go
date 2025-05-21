@@ -44,7 +44,6 @@ func (d *discoveryClient) Discover(
 	}
 
 	// Initialize MCP client
-	//nolint:contextcheck // Context cannot be passed
 	mcpClient, err := client.NewClient(
 		transportClient,
 	)
