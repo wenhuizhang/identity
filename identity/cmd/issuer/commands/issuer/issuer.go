@@ -6,8 +6,8 @@ package issuer
 import (
 	"encoding/json"
 	"fmt"
+	"net/url"
 	"os"
-	"regexp"
 
 	coreV1alpha "github.com/agntcy/identity/api/agntcy/identity/core/v1alpha1"
 	cliCache "github.com/agntcy/identity/cmd/issuer/cache"
@@ -119,14 +119,16 @@ var issuerRegisterCmd = &cobra.Command{
 		}
 
 		// extract the root url from the issuer URL as the common name
-		commonNamePattern := `^https?://([^/]+)`
-		re := regexp.MustCompile(commonNamePattern)
-		commonNameMatches := re.FindStringSubmatch(idpConfig.IssuerUrl)
-		if len(commonNameMatches) < 2 {
-			fmt.Fprintf(os.Stderr, "Error extracting common name from issuer URL: %s\n", idpConfig.IssuerUrl)
+		issuerUrl, err := url.Parse(idpConfig.IssuerUrl)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error parsing issuer URL: %v\n", err)
 			return
 		}
-		commonName := commonNameMatches[1]
+		commonName := issuerUrl.Hostname()
+		if commonName == "" {
+			fmt.Fprintf(os.Stderr, "Error extracting common name from issuer URL: %v\n", err)
+			return
+		}
 
 		// prompt user for organization and sub-organization
 		fmt.Fprintf(os.Stdout, "Enter your organization name: ")
