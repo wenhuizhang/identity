@@ -3,6 +3,11 @@
 
 package types
 
+import (
+	"slices"
+	"strings"
+)
+
 // The Envelope Type of the Credential.
 // Multiple envelope types can be supported: Embedded Proof, JOSE, COSE etc.
 type CredentialEnvelopeType int
@@ -63,6 +68,11 @@ type CredentialSchema struct {
 	ID string `json:"id"`
 }
 
+const (
+	// ProofTypeJWT is the proof type for JWT
+	proofTypeJWT = "JWT,JWTToken,Jwk,JwkToken,JwtToken,JwkToken,Jwt"
+)
+
 // A data integrity proof provides information about the proof mechanism,
 // parameters required to verify that proof, and the proof value itself.
 type Proof struct {
@@ -74,6 +84,10 @@ type Proof struct {
 
 	// The proof value
 	ProofValue string `json:"proof_value"`
+}
+
+func (p *Proof) IsJWT() bool {
+	return slices.Contains(strings.Split(proofTypeJWT, ","), p.Type)
 }
 
 // DataModel represents the W3C Verifiable Credential Data Model defined [here]

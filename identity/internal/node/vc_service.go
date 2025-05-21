@@ -33,6 +33,7 @@ type verifiableCredentialService struct {
 	idRepository        idcore.IdRepository
 	issuerRepository    issuercore.Repository
 	vcRepository        vccore.Repository
+	idGenerator         IDGenerator
 }
 
 func NewVerifiableCredentialService(
@@ -40,12 +41,14 @@ func NewVerifiableCredentialService(
 	idRepository idcore.IdRepository,
 	issuerRepository issuercore.Repository,
 	vcRepository vccore.Repository,
+	idGenerator IDGenerator,
 ) VerifiableCredentialService {
 	return &verifiableCredentialService{
 		verificationService: verificationService,
 		idRepository:        idRepository,
 		issuerRepository:    issuerRepository,
 		vcRepository:        vcRepository,
+		idGenerator:         idGenerator,
 	}
 }
 
@@ -62,14 +65,10 @@ func (s *verifiableCredentialService) Publish(
 		)
 	}
 
-	sub, err := s.verifyProof(ctx, proof)
+	id, _, err := s.idGenerator.GenerateFromProof(ctx, proof)
 	if err != nil {
 		return err
 	}
-
-	//nolint:godox // I'll fix them in the next PR
-	// TODO: revisit this line after working on a better ID generation
-	id := fmt.Sprintf("DUO-%s", sub)
 
 	log.Debug("Resolving the ID into a ResolverMetadata")
 
@@ -126,39 +125,4 @@ func (s *verifiableCredentialService) Publish(
 	}
 
 	return nil
-}
-
-func (s *verifiableCredentialService) verifyProof(
-	ctx context.Context,
-	proof *vctypes.Proof,
-) (string, error) {
-	log.Debug("Verifying the ID proof and the issuer")
-
-	if proof == nil {
-		return "", errutil.ErrInfo(
-			errtypes.ERROR_REASON_IDP_REQUIRED,
-			"issuer without external IdP is not implemented",
-			nil,
-		)
-	}
-
-	iss, sub, err := s.verificationService.VerifyProof(ctx, proof)
-	if err != nil {
-		return "", errutil.ErrInfo(errtypes.ERROR_REASON_INVALID_PROOF, err.Error(), err)
-	}
-
-	_, err = s.issuerRepository.GetIssuer(ctx, iss)
-	if err != nil {
-		if errors.Is(err, errcore.ErrResourceNotFound) {
-			return "", errutil.ErrInfo(
-				errtypes.ERROR_REASON_ISSUER_NOT_REGISTERED,
-				fmt.Sprintf("the issuer %s is not registered", iss),
-				err,
-			)
-		}
-
-		return "", errutil.ErrInfo(errtypes.ERROR_REASON_INTERNAL, "unexpected error", err)
-	}
-
-	return sub, nil
 }
