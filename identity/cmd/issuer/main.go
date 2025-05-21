@@ -6,7 +6,11 @@ package main
 import (
 	"os"
 
-	commands "github.com/agntcy/identity/cmd/issuer/commands"
+	"github.com/agntcy/identity/cmd/issuer/commands/badge"
+	"github.com/agntcy/identity/cmd/issuer/commands/issuer"
+	"github.com/agntcy/identity/cmd/issuer/commands/metadata"
+	"github.com/agntcy/identity/cmd/issuer/commands/vault"
+	"github.com/agntcy/identity/cmd/issuer/commands/verify"
 
 	"github.com/spf13/cobra"
 )
@@ -45,9 +49,9 @@ func main() {
 }
 
 func init() {
-	rootCmd.AddCommand(commands.VaultCmd)
-	rootCmd.AddCommand(commands.IssuerCmd)
-	rootCmd.AddCommand(commands.MetadataCmd)
-	rootCmd.AddCommand(commands.BadgeCmd)
-	rootCmd.AddCommand(commands.VerifyCmd)
+	rootCmd.AddCommand(vault.VaultCmd)
+	rootCmd.AddCommand(issuer.IssuerCmd)
+	rootCmd.AddCommand(metadata.MetadataCmd)
+	rootCmd.AddCommand(badge.BadgeCmd)
+	rootCmd.AddCommand(verify.VerifyCmd)
 }
