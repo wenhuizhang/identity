@@ -9,14 +9,14 @@ type McpServer struct {
 	// Name of the server.
 	Name string `json:"name"`
 
-	// URL of the deployed server.
+	// Url of the deployed server.
 	URL string `json:"url"`
 
 	// The tools available on the server.
-	Tools []McpTool `json:"tools,omitempty"`
+	Tools []*McpTool `json:"tools,omitempty"`
 
 	// The resources available on the server.
-	Resources []McpResource `json:"resources,omitempty"`
+	Resources []*McpResource `json:"resources,omitempty"`
 }
 
 // McpTool represents a tool available on the MCP server.
