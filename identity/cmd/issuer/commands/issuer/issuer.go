@@ -12,8 +12,10 @@ import (
 	coreV1alpha "github.com/agntcy/identity/api/agntcy/identity/core/v1alpha1"
 	cliCache "github.com/agntcy/identity/cmd/issuer/cache"
 	issuer "github.com/agntcy/identity/internal/issuer/issuer"
+	issuerdata "github.com/agntcy/identity/internal/issuer/issuer/data"
 	"github.com/agntcy/identity/internal/issuer/issuer/data/filesystem"
 	issuerTypes "github.com/agntcy/identity/internal/issuer/types"
+	"github.com/agntcy/identity/internal/pkg/oidc"
 	"github.com/spf13/cobra"
 )
 
@@ -21,10 +23,13 @@ const (
 	defaultNodeAddress = "http://localhost:4000"
 )
 
+// TODO: remove globals
 var (
 	// setup the issuer service
 	issuerFilesystemRepository = filesystem.NewIssuerFilesystemRepository()
-	issuerService              = issuer.NewIssuerService(issuerFilesystemRepository)
+	oidcAuth                   = oidc.NewAuthenticator()
+	nodeClientPrv              = issuerdata.NewNodeClientProvider()
+	issuerService              = issuer.NewIssuerService(issuerFilesystemRepository, oidcAuth, nodeClientPrv)
 
 	// setup the command flags
 	registerIdentityNodeAddress string
@@ -190,7 +195,7 @@ var issuerRegisterCmd = &cobra.Command{
 			IdpConfig:          &idpConfig,
 		}
 
-		issuerId, err := issuerService.RegisterIssuer(cache.VaultId, &issuer)
+		issuerId, err := issuerService.RegisterIssuer(cmd.Context(), cache.VaultId, &issuer)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error registering as an Issuer: %v\n", err)
 			return
