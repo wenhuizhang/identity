@@ -4,6 +4,11 @@ do_generate_proto:
 	cd scripts && ./buf-generate.sh
 	@echo "Generated proto files"
 
+do_generate_node_sdk:
+	chmod +x scripts/node/generate.sh
+	./scripts/node/generate.sh
+	@echo "Generated Node SDK"
+
 do_stop_db:
 	@./deployments/scripts/identity/stop_db.sh
 	@echo "CouchDB stopped"
@@ -29,6 +34,8 @@ do_stop_node:
 	@echo "Node stopped"
 
 generate_proto: do_generate_proto
+
+generate_node_sdk: do_generate_node_sdk
 
 stop_node: do_stop_node do_stop_db do_stop_network
 start_node: stop_node do_start_network do_start_db do_start_node
