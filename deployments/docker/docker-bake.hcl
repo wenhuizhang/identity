@@ -10,7 +10,7 @@ function "get_tag" {
   result = [for tag in tags: "${IMAGE_REPO}/${name}:${tag}"]
 }
 
-group "node" {
+group "default" {
   targets = [
     "node",
   ]
@@ -33,7 +33,6 @@ target "_common" {
 target "node" {
   context = "../.."
   dockerfile = "./identity/Dockerfile.node"
-  target = "node"
   inherits = [
     "_common",
     "docker-metadata-action",
