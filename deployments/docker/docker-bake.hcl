@@ -31,8 +31,8 @@ target "_common" {
 }
 
 target "node" {
-  context = "../.."
-  dockerfile = "./identity/Dockerfile.node"
+  context = "."
+  dockerfile = "./deployments/docker/identity/Dockerfile.node"
   inherits = [
     "_common",
     "docker-metadata-action",

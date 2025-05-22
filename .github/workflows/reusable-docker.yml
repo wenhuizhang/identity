@@ -24,7 +24,7 @@ on:
         required: false
         type: string
         description: "Image repo to use."
-        default: "ghcr.io/cisco-eti/pyramid"
+        default: "ghcr.io/cisco-eti/identity"
     secrets:
       github-token:
         description: "github token"
@@ -61,11 +61,13 @@ jobs:
       - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@c47758b77c9736f4b2ef4073d4d51994fabfe349 # v3.7.1
 
+      - name: Setup Buildx env
+        run: echo "BUILDX_BAKE_ENTITLEMENTS_FS=0" >> $GITHUB_ENV
+
       - name: Docker metadata
         id: metadata
         uses: docker/metadata-action@8e5442c4ef9f78752691e2d8f8d19755c6f78e81 # v5.5.1
         with:
-          workdir: ./deployments/docker
           tags: |
             type=raw,value=${{ inputs.image-tag }}
             type=raw,value=latest,enable=${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags') }}
@@ -75,9 +77,8 @@ jobs:
         with:
           files: |
             ${{ inputs.bake-file }}
-            ${{ steps.metadata.outputs.bake-file }}
+            cwd://${{ steps.metadata.outputs.bake-file }}
           targets: ${{ inputs.bake-targets }}
           push: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags') }}
-          provenance: false
         env:
           IMAGE_REPO: ${{ inputs.image-repo }}
