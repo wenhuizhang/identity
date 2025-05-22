@@ -15,6 +15,14 @@ PLATFORM_V1ALPHA1_GENERATED_PATH="$ROOT_DIR/generated/openapi/agntcy/identity/no
 SWAGGER_SECURITY_DEFINITIONS_PATH="$ROOT_DIR/generated/openapi/agntcy/identity/node/v1alpha1/openapi.swagger.json"
 #-----------------------------------------------------------------------------#
 
+string_contains() {
+  # Arguments: $1 = src, $2 = substr
+  case "$1" in
+    *"$2"*) return 0 ;;
+    *) return 1 ;;
+  esac
+}
+
 do_cleanup_previous_version() {
   cd $OUT_DIR || exit
   if [ -d "$SDK_DIR/client" ]; then
@@ -38,7 +46,7 @@ do_mixin() {
   cd $OUT_DIR || exit
   for file in "$1"/*.json; do
     fname=$(basename ${file})
-    if [[ "$(printf '%s' "$fname")" = *"_service"* ]]; then
+    if string_contains "$fname" "_service"; then
       swagger mixin $1/$fname $SWAGGER_SECURITY_DEFINITIONS_PATH > $1/final_$fname
       mv -f $1/final_$fname $1/$fname
     fi
@@ -50,7 +58,7 @@ do_rename() {
   cd $OUT_DIR || exit
   for file in "$1"/*.json; do
     fname=$(basename ${file})
-    if [[ "$(printf '%s' "$fname")" != *"_service"* ]]; then
+    if ! string_contains "$fname" "_service"; then
       rm $1/$fname
     fi
   done
@@ -58,7 +66,7 @@ do_rename() {
   for file in "$1"/*.json; do
     fname=$(basename ${file})
     name=${fname%_service*}
-    if [[ "$(printf '%s' "$fname")" = *"_service"* ]]; then
+    if string_contains "$fname" "_service"; then
       mv $1/$fname $1/$name".swagger.json"
     fi
   done
