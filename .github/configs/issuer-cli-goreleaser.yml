@@ -1,0 +1,33 @@
+# Copyright 2025 Copyright AGNTCY Contributors (https://github.com/agntcy)
+# SPDX-License-Identifier: Apache-2.0
+
+builds:
+  # You can have multiple builds defined as a yaml list
+  - #
+    # ID of the build.
+    #
+    # Default: Project directory name.
+    id: "issuer-cli"
+
+    # Binary name.
+    # Can be a path (e.g. `bin/app`) to wrap the binary in a directory.
+    #
+    # Default: Project directory name.
+    binary: issuer-cli
+
+    # GOOS list to build for.
+    # For more info refer to: https://pkg.go.dev/cmd/go#hdr-Environment_variables
+    #
+    # Default: [ 'darwin', 'linux', 'windows' ].
+    goos:
+      - darwin
+      - linux
+      - windows
+
+    # GOARCH to build for.
+    # For more info refer to: https://pkg.go.dev/cmd/go#hdr-Environment_variables
+    #
+    # Default: [ '386', 'amd64', 'arm64' ].
+    goarch:
+      - amd64
+      - arm64
