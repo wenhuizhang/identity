@@ -11,6 +11,7 @@ import (
 	internalIssuerTypes "github.com/agntcy/identity/internal/issuer/types"
 	"github.com/agntcy/identity/internal/issuer/vault"
 	"github.com/agntcy/identity/internal/issuer/vault/data/filesystem"
+	"github.com/google/uuid"
 	"github.com/spf13/cobra"
 )
 
@@ -36,21 +37,28 @@ var OnePasswordCmd = &cobra.Command{
 		}
 		var config internalIssuerTypes.VaultConfig = &onePasswordConfig
 
-		vault, err := vaultService.ConnectVault(internalIssuerTypes.VaultType1Password, config)
+		vault := internalIssuerTypes.Vault{
+			Id:     uuid.NewString(),
+			Name:   vaultName,
+			Type:   internalIssuerTypes.VaultType1Password,
+			Config: config,
+		}
+
+		vaultId, err := vaultService.ConnectVault(&vault)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error connecting to vault: %v\n", err)
+			fmt.Fprintf(os.Stderr, "Error creating 1Password vault: %v\n", err)
 			return
 		}
 
-		cmd.Printf("Successfully connected to vault: %s\n", vault.Id)
+		cmd.Printf("Successfully created 1Password vault with ID: %s\n", vaultId)
 
 		err = cliCache.SaveCache(
 			&cliCache.Cache{
-				VaultId: vault.Id,
+				VaultId: vaultId,
 			},
 		)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error saving cache: %v\n", err)
+			fmt.Fprintf(os.Stderr, "Error saving local configuration: %v\n", err)
 			return
 		}
 

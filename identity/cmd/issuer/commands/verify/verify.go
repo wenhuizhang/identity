@@ -14,15 +14,26 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var (
+	badgeFilePath string
+)
+
 var VerifyCmd = &cobra.Command{
-	Use:   "verify [path_to_badge_json]",
-	Short: "Verify an Agent or MCP Server Badge from a JSON file",
-	Args:  cobra.ExactArgs(1),
+	Use:   "verify",
+	Short: "Verify an Agent or MCP Server Badge from a file",
 	Run: func(cmd *cobra.Command, args []string) {
 
-		badgeFilePath := args[0]
-		if _, err := os.Stat(badgeFilePath); os.IsNotExist(err) {
-			fmt.Fprintf(os.Stderr, "File does not exist: %s\n", badgeFilePath)
+		// if the file path is not set, prompt the user for it interactively
+		if badgeFilePath == "" {
+			fmt.Fprintf(os.Stderr, "Full file path to the badge file: ")
+			_, err := fmt.Scanln(&badgeFilePath)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "Error reading file path: %v\n", err)
+				return
+			}
+		}
+		if badgeFilePath == "" {
+			fmt.Fprintf(os.Stderr, "No file path provided\n")
 			return
 		}
 
@@ -55,4 +66,8 @@ var VerifyCmd = &cobra.Command{
 		fmt.Fprintf(os.Stdout, "Successfully verified badge: %s\n", *vc.Id)
 
 	},
+}
+
+func init() {
+	VerifyCmd.Flags().StringVarP(&badgeFilePath, "file", "f", "", "Path to the badge file")
 }

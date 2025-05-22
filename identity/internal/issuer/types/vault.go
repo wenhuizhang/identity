@@ -12,7 +12,7 @@ import (
 type VaultType string
 
 const (
-	VaultTypeTxt       VaultType = "txt"
+	VaultTypeFile      VaultType = "file"
 	VaultType1Password VaultType = "1password"
 )
 
@@ -24,20 +24,22 @@ type VaultConfig interface {
 type Vault struct {
 	// The ID of the vault
 	Id string `json:"id,omitempty"`
+	// The name of the vault
+	Name string `json:"name,omitempty"`
 	// The type of the vault
 	Type VaultType `json:"type,omitempty"`
 	// The vault implementation
 	Config VaultConfig `json:"config,omitempty"`
 }
 
-type VaultTxt struct {
+type VaultFile struct {
 	// The text file vault path
 	FilePath string `json:"path,omitempty"`
 }
 
 // GetVaultType returns the type of this vault implementation
-func (v *VaultTxt) GetVaultType() VaultType {
-	return VaultTypeTxt
+func (v *VaultFile) GetVaultType() VaultType {
+	return VaultTypeFile
 }
 
 type Vault1Password struct {
@@ -59,6 +61,7 @@ func (v *Vault) UnmarshalVault(data []byte) error {
 	// Temporary struct to decode the JSON data
 	type tempVault struct {
 		Id     string          `json:"id,omitempty"`
+		Name   string          `json:"name,omitempty"`
 		Type   VaultType       `json:"type,omitempty"`
 		Config json.RawMessage `json:"config,omitempty"`
 	}
@@ -70,6 +73,7 @@ func (v *Vault) UnmarshalVault(data []byte) error {
 
 	// Assign basic fields
 	v.Id = temp.Id
+	v.Name = temp.Name
 	v.Type = temp.Type
 
 	// Skip if no config is provided
@@ -80,8 +84,8 @@ func (v *Vault) UnmarshalVault(data []byte) error {
 
 	// Create the appropriate VaultConfig based on the Type
 	switch temp.Type {
-	case VaultTypeTxt:
-		var config VaultTxt
+	case VaultTypeFile:
+		var config VaultFile
 		if err := json.Unmarshal(temp.Config, &config); err != nil {
 			return err
 		}

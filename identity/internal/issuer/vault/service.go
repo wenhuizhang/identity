@@ -6,13 +6,10 @@ package vault
 import (
 	internalIssuerTypes "github.com/agntcy/identity/internal/issuer/types"
 	"github.com/agntcy/identity/internal/issuer/vault/data"
-	"github.com/google/uuid"
 )
 
 type VaultService interface {
-	ConnectVault(
-		vaultType internalIssuerTypes.VaultType, config internalIssuerTypes.VaultConfig,
-	) (*internalIssuerTypes.Vault, error)
+	ConnectVault(vault *internalIssuerTypes.Vault) (string, error)
 	GetAllVaults() ([]*internalIssuerTypes.Vault, error)
 	GetVault(vaultId string) (*internalIssuerTypes.Vault, error)
 	ForgetVault(vaultId string) error
@@ -31,20 +28,14 @@ func NewVaultService(
 }
 
 func (s *vaultService) ConnectVault(
-	vaultType internalIssuerTypes.VaultType, config internalIssuerTypes.VaultConfig,
-) (*internalIssuerTypes.Vault, error) {
-	vault := internalIssuerTypes.Vault{
-		Id:     uuid.NewString(),
-		Type:   internalIssuerTypes.VaultTypeTxt,
-		Config: config,
-	}
-
-	_, err := s.vaultRepository.AddVault(&vault)
+	vault *internalIssuerTypes.Vault,
+) (string, error) {
+	vaultId, err := s.vaultRepository.AddVault(vault)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
-	return &vault, nil
+	return vaultId, nil
 }
 
 func (s *vaultService) GetAllVaults() ([]*internalIssuerTypes.Vault, error) {
