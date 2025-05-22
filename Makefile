@@ -1,4 +1,4 @@
-.PHONY: do_generate_proto do_stop_db do_start_db do_stop_network do_start_network do_start_node do_stop_node
+.PHONY: do_generate_proto do_generate_node_sdk do_start_node_dev do_stop_node_dev
 
 do_generate_proto:
 	cd scripts && ./buf-generate.sh
@@ -9,33 +9,19 @@ do_generate_node_sdk:
 	./scripts/node/generate.sh
 	@echo "Generated Node SDK"
 
-do_stop_db:
-	@./deployments/scripts/identity/stop_db.sh
-	@echo "CouchDB stopped"
+do_start_node_dev:
+	@./deployments/scripts/identity/launch_node_dev.sh
+	@echo "Postgres started at :5984"
+	@echo "Node started at :4000"
 
-do_start_db:
-	@./deployments/scripts/identity/launch_db.sh
-	@echo "CouchDB started at PORT 5984"
-
-do_stop_network:
-	@./deployments/scripts/network/stop_network.sh
-	@echo "Identity network stopped"
-
-do_start_network:
-	@./deployments/scripts/network/launch_network.sh
-	@echo "Identity network started"
-
-do_start_node:
-	@./deployments/scripts/identity/launch_node.sh
-	@echo "Node started at http://localhost:4000"
-
-do_stop_node:
-	@./deployments/scripts/identity/stop_node.sh
+do_stop_node_dev:
+	@./deployments/scripts/identity/stop_node_dev.sh
 	@echo "Node stopped"
+	@echo "Postgres stopped"
 
 generate_proto: do_generate_proto
 
 generate_node_sdk: do_generate_node_sdk
 
-stop_node: do_stop_node do_stop_db do_stop_network
-start_node: stop_node do_start_network do_start_db do_start_node
+stop_node_dev: do_stop_node_dev
+start_node_dev: do_start_node_dev
