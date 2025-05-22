@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 ---
-name: Build and Push
+name: Build and Push Docker Images
 
 on:
   workflow_call:
@@ -37,7 +37,7 @@ permissions:
 
 jobs:
   build-and-push:
-    name: Build and Push
+    name: Build and Push Docker Images
     runs-on: ubuntu-latest
 
     steps:

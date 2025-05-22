@@ -11,6 +11,10 @@ on:
         required: true
         type: string
         description: "Workdir"
+      config:
+        required: false
+        type: string
+        description: "Config file"
     secrets:
       github-token:
         description: "Github token"
@@ -35,6 +39,6 @@ jobs:
         with:
           version: '~> v2'
           workdir: ${{ inputs.workdir }}
-          args: release --clean
+          args: release --clean --config ${{ inputs.config }}
         env:
           GITHUB_TOKEN: ${{ secrets.github-token }}

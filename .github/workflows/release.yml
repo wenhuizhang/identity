@@ -62,10 +62,11 @@ jobs:
       github-token: ${{ secrets.GHCR_TOKEN }}
 
   build-and-release-issuer-client:
-    name: Build and Release Issuer Client
+    name: Build and Release Issuer Cli
     uses: ./.github/workflows/reusable-go.yml
     needs: [prepare-release]
     with:
       workdir: ./identity/cmd/issuer
+      config: ../../../.github/configs/issuer-cli-goreleaser.yml
     secrets:
       github-token: ${{ secrets.GHCR_TOKEN }}
