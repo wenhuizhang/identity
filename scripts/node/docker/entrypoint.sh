@@ -45,10 +45,10 @@ do_cleanup_swagger() {
 do_mixin() {
   cd $OUT_DIR || exit
   for file in "$1"/*.json; do
-    fname=$(basename ${file})
+    fname=$(basename "${file}")
     if string_contains "$fname" "_service"; then
-      swagger mixin $1/$fname $SWAGGER_SECURITY_DEFINITIONS_PATH > $1/final_$fname
-      mv -f $1/final_$fname $1/$fname
+      swagger mixin "$1"/"$fname" "$SWAGGER_SECURITY_DEFINITIONS_PATH" > "$1"/final_"$fname"
+      mv -f "$1"/final_"$fname" "$1"/"$fname"
     fi
   done
   cd $ROOT_DIR || exit
@@ -57,17 +57,17 @@ do_mixin() {
 do_rename() {
   cd $OUT_DIR || exit
   for file in "$1"/*.json; do
-    fname=$(basename ${file})
+    fname=$(basename "${file}")
     if ! string_contains "$fname" "_service"; then
-      rm $1/$fname
+      rm "$1"/"$fname"
     fi
   done
   ls $1
   for file in "$1"/*.json; do
-    fname=$(basename ${file})
+    fname=$(basename "${file}")
     name=${fname%_service*}
     if string_contains "$fname" "_service"; then
-      mv $1/$fname $1/$name".swagger.json"
+      mv "$1"/"$fname" "$1"/"$name"".swagger.json"
     fi
   done
   cd $ROOT_DIR || exit
@@ -82,8 +82,8 @@ do_generate() {
 do_generate_go_client() {
   cd $OUT_DIR || exit
   for file in "$1"/*.json; do
-    fname=$(basename ${file})
-    swagger generate client -f $1/$fname -A identity_node --template-dir $ROOT_DIR/templates --target ./$SDK_DIR
+    fname=$(basename "${file}")
+    swagger generate client -f "$1"/"$fname" -A identity_node --template-dir "$ROOT_DIR"/templates --target ./"$SDK_DIR"
   done
   cd $ROOT_DIR || exit
 }
