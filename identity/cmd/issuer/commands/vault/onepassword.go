@@ -58,7 +58,7 @@ var OnePasswordCmd = &cobra.Command{
 			},
 		)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error saving cache: %v\n", err)
+			fmt.Fprintf(os.Stderr, "Error saving local configuration: %v\n", err)
 			return
 		}
 

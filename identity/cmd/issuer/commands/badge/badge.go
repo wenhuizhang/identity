@@ -40,7 +40,7 @@ var badgeIssueCmd = &cobra.Command{
 		// load the cache to get the vault, issuer and metadata ids
 		cache, err := cliCache.LoadCache()
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error loading cache: %v\n", err)
+			fmt.Fprintf(os.Stderr, "Error loading local configuration: %v\n", err)
 			return
 		}
 		if cache == nil || cache.VaultId == "" {
@@ -75,7 +75,7 @@ var badgeIssueCmd = &cobra.Command{
 		cache.BadgeId = badgeId
 		err = cliCache.SaveCache(cache)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error saving cache: %v\n", err)
+			fmt.Fprintf(os.Stderr, "Error saving local configuration: %v\n", err)
 			return
 		}
 	},
@@ -90,7 +90,7 @@ var badgePublishCmd = &cobra.Command{
 		// load the cache to get the vault, issuer, metadata and badge ids
 		cache, err := cliCache.LoadCache()
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error loading cache: %v\n", err)
+			fmt.Fprintf(os.Stderr, "Error loading local configuration: %v\n", err)
 			return
 		}
 		if cache == nil || cache.VaultId == "" {
@@ -142,7 +142,7 @@ var badgeListCmd = &cobra.Command{
 		// load the cache to get the vault, issuer and metadata ids
 		cache, err := cliCache.LoadCache()
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error loading cache: %v\n", err)
+			fmt.Fprintf(os.Stderr, "Error loading local configuration: %v\n", err)
 			return
 		}
 		if cache == nil || cache.VaultId == "" {
@@ -189,7 +189,7 @@ var badgeShowCmd = &cobra.Command{
 		// load the cache to get the vault, issuer and metadata ids
 		cache, err := cliCache.LoadCache()
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error loading cache: %v\n", err)
+			fmt.Fprintf(os.Stderr, "Error loading local configuration: %v\n", err)
 			return
 		}
 		if cache == nil || cache.VaultId == "" {
@@ -236,7 +236,7 @@ var badgeForgetCmd = &cobra.Command{
 		// load the cache to get the vault, issuer and metadata ids
 		cache, err := cliCache.LoadCache()
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error loading cache: %v\n", err)
+			fmt.Fprintf(os.Stderr, "Error loading local configuration: %v\n", err)
 			return
 		}
 		if cache == nil || cache.VaultId == "" {
@@ -270,7 +270,7 @@ var badgeForgetCmd = &cobra.Command{
 			cache.BadgeId = ""
 			err = cliCache.SaveCache(cache)
 			if err != nil {
-				fmt.Fprintf(os.Stderr, "Error saving cache: %v\n", err)
+				fmt.Fprintf(os.Stderr, "Error saving local configuration: %v\n", err)
 				return
 			}
 		}
@@ -288,7 +288,7 @@ var badgeLoadCmd = &cobra.Command{
 		// load the cache to get the vault, issuer and metadata ids
 		cache, err := cliCache.LoadCache()
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error loading cache: %v\n", err)
+			fmt.Fprintf(os.Stderr, "Error loading local configuration: %v\n", err)
 			return
 		}
 		if cache == nil || cache.VaultId == "" {
@@ -326,7 +326,7 @@ var badgeLoadCmd = &cobra.Command{
 		cache.BadgeId = badgeId
 		err = cliCache.SaveCache(cache)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error saving cache: %v\n", err)
+			fmt.Fprintf(os.Stderr, "Error saving local configuration: %v\n", err)
 			return
 		}
 		fmt.Fprintf(os.Stdout, "Loaded badge with ID: %s\n", badgeId)

@@ -62,7 +62,7 @@ var issuerRegisterCmd = &cobra.Command{
 		// load the cache to get the vault id
 		cache, err := cliCache.LoadCache()
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error loading cache: %v\n", err)
+			fmt.Fprintf(os.Stderr, "Error loading local configuration: %v\n", err)
 			return
 		}
 		if cache == nil || cache.VaultId == "" {
@@ -208,7 +208,7 @@ var issuerRegisterCmd = &cobra.Command{
 		cache.IssuerId = issuerId
 		err = cliCache.SaveCache(cache)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error saving cache: %v\n", err)
+			fmt.Fprintf(os.Stderr, "Error saving local configuration: %v\n", err)
 			return
 		}
 	},
@@ -223,7 +223,7 @@ var issuerListCmd = &cobra.Command{
 		// load the cache to get the vault id
 		cache, err := cliCache.LoadCache()
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error loading cache: %v\n", err)
+			fmt.Fprintf(os.Stderr, "Error loading local configuration: %v\n", err)
 			return
 		}
 		if cache == nil || cache.VaultId == "" {
@@ -254,7 +254,7 @@ var issuerShowCmd = &cobra.Command{
 		// load the cache to get the vault id
 		cache, err := cliCache.LoadCache()
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error loading cache: %v\n", err)
+			fmt.Fprintf(os.Stderr, "Error loading local configuration: %v\n", err)
 			return
 		}
 		if cache == nil || cache.VaultId == "" {
@@ -299,7 +299,7 @@ var issuerForgetCmd = &cobra.Command{
 		// load the cache to get the vault id
 		cache, err := cliCache.LoadCache()
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error loading cache: %v\n", err)
+			fmt.Fprintf(os.Stderr, "Error loading local configuration: %v\n", err)
 			return
 		}
 		if cache == nil || cache.VaultId == "" {
@@ -330,7 +330,7 @@ var issuerForgetCmd = &cobra.Command{
 			cache.BadgeId = ""
 			err = cliCache.SaveCache(cache)
 			if err != nil {
-				fmt.Fprintf(os.Stderr, "Error saving cache: %v\n", err)
+				fmt.Fprintf(os.Stderr, "Error saving local configuration: %v\n", err)
 				return
 			}
 		}
@@ -347,7 +347,7 @@ var issuerLoadCmd = &cobra.Command{
 		// load the cache to get the vault id
 		cache, err := cliCache.LoadCache()
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error loading cache: %v\n", err)
+			fmt.Fprintf(os.Stderr, "Error loading local configuration: %v\n", err)
 			return
 		}
 		if cache == nil || cache.VaultId == "" {
@@ -380,7 +380,7 @@ var issuerLoadCmd = &cobra.Command{
 		cache.IssuerId = loadIssuerId
 		err = cliCache.SaveCache(cache)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error saving cache: %v\n", err)
+			fmt.Fprintf(os.Stderr, "Error saving local configuration: %v\n", err)
 			return
 		}
 		fmt.Fprintf(os.Stdout, "Loaded issuer with ID: %s\n", loadIssuerId)
