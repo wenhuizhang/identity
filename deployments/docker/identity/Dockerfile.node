@@ -10,7 +10,7 @@ RUN apk update \
     &&  apk add ca-certificates wget \
     &&  update-ca-certificates
 
-FROM golang:1.22.5-alpine
+FROM golang:1.24.1-alpine
 
 # Create a group and user
 RUN addgroup -S web && adduser -u 1999 -S -G web web
