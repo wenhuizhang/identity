@@ -40,7 +40,7 @@ jobs:
 
       - name: List all targets
         id: all-targets
-        uses: docker/bake-action/subaction/list-targets@v6
+        uses: docker/bake-action/subaction/list-targets@212c36739681a6271d58dcfe0d001d2ad13f8e75 # v6.7.0
         with:
           workdir: ./deployments/docker
           target: default
@@ -54,10 +54,6 @@ jobs:
       fail-fast: false
       matrix:
         target: ${{ fromJson(needs.prepare-release.outputs.targets) }}
-    permissions:
-      contents: 'read'
-      packages: 'write'
-      attestations: 'write'
     with:
       bake-targets: ${{ matrix.target }}
       image-tag: ${{ needs.prepare-release.outputs.image-tag }}
