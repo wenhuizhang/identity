@@ -15,73 +15,78 @@ PLATFORM_V1ALPHA1_GENERATED_PATH="$ROOT_DIR/generated/openapi/agntcy/identity/no
 SWAGGER_SECURITY_DEFINITIONS_PATH="$ROOT_DIR/generated/openapi/agntcy/identity/node/v1alpha1/openapi.swagger.json"
 #-----------------------------------------------------------------------------#
 
-function do_cleanup_previous_version() {
-  cd $OUT_DIR
+do_cleanup_previous_version() {
+  cd $OUT_DIR || exit
   if [ -d "$SDK_DIR/client" ]; then
     rm -rf $SDK_DIR/client
   fi
   if [ -d "$SDK_DIR/models" ]; then
     rm -rf $SDK_DIR/models
   fi
-  cd $ROOT_DIR
+  cd $ROOT_DIR || exit
 }
 
-function do_cleanup_swagger() {
-  cd $OUT_DIR
+do_cleanup_swagger() {
+  cd $OUT_DIR || exit
   if [ -d "$SWAGGER_DIR" ]; then
     rm -rf $SWAGGER_DIR
   fi
-  cd $ROOT_DIR
+  cd $ROOT_DIR || exit
 }
 
-function do_mixin() {
-  cd $OUT_DIR
-  for file in $(ls $1); do
-    if [[ "$(printf '%s' "$file")" = *"_service"* ]]; then
-      swagger mixin $1/$file $SWAGGER_SECURITY_DEFINITIONS_PATH > $1/final_$file
-      mv -f $1/final_$file $1/$file
+do_mixin() {
+  cd $OUT_DIR || exit
+  for file in "$1"/*.json; do
+    fname=$(basename ${file})
+    if [[ "$(printf '%s' "$fname")" = *"_service"* ]]; then
+      swagger mixin $1/$fname $SWAGGER_SECURITY_DEFINITIONS_PATH > $1/final_$fname
+      mv -f $1/final_$fname $1/$fname
     fi
   done
-  cd $ROOT_DIR
+  cd $ROOT_DIR || exit
 }
 
-function do_rename() {
-  cd $OUT_DIR
-  for file in $(ls $1); do
-    if [[ "$(printf '%s' "$file")" != *"_service"* ]]; then
-      rm $1/$file
+do_rename() {
+  cd $OUT_DIR || exit
+  for file in "$1"/*.json; do
+    fname=$(basename ${file})
+    if [[ "$(printf '%s' "$fname")" != *"_service"* ]]; then
+      rm $1/$fname
     fi
   done
-  for file in $(ls $1); do
-    name=${file%_service*}
-    if [[ "$(printf '%s' "$file")" = *"_service"* ]]; then
-      mv $1/$file $1/$name".swagger.json"
+  ls $1
+  for file in "$1"/*.json; do
+    fname=$(basename ${file})
+    name=${fname%_service*}
+    if [[ "$(printf '%s' "$fname")" = *"_service"* ]]; then
+      mv $1/$fname $1/$name".swagger.json"
     fi
   done
-  cd $ROOT_DIR
+  cd $ROOT_DIR || exit
 }
 
-function do_generate() {
-  cd $SPEC_DIR
+do_generate() {
+  cd $SPEC_DIR || exit
   buf generate --template buf.gen.openapiv2.yaml  --output $ROOT_DIR --path $1
-  cd $ROOT_DIR
+  cd $ROOT_DIR || exit
 }
 
-function do_generate_go_client() {
-  cd $OUT_DIR
-  for file in $(ls $1); do
-    swagger generate client -f $1/$file -A identity_node --template-dir $ROOT_DIR/templates --target ./$SDK_DIR
+do_generate_go_client() {
+  cd $OUT_DIR || exit
+  for file in "$1"/*.json; do
+    fname=$(basename ${file})
+    swagger generate client -f $1/$fname -A identity_node --template-dir $ROOT_DIR/templates --target ./$SDK_DIR
   done
-  cd $ROOT_DIR
+  cd $ROOT_DIR || exit
 }
 
-function do_generate_all() {
+do_generate_all() {
   do_generate $PLATFORM_V1ALPHA1_PROTO_PATH
   do_mixin $PLATFORM_V1ALPHA1_GENERATED_PATH
   do_rename $PLATFORM_V1ALPHA1_GENERATED_PATH
 }
 
-function do_generate_go_client_all() {
+do_generate_go_client_all() {
   do_generate_go_client $PLATFORM_V1ALPHA1_GENERATED_PATH
 }
 
