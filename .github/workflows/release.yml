@@ -58,4 +58,4 @@ jobs:
       bake-targets: ${{ matrix.target }}
       image-tag: ${{ needs.prepare-release.outputs.image-tag }}
     secrets:
-      github-token: ${{ secrets.GITHUB_TOKEN }}
+      github-token: ${{ secrets.GHCR_TOKEN }}
