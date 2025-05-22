@@ -16,6 +16,10 @@ group "node" {
   ]
 }
 
+target "docker-metadata-action" {
+  tags = []
+}
+
 target "_common" {
   output = [
     "type=image",
@@ -31,7 +35,8 @@ target "node" {
   dockerfile = "./identity/Dockerfile.node"
   target = "node"
   inherits = [
-    "_common"
+    "_common",
+    "docker-metadata-action",
   ]
   tags = get_tag(target.docker-metadata-action.tags, "${target.node.name}")
 }
