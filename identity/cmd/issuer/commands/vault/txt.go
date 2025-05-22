@@ -13,7 +13,7 @@ import (
 	internalIssuerTypes "github.com/agntcy/identity/internal/issuer/types"
 	"github.com/agntcy/identity/internal/issuer/vault"
 	"github.com/agntcy/identity/internal/issuer/vault/data/filesystem"
-	"github.com/agntcy/identity/internal/pkg/jwkutil"
+	"github.com/agntcy/identity/internal/pkg/joseutil"
 	"github.com/spf13/cobra"
 )
 
@@ -39,7 +39,7 @@ var TxtCmd = &cobra.Command{
 			return
 		}
 
-		priv, err := jwkutil.GenerateJWK("RS256", "sig", "test-rsa")
+		priv, err := joseutil.GenerateJWK("RS256", "sig", "test-rsa")
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error generating JWK: %v\n", err)
 			return

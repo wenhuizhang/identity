@@ -23,6 +23,7 @@ require (
 	github.com/eko/gocache/store/freecache/v4 v4.2.2
 	github.com/google/gnostic-models v0.6.9
 	github.com/google/uuid v1.6.0
+	github.com/lestrrat-go/jwx/v2 v2.1.6
 	github.com/lestrrat-go/jwx/v3 v3.0.1
 	github.com/lib/pq v1.10.9
 	github.com/mark3labs/mcp-go v0.29.0
@@ -51,7 +52,9 @@ require (
 	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/lestrrat-go/blackmagic v1.0.3 // indirect
 	github.com/lestrrat-go/httpcc v1.0.1 // indirect
+	github.com/lestrrat-go/httprc v1.0.6 // indirect
 	github.com/lestrrat-go/httprc/v3 v3.0.0-beta2 // indirect
+	github.com/lestrrat-go/iter v1.0.2 // indirect
 	github.com/lestrrat-go/option v1.0.1 // indirect
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect

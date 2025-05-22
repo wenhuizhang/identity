@@ -9,7 +9,7 @@ import (
 	"testing"
 
 	"github.com/agntcy/identity/internal/core/keystore"
-	"github.com/agntcy/identity/internal/pkg/jwkutil"
+	"github.com/agntcy/identity/internal/pkg/joseutil"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -38,7 +38,7 @@ func TestLocalFileKeyService_SaveAndRetrieve_RSA(t *testing.T) {
 	service, err := keystore.NewKeyService(keystore.FileStorage, config)
 	assert.NoError(t, err, "Failed to create key service")
 
-	priv, err := jwkutil.GenerateJWK("RS256", "sig", "test-rsa")
+	priv, err := joseutil.GenerateJWK("RS256", "sig", "test-rsa")
 	assert.NoError(t, err, "GenerateJWK failed")
 
 	ctx := context.Background()

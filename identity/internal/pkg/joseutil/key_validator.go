@@ -1,7 +1,7 @@
 // Copyright 2025 AGNTCY Contributors (https://github.com/agntcy)
 // SPDX-License-Identifier: Apache-2.0
 
-package jwkutil
+package joseutil
 
 import (
 	"crypto/rsa"
@@ -20,7 +20,7 @@ func ValidatePubKey(j *types.Jwk) error {
 	}
 
 	switch strings.ToUpper(j.KTY) {
-	case "RSA":
+	case KeyTypeRSA:
 		if j.D != "" || j.P != "" || j.Q != "" || j.DP != "" || j.DQ != "" || j.QI != "" {
 			return errors.New("private key fields must not be present in RSA public key")
 		}
@@ -38,7 +38,7 @@ func ValidatePrivKey(j *types.Jwk) error {
 	}
 
 	switch strings.ToUpper(j.KTY) {
-	case "RSA":
+	case KeyTypeRSA:
 		return validateRSAPrivKey(j)
 	default:
 		return errors.New("unsupported key type for private key validation")

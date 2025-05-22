@@ -15,7 +15,7 @@ import (
 	issuertypes "github.com/agntcy/identity/internal/core/issuer/types"
 	vctypes "github.com/agntcy/identity/internal/core/vc/types"
 	"github.com/agntcy/identity/internal/pkg/errutil"
-	"github.com/agntcy/identity/internal/pkg/jwkutil"
+	"github.com/agntcy/identity/internal/pkg/joseutil"
 )
 
 // The IssuerService interface defines the Node methods for Issuers
@@ -63,7 +63,7 @@ func (i *issuerService) Register(
 	}
 
 	// Validate the public key
-	validationErr := jwkutil.ValidatePubKey(
+	validationErr := joseutil.ValidatePubKey(
 		issuer.PublicKey,
 	)
 	if validationErr != nil {

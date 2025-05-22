@@ -1,7 +1,7 @@
 // Copyright 2025 AGNTCY Contributors (https://github.com/agntcy)
 // SPDX-License-Identifier: Apache-2.0
 
-package jwkutil
+package joseutil
 
 import (
 	"crypto/rand"
@@ -18,6 +18,7 @@ const (
 	rsaBits256 = 2048
 	rsaBits384 = 3072
 	rsaBits512 = 4096
+	KeyTypeRSA = "RSA"
 )
 
 func GenerateJWK(alg, use, id string) (*types.Jwk, error) {
@@ -48,7 +49,7 @@ func generateRSAJWK(alg, use, id string) (*types.Jwk, error) {
 	return &types.Jwk{
 		KID: id,
 		ALG: alg,
-		KTY: "RSA",
+		KTY: KeyTypeRSA,
 		USE: use,
 		N:   base64.RawURLEncoding.EncodeToString(privateKey.N.Bytes()),
 		E:   base64.RawURLEncoding.EncodeToString(big.NewInt(int64(privateKey.E)).Bytes()),
