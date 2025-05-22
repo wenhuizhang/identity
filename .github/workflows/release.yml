@@ -12,8 +12,12 @@ on:
     tags:
       - "v?[0-9]+.[0-9]+.[0-9]+"
 jobs:
+  pre-release-test:
+    uses: ./.github/workflows/reusable-test.yml
+
   prepare-release:
     name: Prepare Release
+    needs: [pre-release-test]
     outputs:
       targets: ${{ steps.all-targets.outputs.targets }}
       image-tag: ${{ steps.get-version.outputs.version }}
@@ -26,23 +30,25 @@ jobs:
 
       - name: List all targets
         id: all-targets
-        uses: docker/bake-action/subaction/list-targets@a4d7f0b5b91c14a296d792d4ec53a9db17f02e67 # v5.5.0
+        uses: docker/bake-action/subaction/list-targets@v6
         with:
+          workdir: ./deployments/docker
           target: ${{ steps.resolve.outputs.target }}
         continue-on-error: true
 
-  pre-release-test:
-    uses: ./.github/workflows/reusable-test.yml
-
   build-and-push-images:
     uses: ./.github/workflows/reusable-docker.yml
-    needs: [prepare-release, pre-release-test]
+    needs: [prepare-release]
+    strategy:
+      fail-fast: false
+      matrix:
+        target: ${{ fromJson(needs.prepare.outputs.targets) }}
     permissions:
       contents: 'read'
       packages: 'write'
       attestations: 'write'
     with:
-      bake-targets: ${{ needs.prepare-release.outputs.targets }}
+      bake-targets: ${{ matrix.target }}
       image-tag: ${{ needs.prepare-build.outputs.image-tag }}
     secrets:
       github-token: ${{ secrets.GITHUB_TOKEN }}
