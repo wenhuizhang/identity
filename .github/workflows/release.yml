@@ -46,7 +46,7 @@ jobs:
           target: default
         continue-on-error: true
 
-  build-and-push-images:
+  build-and-push-all-images:
     name: Build and Push Docker Images
     uses: ./.github/workflows/reusable-docker.yml
     needs: [prepare-release]
@@ -57,5 +57,15 @@ jobs:
     with:
       bake-targets: ${{ matrix.target }}
       image-tag: ${{ needs.prepare-release.outputs.image-tag }}
+      image-repo: ghcr.io/${{ github.repository }}
+    secrets:
+      github-token: ${{ secrets.GHCR_TOKEN }}
+
+  build-and-release-issuer-client:
+    name: Build and Release Issuer Client
+    uses: ./.github/workflows/reusable-go.yml
+    needs: [prepare-release]
+    with:
+      workdir: ./identity/cmd/issuer
     secrets:
       github-token: ${{ secrets.GHCR_TOKEN }}

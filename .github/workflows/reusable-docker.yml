@@ -24,10 +24,9 @@ on:
         required: false
         type: string
         description: "Image repo to use."
-        default: "ghcr.io/cisco-eti/identity"
     secrets:
       github-token:
-        description: "github token"
+        description: "Github token"
         required: false
 
 # Declare default permissions
