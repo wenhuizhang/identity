@@ -29,6 +29,11 @@ RUN go install ./cmd/swagger
 
 WORKDIR /identity
 
-RUN chmod +x entrypoint.sh
+RUN addgroup -S generator && adduser -u 1999 -S -G generator generator
+
+RUN chmod +x entrypoint.sh && \
+    chown -R generator:generator .
+
+USER generator
 
 ENTRYPOINT ["./entrypoint.sh"]
