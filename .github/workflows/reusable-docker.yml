@@ -68,7 +68,6 @@ jobs:
       - name: Build and push
         uses: docker/bake-action@a4d7f0b5b91c14a296d792d4ec53a9db17f02e67 # v5.5.0
         with:
-          workdir: ./deployments/docker
           files: |
             ${{ inputs.bake-file }}
             ${{ steps.metadata.outputs.bake-file }}
