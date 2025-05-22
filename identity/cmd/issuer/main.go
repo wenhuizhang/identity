@@ -28,7 +28,7 @@ With it you can:
 
 - (vault) Manage your vault and generate cryptographic keys
 - (issuer) Register as an Issuer with an Identity Network
-- (metadata) Issue and publish important metadata for your Agent and MCP Server identities
+- (metadata) Generate important metadata for your Agent and MCP Server identities
 - (badge) Issue and publish badges for your Agent and MCP Server identities
 - (verify) Verify the identity of other Agents and MCP Servers via their resolver metadata and badges
 - (config) View the current configuration context of your Identity CLI tool
