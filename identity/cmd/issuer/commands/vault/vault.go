@@ -14,8 +14,16 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var vaultFilesystemRepository = filesystem.NewVaultFilesystemRepository()
-var vaultService = vault.NewVaultService(vaultFilesystemRepository)
+var (
+	// setup the vault service
+	vaultFilesystemRepository = filesystem.NewVaultFilesystemRepository()
+	vaultService              = vault.NewVaultService(vaultFilesystemRepository)
+
+	// setup the vault command flags
+	showVaultId   string
+	forgetVaultId string
+	loadVaultId   string
+)
 
 var VaultCmd = &cobra.Command{
 	Use:   "vault",
@@ -60,12 +68,6 @@ var vaultListCmd = &cobra.Command{
 		}
 	},
 }
-
-var (
-	showVaultId   string
-	forgetVaultId string
-	loadVaultId   string
-)
 
 var vaultShowCmd = &cobra.Command{
 	Use:   "show",
