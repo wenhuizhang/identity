@@ -1,4 +1,4 @@
-.PHONY: do_generate_proto do_generate_node_sdk do_start_node_dev do_stop_node_dev
+.PHONY: do_generate_proto do_generate_node_sdk do_start_node
 
 do_generate_proto:
 	cd scripts && ./buf-generate.sh
@@ -9,13 +9,13 @@ do_generate_node_sdk:
 	./scripts/node/generate.sh
 	@echo "Generated Node SDK"
 
-do_start_node_dev:
-	@./deployments/scripts/identity/launch_node_dev.sh
+do_start_node:
+	@./deployments/scripts/identity/launch_node.sh ${dev}
 	@echo "Postgres started at :5984"
 	@echo "Node started at :4000"
 
-do_stop_node_dev:
-	@./deployments/scripts/identity/stop_node_dev.sh
+do_stop_node:
+	@./deployments/scripts/identity/stop_node.sh
 	@echo "Node stopped"
 	@echo "Postgres stopped"
 
@@ -23,5 +23,5 @@ generate_proto: do_generate_proto
 
 generate_node_sdk: do_generate_node_sdk
 
-stop_node_dev: do_stop_node_dev
-start_node_dev: do_start_node_dev
+stop_node: do_stop_node
+start_node: do_start_node
