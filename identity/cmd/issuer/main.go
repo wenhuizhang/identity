@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/agntcy/identity/cmd/issuer/commands/badge"
+	"github.com/agntcy/identity/cmd/issuer/commands/configuration"
 	"github.com/agntcy/identity/cmd/issuer/commands/issuer"
 	"github.com/agntcy/identity/cmd/issuer/commands/metadata"
 	"github.com/agntcy/identity/cmd/issuer/commands/vault"
@@ -30,6 +31,7 @@ With it you can:
 - (metadata) Issue and publish important metadata for your Agent and MCP Server identities
 - (badge) Issue and publish badges for your Agent and MCP Server identities
 - (verify) Verify the identity of other Agents and MCP Servers via their resolver metadata and badges
+- (config) View the current configuration context of your Identity CLI tool
 `,
 	Run: func(cmd *cobra.Command, args []string) {
 		err := cmd.Help()
@@ -54,4 +56,5 @@ func init() {
 	rootCmd.AddCommand(metadata.MetadataCmd)
 	rootCmd.AddCommand(badge.BadgeCmd)
 	rootCmd.AddCommand(verify.VerifyCmd)
+	rootCmd.AddCommand(configuration.ConfigurationCmd)
 }
