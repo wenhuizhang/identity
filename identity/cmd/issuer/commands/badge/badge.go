@@ -14,8 +14,18 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var badgeFilesystemRepository = filesystem.NewBadgeFilesystemRepository()
-var badgeService = badge.NewBadgeService(badgeFilesystemRepository)
+var (
+	// setup the badge service
+	badgeFilesystemRepository = filesystem.NewBadgeFilesystemRepository()
+	badgeService              = badge.NewBadgeService(badgeFilesystemRepository)
+
+	// setup the command flags
+	issueFilePath  string
+	publishBadgeId string
+	showBadgeId    string
+	forgetBadgeId  string
+	loadBadgeId    string
+)
 
 var BadgeCmd = &cobra.Command{
 	Use:   "badge",
@@ -32,9 +42,8 @@ The badge command is used to issue and publish badges for your Agent and MCP Ser
 }
 
 var badgeIssueCmd = &cobra.Command{
-	Use:   "issue [badge_file_path]",
+	Use:   "issue",
 	Short: "Issue a new badge for the current metadata",
-	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 
 		// load the cache to get the vault, issuer and metadata ids
@@ -62,8 +71,17 @@ var badgeIssueCmd = &cobra.Command{
 			return
 		}
 
-		badgeFilePath := args[0]
-		badgeId, err := badgeService.IssueBadge(cache.VaultId, cache.IssuerId, cache.MetadataId, badgeFilePath)
+		// if the file path is not set, prompt the user for it interactively
+		if issueFilePath == "" {
+			fmt.Fprintf(os.Stderr, "Full file path to the data you want to sign in the badge: \n")
+			fmt.Scanln(&issueFilePath)
+		}
+		if issueFilePath == "" {
+			fmt.Fprintf(os.Stderr, "No file path provided\n")
+			return
+		}
+
+		badgeId, err := badgeService.IssueBadge(cache.VaultId, cache.IssuerId, cache.MetadataId, issueFilePath)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error issuing badge: %v\n", err)
 			return
@@ -84,7 +102,6 @@ var badgeIssueCmd = &cobra.Command{
 var badgePublishCmd = &cobra.Command{
 	Use:   "publish",
 	Short: "Publish the chosen badge",
-	Args:  cobra.ExactArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 
 		// load the cache to get the vault, issuer, metadata and badge ids
@@ -111,14 +128,39 @@ var badgePublishCmd = &cobra.Command{
 				"No metadata found in the local configuration. Please load and existing metadata or generate a new metadata first.\n")
 			return
 		}
-		if cache.BadgeId == "" {
-			fmt.Fprintf(
-				os.Stderr,
-				"No badge found in the local configuration. Please load and existing badge or issue a new badge first.\n")
+
+		// if the badge id is not set, prompt the user for it interactively
+		// if there is a badge id in the cache, use it as the default when prompting
+		if publishBadgeId == "" {
+			if cache.BadgeId != "" {
+				fmt.Fprintf(os.Stderr, "Badge ID to publish (default: %s):\n", cache.BadgeId)
+				_, err = fmt.Scanln(&publishBadgeId)
+
+				if err != nil {
+					// If the user just presses Enter, publishBadgeId will be "" and err will be an "unexpected newline" error.
+					// We should allow this and use the default value.
+					if err.Error() != "unexpected newline" {
+						fmt.Fprintf(os.Stderr, "Error reading badge ID: %v\n", err)
+						return
+					}
+				}
+				// If the user just presses Enter, publishBadgeId will be "" and we should use the default value from the cache.
+				if publishBadgeId == "" {
+					publishBadgeId = cache.BadgeId
+				}
+			} else {
+				fmt.Fprintf(os.Stderr, "Badge ID to publish:\n")
+				fmt.Scanln(&publishBadgeId)
+			}
+		}
+
+		// if the badge id is still not set, then the cache badge is empty and the user has not provided one
+		if publishBadgeId == "" {
+			fmt.Fprintf(os.Stderr, "No badge ID provided.\n")
 			return
 		}
 
-		badge, err := badgeService.GetBadge(cache.VaultId, cache.IssuerId, cache.MetadataId, cache.BadgeId)
+		badge, err := badgeService.GetBadge(cache.VaultId, cache.IssuerId, cache.MetadataId, publishBadgeId)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error getting badge: %v\n", err)
 			return
@@ -136,7 +178,6 @@ var badgePublishCmd = &cobra.Command{
 var badgeListCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List your existing badges for the current metadata",
-	Args:  cobra.ExactArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 
 		// load the cache to get the vault, issuer and metadata ids
@@ -181,9 +222,8 @@ var badgeListCmd = &cobra.Command{
 }
 
 var badgeShowCmd = &cobra.Command{
-	Use:   "show [badge_id]",
+	Use:   "show",
 	Short: "Show details of the chosen badge",
-	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 
 		// load the cache to get the vault, issuer and metadata ids
@@ -211,9 +251,17 @@ var badgeShowCmd = &cobra.Command{
 			return
 		}
 
-		badgeId := args[0]
+		// if the badge id is not set, prompt the user for it interactively
+		if showBadgeId == "" {
+			fmt.Fprintf(os.Stderr, "Badge ID to show:\n")
+			fmt.Scanln(&showBadgeId)
+		}
+		if showBadgeId == "" {
+			fmt.Fprintf(os.Stderr, "No badge ID provided.\n")
+			return
+		}
 
-		badge, err := badgeService.GetBadge(cache.VaultId, cache.IssuerId, cache.MetadataId, badgeId)
+		badge, err := badgeService.GetBadge(cache.VaultId, cache.IssuerId, cache.MetadataId, showBadgeId)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error getting badge: %v\n", err)
 			return
@@ -228,9 +276,8 @@ var badgeShowCmd = &cobra.Command{
 }
 
 var badgeForgetCmd = &cobra.Command{
-	Use:   "forget [badge_id]",
+	Use:   "forget",
 	Short: "Forget the chosen badge",
-	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 
 		// load the cache to get the vault, issuer and metadata ids
@@ -257,16 +304,25 @@ var badgeForgetCmd = &cobra.Command{
 				"No metadata found in the local configuration. Please load and existing metadata or generate a new metadata first.\n")
 			return
 		}
-		badgeId := args[1]
 
-		err = badgeService.ForgetBadge(cache.VaultId, cache.IssuerId, cache.MetadataId, badgeId)
+		// if the badge id is not set, prompt the user for it interactively
+		if forgetBadgeId == "" {
+			fmt.Fprintf(os.Stderr, "Badge ID to forget:\n")
+			fmt.Scanln(&forgetBadgeId)
+		}
+		if forgetBadgeId == "" {
+			fmt.Fprintf(os.Stderr, "No badge ID provided.\n")
+			return
+		}
+
+		err = badgeService.ForgetBadge(cache.VaultId, cache.IssuerId, cache.MetadataId, forgetBadgeId)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error forgetting badge: %v\n", err)
 			return
 		}
 
 		// If the badge was the current badge in the cache, clear the cache of badge id
-		if cache.BadgeId == badgeId {
+		if cache.BadgeId == forgetBadgeId {
 			cache.BadgeId = ""
 			err = cliCache.SaveCache(cache)
 			if err != nil {
@@ -275,14 +331,13 @@ var badgeForgetCmd = &cobra.Command{
 			}
 		}
 
-		fmt.Fprintf(os.Stdout, "Forgot badge with ID: %s\n", badgeId)
+		fmt.Fprintf(os.Stdout, "Forgot badge with ID: %s\n", forgetBadgeId)
 	},
 }
 
 var badgeLoadCmd = &cobra.Command{
-	Use:   "load [badge_id]",
+	Use:   "load",
 	Short: "Load a badge configuration",
-	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 
 		// load the cache to get the vault, issuer and metadata ids
@@ -309,36 +364,56 @@ var badgeLoadCmd = &cobra.Command{
 				"No metadata found in the local configuration. Please load and existing metadata or generate a new metadata first.\n")
 			return
 		}
-		badgeId := args[1]
+
+		// if the badge id is not set, prompt the user for it interactively
+		if loadBadgeId == "" {
+			fmt.Fprintf(os.Stderr, "Badge ID to load:\n")
+			fmt.Scanln(&loadBadgeId)
+		}
+		if loadBadgeId == "" {
+			fmt.Fprintf(os.Stderr, "No badge ID provided.\n")
+			return
+		}
 
 		// check the badge id is valid
-		badge, err := badgeService.GetBadge(cache.VaultId, cache.IssuerId, cache.MetadataId, badgeId)
+		badge, err := badgeService.GetBadge(cache.VaultId, cache.IssuerId, cache.MetadataId, loadBadgeId)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error getting badge: %v\n", err)
 			return
 		}
 		if badge == nil {
-			fmt.Fprintf(os.Stderr, "Badge with ID %s not found\n", badgeId)
+			fmt.Fprintf(os.Stderr, "Badge with ID %s not found\n", loadBadgeId)
 			return
 		}
 
 		// save the metadata id to the cache
-		cache.BadgeId = badgeId
+		cache.BadgeId = loadBadgeId
 		err = cliCache.SaveCache(cache)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error saving local configuration: %v\n", err)
 			return
 		}
-		fmt.Fprintf(os.Stdout, "Loaded badge with ID: %s\n", badgeId)
+		fmt.Fprintf(os.Stdout, "Loaded badge with ID: %s\n", loadBadgeId)
 
 	},
 }
 
 func init() {
+
+	badgeIssueCmd.Flags().StringVarP(&issueFilePath, "file-path", "f", "", "The file path to the data you want to sign in the badge")
 	BadgeCmd.AddCommand(badgeIssueCmd)
+
+	badgePublishCmd.Flags().StringVarP(&publishBadgeId, "badge-id", "b", "", "The ID of the badge to publish")
 	BadgeCmd.AddCommand(badgePublishCmd)
+
 	BadgeCmd.AddCommand(badgeListCmd)
+
+	badgeShowCmd.Flags().StringVarP(&showBadgeId, "badge-id", "b", "", "The ID of the badge to show")
 	BadgeCmd.AddCommand(badgeShowCmd)
+
+	badgeForgetCmd.Flags().StringVarP(&forgetBadgeId, "badge-id", "b", "", "The ID of the badge to forget")
 	BadgeCmd.AddCommand(badgeForgetCmd)
+
+	badgeLoadCmd.Flags().StringVarP(&loadBadgeId, "badge-id", "b", "", "The ID of the badge to load")
 	BadgeCmd.AddCommand(badgeLoadCmd)
 }
