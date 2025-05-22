@@ -1,0 +1,13 @@
+# Copyright 2025 Copyright AGNTCY Contributors (https://github.com/agntcy)
+# SPDX-License-Identifier: Apache-2.0
+
+---
+version: '3'
+
+services:
+  buf-go:
+    build:
+      context: ../../../
+      dockerfile: scripts/node/docker/Dockerfile
+    volumes:
+      - ../../../:/identity/out
