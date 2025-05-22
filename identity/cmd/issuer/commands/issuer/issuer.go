@@ -53,12 +53,12 @@ var issuerRegisterCmd = &cobra.Command{
 			return
 		}
 		if cache == nil || cache.VaultId == "" {
-			fmt.Fprintf(os.Stderr, "No vault found in cache. Please load an existing vault or connect to a new vault first.\n")
+			fmt.Fprintf(os.Stderr, "No vault found in the local configuration. Please load an existing vault or connect to a new vault first.\n")
 			return
 		}
 
 		// prompt user for identity node address, default to localhost:4000 if not provided
-		fmt.Fprintf(os.Stdout, "Enter the identity node address (default %s: ", defaultNodeAddress)
+		fmt.Fprintf(os.Stdout, "Enter the identity node address (default %s): ", defaultNodeAddress)
 		var identityNodeAddress string
 		_, err = fmt.Scanln(&identityNodeAddress)
 		if err != nil {
@@ -207,7 +207,7 @@ var issuerListCmd = &cobra.Command{
 			return
 		}
 		if cache == nil || cache.VaultId == "" {
-			fmt.Fprintf(os.Stderr, "No vault found in cache. Please load an existing vault or connect to a new vault first.\n")
+			fmt.Fprintf(os.Stderr, "No vault found in the local configuration. Please load an existing vault or connect to a new vault first.\n")
 			return
 		}
 
@@ -239,7 +239,7 @@ var issuerShowCmd = &cobra.Command{
 			return
 		}
 		if cache == nil || cache.VaultId == "" {
-			fmt.Fprintf(os.Stderr, "No vault found in cache. Please load an existing vault or connect to a new vault first.\n")
+			fmt.Fprintf(os.Stderr, "No vault found in the local configuration. Please load an existing vault or connect to a new vault first.\n")
 			return
 		}
 
@@ -277,7 +277,7 @@ var issuerForgetCmd = &cobra.Command{
 			return
 		}
 		if cache == nil || cache.VaultId == "" {
-			fmt.Fprintf(os.Stderr, "No vault found in cache. Please load an existing vault or connect to a new vault first.\n")
+			fmt.Fprintf(os.Stderr, "No vault found in the local configuration. Please load an existing vault or connect to a new vault first.\n")
 			return
 		}
 
@@ -318,7 +318,7 @@ var issuerLoadCmd = &cobra.Command{
 			return
 		}
 		if cache == nil || cache.VaultId == "" {
-			fmt.Fprintf(os.Stderr, "No vault found in cache. Please load an existing vault or connect to a new vault first.\n")
+			fmt.Fprintf(os.Stderr, "No vault found in the local configuration. Please load an existing vault or connect to a new vault first.\n")
 			return
 		}
 

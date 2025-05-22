@@ -19,11 +19,11 @@ var vaultService = vault.NewVaultService(vaultFilesystemRepository)
 
 var VaultCmd = &cobra.Command{
 	Use:   "vault",
-	Short: "Manage your vault and generate cryptographic keys",
+	Short: "Manage your vaults and generate cryptographic keys",
 	Long: `
-The setup command is used to configure your local environment for the Identity CLI tool. With it you can:
+The vault command is used to configure and manage your vaults. You can use it to:
 
-- (connect) Manage your vault and generate cryptographic keys
+- (create) Create new vault configurations and generate cryptographic keys
 - (list) List your existing vault configurations
 - (show) Show details of a vault configuration
 - (load) Load a vault configuration
@@ -32,12 +32,11 @@ The setup command is used to configure your local environment for the Identity C
 }
 
 var vaultConnectCmd = &cobra.Command{
-	Use:   "connect",
-	Short: "Manage your vault and generate cryptographic keys",
+	Use:   "create",
+	Short: "Create a new vault configuration and generate cryptographic keys",
 	Long: `
-The connect command is used to manage your vault and generate cryptographic keys. With it you can:
-- (txt) Connect to a local .txt file and generate cryptographic keys
-- (1password) Connect to 1Password and generate cryptographic keys
+The create command is used to create a new vault configuration and generate cryptographic keys. You can use:
+- (file) Create a local file with generated cryptographic keys
 `,
 }
 
@@ -57,24 +56,40 @@ var vaultListCmd = &cobra.Command{
 		}
 		fmt.Fprintf(os.Stdout, "Existing vaults:\n")
 		for _, vault := range vaults {
-			fmt.Fprintf(os.Stdout, "- %s, %s vault\n", vault.Id, vault.Type)
+			fmt.Fprintf(os.Stdout, "- %s (%s vault), id: %s\n", vault.Name, vault.Type, vault.Id)
 		}
 	},
 }
+
+var (
+	showVaultId   string
+	forgetVaultId string
+	loadVaultId   string
+)
+
 var vaultShowCmd = &cobra.Command{
-	Use:   "show [vault_id]",
+	Use:   "show",
 	Short: "Show details of a vault configuration",
-	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 
-		vaultId := args[0]
-		vault, err := vaultService.GetVault(vaultId)
+		// if the vault id is not set, prompt the user for it interactively
+		if showVaultId == "" {
+			fmt.Fprintf(os.Stderr, "Vault ID to show:\n")
+			fmt.Scanln(&showVaultId)
+		}
+		if showVaultId == "" {
+			fmt.Fprintf(os.Stderr, "No vault ID provided.\n")
+			return
+		}
+
+		// check the vault id is valid
+		vault, err := vaultService.GetVault(showVaultId)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error getting vault: %v\n", err)
 			return
 		}
 		if vault == nil {
-			fmt.Fprintf(os.Stdout, "No vault found with ID: %s\n", vaultId)
+			fmt.Fprintf(os.Stdout, "No vault found with ID: %s\n", showVaultId)
 			return
 		}
 
@@ -88,13 +103,21 @@ var vaultShowCmd = &cobra.Command{
 }
 
 var vaultForgetCmd = &cobra.Command{
-	Use:   "forget [vault_id]",
+	Use:   "forget",
 	Short: "Forget an vault configuration",
-	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 
-		vaultId := args[0]
-		err := vaultService.ForgetVault(vaultId)
+		// if the vault id is not set, prompt the user for it interactively
+		if forgetVaultId == "" {
+			fmt.Fprintf(os.Stderr, "Vault ID to forget:\n")
+			fmt.Scanln(&forgetVaultId)
+		}
+		if forgetVaultId == "" {
+			fmt.Fprintf(os.Stderr, "No vault ID provided.\n")
+			return
+		}
+
+		err := vaultService.ForgetVault(forgetVaultId)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error forgetting vault: %v\n", err)
 			return
@@ -103,29 +126,37 @@ var vaultForgetCmd = &cobra.Command{
 		// Remove the cache
 		err = cliCache.ClearCache()
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error removing cache: %v\n", err)
+			fmt.Fprintf(os.Stderr, "Error removing local configuration: %v\n", err)
 			return
 		}
 
-		fmt.Fprintf(os.Stdout, "Forgot vault with ID: %s\n", vaultId)
+		fmt.Fprintf(os.Stdout, "Forgot vault with ID: %s\n", forgetVaultId)
 	},
 }
 
 var vaultLoadCmd = &cobra.Command{
-	Use:   "load [vault_id]",
+	Use:   "load",
 	Short: "Load a vault configuration",
-	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 
+		// if the vault id is not set, prompt the user for it interactively
+		if loadVaultId == "" {
+			fmt.Fprintf(os.Stderr, "Vault ID to load:\n")
+			fmt.Scanln(&loadVaultId)
+		}
+		if loadVaultId == "" {
+			fmt.Fprintf(os.Stderr, "No vault ID provided.\n")
+			return
+		}
+
 		// check the vault id is valid
-		vaultId := args[0]
-		vault, err := vaultService.GetVault(vaultId)
+		vault, err := vaultService.GetVault(loadVaultId)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error getting vault: %v\n", err)
 			return
 		}
 		if vault == nil {
-			fmt.Fprintf(os.Stdout, "No vault found with ID: %s\n", vaultId)
+			fmt.Fprintf(os.Stdout, "No vault found with ID: %s\n", loadVaultId)
 			return
 		}
 
@@ -136,10 +167,10 @@ var vaultLoadCmd = &cobra.Command{
 			},
 		)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error saving cache: %v\n", err)
+			fmt.Fprintf(os.Stderr, "Error saving local configuration: %v\n", err)
 			return
 		}
-		fmt.Fprintf(os.Stdout, "Loaded vault with ID: %s\n", vaultId)
+		fmt.Fprintf(os.Stdout, "Loaded vault with ID: %s\n", loadVaultId)
 
 	},
 }
@@ -149,8 +180,15 @@ func init() {
 	vaultConnectCmd.AddCommand(TxtCmd)
 
 	VaultCmd.AddCommand(vaultConnectCmd)
+
 	VaultCmd.AddCommand(vaultListCmd)
+
+	vaultShowCmd.Flags().StringVarP(&showVaultId, "vault-id", "v", "", "The ID of the vault to show")
 	VaultCmd.AddCommand(vaultShowCmd)
+
+	vaultForgetCmd.Flags().StringVarP(&forgetVaultId, "vault-id", "v", "", "The ID of the vault to forget")
 	VaultCmd.AddCommand(vaultForgetCmd)
+
+	vaultLoadCmd.Flags().StringVarP(&loadVaultId, "vault-id", "v", "", "The ID of the vault to load")
 	VaultCmd.AddCommand(vaultLoadCmd)
 }

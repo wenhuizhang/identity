@@ -50,11 +50,11 @@ var metadataGenerateCmd = &cobra.Command{
 			return
 		}
 		if cache == nil || cache.VaultId == "" {
-			fmt.Fprintf(os.Stderr, "No vault found in cache. Please load an existing vault or connect to a new vault first.\n")
+			fmt.Fprintf(os.Stderr, "No vault found in the local configuration. Please load an existing vault or connect to a new vault first.\n")
 			return
 		}
 		if cache.IssuerId == "" {
-			fmt.Fprintf(os.Stderr, "No issuer found in cache. Please load and existing issuer or register a new issuer first.\n")
+			fmt.Fprintf(os.Stderr, "No issuer found in the local configuration. Please load and existing issuer or register a new issuer first.\n")
 			return
 		}
 
@@ -98,11 +98,11 @@ var metadataListCmd = &cobra.Command{
 			return
 		}
 		if cache == nil || cache.VaultId == "" {
-			fmt.Fprintf(os.Stderr, "No vault found in cache. Please load an existing vault or connect to a new vault first.\n")
+			fmt.Fprintf(os.Stderr, "No vault found in the local configuration. Please load an existing vault or connect to a new vault first.\n")
 			return
 		}
 		if cache.IssuerId == "" {
-			fmt.Fprintf(os.Stderr, "No issuer found in cache. Please load and existing issuer or register a new issuer first.\n")
+			fmt.Fprintf(os.Stderr, "No issuer found in the local configuration. Please load and existing issuer or register a new issuer first.\n")
 			return
 		}
 
@@ -135,11 +135,11 @@ var metadataShowCmd = &cobra.Command{
 			return
 		}
 		if cache == nil || cache.VaultId == "" {
-			fmt.Fprintf(os.Stderr, "No vault found in cache. Please load an existing vault or connect to a new vault first.\n")
+			fmt.Fprintf(os.Stderr, "No vault found in the local configuration. Please load an existing vault or connect to a new vault first.\n")
 			return
 		}
 		if cache.IssuerId == "" {
-			fmt.Fprintf(os.Stderr, "No issuer found in cache. Please load and existing issuer or register a new issuer first.\n")
+			fmt.Fprintf(os.Stderr, "No issuer found in the local configuration. Please load and existing issuer or register a new issuer first.\n")
 			return
 		}
 
@@ -172,11 +172,11 @@ var metadataForgetCmd = &cobra.Command{
 			return
 		}
 		if cache == nil || cache.VaultId == "" {
-			fmt.Fprintf(os.Stderr, "No vault found in cache. Please load an existing vault or connect to a new vault first.\n")
+			fmt.Fprintf(os.Stderr, "No vault found in the local configuration. Please load an existing vault or connect to a new vault first.\n")
 			return
 		}
 		if cache.IssuerId == "" {
-			fmt.Fprintf(os.Stderr, "No issuer found in cache. Please load and existing issuer or register a new issuer first.\n")
+			fmt.Fprintf(os.Stderr, "No issuer found in the local configuration. Please load and existing issuer or register a new issuer first.\n")
 			return
 		}
 
@@ -217,11 +217,11 @@ var metadataLoadCmd = &cobra.Command{
 			return
 		}
 		if cache == nil || cache.VaultId == "" {
-			fmt.Fprintf(os.Stderr, "No vault found in cache. Please load an existing vault or connect to a new vault first.\n")
+			fmt.Fprintf(os.Stderr, "No vault found in the local configuration. Please load an existing vault or connect to a new vault first.\n")
 			return
 		}
 		if cache.IssuerId == "" {
-			fmt.Fprintf(os.Stderr, "No issuer found in cache. Please load and existing issuer or register a new issuer first.\n")
+			fmt.Fprintf(os.Stderr, "No issuer found in the local configuration. Please load and existing issuer or register a new issuer first.\n")
 			return
 		}
 

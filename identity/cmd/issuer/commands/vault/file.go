@@ -14,20 +14,43 @@ import (
 	"github.com/agntcy/identity/internal/issuer/vault"
 	"github.com/agntcy/identity/internal/issuer/vault/data/filesystem"
 	"github.com/agntcy/identity/internal/pkg/joseutil"
+	"github.com/google/uuid"
 	"github.com/spf13/cobra"
 )
 
+var (
+	filePath  string
+	vaultName string
+)
+
 var TxtCmd = &cobra.Command{
-	Use:   "txt [output_path]",
-	Short: "Connect to .txt file",
-	Long:  "Connect to .txt file",
-	Args:  cobra.ExactArgs(1),
+	Use:   "file",
+	Short: "Create a local file with generated cryptographic keys",
+	Long:  "Create a local file with generated cryptographic keys",
 	Run: func(cmd *cobra.Command, args []string) {
+
+		// if the file path is not set, prompt the user for it interactively
+		if filePath == "" {
+			fmt.Fprintf(os.Stderr, "File path to store the generated keys: ")
+			fmt.Scanln(&filePath)
+		}
+		if filePath == "" {
+			fmt.Fprintf(os.Stderr, "No file path provided\n")
+			return
+		}
+
+		// if the vault name is not set, prompt the user for it interactively
+		if vaultName == "" {
+			fmt.Fprintf(os.Stderr, "Vault name: ")
+			fmt.Scanln(&vaultName)
+		}
+		if vaultName == "" {
+			fmt.Fprintf(os.Stderr, "No vault name provided\n")
+			return
+		}
 
 		vaultFilesystemRepository := filesystem.NewVaultFilesystemRepository()
 		vaultService := vault.NewVaultService(vaultFilesystemRepository)
-
-		filePath := args[0]
 
 		fileStorageConfig := keystore.FileStorageConfig{
 			FilePath: filePath,
@@ -52,23 +75,30 @@ var TxtCmd = &cobra.Command{
 			return
 		}
 
-		txtConfig := internalIssuerTypes.VaultTxt{
+		txtConfig := internalIssuerTypes.VaultFile{
 			FilePath: filePath,
 		}
 
 		var config internalIssuerTypes.VaultConfig = &txtConfig
 
-		vault, err := vaultService.ConnectVault(internalIssuerTypes.VaultTypeTxt, config)
+		vault := internalIssuerTypes.Vault{
+			Id:     uuid.NewString(),
+			Name:   vaultName,
+			Type:   internalIssuerTypes.VaultTypeFile,
+			Config: config,
+		}
+
+		vaultId, err := vaultService.ConnectVault(&vault)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error connecting to vault: %v\n", err)
+			fmt.Fprintf(os.Stderr, "Error creating file vault: %v\n", err)
 			return
 		}
 
-		cmd.Printf("Successfully connected to vault: %s\n", vault.Id)
+		cmd.Printf("Successfully created file vault with ID: %s\n", vaultId)
 
 		err = cliCache.SaveCache(
 			&cliCache.Cache{
-				VaultId: vault.Id,
+				VaultId: vaultId,
 			},
 		)
 		if err != nil {
@@ -78,4 +108,10 @@ var TxtCmd = &cobra.Command{
 	},
 }
 
-func init() {}
+func init() {
+
+	// Add flags to the command
+	TxtCmd.Flags().StringVarP(&filePath, "file-path", "f", "", "Path to the file")
+	TxtCmd.Flags().StringVarP(&vaultName, "name", "n", "", "Name of the vault")
+
+}

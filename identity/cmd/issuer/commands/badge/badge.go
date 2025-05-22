@@ -46,19 +46,19 @@ var badgeIssueCmd = &cobra.Command{
 		if cache == nil || cache.VaultId == "" {
 			fmt.Fprintf(
 				os.Stderr,
-				"No vault found in cache. Please load an existing vault or connect to a new vault first.\n")
+				"No vault found in the local configuration. Please load an existing vault or connect to a new vault first.\n")
 			return
 		}
 		if cache.IssuerId == "" {
 			fmt.Fprintf(
 				os.Stderr,
-				"No issuer found in cache. Please load and existing issuer or register a new issuer first.\n")
+				"No issuer found in the local configuration. Please load and existing issuer or register a new issuer first.\n")
 			return
 		}
 		if cache.MetadataId == "" {
 			fmt.Fprintf(
 				os.Stderr,
-				"No metadata found in cache. Please load and existing metadata or generate a new metadata first.\n")
+				"No metadata found in the local configuration. Please load and existing metadata or generate a new metadata first.\n")
 			return
 		}
 
@@ -96,25 +96,25 @@ var badgePublishCmd = &cobra.Command{
 		if cache == nil || cache.VaultId == "" {
 			fmt.Fprintf(
 				os.Stderr,
-				"No vault found in cache. Please load an existing vault or connect to a new vault first.\n")
+				"No vault found in the local configuration. Please load an existing vault or connect to a new vault first.\n")
 			return
 		}
 		if cache.IssuerId == "" {
 			fmt.Fprintf(
 				os.Stderr,
-				"No issuer found in cache. Please load and existing issuer or register a new issuer first.\n")
+				"No issuer found in the local configuration. Please load and existing issuer or register a new issuer first.\n")
 			return
 		}
 		if cache.MetadataId == "" {
 			fmt.Fprintf(
 				os.Stderr,
-				"No metadata found in cache. Please load and existing metadata or generate a new metadata first.\n")
+				"No metadata found in the local configuration. Please load and existing metadata or generate a new metadata first.\n")
 			return
 		}
 		if cache.BadgeId == "" {
 			fmt.Fprintf(
 				os.Stderr,
-				"No badge found in cache. Please load and existing badge or issue a new badge first.\n")
+				"No badge found in the local configuration. Please load and existing badge or issue a new badge first.\n")
 			return
 		}
 
@@ -148,19 +148,19 @@ var badgeListCmd = &cobra.Command{
 		if cache == nil || cache.VaultId == "" {
 			fmt.Fprintf(
 				os.Stderr,
-				"No vault found in cache. Please load an existing vault or connect to a new vault first.\n")
+				"No vault found in the local configuration. Please load an existing vault or connect to a new vault first.\n")
 			return
 		}
 		if cache.IssuerId == "" {
 			fmt.Fprintf(
 				os.Stderr,
-				"No issuer found in cache. Please load and existing issuer or register a new issuer first.\n")
+				"No issuer found in the local configuration. Please load and existing issuer or register a new issuer first.\n")
 			return
 		}
 		if cache.MetadataId == "" {
 			fmt.Fprintf(
 				os.Stderr,
-				"No metadata found in cache. Please load and existing metadata or generate a new metadata first.\n")
+				"No metadata found in the local configuration. Please load and existing metadata or generate a new metadata first.\n")
 			return
 		}
 
@@ -195,19 +195,19 @@ var badgeShowCmd = &cobra.Command{
 		if cache == nil || cache.VaultId == "" {
 			fmt.Fprintf(
 				os.Stderr,
-				"No vault found in cache. Please load an existing vault or connect to a new vault first.\n")
+				"No vault found in the local configuration. Please load an existing vault or connect to a new vault first.\n")
 			return
 		}
 		if cache.IssuerId == "" {
 			fmt.Fprintf(
 				os.Stderr,
-				"No issuer found in cache. Please load and existing issuer or register a new issuer first.\n")
+				"No issuer found in the local configuration. Please load and existing issuer or register a new issuer first.\n")
 			return
 		}
 		if cache.MetadataId == "" {
 			fmt.Fprintf(
 				os.Stderr,
-				"No metadata found in cache. Please load and existing metadata or generate a new metadata first.\n")
+				"No metadata found in the local configuration. Please load and existing metadata or generate a new metadata first.\n")
 			return
 		}
 
@@ -242,19 +242,19 @@ var badgeForgetCmd = &cobra.Command{
 		if cache == nil || cache.VaultId == "" {
 			fmt.Fprintf(
 				os.Stderr,
-				"No vault found in cache. Please load an existing vault or connect to a new vault first.\n")
+				"No vault found in the local configuration. Please load an existing vault or connect to a new vault first.\n")
 			return
 		}
 		if cache.IssuerId == "" {
 			fmt.Fprintf(
 				os.Stderr,
-				"No issuer found in cache. Please load and existing issuer or register a new issuer first.\n")
+				"No issuer found in the local configuration. Please load and existing issuer or register a new issuer first.\n")
 			return
 		}
 		if cache.MetadataId == "" {
 			fmt.Fprintf(
 				os.Stderr,
-				"No metadata found in cache. Please load and existing metadata or generate a new metadata first.\n")
+				"No metadata found in the local configuration. Please load and existing metadata or generate a new metadata first.\n")
 			return
 		}
 		badgeId := args[1]
@@ -294,19 +294,19 @@ var badgeLoadCmd = &cobra.Command{
 		if cache == nil || cache.VaultId == "" {
 			fmt.Fprintf(
 				os.Stderr,
-				"No vault found in cache. Please load an existing vault or connect to a new vault first.\n")
+				"No vault found in the local configuration. Please load an existing vault or connect to a new vault first.\n")
 			return
 		}
 		if cache.IssuerId == "" {
 			fmt.Fprintf(
 				os.Stderr,
-				"No issuer found in cache. Please load and existing issuer or register a new issuer first.\n")
+				"No issuer found in the local configuration. Please load and existing issuer or register a new issuer first.\n")
 			return
 		}
 		if cache.MetadataId == "" {
 			fmt.Fprintf(
 				os.Stderr,
-				"No metadata found in cache. Please load and existing metadata or generate a new metadata first.\n")
+				"No metadata found in the local configuration. Please load and existing metadata or generate a new metadata first.\n")
 			return
 		}
 		badgeId := args[1]
