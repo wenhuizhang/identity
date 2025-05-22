@@ -26,7 +26,7 @@ target "_common" {
   ]
   platforms = [
     "linux/amd64",
-    "darwin/amd64",
+    "linux/arm64",
   ]
 }
 

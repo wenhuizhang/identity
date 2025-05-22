@@ -1,0 +1,19 @@
+# Copyright 2025 AGNTCY Contributors (https://github.com/agntcy)
+# SPDX-License-Identifier: Apache-2.0
+
+---
+name: identity-node
+include:
+  - docker-compose.db.yml
+services:
+  identity-api:
+    container_name: identity-node
+    image: ghcr.io/cisco-eti/pyramid/node:latest # TODO: Update to agntcy and delete this line
+    restart: always
+    depends_on:
+      - identity-postgres
+    ports:
+      - "4000:4000"
+      - "4001:4001"
+    env_file:
+      - .env
