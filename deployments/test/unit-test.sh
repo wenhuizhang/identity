@@ -4,7 +4,7 @@
 
 
 DOCKER_FILE=./deployments/docker/identity/Dockerfile.test
-TEST_COMMAND='go test -coverprofile=/mnt/coverage.out ./...'
+TEST_COMMAND='go test -v -cover ./...'
 
 echo RUNNING TESTS
-docker run -v "${PWD}":/mnt "$(docker build --no-cache -f ${DOCKER_FILE} -q .)" "$TEST_COMMAND"
+docker run "$(docker build --no-cache -f ${DOCKER_FILE} -q .)" "$TEST_COMMAND"
