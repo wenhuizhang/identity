@@ -62,7 +62,6 @@ do_rename() {
       rm "$1"/"$fname"
     fi
   done
-  ls $1
   for file in "$1"/*.json; do
     fname=$(basename "${file}")
     name=${fname%_service*}
@@ -75,7 +74,7 @@ do_rename() {
 
 do_generate() {
   cd $SPEC_DIR || exit
-  buf generate --template buf.gen.openapiv2.yaml  --output $ROOT_DIR --path $1
+  buf generate --template buf.gen.openapiv2.yaml  --output $ROOT_DIR --path "$1"
   cd $ROOT_DIR || exit
 }
 
