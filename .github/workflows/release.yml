@@ -9,5 +9,37 @@ on:
     tags:
       - "v?[0-9]+.[0-9]+.[0-9]+"
 jobs:
+  prepare-release:
+    name: Prepare Release
+    outputs:
+      targets: ${{ steps.all-targets.outputs.targets }}
+      image-tag: ${{ steps.get-version.outputs.version }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get version
+        id: get-version
+        run: |
+          version="$(echo $GITHUB_REF | cut -d / -f 3 | cut -c2-)"
+
+      - name: List all targets
+        id: all-targets
+        uses: docker/bake-action/subaction/list-targets@a4d7f0b5b91c14a296d792d4ec53a9db17f02e67 # v5.5.0
+        with:
+          target: ${{ steps.resolve.outputs.target }}
+        continue-on-error: true
+
   pre-release-test:
     uses: ./.github/workflows/reusable-test.yml
+
+  build-and-push-images:
+    uses: ./.github/workflows/reusable-docker-build-push.yaml
+    needs: [prepare-release, pre-release-test]
+    permissions:
+      contents: 'read'
+      packages: 'write'
+      attestations: 'write'
+    with:
+      bake-targets: ${{ needs.prepare-release.outputs.targets }}
+      image-tag: ${{ needs.prepare-build.outputs.image-tag }}
+    secrets:
+      github-token: ${{ secrets.GITHUB_TOKEN }}
