@@ -13,6 +13,7 @@ on:
       - "v?[0-9]+.[0-9]+.[0-9]+"
 jobs:
   pre-release-test:
+    name: Pre Release Test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -42,22 +43,23 @@ jobs:
         uses: docker/bake-action/subaction/list-targets@v6
         with:
           workdir: ./deployments/docker
-          target: ${{ steps.resolve.outputs.target }}
+          target: default
         continue-on-error: true
 
   build-and-push-images:
+    name: Build and Push Docker Images
     uses: ./.github/workflows/reusable-docker.yml
     needs: [prepare-release]
     strategy:
       fail-fast: false
       matrix:
-        target: ${{ fromJson(needs.prepare.outputs.targets) }}
+        target: ${{ fromJson(needs.prepare-release.outputs.targets) }}
     permissions:
       contents: 'read'
       packages: 'write'
       attestations: 'write'
     with:
       bake-targets: ${{ matrix.target }}
-      image-tag: ${{ needs.prepare-build.outputs.image-tag }}
+      image-tag: ${{ needs.prepare-release.outputs.image-tag }}
     secrets:
       github-token: ${{ secrets.GITHUB_TOKEN }}
