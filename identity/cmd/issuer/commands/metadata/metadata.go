@@ -46,6 +46,7 @@ The metadata command is used to generate important metadata for your Agent and M
 `,
 }
 
+//nolint:lll // Allow long lines for CLI
 var metadataGenerateCmd = &cobra.Command{
 	Use:   "generate",
 	Short: "Generate new metadata for your Agent and MCP Server identities",
@@ -62,14 +63,18 @@ var metadataGenerateCmd = &cobra.Command{
 			return
 		}
 		if cache.IssuerId == "" {
-			fmt.Fprintf(os.Stderr, "No issuer found in the local configuration. Please load and existing issuer or register a new issuer first.\n")
+			fmt.Fprintf(os.Stderr, "No issuer found in the local configuration. Please load an existing issuer or register a new issuer first.\n")
 			return
 		}
 
 		// if the idp client id is not set, prompt the user for it interactively
 		if generateIdpClientId == "" {
 			fmt.Fprintf(os.Stderr, "IDP Client ID: ")
-			fmt.Scanln(&generateIdpClientId)
+			_, err := fmt.Scanln(&generateIdpClientId)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "Error reading IDP Client ID: %v\n", err)
+				return
+			}
 		}
 		if generateIdpClientId == "" {
 			fmt.Fprintf(os.Stderr, "No IDP Client ID provided\n")
@@ -79,7 +84,11 @@ var metadataGenerateCmd = &cobra.Command{
 		// if the idp client secret is not set, prompt the user for it interactively
 		if generateIdpClientSecret == "" {
 			fmt.Fprintf(os.Stderr, "IDP Client Secret: ")
-			fmt.Scanln(&generateIdpClientSecret)
+			_, err := fmt.Scanln(&generateIdpClientSecret)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "Error reading IDP Client Secret: %v\n", err)
+				return
+			}
 		}
 		if generateIdpClientSecret == "" {
 			fmt.Fprintf(os.Stderr, "No IDP Client Secret provided\n")
@@ -89,7 +98,11 @@ var metadataGenerateCmd = &cobra.Command{
 		// if the idp issuer url is not set, prompt the user for it interactively
 		if generateIdpIssuerUrl == "" {
 			fmt.Fprintf(os.Stderr, "IDP Issuer URL: ")
-			fmt.Scanln(&generateIdpIssuerUrl)
+			_, err := fmt.Scanln(&generateIdpIssuerUrl)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "Error reading IDP Issuer URL: %v\n", err)
+				return
+			}
 		}
 		if generateIdpIssuerUrl == "" {
 			fmt.Fprintf(os.Stderr, "No IDP Issuer URL provided\n")
@@ -120,6 +133,7 @@ var metadataGenerateCmd = &cobra.Command{
 	},
 }
 
+//nolint:lll // Allow long lines for CLI
 var metadataListCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List your existing metadata",
@@ -137,7 +151,7 @@ var metadataListCmd = &cobra.Command{
 			return
 		}
 		if cache.IssuerId == "" {
-			fmt.Fprintf(os.Stderr, "No issuer found in the local configuration. Please load and existing issuer or register a new issuer first.\n")
+			fmt.Fprintf(os.Stderr, "No issuer found in the local configuration. Please load an existing issuer or register a new issuer first.\n")
 			return
 		}
 
@@ -157,6 +171,7 @@ var metadataListCmd = &cobra.Command{
 	},
 }
 
+//nolint:lll // Allow long lines for CLI
 var metadataShowCmd = &cobra.Command{
 	Use:   "show [metadata_id]",
 	Short: "Show the chosen metadata",
@@ -173,14 +188,18 @@ var metadataShowCmd = &cobra.Command{
 			return
 		}
 		if cache.IssuerId == "" {
-			fmt.Fprintf(os.Stderr, "No issuer found in the local configuration. Please load and existing issuer or register a new issuer first.\n")
+			fmt.Fprintf(os.Stderr, "No issuer found in the local configuration. Please load an existing issuer or register a new issuer first.\n")
 			return
 		}
 
 		// if the metadata id is not set, prompt the user for it interactively
 		if showMetadataId == "" {
 			fmt.Fprintf(os.Stderr, "Metadata ID: ")
-			fmt.Scanln(&showMetadataId)
+			_, err := fmt.Scanln(&showMetadataId)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "Error reading metadata ID: %v\n", err)
+				return
+			}
 		}
 		if showMetadataId == "" {
 			fmt.Fprintf(os.Stderr, "No metadata ID provided\n")
@@ -201,6 +220,7 @@ var metadataShowCmd = &cobra.Command{
 	},
 }
 
+//nolint:lll // Allow long lines for CLI
 var metadataForgetCmd = &cobra.Command{
 	Use:   "forget [metadata_id]",
 	Short: "Forget the chosen metadata",
@@ -217,14 +237,18 @@ var metadataForgetCmd = &cobra.Command{
 			return
 		}
 		if cache.IssuerId == "" {
-			fmt.Fprintf(os.Stderr, "No issuer found in the local configuration. Please load and existing issuer or register a new issuer first.\n")
+			fmt.Fprintf(os.Stderr, "No issuer found in the local configuration. Please load an existing issuer or register a new issuer first.\n")
 			return
 		}
 
 		// if the metadata id is not set, prompt the user for it interactively
 		if forgetMetadataId == "" {
 			fmt.Fprintf(os.Stderr, "Metadata ID: ")
-			fmt.Scanln(&forgetMetadataId)
+			_, err := fmt.Scanln(&forgetMetadataId)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "Error reading metadata ID: %v\n", err)
+				return
+			}
 		}
 		if forgetMetadataId == "" {
 			fmt.Fprintf(os.Stderr, "No metadata ID provided\n")
@@ -253,6 +277,7 @@ var metadataForgetCmd = &cobra.Command{
 	},
 }
 
+//nolint:lll // Allow long lines for CLI
 var metadataLoadCmd = &cobra.Command{
 	Use:   "load [metadata_id]",
 	Short: "Load a metadata configuration",
@@ -269,14 +294,18 @@ var metadataLoadCmd = &cobra.Command{
 			return
 		}
 		if cache.IssuerId == "" {
-			fmt.Fprintf(os.Stderr, "No issuer found in the local configuration. Please load and existing issuer or register a new issuer first.\n")
+			fmt.Fprintf(os.Stderr, "No issuer found in the local configuration. Please load an existing issuer or register a new issuer first.\n")
 			return
 		}
 
 		// if the metadata id is not set, prompt the user for it interactively
 		if loadMetadataId == "" {
 			fmt.Fprintf(os.Stderr, "Metadata ID: ")
-			fmt.Scanln(&loadMetadataId)
+			_, err := fmt.Scanln(&loadMetadataId)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "Error reading metadata ID: %v\n", err)
+				return
+			}
 		}
 		if loadMetadataId == "" {
 			fmt.Fprintf(os.Stderr, "No metadata ID provided\n")

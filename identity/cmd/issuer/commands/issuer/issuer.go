@@ -52,7 +52,7 @@ The issuer command is used to register as an Issuer and manage issuer configurat
 `,
 }
 
-//nolint:mnd // Allow magic number for args
+//nolint:lll // Allow long lines for CLI
 var issuerRegisterCmd = &cobra.Command{
 	Use:   "register",
 	Short: "Register as an Issuer",
@@ -214,6 +214,7 @@ var issuerRegisterCmd = &cobra.Command{
 	},
 }
 
+//nolint:lll // Allow long lines for CLI
 var issuerListCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List your existing issuer configurations",
@@ -246,6 +247,8 @@ var issuerListCmd = &cobra.Command{
 		}
 	},
 }
+
+//nolint:lll // Allow long lines for CLI
 var issuerShowCmd = &cobra.Command{
 	Use:   "show",
 	Short: "Show details of an issuer configuration",
@@ -265,7 +268,11 @@ var issuerShowCmd = &cobra.Command{
 		// if the issuer id is not set, prompt the user for it interactively
 		if showIssuerId == "" {
 			fmt.Fprintf(os.Stderr, "Issuer ID to show:\n")
-			fmt.Scanln(&showIssuerId)
+			_, err := fmt.Scanln(&showIssuerId)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "Error reading issuer ID: %v\n", err)
+				return
+			}
 		}
 		if showIssuerId == "" {
 			fmt.Fprintf(os.Stderr, "No issuer ID provided.\n")
@@ -291,6 +298,7 @@ var issuerShowCmd = &cobra.Command{
 	},
 }
 
+//nolint:lll // Allow long lines for CLI
 var issuerForgetCmd = &cobra.Command{
 	Use:   "forget",
 	Short: "Forget an issuer configuration",
@@ -310,7 +318,11 @@ var issuerForgetCmd = &cobra.Command{
 		// if the issuer id is not set, prompt the user for it interactively
 		if forgetIssuerId == "" {
 			fmt.Fprintf(os.Stderr, "Issuer ID to forget:\n")
-			fmt.Scanln(&forgetIssuerId)
+			_, err := fmt.Scanln(&forgetIssuerId)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "Error reading issuer ID: %v\n", err)
+				return
+			}
 		}
 		if forgetIssuerId == "" {
 			fmt.Fprintf(os.Stderr, "No issuer ID provided.\n")
@@ -339,6 +351,7 @@ var issuerForgetCmd = &cobra.Command{
 	},
 }
 
+//nolint:lll // Allow long lines for CLI
 var issuerLoadCmd = &cobra.Command{
 	Use:   "load",
 	Short: "Load an issuer configuration",
@@ -358,7 +371,11 @@ var issuerLoadCmd = &cobra.Command{
 		// if the issuer id is not set, prompt the user for it interactively
 		if loadIssuerId == "" {
 			fmt.Fprintf(os.Stderr, "Issuer ID to load:\n")
-			fmt.Scanln(&loadIssuerId)
+			_, err := fmt.Scanln(&loadIssuerId)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "Error reading issuer ID: %v\n", err)
+				return
+			}
 		}
 		if loadIssuerId == "" {
 			fmt.Fprintf(os.Stderr, "No issuer ID provided.\n")
@@ -388,6 +405,7 @@ var issuerLoadCmd = &cobra.Command{
 	},
 }
 
+//nolint:lll // Allow long lines for CLI
 func init() {
 	issuerRegisterCmd.Flags().StringVarP(&registerIdentityNodeAddress, "identity-node-address", "i", "", "Identity node address")
 	issuerRegisterCmd.Flags().StringVarP(&registerClientID, "client-id", "c", "", "IdP client ID")

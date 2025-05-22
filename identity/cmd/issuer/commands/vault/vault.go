@@ -77,7 +77,11 @@ var vaultShowCmd = &cobra.Command{
 		// if the vault id is not set, prompt the user for it interactively
 		if showVaultId == "" {
 			fmt.Fprintf(os.Stderr, "Vault ID to show:\n")
-			fmt.Scanln(&showVaultId)
+			_, err := fmt.Scanln(&showVaultId)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "Error reading vault ID: %v\n", err)
+				return
+			}
 		}
 		if showVaultId == "" {
 			fmt.Fprintf(os.Stderr, "No vault ID provided.\n")
@@ -112,7 +116,11 @@ var vaultForgetCmd = &cobra.Command{
 		// if the vault id is not set, prompt the user for it interactively
 		if forgetVaultId == "" {
 			fmt.Fprintf(os.Stderr, "Vault ID to forget:\n")
-			fmt.Scanln(&forgetVaultId)
+			_, err := fmt.Scanln(&forgetVaultId)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "Error reading vault ID: %v\n", err)
+				return
+			}
 		}
 		if forgetVaultId == "" {
 			fmt.Fprintf(os.Stderr, "No vault ID provided.\n")
@@ -144,7 +152,11 @@ var vaultLoadCmd = &cobra.Command{
 		// if the vault id is not set, prompt the user for it interactively
 		if loadVaultId == "" {
 			fmt.Fprintf(os.Stderr, "Vault ID to load:\n")
-			fmt.Scanln(&loadVaultId)
+			_, err := fmt.Scanln(&loadVaultId)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "Error reading vault ID: %v\n", err)
+				return
+			}
 		}
 		if loadVaultId == "" {
 			fmt.Fprintf(os.Stderr, "No vault ID provided.\n")

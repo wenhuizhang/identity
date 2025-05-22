@@ -30,7 +30,6 @@ func NewVaultService(
 func (s *vaultService) ConnectVault(
 	vault *internalIssuerTypes.Vault,
 ) (string, error) {
-
 	vaultId, err := s.vaultRepository.AddVault(vault)
 	if err != nil {
 		return "", err

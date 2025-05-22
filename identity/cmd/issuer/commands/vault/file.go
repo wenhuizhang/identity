@@ -32,7 +32,11 @@ var TxtCmd = &cobra.Command{
 		// if the file path is not set, prompt the user for it interactively
 		if filePath == "" {
 			fmt.Fprintf(os.Stderr, "File path to store the generated keys: ")
-			fmt.Scanln(&filePath)
+			_, err := fmt.Scanln(&filePath)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "Error reading file path: %v\n", err)
+				return
+			}
 		}
 		if filePath == "" {
 			fmt.Fprintf(os.Stderr, "No file path provided\n")
@@ -42,7 +46,11 @@ var TxtCmd = &cobra.Command{
 		// if the vault name is not set, prompt the user for it interactively
 		if vaultName == "" {
 			fmt.Fprintf(os.Stderr, "Vault name: ")
-			fmt.Scanln(&vaultName)
+			_, err := fmt.Scanln(&vaultName)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "Error reading vault name: %v\n", err)
+				return
+			}
 		}
 		if vaultName == "" {
 			fmt.Fprintf(os.Stderr, "No vault name provided\n")
@@ -109,9 +117,7 @@ var TxtCmd = &cobra.Command{
 }
 
 func init() {
-
 	// Add flags to the command
 	TxtCmd.Flags().StringVarP(&filePath, "file-path", "f", "", "Path to the file")
 	TxtCmd.Flags().StringVarP(&vaultName, "name", "n", "", "Name of the vault")
-
 }
