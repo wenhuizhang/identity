@@ -32,7 +32,7 @@ jobs:
     uses: ./.github/workflows/reusable-test.yml
 
   build-and-push-images:
-    uses: ./.github/workflows/reusable-docker.yaml
+    uses: ./.github/workflows/reusable-docker.yml
     needs: [prepare-release, pre-release-test]
     permissions:
       contents: 'read'
