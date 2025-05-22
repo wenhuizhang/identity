@@ -17,4 +17,4 @@ permissions: read-all
 
 jobs:
   pre-release-test:
-    uses: cisco-eti/pyramid/.github/workflows/reusable-test.yml@main
+    uses: ./.github/workflows/reusable-test.yml
