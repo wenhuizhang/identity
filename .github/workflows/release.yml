@@ -6,9 +6,6 @@ name: Release the Issuer CLI and the Node Docker Image
 
 on:
   push:
-    # Run superlinter on pushes to default branch
-    branches:
-      - story/PYRA-148-build-and-push-the-docker-images-on-ci
     tags:
       - "v?[0-9]+.[0-9]+.[0-9]+"
 jobs:
