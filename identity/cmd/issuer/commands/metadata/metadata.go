@@ -137,7 +137,6 @@ var metadataGenerateCmd = &cobra.Command{
 var metadataListCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List your existing metadata",
-	Args:  cobra.ExactArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 
 		// load the cache to get the vault and issuer id
