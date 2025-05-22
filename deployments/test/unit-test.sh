@@ -4,7 +4,7 @@
 
 
 DOCKER_FILE=./deployments/docker/identity/Dockerfile.test
-TEST_COMMAND='go test -v -cover ./...'
+TEST_COMMAND='go test -v ./...'
 
 echo RUNNING TESTS
 docker run "$(docker build --no-cache -f ${DOCKER_FILE} -q .)" "$TEST_COMMAND"

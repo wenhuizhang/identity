@@ -142,6 +142,8 @@ identity/cmd/issuer/web
 identity/pkg/assets/web
 identity/identity
 
-
 # DB
 test_vc.json
+
+# Worflows
+*.swm
