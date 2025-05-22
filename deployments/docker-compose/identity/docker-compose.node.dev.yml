@@ -3,6 +3,8 @@
 
 ---
 name: identity-node
+include:
+  - docker-compose.db.yml
 services:
   identity-api:
     container_name: identity-node
@@ -10,14 +12,10 @@ services:
       context: ../../../
       dockerfile: deployments/docker/identity/Dockerfile.node
     restart: always
+    depends_on:
+      - identity-postgres
     ports:
       - "4000:4000"
       - "4001:4001"
     env_file:
       - .env
-    networks:
-      - identity-network
-
-networks:
-  identity-network:
-    external: true
