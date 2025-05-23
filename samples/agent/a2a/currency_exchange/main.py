@@ -28,7 +28,8 @@ logger = logging.getLogger(__name__)
 @click.option("--port", "port", default=9091)
 @click.option("--ollama-host", default="http://localhost:11434")
 @click.option("--ollama-model", default="llama3.2")
-def main(host, port, ollama_host, ollama_model):
+@click.option("--mcp-server-url", default="http://localhost:9090/mcp")
+def main(host, port, ollama_host, ollama_model, mcp_server_url):
     """Starts the Currency Agent server."""
 
     # pylint: disable=broad-exception-caught
@@ -52,9 +53,13 @@ def main(host, port, ollama_host, ollama_model):
             skills=[skill],
         )
 
-        httpx_client = httpx.AsyncClient()
+        # Initialize the HTTP client and request handler
+        timeout = httpx.Timeout(connect=None, read=None, write=None, pool=None)
+        httpx_client = httpx.AsyncClient(timeout=timeout)
         request_handler = DefaultRequestHandler(
-            agent_executor=CurrencyAgentExecutor(ollama_host, ollama_model),
+            agent_executor=CurrencyAgentExecutor(
+                ollama_host, ollama_model, mcp_server_url
+            ),
             task_store=InMemoryTaskStore(),
             push_notifier=InMemoryPushNotifier(httpx_client),
         )
