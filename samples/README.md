@@ -39,7 +39,7 @@ To run the samples, you need to have the following prerequisites installed:
 
 To install Ollama:
 
-- First [Install Oollama](https://ollama.com/download)
+- First [Install Ollama](https://ollama.com/download)
 - Then run the following command to install and run the Llama 3.2 model:
 
 ```bash
@@ -50,14 +50,14 @@ ollama run llama3.2
 
 To run the samples, follow these steps:
 
-1; Clone the repository:
+1. Clone the repository:
 
 ```bash
 git clone https://github.com/agntcy/identity.git
 ```
 
-2; Navigate to the `samples` directory and run the following command
-to start the Docker containers:
+2. Navigate to the `samples` directory and run the following command
+   to start the Docker containers:
 
 ```bash
 cd samples && docker-compose up -d
