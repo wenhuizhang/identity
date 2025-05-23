@@ -49,6 +49,7 @@ def get_exchange_rate(
         return {"error": "Invalid JSON response from API."}
 
 
+# pylint: disable=too-few-public-methods
 class ResponseFormat(BaseModel):
     """Respond to the user in this format."""
 
@@ -57,6 +58,8 @@ class ResponseFormat(BaseModel):
 
 
 class CurrencyAgent:
+    """A2A agent for currency conversion."""
+
     # pylint: disable=line-too-long
     SYSTEM_INSTRUCTION = (
         "You are a specialized assistant for currency conversions. "
@@ -74,6 +77,8 @@ class CurrencyAgent:
         ollama_base_url,
         ollama_model,
     ) -> None:
+        """Initialize the agent with the Ollama model and tools."""
+
         self.model = ChatOllama(
             base_url=ollama_base_url, model=ollama_model, temperature=0.2
         )
@@ -88,11 +93,13 @@ class CurrencyAgent:
         )
 
     def invoke(self, query, session_id) -> str:
+        """Invoke the agent with a query and session ID."""
         config = {"configurable": {"thread_id": session_id}}
         self.graph.invoke({"messages": [("user", query)]}, config)
         return self.get_agent_response(config)
 
     async def stream(self, query, session_id) -> AsyncIterable[Dict[str, Any]]:
+        """Stream the agent's response to a query."""
         inputs = {"messages": [("user", query)]}
         config = {"configurable": {"thread_id": session_id}}
 
@@ -118,6 +125,7 @@ class CurrencyAgent:
         yield self.get_agent_response(config)
 
     def get_agent_response(self, config):
+        """Get the agent's response based on the current state."""
         current_state = self.graph.get_state(config)
         structured_response = current_state.values.get("structured_response")
         if structured_response and isinstance(structured_response, ResponseFormat):
