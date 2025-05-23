@@ -39,8 +39,9 @@ type ParsedJWT struct {
 }
 
 type providerMetadata struct {
-	Issuer  string `json:"issuer"`
-	JWKSURL string `json:"jwks_uri"`
+	Issuer   string `json:"issuer"`
+	TokenURL string `json:"token_endpoint"`
+	JWKSURL  string `json:"jwks_uri"`
 }
 
 const defaultCacheSize = 10 * 1024 * 1024 // 10MB

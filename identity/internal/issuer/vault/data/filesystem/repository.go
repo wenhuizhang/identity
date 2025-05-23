@@ -10,8 +10,8 @@ import (
 	"path/filepath"
 
 	internalIssuerConstants "github.com/agntcy/identity/internal/issuer/constants"
-	internalIssuerTypes "github.com/agntcy/identity/internal/issuer/types"
 	"github.com/agntcy/identity/internal/issuer/vault/data"
+	types "github.com/agntcy/identity/internal/issuer/vault/types"
 )
 
 type vaultFilesystemRepository struct{}
@@ -54,7 +54,7 @@ func saveVaultConfig() error {
 	return nil
 }
 
-func (r *vaultFilesystemRepository) AddVault(vault *internalIssuerTypes.Vault) (string, error) {
+func (r *vaultFilesystemRepository) AddVault(vault *types.Vault) (string, error) {
 	// Save the vault config
 	if err := saveVaultConfig(); err != nil {
 		return "", err
@@ -89,7 +89,7 @@ func (r *vaultFilesystemRepository) AddVault(vault *internalIssuerTypes.Vault) (
 	return vault.Id, nil
 }
 
-func (r *vaultFilesystemRepository) GetAllVaults() ([]*internalIssuerTypes.Vault, error) {
+func (r *vaultFilesystemRepository) GetAllVaults() ([]*types.Vault, error) {
 	// Get the vaults directory
 	vaultsDir, err := getVaultsDirectory()
 	if err != nil {
@@ -103,7 +103,7 @@ func (r *vaultFilesystemRepository) GetAllVaults() ([]*internalIssuerTypes.Vault
 	}
 
 	// List the vault IDs
-	var vaultIds []*internalIssuerTypes.Vault
+	var vaultIds []*types.Vault
 
 	for _, file := range files {
 		if file.IsDir() {
@@ -121,7 +121,7 @@ func (r *vaultFilesystemRepository) GetAllVaults() ([]*internalIssuerTypes.Vault
 	return vaultIds, nil
 }
 
-func (r *vaultFilesystemRepository) GetVault(vaultId string) (*internalIssuerTypes.Vault, error) {
+func (r *vaultFilesystemRepository) GetVault(vaultId string) (*types.Vault, error) {
 	// Get the vault file path
 	vaultFilePath, err := GetVaultFilePath(vaultId)
 	if err != nil {
@@ -135,7 +135,7 @@ func (r *vaultFilesystemRepository) GetVault(vaultId string) (*internalIssuerTyp
 	}
 
 	// Unmarshal the vault data depending on the vault type
-	var vault internalIssuerTypes.Vault
+	var vault types.Vault
 	if err := vault.UnmarshalVault(vaultData); err != nil {
 		return nil, err
 	}

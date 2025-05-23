@@ -4,10 +4,7 @@
 package metadata
 
 import (
-	"log"
-
 	coreV1alpha "github.com/agntcy/identity/api/agntcy/identity/core/v1alpha1"
-	nodeV1alpha "github.com/agntcy/identity/api/agntcy/identity/node/v1alpha1"
 	issuerData "github.com/agntcy/identity/internal/issuer/issuer/data"
 	"github.com/agntcy/identity/internal/issuer/metadata/data"
 	internalIssuerTypes "github.com/agntcy/identity/internal/issuer/types"
@@ -42,24 +39,16 @@ func (s *metadataService) GenerateMetadata(
 	vaultId, issuerId string, idpConfig *internalIssuerTypes.IdpConfig,
 ) (string, error) {
 	// load the issuer
-	issuer, err := s.issuerRepository.GetIssuer(vaultId, issuerId)
+	_, err := s.issuerRepository.GetIssuer(vaultId, issuerId)
 	if err != nil {
 		return "", err
 	}
 
-	proof := coreV1alpha.Proof{
+	_ = coreV1alpha.Proof{
 		Type:         func() *string { s := "RsaSignature2018"; return &s }(),
 		ProofPurpose: func() *string { s := "assertionMethod"; return &s }(),
 		ProofValue:   func() *string { s := "example-proof-value"; return &s }(),
 	}
-
-	generateMetadataRequest := nodeV1alpha.GenerateRequest{
-		Issuer: issuer.Issuer,
-		Proof:  &proof,
-	}
-
-	// Call the client to generate metadata
-	log.Default().Println("Generating metadata with request: ", &generateMetadataRequest)
 
 	resolverMetadata := coreV1alpha.ResolverMetadata{
 		Id:                 func() *string { s := uuid.New().String(); return &s }(),

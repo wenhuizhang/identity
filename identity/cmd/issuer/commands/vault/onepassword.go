@@ -8,9 +8,9 @@ import (
 	"os"
 
 	cliCache "github.com/agntcy/identity/cmd/issuer/cache"
-	internalIssuerTypes "github.com/agntcy/identity/internal/issuer/types"
 	"github.com/agntcy/identity/internal/issuer/vault"
 	"github.com/agntcy/identity/internal/issuer/vault/data/filesystem"
+	vaulttypes "github.com/agntcy/identity/internal/issuer/vault/types"
 	"github.com/google/uuid"
 	"github.com/spf13/cobra"
 )
@@ -29,17 +29,17 @@ var OnePasswordCmd = &cobra.Command{
 		vaultFilesystemRepository := filesystem.NewVaultFilesystemRepository()
 		vaultService := vault.NewVaultService(vaultFilesystemRepository)
 
-		onePasswordConfig := internalIssuerTypes.Vault1Password{
+		onePasswordConfig := vaulttypes.Vault1Password{
 			ServiceAccountToken: serviceAccountToken,
 			VaultID:             vaultId,
 			ItemID:              itemId,
 		}
-		var config internalIssuerTypes.VaultConfig = &onePasswordConfig
+		var config vaulttypes.VaultConfig = &onePasswordConfig
 
-		vault := internalIssuerTypes.Vault{
+		vault := vaulttypes.Vault{
 			Id:     uuid.NewString(),
 			Name:   vaultName,
-			Type:   internalIssuerTypes.VaultType1Password,
+			Type:   vaulttypes.VaultType1Password,
 			Config: config,
 		}
 

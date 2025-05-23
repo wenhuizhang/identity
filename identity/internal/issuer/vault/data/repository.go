@@ -4,12 +4,12 @@
 package data
 
 import (
-	internalIssuerTypes "github.com/agntcy/identity/internal/issuer/types"
+	types "github.com/agntcy/identity/internal/issuer/vault/types"
 )
 
 type VaultRepository interface {
-	AddVault(vault *internalIssuerTypes.Vault) (string, error)
-	GetAllVaults() ([]*internalIssuerTypes.Vault, error)
-	GetVault(vaultId string) (*internalIssuerTypes.Vault, error)
+	AddVault(vault *types.Vault) (string, error)
+	GetAllVaults() ([]*types.Vault, error)
+	GetVault(vaultId string) (*types.Vault, error)
 	RemoveVault(vaultId string) error
 }

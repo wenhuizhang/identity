@@ -10,9 +10,9 @@ import (
 
 	cliCache "github.com/agntcy/identity/cmd/issuer/cache"
 	"github.com/agntcy/identity/internal/core/keystore"
-	internalIssuerTypes "github.com/agntcy/identity/internal/issuer/types"
 	"github.com/agntcy/identity/internal/issuer/vault"
 	"github.com/agntcy/identity/internal/issuer/vault/data/filesystem"
+	vaulttypes "github.com/agntcy/identity/internal/issuer/vault/types"
 	"github.com/agntcy/identity/internal/pkg/joseutil"
 	"github.com/google/uuid"
 	"github.com/spf13/cobra"
@@ -69,7 +69,11 @@ var TxtCmd = &cobra.Command{
 			return
 		}
 
-		priv, err := joseutil.GenerateJWK("RS256", "sig", "test-rsa")
+		//nolint:godox // To be fixed in the next PR
+		// TODO: should we generate a new one each time?
+		keyID := "test-rsa"
+
+		priv, err := joseutil.GenerateJWK("RS256", "sig", keyID)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error generating JWK: %v\n", err)
 			return
@@ -82,16 +86,16 @@ var TxtCmd = &cobra.Command{
 			return
 		}
 
-		txtConfig := internalIssuerTypes.VaultFile{
+		txtConfig := vaulttypes.VaultFile{
 			FilePath: filePath,
 		}
 
-		var config internalIssuerTypes.VaultConfig = &txtConfig
+		var config vaulttypes.VaultConfig = &txtConfig
 
-		vault := internalIssuerTypes.Vault{
+		vault := vaulttypes.Vault{
 			Id:     uuid.NewString(),
 			Name:   vaultName,
-			Type:   internalIssuerTypes.VaultTypeFile,
+			Type:   vaulttypes.VaultTypeFile,
 			Config: config,
 		}
 
@@ -106,6 +110,7 @@ var TxtCmd = &cobra.Command{
 		err = cliCache.SaveCache(
 			&cliCache.Cache{
 				VaultId: vaultId,
+				KeyID:   keyID,
 			},
 		)
 		if err != nil {

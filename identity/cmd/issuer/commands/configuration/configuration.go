@@ -16,6 +16,8 @@ import (
 	mfr "github.com/agntcy/identity/internal/issuer/metadata/data/filesystem"
 	vsvc "github.com/agntcy/identity/internal/issuer/vault"
 	vfr "github.com/agntcy/identity/internal/issuer/vault/data/filesystem"
+	"github.com/agntcy/identity/internal/pkg/nodeapi"
+	"github.com/agntcy/identity/internal/pkg/oidc"
 	"github.com/spf13/cobra"
 )
 
@@ -26,7 +28,9 @@ var (
 
 	// setup the issuer service
 	issuerFilesystemRepository = ifr.NewIssuerFilesystemRepository()
-	issuerService              = isvc.NewIssuerService(issuerFilesystemRepository)
+	oidcAuth                   = oidc.NewAuthenticator()
+	nodeClientPrv              = nodeapi.NewNodeClientProvider()
+	issuerService              = isvc.NewIssuerService(issuerFilesystemRepository, oidcAuth, nodeClientPrv)
 
 	// setup the metadata service
 	metadataFilesystemRepository = mfr.NewMetadataFilesystemRepository()
@@ -79,7 +83,7 @@ var ConfigurationCmd = &cobra.Command{
 				fmt.Fprintf(os.Stderr, "No issuer found with ID: %s\n", cache.IssuerId)
 				return
 			}
-			fmt.Fprintf(os.Stdout, "- Issuer: %s\n", issuer.Id)
+			fmt.Fprintf(os.Stdout, "- Issuer: %s\n", issuer.ID)
 
 		}
 

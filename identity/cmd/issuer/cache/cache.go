@@ -14,6 +14,7 @@ type Cache struct {
 	IssuerId   string `json:"issuerId,omitempty"`
 	MetadataId string `json:"metadata,omitempty"`
 	BadgeId    string `json:"badgeId,omitempty"`
+	KeyID      string `json:"kid,omitempty"`
 }
 
 // getCacheFile returns the path to the cache file
