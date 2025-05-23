@@ -39,7 +39,7 @@ class CurrencyAgentExecutor(AgentExecutor):
             raise ServerError(error=InvalidParamsError())
 
         # Initialize the agent and tools
-        await self.agent.initModelAndTools()
+        await self.agent.init_model_and_tools()
 
         query = context.get_user_input()
         task = context.current_task

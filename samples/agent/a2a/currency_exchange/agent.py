@@ -55,7 +55,8 @@ class CurrencyAgent:
         self.tools = None
         self.graph = None
 
-    async def initModelAndTools(self):
+    async def init_model_and_tools(self):
+        """Initialize the model and tools for the agent."""
         # Set up the Ollama model
         self.model = ChatOllama(
             base_url=self.ollama_base_url, model=self.ollama_model, temperature=0.2
@@ -89,6 +90,9 @@ class CurrencyAgent:
     def invoke(self, query, session_id) -> str:
         """Invoke the agent with a query and session ID."""
         config = {"configurable": {"thread_id": session_id}}
+        if not self.graph:
+            raise ValueError("Agent not initialized. Call init_model_and_tools first.")
+
         self.graph.invoke({"messages": [("user", query)]}, config)
         return self.get_agent_response(config)
 
@@ -96,6 +100,8 @@ class CurrencyAgent:
         """Stream the agent's response to a query."""
         inputs = {"messages": [("user", query)]}
         config = {"configurable": {"thread_id": session_id}}
+        if not self.graph:
+            raise ValueError("Agent not initialized. Call init_model_and_tools first.")
 
         for item in self.graph.stream(inputs, config, stream_mode="values"):
             message = item["messages"][-1]
