@@ -4,14 +4,20 @@
 package mcp
 
 import (
+	"context"
 	"errors"
 	"io"
 	"net/http"
+
+	"github.com/agntcy/identity/internal/pkg/httputil"
 )
 
 // The discoverClient interface defines the core methods for discovering a deployed A2A agent
 type DiscoveryClient interface {
-	Discover(wellKnownUrl string) (string, error)
+	Discover(
+		ctx context.Context,
+		wellKnownUrl string,
+	) (string, error)
 }
 
 // The discoverClient struct implements the DiscoverClient interface
@@ -24,11 +30,11 @@ func NewDiscoveryClient() DiscoveryClient {
 }
 
 func (d *discoveryClient) Discover(
+	ctx context.Context,
 	wellKnownUrl string,
 ) (string, error) {
-
 	// get the agent card from the well-known URL
-	resp, err := http.Get(wellKnownUrl)
+	resp, err := httputil.Get(ctx, wellKnownUrl, nil)
 	if err != nil {
 		return "", err
 	}

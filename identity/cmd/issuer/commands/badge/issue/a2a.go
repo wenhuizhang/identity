@@ -4,6 +4,7 @@
 package issue
 
 import (
+	"context"
 	"fmt"
 	"os"
 
@@ -56,9 +57,13 @@ var IssueA2AWellKnownCmd = &cobra.Command{
 		}
 
 		// Convert the badge value to a string
-
+		context := context.Background()
 		a2aClient := a2a.NewDiscoveryClient()
-		agentCard, err := a2aClient.Discover(issueA2AWellKnown)
+		agentCard, err := a2aClient.Discover(context, issueA2AWellKnown)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error discovering A2A agent: %v\n", err)
+			return
+		}
 
 		badgeId, err := badgeService.IssueBadge(cache.VaultId, cache.IssuerId, cache.MetadataId, agentCard)
 		if err != nil {
