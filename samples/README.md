@@ -27,6 +27,6 @@ These samples are designed to help you understand how to use the Identity platfo
 
 You can create and verify the following type of badges:
 
-- A2A Agent Badge based on the [A2A Agent Example](samples/agent/a2a)
-- OASF Agent Badge based on the [OASF Agent Example](samples/agent/oasf)
-- MCP Server Badge based on the [MCP Server Example](samples/mcp)
+- A2A Agent Badge based on the [A2A Agent Example](samples/agent/a2a), based on the [A2A Agent Example](https://github.com/google/A2A/blob/main/samples/python/agents/langgraph)
+- OASF Agent Badge based on the [OASF Agent Example](samples/agent/oasf), based on the [OASF Agent Example](https://hub.agntcy.org/)
+- MCP Server Badge based on the [MCP Server Example](samples/mcp), based on the [MCP Server Example](https://github.com/google/A2A/blob/main/samples/python/agents/langgraph)
