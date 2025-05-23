@@ -60,23 +60,25 @@ git clone https://github.com/agntcy/identity.git
    to start the Docker containers:
 
 ```bash
-cd samples && docker-compose up -d
+docker-compose up -d
 ```
 
 ## Testing the Samples
 
 ### A2A Agent
 
-To test the A2A Agent sample, run the following command:
+To test the A2A Agent sample, navigate to the `samples/agent/a2a/currency_exchange`
+directory and run the following command:
 
 ```bash
-cd samples/agent/a2a && python test_client.py
+python test_client.py
 ```
 
 ### MCP Server
 
-To test the MCP Server sample, run the following command:
+To test the MCP Server sample, navigate to the `samples/mcp/currency_exchange`
+directory and run the following command:
 
 ```bash
-cd samples/mcp && python test_client.py
+python test_client.py
 ```
