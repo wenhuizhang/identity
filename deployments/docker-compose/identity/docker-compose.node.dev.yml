@@ -6,7 +6,7 @@ name: identity-node
 include:
   - docker-compose.db.yml
 services:
-  identity-api:
+  identity-node:
     container_name: identity-node
     build:
       context: ../../../

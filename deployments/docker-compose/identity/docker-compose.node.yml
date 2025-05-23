@@ -6,7 +6,7 @@ name: identity-node
 include:
   - docker-compose.db.yml
 services:
-  identity-api:
+  identity-node:
     container_name: identity-node
     image: ghcr.io/cisco-eti/pyramid/node:latest # TODO: Update to agntcy and delete this line
     restart: always
