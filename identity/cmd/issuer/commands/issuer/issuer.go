@@ -208,7 +208,6 @@ var issuerRegisterCmd = &cobra.Command{
 	},
 }
 
-//nolint:lll // Allow long lines for CLI
 var issuerListCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List your existing issuer configurations",
@@ -292,7 +291,6 @@ var issuerShowCmd = &cobra.Command{
 	},
 }
 
-//nolint:lll // Allow long lines for CLI
 var issuerForgetCmd = &cobra.Command{
 	Use:   "forget",
 	Short: "Forget an issuer configuration",
@@ -346,7 +344,6 @@ var issuerForgetCmd = &cobra.Command{
 	},
 }
 
-//nolint:lll // Allow long lines for CLI
 var issuerLoadCmd = &cobra.Command{
 	Use:   "load",
 	Short: "Load an issuer configuration",

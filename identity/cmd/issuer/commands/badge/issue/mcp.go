@@ -22,7 +22,6 @@ var (
 	issueMcpServerName string
 )
 
-//nolint:lll // Allow long lines for CLI
 var IssueMcpServerCmd = &cobra.Command{
 	Use:   "mcp",
 	Short: "Issue a badge based on an MCP server URL",

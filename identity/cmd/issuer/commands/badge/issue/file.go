@@ -18,7 +18,6 @@ var (
 	issueFilePath string
 )
 
-//nolint:lll // Allow long lines for CLI
 var IssueFileCmd = &cobra.Command{
 	Use:   "file",
 	Short: "Issue a badge based on a local file",
@@ -81,6 +80,7 @@ var IssueFileCmd = &cobra.Command{
 	},
 }
 
+//nolint:lll // Allow long lines for CLI
 func init() {
 	IssueFileCmd.Flags().StringVarP(&issueFilePath, "file-path", "f", "", "The file path to the data you want to sign in the badge")
 }

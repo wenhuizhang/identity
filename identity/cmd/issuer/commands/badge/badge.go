@@ -21,14 +21,12 @@ var (
 	badgeService              = badge.NewBadgeService(badgeFilesystemRepository)
 
 	// setup the command flags
-	issueFilePath  string
 	publishBadgeId string
 	showBadgeId    string
 	forgetBadgeId  string
 	loadBadgeId    string
 )
 
-//nolint:lll // Allow long lines for CLI
 var BadgeCmd = &cobra.Command{
 	Use:   "badge",
 	Short: "Issue and publish badges for your Agent and MCP Server identities",
@@ -37,7 +35,6 @@ The badge command is used to issue and publish badges for your Agent and MCP Ser
 `,
 }
 
-//nolint:lll // Allow long lines for CLI
 var badgeIssueCmd = &cobra.Command{
 	Use:   "issue",
 	Short: "Issue badges using different data sources",
@@ -46,7 +43,6 @@ The issue command is used to create Badges for your Agent and MCP Server identit
 `,
 }
 
-//nolint:lll // Allow long lines for CLI
 var badgePublishCmd = &cobra.Command{
 	Use:   "publish",
 	Short: "Publish the chosen badge",
@@ -114,7 +110,6 @@ var badgePublishCmd = &cobra.Command{
 	},
 }
 
-//nolint:lll // Allow long lines for CLI
 var badgeListCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List your existing badges for the current metadata",
@@ -148,7 +143,6 @@ var badgeListCmd = &cobra.Command{
 	},
 }
 
-//nolint:lll // Allow long lines for CLI
 var badgeShowCmd = &cobra.Command{
 	Use:   "show",
 	Short: "Show details of the chosen badge",
@@ -194,7 +188,6 @@ var badgeShowCmd = &cobra.Command{
 	},
 }
 
-//nolint:lll // Allow long lines for CLI
 var badgeForgetCmd = &cobra.Command{
 	Use:   "forget",
 	Short: "Forget the chosen badge",
@@ -246,7 +239,6 @@ var badgeForgetCmd = &cobra.Command{
 	},
 }
 
-//nolint:lll // Allow long lines for CLI
 var badgeLoadCmd = &cobra.Command{
 	Use:   "load",
 	Short: "Load a badge configuration",
@@ -301,9 +293,7 @@ var badgeLoadCmd = &cobra.Command{
 	},
 }
 
-//nolint:lll // Allow long lines for CLI
 func init() {
-
 	badgeIssueCmd.AddCommand(issue.IssueFileCmd)
 	badgeIssueCmd.AddCommand(issue.IssueOasfCmd)
 	badgeIssueCmd.AddCommand(issue.IssueMcpServerCmd)

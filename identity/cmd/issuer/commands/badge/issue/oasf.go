@@ -18,7 +18,6 @@ var (
 	issueOasfPath string
 )
 
-//nolint:lll // Allow long lines for CLI
 var IssueOasfCmd = &cobra.Command{
 	Use:   "oasf",
 	Short: "Issue a badge based on a local OASF file",
@@ -81,6 +80,7 @@ var IssueOasfCmd = &cobra.Command{
 	},
 }
 
+//nolint:lll // Allow long lines for CLI
 func init() {
 	IssueFileCmd.Flags().StringVarP(&issueOasfPath, "oasf-path", "o", "", "The file path to the OASF you want to sign in the badge")
 }

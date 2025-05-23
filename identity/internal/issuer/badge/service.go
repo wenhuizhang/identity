@@ -37,7 +37,6 @@ func NewBadgeService(
 }
 
 func (s *badgeService) IssueBadge(vaultId, issuerId, metadataId, badgeContent string) (string, error) {
-
 	envelopedCredential := coreV1alpha.EnvelopedCredential{
 		EnvelopeType: coreV1alpha.CredentialEnvelopeType_CREDENTIAL_ENVELOPE_TYPE_JOSE.Enum(),
 		Value:        &badgeContent,

@@ -40,7 +40,6 @@ The metadata command is used to generate important metadata for your Agent and M
 `,
 }
 
-//nolint:lll // Allow long lines for CLI
 var metadataGenerateCmd = &cobra.Command{
 	Use:   "generate",
 	Short: "Generate new metadata for your Agent and MCP Server identities",
@@ -124,7 +123,6 @@ var metadataGenerateCmd = &cobra.Command{
 	},
 }
 
-//nolint:lll // Allow long lines for CLI
 var metadataListCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List your existing metadata",
@@ -158,7 +156,6 @@ var metadataListCmd = &cobra.Command{
 	},
 }
 
-//nolint:lll // Allow long lines for CLI
 var metadataShowCmd = &cobra.Command{
 	Use:   "show [metadata_id]",
 	Short: "Show the chosen metadata",
@@ -204,7 +201,6 @@ var metadataShowCmd = &cobra.Command{
 	},
 }
 
-//nolint:lll // Allow long lines for CLI
 var metadataForgetCmd = &cobra.Command{
 	Use:   "forget [metadata_id]",
 	Short: "Forget the chosen metadata",
@@ -258,7 +254,6 @@ var metadataForgetCmd = &cobra.Command{
 	},
 }
 
-//nolint:lll // Allow long lines for CLI
 var metadataLoadCmd = &cobra.Command{
 	Use:   "load [metadata_id]",
 	Short: "Load a metadata configuration",

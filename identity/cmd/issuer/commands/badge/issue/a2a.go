@@ -18,7 +18,6 @@ var (
 	issueA2AWellKnown string
 )
 
-//nolint:lll // Allow long lines for CLI
 var IssueA2AWellKnownCmd = &cobra.Command{
 	Use:   "a2a",
 	Short: "Issue a badge based on a local file",
@@ -75,6 +74,7 @@ var IssueA2AWellKnownCmd = &cobra.Command{
 	},
 }
 
+//nolint:lll // Allow long lines for CLI
 func init() {
 	IssueA2AWellKnownCmd.Flags().StringVarP(&issueA2AWellKnown, "url", "u", "", "The well-known URL of the A2A agent you want to sign in the badge")
 }
