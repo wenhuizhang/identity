@@ -7,4 +7,4 @@ WORKDIR /code
 COPY ./* .
 RUN pip install .
 
-CMD ["fastapi", "run", "main.py", "--port", "9080"]
+CMD ["python", "main.py"]

@@ -1,4 +1,4 @@
-# Identity
+# Identity Samples
 
 [![Lint](https://github.com/cisco-eti/pyramid/actions/workflows/lint.yml/badge.svg?branch=main)](https://github.com/marketplace/actions/super-linter)
 [![Contributor-Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-fbab2c.svg)](CODE_OF_CONDUCT.md)
@@ -27,6 +27,6 @@ These samples are designed to help you understand how to use the Identity platfo
 
 You can create and verify the following type of badges:
 
-- A2A Agent Badge based on the [A2A Agent Example](samples/agent/a2a), based on the [A2A Agent Example](https://github.com/google/A2A/blob/main/samples/python/agents/langgraph)
-- OASF Agent Badge based on the [OASF Agent Example](samples/agent/oasf), based on the [OASF Agent Example](https://hub.agntcy.org/)
-- MCP Server Badge based on the [MCP Server Example](samples/mcp), based on the [MCP Server Example](https://github.com/google/A2A/blob/main/samples/python/agents/langgraph)
+- A2A Agent Badge based on the [A2A Agent Example](./samples/agent/a2a), based on the [A2A Agent Example](https://github.com/google/A2A/blob/main/samples/python/agents/langgraph)
+- OASF Agent Badge based on the [OASF Agent Definition Example](./samples/agent/oasf), based on the [OASF Agent Example](https://hub.agntcy.org/)
+- MCP Server Badge based on the [MCP Server Example](./samples/mcp), based on the [MCP Server Example](https://github.com/google/A2A/blob/main/samples/python/agents/langgraph)

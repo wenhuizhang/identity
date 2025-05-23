@@ -7,8 +7,16 @@ services:
   identity-samples-currency-exchange-mcp-server:
     container_name: identity-samples-currency-exchange-mcp-server
     build:
-      context: ./mcp/currency-exchange
+      context: ./mcp/currency_exchange
       dockerfile: Dockerfile
     restart: always
     ports:
-      - "9090"
+      - "9090:9090"
+  identity-samples-currency-exchange-a2a-agent:
+    container_name: identity-samples-currency-exchange-a2a-agent
+    build:
+      context: ./agent/a2a/currency_exchange
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "9091:9091"
