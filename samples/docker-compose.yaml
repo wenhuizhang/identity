@@ -12,6 +12,8 @@ services:
     restart: always
     ports:
       - "9090:9090"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
   identity-samples-currency-exchange-a2a-agent:
     container_name: identity-samples-currency-exchange-a2a-agent
     build:
@@ -20,3 +22,5 @@ services:
     restart: always
     ports:
       - "9091:9091"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
