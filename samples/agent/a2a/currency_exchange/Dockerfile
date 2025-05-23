@@ -7,4 +7,4 @@ WORKDIR /code
 COPY ./* .
 RUN pip install .
 
-CMD ["python", "main.py"]
+CMD ["python", "main.py", "--ollama-host", "http://host.docker.internal:11434"]
