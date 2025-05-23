@@ -36,7 +36,7 @@ go run cmd/issuer/main.go
 
 The Identity CLI follows a hierarchical command structure:
 
-```
+```bash
 identity [command] [subcommand] [flags]
 ```
 
@@ -51,88 +51,83 @@ identity [command] [subcommand] [flags]
 
 ### Common Workflows
 
-#### Setting Up a New Identity Environment
+#### Step 1: Create a vault to store cryptographic keys
 
-1. **Create a vault** to store cryptographic keys:
+```bash
+identity vault create file -f /path/to/keys.json -n "My Vault"
+```
 
-   ```bash
-   identity vault create file -f /path/to/keys.json -n "My Vault"
-   ```
+#### Step 2: Register as an issuer
 
-2. **Register as an issuer**:
+```bash
+identity issuer register -o "My Organization" -c "client-id" -s "client-secret" -u "https://idp.example.com"
+```
 
-   ```bash
-   identity issuer register -o "My Organization" -c "client-id" -s "client-secret" -u "https://idp.example.com"
-   ```
+#### Step 3: Generate metadata
 
-3. **Generate metadata**:
+```bash
+identity metadata generate -i "client-id" -s "client-secret" -u "https://idp.example.com"
+```
 
-   ```bash
-   identity metadata generate -i "client-id" -s "client-secret" -u "https://idp.example.com"
-   ```
+#### Step 4: Issue a badge
 
-4. **Issue a badge**:
+```bash
+identity badge issue [type] [options]
+```
 
-    ```bash
-    identity badge issue [type] [options]
-    ```
+You can issue badges for different types content:
 
-    #### Badge Types and Examples
+```bash
+# OASF Files - https://schema.oasf.agntcy.org/objects/agent
+identity badge issue oasf -f /path/to/oasf_content.json
 
-    Badges can be issued for different types of content:
+# A2A Agent Cards - https://google.github.io/A2A/tutorials/python/3-agent-skills-and-card/#agent-card
+identity badge issue a2a -u http://localhost:9091/.well-known/agent.json
 
-    - **OASF Files** ([OASF Schema](https://schema.oasf.agntcy.org/objects/agent)):
-        ```bash
-        identity badge issue oasf -f /path/to/oasf_content.json
-        ```
+# MCP Servers - (https://github.com/modelcontextprotocol/servers))
+identity badge issue mcp -u http://localhost:9090
 
-    - **A2A Agent Cards** ([A2A Documentation](https://google.github.io/A2A/tutorials/python/3-agent-skills-and-card/#agent-card)):
-        ```bash
-        identity badge issue a2a -u http://localhost:9091/.well-known/agent.json
-        ```
+#Generic Files
+identity badge issue file -f /path/to/badge_content.json
+```
 
-    - **MCP Servers** ([MCP Specification](https://github.com/modelcontextprotocol/servers)):
-        ```bash
-        identity badge issue mcp -u http://localhost:9090
-        ```
+#### Step 5: Publish the badge
 
-    - **Generic Files**:
-        ```bash
-        identity badge issue file -f /path/to/badge_content.json
-        ```
+```bash
+identity badge publish
+```
 
-5. **Publish a badge**:
+### Managing Existing Components
 
-   ```bash
-   identity badge publish
-   ```
+**List existing vaults**:
 
-#### Managing Existing Components
+```bash
+identity vault list
+```
 
-- **List existing vaults**:
-  ```bash
-  identity vault list
-  ```
+**Show details of an issuer**:
 
-- **Show details of an issuer**:
-  ```bash
-  identity issuer show -i [issuer-id]
-  ```
+```bash
+identity issuer show -i [issuer-id]
+```
 
-- **Load a different metadata configuration**:
-  ```bash
-  identity metadata load -m [metadata-id]
-  ```
+**Load a different metadata configuration**:
 
-- **View current configuration**:
-  ```bash
-  identity config
-  ```
+```bash
+identity metadata load -m [metadata-id]
+```
 
-- **Verify a badge from a file**:
-  ```bash
-  identity verify -f /path/to/badge.json
-  ```
+**View current configuration**:
+
+```bash
+identity config
+```
+
+**Verify a badge from a file**:
+
+```bash
+identity verify -f /path/to/badge.json
+```
 
 ## Documentation
 
