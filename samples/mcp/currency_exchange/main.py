@@ -58,4 +58,4 @@ app.mount("/", mcp.streamable_http_app())
 ##### Server and Middlewares #####
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="127.0.0.1", port=9080)
+    uvicorn.run(app, host="0.0.0.0", port=9090)
