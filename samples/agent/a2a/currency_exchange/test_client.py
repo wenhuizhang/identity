@@ -90,7 +90,8 @@ async def main() -> None:
     # Connect to the agent
     print(f"Connecting to agent at {AGENT_URL}...")
     try:
-        async with httpx.AsyncClient() as httpx_client:
+        timeout = httpx.Timeout(connect=None, read=None, write=None, pool=None)
+        async with httpx.AsyncClient(timeout=timeout) as httpx_client:
             client = await A2AClient.get_client_from_agent_card_url(
                 httpx_client, AGENT_URL
             )

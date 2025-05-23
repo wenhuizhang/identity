@@ -20,6 +20,8 @@ services:
       context: ./agent/a2a/currency_exchange
       dockerfile: Dockerfile
     restart: always
+    depends_on:
+      - identity-samples-currency-exchange-mcp-server
     ports:
       - "9091:9091"
     extra_hosts:

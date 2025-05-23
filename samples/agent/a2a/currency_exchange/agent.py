@@ -5,48 +5,16 @@
 from collections.abc import AsyncIterable
 from typing import Any, Dict, Literal
 
-import httpx
 from langchain_core.messages import AIMessage, ToolMessage
-from langchain_core.tools import tool
+from langchain_mcp_adapters.tools import load_mcp_tools
 from langchain_ollama import ChatOllama
 from langgraph.checkpoint.memory import MemorySaver
 from langgraph.prebuilt import create_react_agent
+from mcp import ClientSession
+from mcp.client.streamable_http import streamablehttp_client
 from pydantic import BaseModel
 
 memory = MemorySaver()
-
-
-@tool
-def get_exchange_rate(
-    currency_from: str = "USD",
-    currency_to: str = "EUR",
-    currency_date: str = "latest",
-):
-    """Use this to get current exchange rate.
-
-    Args:
-        currency_from: The currency to convert from (e.g., "USD").
-        currency_to: The currency to convert to (e.g., "EUR").
-        currency_date: The date for the exchange rate or "latest". Defaults to "latest".
-
-    Returns:
-        A dictionary containing the exchange rate data, or an error message if the request fails.
-    """
-    try:
-        response = httpx.get(
-            f"https://api.frankfurter.app/{currency_date}",
-            params={"from": currency_from, "to": currency_to},
-        )
-        response.raise_for_status()
-
-        data = response.json()
-        if "rates" not in data:
-            return {"error": "Invalid API response format."}
-        return data
-    except httpx.HTTPError as e:
-        return {"error": f"API request failed: {e}"}
-    except ValueError:
-        return {"error": "Invalid JSON response from API."}
 
 
 # pylint: disable=too-few-public-methods
@@ -76,21 +44,47 @@ class CurrencyAgent:
         self,
         ollama_base_url,
         ollama_model,
+        mcp_server_url,
     ) -> None:
         """Initialize the agent with the Ollama model and tools."""
+        self.ollama_base_url = ollama_base_url
+        self.ollama_model = ollama_model
+        self.mcp_server_url = mcp_server_url
 
+        self.model = None
+        self.tools = None
+        self.graph = None
+
+    async def initModelAndTools(self):
+        # Set up the Ollama model
         self.model = ChatOllama(
-            base_url=ollama_base_url, model=ollama_model, temperature=0.2
+            base_url=self.ollama_base_url, model=self.ollama_model, temperature=0.2
         )
-        self.tools = [get_exchange_rate]
 
-        self.graph = create_react_agent(
-            self.model,
-            tools=self.tools,
-            checkpointer=memory,
-            prompt=self.SYSTEM_INSTRUCTION,
-            response_format=ResponseFormat,
-        )
+        # Load tools from the MCP Server
+        # Connect to a streamable HTTP server
+        async with streamablehttp_client(self.mcp_server_url) as (
+            read_stream,
+            write_stream,
+            _,
+        ):
+            # Create a session using the client streams
+            async with ClientSession(read_stream, write_stream) as session:
+                # Initialize the connection
+                await session.initialize()
+
+                result = await session.list_tools()
+                print(f"List of tools: {result}")
+
+                self.tools = await load_mcp_tools(session)
+
+                self.graph = create_react_agent(
+                    self.model,
+                    tools=self.tools,
+                    checkpointer=memory,
+                    prompt=self.SYSTEM_INSTRUCTION,
+                    response_format=ResponseFormat,
+                )
 
     def invoke(self, query, session_id) -> str:
         """Invoke the agent with a query and session ID."""
