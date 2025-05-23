@@ -13,7 +13,7 @@ import (
 
 	internalIssuerConstants "github.com/agntcy/identity/internal/issuer/constants"
 	issuerFilesystemRepository "github.com/agntcy/identity/internal/issuer/issuer/data/filesystem"
-	internalIssuerTypes "github.com/agntcy/identity/internal/issuer/types"
+	"github.com/agntcy/identity/internal/issuer/metadata/types"
 )
 
 type metadataFilesystemRepository struct{}
@@ -50,7 +50,7 @@ func GetMetadataFilePath(vaultId, issuerId, metadataId string) (string, error) {
 }
 
 func (r *metadataFilesystemRepository) AddMetadata(
-	vaultId, issuerId string, metadata *internalIssuerTypes.Metadata,
+	vaultId, issuerId string, metadata *types.Metadata,
 ) (string, error) {
 	metadataDir, err := getMetadataDirectory(vaultId, issuerId)
 	if err != nil {
@@ -62,7 +62,7 @@ func (r *metadataFilesystemRepository) AddMetadata(
 	}
 
 	// Create metadata ID directory
-	metadataIdDir, err := GetMetadataIdDirectory(vaultId, issuerId, metadata.Id)
+	metadataIdDir, err := GetMetadataIdDirectory(vaultId, issuerId, metadata.ID)
 	if err != nil {
 		return "", err
 	}
@@ -72,7 +72,7 @@ func (r *metadataFilesystemRepository) AddMetadata(
 	}
 
 	// Save metadata to file
-	metadataFilePath, err := GetMetadataFilePath(vaultId, issuerId, metadata.Id)
+	metadataFilePath, err := GetMetadataFilePath(vaultId, issuerId, metadata.ID)
 	if err != nil {
 		return "", err
 	}
@@ -87,12 +87,12 @@ func (r *metadataFilesystemRepository) AddMetadata(
 		return "", err
 	}
 
-	return metadata.Id, nil
+	return metadata.ID, nil
 }
 
 func (r *metadataFilesystemRepository) GetAllMetadata(
 	vaultId, issuerId string,
-) ([]*internalIssuerTypes.Metadata, error) {
+) ([]*types.Metadata, error) {
 	// Get the metadata directory
 	metadataDir, err := getMetadataDirectory(vaultId, issuerId)
 	if err != nil {
@@ -106,7 +106,7 @@ func (r *metadataFilesystemRepository) GetAllMetadata(
 	}
 
 	// List the metadata IDs
-	var allMetadata []*internalIssuerTypes.Metadata
+	var allMetadata []*types.Metadata
 
 	for _, file := range files {
 		if file.IsDir() {
@@ -125,7 +125,7 @@ func (r *metadataFilesystemRepository) GetAllMetadata(
 
 func (r *metadataFilesystemRepository) GetMetadata(
 	vaultId, issuerId, metadataId string,
-) (*internalIssuerTypes.Metadata, error) {
+) (*types.Metadata, error) {
 	// Get the metadata file path
 	metadataFilePath, err := GetMetadataFilePath(vaultId, issuerId, metadataId)
 	if err != nil {
@@ -139,7 +139,7 @@ func (r *metadataFilesystemRepository) GetMetadata(
 	}
 
 	// Unmarshal the metadata data
-	var metadata internalIssuerTypes.Metadata
+	var metadata types.Metadata
 	if err := json.Unmarshal(metadataData, &metadata); err != nil {
 		return nil, err
 	}

@@ -34,7 +34,12 @@ var (
 
 	// setup the metadata service
 	metadataFilesystemRepository = mfr.NewMetadataFilesystemRepository()
-	metadataService              = msvc.NewMetadataService(metadataFilesystemRepository, issuerFilesystemRepository)
+	metadataService              = msvc.NewMetadataService(
+		metadataFilesystemRepository,
+		issuerFilesystemRepository,
+		oidcAuth,
+		nodeClientPrv,
+	)
 
 	// setup the badge service
 	badgeFilesystemRepository = bfr.NewBadgeFilesystemRepository()
@@ -97,7 +102,7 @@ var ConfigurationCmd = &cobra.Command{
 				fmt.Fprintf(os.Stderr, "No metadata found with ID: %s\n", cache.MetadataId)
 				return
 			}
-			fmt.Fprintf(os.Stdout, "- Metadata: %s\n", metadata.Id)
+			fmt.Fprintf(os.Stdout, "- Metadata: %s\n", metadata.ID)
 
 		}
 

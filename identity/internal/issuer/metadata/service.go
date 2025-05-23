@@ -4,62 +4,86 @@
 package metadata
 
 import (
-	coreV1alpha "github.com/agntcy/identity/api/agntcy/identity/core/v1alpha1"
+	"context"
+
+	vctypes "github.com/agntcy/identity/internal/core/vc/types"
 	issuerData "github.com/agntcy/identity/internal/issuer/issuer/data"
 	"github.com/agntcy/identity/internal/issuer/metadata/data"
-	internalIssuerTypes "github.com/agntcy/identity/internal/issuer/types"
-	"github.com/google/uuid"
+	"github.com/agntcy/identity/internal/issuer/metadata/types"
+	idptypes "github.com/agntcy/identity/internal/issuer/types"
+	"github.com/agntcy/identity/internal/pkg/nodeapi"
+	"github.com/agntcy/identity/internal/pkg/oidc"
 )
 
 type MetadataService interface {
 	GenerateMetadata(
-		vaultId, issuerId string, idpConfig *internalIssuerTypes.IdpConfig,
+		ctx context.Context,
+		vaultId, issuerId string,
+		idpConfig *idptypes.IdpConfig,
 	) (string, error)
-	GetAllMetadata(vaultId, issuerId string) ([]*internalIssuerTypes.Metadata, error)
-	GetMetadata(vaultId, issuerId, metadataId string) (*internalIssuerTypes.Metadata, error)
+	GetAllMetadata(vaultId, issuerId string) ([]*types.Metadata, error)
+	GetMetadata(vaultId, issuerId, metadataId string) (*types.Metadata, error)
 	ForgetMetadata(vaultId, issuerId, metadataId string) error
 }
 
 type metadataService struct {
 	metadataRepository data.MetadataRepository
 	issuerRepository   issuerData.IssuerRepository
+	auth               oidc.Authenticator
+	nodeClientPrv      nodeapi.ClientProvider
 }
 
 func NewMetadataService(
 	metadataRepository data.MetadataRepository,
 	issuerRepository issuerData.IssuerRepository,
+	auth oidc.Authenticator,
+	nodeClientPrv nodeapi.ClientProvider,
 ) MetadataService {
 	return &metadataService{
 		metadataRepository: metadataRepository,
 		issuerRepository:   issuerRepository,
+		auth:               auth,
+		nodeClientPrv:      nodeClientPrv,
 	}
 }
 
 func (s *metadataService) GenerateMetadata(
-	vaultId, issuerId string, idpConfig *internalIssuerTypes.IdpConfig,
+	ctx context.Context,
+	vaultId, issuerId string,
+	idpConfig *idptypes.IdpConfig,
 ) (string, error) {
-	// load the issuer
-	_, err := s.issuerRepository.GetIssuer(vaultId, issuerId)
+	issuer, err := s.issuerRepository.GetIssuer(vaultId, issuerId)
 	if err != nil {
 		return "", err
 	}
 
-	_ = coreV1alpha.Proof{
-		Type:         func() *string { s := "RsaSignature2018"; return &s }(),
-		ProofPurpose: func() *string { s := "assertionMethod"; return &s }(),
-		ProofValue:   func() *string { s := "example-proof-value"; return &s }(),
+	token, err := s.auth.Token(
+		ctx,
+		issuer.IdpConfig.IssuerUrl,
+		issuer.IdpConfig.ClientId,
+		issuer.IdpConfig.ClientSecret,
+	)
+	if err != nil {
+		return "", err
 	}
 
-	resolverMetadata := coreV1alpha.ResolverMetadata{
-		Id:                 func() *string { s := uuid.New().String(); return &s }(),
-		VerificationMethod: nil,
-		Service:            nil,
-		AssertionMethod:    nil,
+	proof := vctypes.Proof{
+		Type:       "JWT",
+		ProofValue: token,
 	}
 
-	metadata := internalIssuerTypes.Metadata{
-		Id:               uuid.New().String(),
-		ResolverMetadata: &resolverMetadata,
+	client, err := s.nodeClientPrv.New(issuer.IdentityNodeURL)
+	if err != nil {
+		return "", err
+	}
+
+	md, err := client.GenerateID(ctx, &issuer.Issuer, &proof)
+	if err != nil {
+		return "", err
+	}
+
+	metadata := types.Metadata{
+		ResolverMetadata: *md,
 		IdpConfig:        idpConfig,
 	}
 
@@ -71,7 +95,7 @@ func (s *metadataService) GenerateMetadata(
 	return metadataId, nil
 }
 
-func (s *metadataService) GetAllMetadata(vaultId, issuerId string) ([]*internalIssuerTypes.Metadata, error) {
+func (s *metadataService) GetAllMetadata(vaultId, issuerId string) ([]*types.Metadata, error) {
 	metadata, err := s.metadataRepository.GetAllMetadata(vaultId, issuerId)
 	if err != nil {
 		return nil, err
@@ -80,7 +104,7 @@ func (s *metadataService) GetAllMetadata(vaultId, issuerId string) ([]*internalI
 	return metadata, nil
 }
 
-func (s *metadataService) GetMetadata(vaultId, issuerId, metadataId string) (*internalIssuerTypes.Metadata, error) {
+func (s *metadataService) GetMetadata(vaultId, issuerId, metadataId string) (*types.Metadata, error) {
 	metadata, err := s.metadataRepository.GetMetadata(vaultId, issuerId, metadataId)
 	if err != nil {
 		return nil, err

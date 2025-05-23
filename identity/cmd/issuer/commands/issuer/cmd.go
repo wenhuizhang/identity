@@ -39,7 +39,7 @@ var (
 	issuerService              = issuer.NewIssuerService(issuerFilesystemRepository, oidcAuth, nodeClientPrv)
 
 	// setup the command flags
-	registerCmdIn  *RegisterCmdInput = &RegisterCmdInput{}
+	registerCmdIn  = &RegisterCmdInput{}
 	showIssuerId   string
 	forgetIssuerId string
 	loadIssuerId   string

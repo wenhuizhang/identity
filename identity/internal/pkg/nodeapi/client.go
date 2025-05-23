@@ -5,15 +5,17 @@ package nodeapi
 
 import (
 	"context"
+	"errors"
 	"net/url"
 
+	idtypes "github.com/agntcy/identity/internal/core/id/types"
 	issuertypes "github.com/agntcy/identity/internal/core/issuer/types"
 	vctypes "github.com/agntcy/identity/internal/core/vc/types"
 	"github.com/agntcy/identity/internal/pkg/converters"
 	idsdk "github.com/agntcy/identity/sdk/node-go/client/id_service"
 	issuersdk "github.com/agntcy/identity/sdk/node-go/client/issuer_service"
 	vcsdk "github.com/agntcy/identity/sdk/node-go/client/vc_service"
-	"github.com/agntcy/identity/sdk/node-go/models"
+	apimodels "github.com/agntcy/identity/sdk/node-go/models"
 	httptransport "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
 )
@@ -33,7 +35,16 @@ func (clientProvider) New(host string) (NodeClient, error) {
 }
 
 type NodeClient interface {
-	RegisterIssuer(ctx context.Context, issuer *issuertypes.Issuer, proof *vctypes.Proof) error
+	RegisterIssuer(
+		ctx context.Context,
+		issuer *issuertypes.Issuer,
+		proof *vctypes.Proof,
+	) error
+	GenerateID(
+		ctx context.Context,
+		issuer *issuertypes.Issuer,
+		proof *vctypes.Proof,
+	) (*idtypes.ResolverMetadata, error)
 }
 
 type nodeClient struct {
@@ -57,14 +68,14 @@ func NewNodeClient(host string) (NodeClient, error) {
 
 func (c *nodeClient) RegisterIssuer(ctx context.Context, issuer *issuertypes.Issuer, proof *vctypes.Proof) error {
 	_, err := c.issuer.RegisterIssuer(&issuersdk.RegisterIssuerParams{
-		Body: &models.V1alpha1RegisterIssuerRequest{
-			Issuer: &models.V1alpha1Issuer{
+		Body: &apimodels.V1alpha1RegisterIssuerRequest{
+			Issuer: &apimodels.V1alpha1Issuer{
 				CommonName:      issuer.CommonName,
 				Organization:    issuer.Organization,
 				SubOrganization: issuer.SubOrganization,
-				PublicKey:       converters.Convert[models.V1alpha1Jwk](issuer.PublicKey.PublicKey()),
+				PublicKey:       converters.Convert[apimodels.V1alpha1Jwk](issuer.PublicKey.PublicKey()),
 			},
-			Proof: &models.V1alpha1Proof{
+			Proof: &apimodels.V1alpha1Proof{
 				Type:       proof.Type,
 				ProofValue: proof.ProofValue,
 			},
@@ -75,4 +86,56 @@ func (c *nodeClient) RegisterIssuer(ctx context.Context, issuer *issuertypes.Iss
 	}
 
 	return nil
+}
+
+func (c *nodeClient) GenerateID(
+	ctx context.Context,
+	issuer *issuertypes.Issuer,
+	proof *vctypes.Proof,
+) (*idtypes.ResolverMetadata, error) {
+	resp, err := c.id.GenerateID(&idsdk.GenerateIDParams{
+		Body: &apimodels.V1alpha1GenerateRequest{
+			Issuer: &apimodels.V1alpha1Issuer{
+				CommonName:      issuer.CommonName,
+				Organization:    issuer.Organization,
+				SubOrganization: issuer.SubOrganization,
+				PublicKey:       converters.Convert[apimodels.V1alpha1Jwk](issuer.PublicKey.PublicKey()),
+			},
+			Proof: &apimodels.V1alpha1Proof{
+				Type:       proof.Type,
+				ProofValue: proof.ProofValue,
+			},
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	if resp == nil || resp.Payload == nil || resp.Payload.ResolverMetadata == nil {
+		return nil, errors.New("empty response payload")
+	}
+
+	md := resp.Payload.ResolverMetadata
+
+	return &idtypes.ResolverMetadata{
+		ID: md.ID,
+		VerificationMethod: converters.ConvertSliceCallback(
+			md.VerificationMethod,
+			func(vm *apimodels.V1alpha1VerificationMethod) *idtypes.VerificationMethod {
+				return &idtypes.VerificationMethod{
+					ID:           vm.ID,
+					PublicKeyJwk: converters.Convert[idtypes.Jwk](vm.PublicKeyJwk),
+				}
+			},
+		),
+		Service: converters.ConvertSliceCallback(
+			md.Service,
+			func(s *apimodels.V1alpha1Service) *idtypes.Service {
+				return &idtypes.Service{
+					ServiceEndpoint: s.ServiceEndpoint,
+				}
+			},
+		),
+		AssertionMethod: md.AssertionMethod,
+	}, nil
 }
