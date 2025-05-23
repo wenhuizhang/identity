@@ -100,26 +100,31 @@ identity badge publish
 ### Managing Existing Components
 
 **List existing vaults**:
+
 ```bash
 identity vault list
 ```
 
 **Show details of an issuer**:
+
 ```bash
 identity issuer show -i [issuer-id]
 ```
 
 **Load a different metadata configuration**:
+
 ```bash
 identity metadata load -m [metadata-id]
 ```
 
 **View current configuration**:
+
 ```bash
 identity config
 ```
 
 **Verify a badge from a file**:
+
 ```bash
 identity verify -f /path/to/badge.json
 ```
