@@ -9,6 +9,7 @@ import (
 	"os"
 
 	cliCache "github.com/agntcy/identity/cmd/issuer/cache"
+	"github.com/agntcy/identity/cmd/issuer/commands/badge/issue"
 	badge "github.com/agntcy/identity/internal/issuer/badge"
 	"github.com/agntcy/identity/internal/issuer/badge/data/filesystem"
 	"github.com/spf13/cobra"
@@ -20,7 +21,6 @@ var (
 	badgeService              = badge.NewBadgeService(badgeFilesystemRepository)
 
 	// setup the command flags
-	issueFilePath  string
 	publishBadgeId string
 	showBadgeId    string
 	forgetBadgeId  string
@@ -31,80 +31,18 @@ var BadgeCmd = &cobra.Command{
 	Use:   "badge",
 	Short: "Issue and publish badges for your Agent and MCP Server identities",
 	Long: `
-The badge command is used to issue and publish badges for your Agent and MCP Server identities. With it you can:
-
-- (issue) Issue a new badge for the issuer and metadata
-- (publish) Publish the chosen badge
-- (list) List your existing badges for the current issuer and metadata
-- (show) Show details of the chosen badge
-- (forget) Forget a specific badge
+The badge command is used to issue and publish badges for your Agent and MCP Server identities.
 `,
 }
 
-//nolint:lll // Allow long lines for CLI
 var badgeIssueCmd = &cobra.Command{
 	Use:   "issue",
-	Short: "Issue a new badge for the current metadata",
-	Run: func(cmd *cobra.Command, args []string) {
-
-		// load the cache to get the vault, issuer and metadata ids
-		cache, err := cliCache.LoadCache()
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error loading local configuration: %v\n", err)
-			return
-		}
-		if cache == nil || cache.VaultId == "" {
-			fmt.Fprintf(
-				os.Stderr,
-				"No vault found in the local configuration. Please load an existing vault or connect to a new vault first.\n")
-			return
-		}
-		if cache.IssuerId == "" {
-			fmt.Fprintf(
-				os.Stderr,
-				"No issuer found in the local configuration. Please load an existing issuer or register a new issuer first.\n")
-			return
-		}
-		if cache.MetadataId == "" {
-			fmt.Fprintf(
-				os.Stderr,
-				"No metadata found in the local configuration. Please load an existing metadata or generate a new metadata first.\n")
-			return
-		}
-
-		// if the file path is not set, prompt the user for it interactively
-		if issueFilePath == "" {
-			fmt.Fprintf(os.Stderr, "Full file path to the data you want to sign in the badge: \n")
-			_, err := fmt.Scanln(&issueFilePath)
-			if err != nil {
-				fmt.Fprintf(os.Stderr, "Error reading file path: %v\n", err)
-				return
-			}
-		}
-		if issueFilePath == "" {
-			fmt.Fprintf(os.Stderr, "No file path provided\n")
-			return
-		}
-
-		badgeId, err := badgeService.IssueBadge(cache.VaultId, cache.IssuerId, cache.MetadataId, issueFilePath)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error issuing badge: %v\n", err)
-			return
-		}
-
-		fmt.Fprintf(os.Stdout, "Issued badge with ID: %s\n", badgeId)
-
-		// Save the badge ID to the cache
-		cache.BadgeId = badgeId
-		err = cliCache.SaveCache(cache)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error saving local configuration: %v\n", err)
-			return
-		}
-	},
+	Short: "Issue badges using different data sources",
+	Long: `
+The issue command is used to create Badges for your Agent and MCP Server identities from various data sources.
+`,
 }
 
-//nolint:lll // Allow long lines for CLI
 var badgePublishCmd = &cobra.Command{
 	Use:   "publish",
 	Short: "Publish the chosen badge",
@@ -116,22 +54,9 @@ var badgePublishCmd = &cobra.Command{
 			fmt.Fprintf(os.Stderr, "Error loading local configuration: %v\n", err)
 			return
 		}
-		if cache == nil || cache.VaultId == "" {
-			fmt.Fprintf(
-				os.Stderr,
-				"No vault found in the local configuration. Please load an existing vault or connect to a new vault first.\n")
-			return
-		}
-		if cache.IssuerId == "" {
-			fmt.Fprintf(
-				os.Stderr,
-				"No issuer found in the local configuration. Please load an existing issuer or register a new issuer first.\n")
-			return
-		}
-		if cache.MetadataId == "" {
-			fmt.Fprintf(
-				os.Stderr,
-				"No metadata found in the local configuration. Please load an existing metadata or generate a new metadata first.\n")
+		err = cache.ValidateForBadge()
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error validating local configuration: %v\n", err)
 			return
 		}
 
@@ -185,7 +110,6 @@ var badgePublishCmd = &cobra.Command{
 	},
 }
 
-//nolint:lll // Allow long lines for CLI
 var badgeListCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List your existing badges for the current metadata",
@@ -197,22 +121,9 @@ var badgeListCmd = &cobra.Command{
 			fmt.Fprintf(os.Stderr, "Error loading local configuration: %v\n", err)
 			return
 		}
-		if cache == nil || cache.VaultId == "" {
-			fmt.Fprintf(
-				os.Stderr,
-				"No vault found in the local configuration. Please load an existing vault or connect to a new vault first.\n")
-			return
-		}
-		if cache.IssuerId == "" {
-			fmt.Fprintf(
-				os.Stderr,
-				"No issuer found in the local configuration. Please load an existing issuer or register a new issuer first.\n")
-			return
-		}
-		if cache.MetadataId == "" {
-			fmt.Fprintf(
-				os.Stderr,
-				"No metadata found in the local configuration. Please load an existing metadata or generate a new metadata first.\n")
+		err = cache.ValidateForBadge()
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error validating local configuration: %v\n", err)
 			return
 		}
 
@@ -232,7 +143,6 @@ var badgeListCmd = &cobra.Command{
 	},
 }
 
-//nolint:lll // Allow long lines for CLI
 var badgeShowCmd = &cobra.Command{
 	Use:   "show",
 	Short: "Show details of the chosen badge",
@@ -244,22 +154,9 @@ var badgeShowCmd = &cobra.Command{
 			fmt.Fprintf(os.Stderr, "Error loading local configuration: %v\n", err)
 			return
 		}
-		if cache == nil || cache.VaultId == "" {
-			fmt.Fprintf(
-				os.Stderr,
-				"No vault found in the local configuration. Please load an existing vault or connect to a new vault first.\n")
-			return
-		}
-		if cache.IssuerId == "" {
-			fmt.Fprintf(
-				os.Stderr,
-				"No issuer found in the local configuration. Please load an existing issuer or register a new issuer first.\n")
-			return
-		}
-		if cache.MetadataId == "" {
-			fmt.Fprintf(
-				os.Stderr,
-				"No metadata found in the local configuration. Please load an existing metadata or generate a new metadata first.\n")
+		err = cache.ValidateForBadge()
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error validating local configuration: %v\n", err)
 			return
 		}
 
@@ -291,7 +188,6 @@ var badgeShowCmd = &cobra.Command{
 	},
 }
 
-//nolint:lll // Allow long lines for CLI
 var badgeForgetCmd = &cobra.Command{
 	Use:   "forget",
 	Short: "Forget the chosen badge",
@@ -303,22 +199,9 @@ var badgeForgetCmd = &cobra.Command{
 			fmt.Fprintf(os.Stderr, "Error loading local configuration: %v\n", err)
 			return
 		}
-		if cache == nil || cache.VaultId == "" {
-			fmt.Fprintf(
-				os.Stderr,
-				"No vault found in the local configuration. Please load an existing vault or connect to a new vault first.\n")
-			return
-		}
-		if cache.IssuerId == "" {
-			fmt.Fprintf(
-				os.Stderr,
-				"No issuer found in the local configuration. Please load an existing issuer or register a new issuer first.\n")
-			return
-		}
-		if cache.MetadataId == "" {
-			fmt.Fprintf(
-				os.Stderr,
-				"No metadata found in the local configuration. Please load an existing metadata or generate a new metadata first.\n")
+		err = cache.ValidateForBadge()
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error validating local configuration: %v\n", err)
 			return
 		}
 
@@ -356,7 +239,6 @@ var badgeForgetCmd = &cobra.Command{
 	},
 }
 
-//nolint:lll // Allow long lines for CLI
 var badgeLoadCmd = &cobra.Command{
 	Use:   "load",
 	Short: "Load a badge configuration",
@@ -368,22 +250,9 @@ var badgeLoadCmd = &cobra.Command{
 			fmt.Fprintf(os.Stderr, "Error loading local configuration: %v\n", err)
 			return
 		}
-		if cache == nil || cache.VaultId == "" {
-			fmt.Fprintf(
-				os.Stderr,
-				"No vault found in the local configuration. Please load an existing vault or connect to a new vault first.\n")
-			return
-		}
-		if cache.IssuerId == "" {
-			fmt.Fprintf(
-				os.Stderr,
-				"No issuer found in the local configuration. Please load an existing issuer or register a new issuer first.\n")
-			return
-		}
-		if cache.MetadataId == "" {
-			fmt.Fprintf(
-				os.Stderr,
-				"No metadata found in the local configuration. Please load an existing metadata or generate a new metadata first.\n")
+		err = cache.ValidateForBadge()
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error validating local configuration: %v\n", err)
 			return
 		}
 
@@ -424,9 +293,11 @@ var badgeLoadCmd = &cobra.Command{
 	},
 }
 
-//nolint:lll // Allow long lines for CLI
 func init() {
-	badgeIssueCmd.Flags().StringVarP(&issueFilePath, "file-path", "f", "", "The file path to the data you want to sign in the badge")
+	badgeIssueCmd.AddCommand(issue.IssueFileCmd)
+	badgeIssueCmd.AddCommand(issue.IssueOasfCmd)
+	badgeIssueCmd.AddCommand(issue.IssueMcpServerCmd)
+	badgeIssueCmd.AddCommand(issue.IssueA2AWellKnownCmd)
 	BadgeCmd.AddCommand(badgeIssueCmd)
 
 	badgePublishCmd.Flags().StringVarP(&publishBadgeId, "badge-id", "b", "", "The ID of the badge to publish")

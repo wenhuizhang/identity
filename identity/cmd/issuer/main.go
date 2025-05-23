@@ -23,15 +23,6 @@ var rootCmd = &cobra.Command{
 	Use: "identity",
 	Long: `
 The Identity CLI tool is a command line interface for generating, publishing and verifying identities within the Internet of Agents.
-
-With it you can:
-
-- (vault) Manage your vault and generate cryptographic keys
-- (issuer) Register as an Issuer with an Identity Network
-- (metadata) Generate important metadata for your Agent and MCP Server identities
-- (badge) Issue and publish badges for your Agent and MCP Server identities
-- (verify) Verify the identity of other Agents and MCP Servers via their resolver metadata and badges
-- (config) View the current configuration context of your Identity CLI tool
 `,
 	Run: func(cmd *cobra.Command, args []string) {
 		err := cmd.Help()
