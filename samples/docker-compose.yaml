@@ -1,0 +1,14 @@
+# Copyright 2025 AGNTCY Contributors (https://github.com/agntcy)
+# SPDX-License-Identifier: Apache-2.0
+
+---
+name: identity-samples
+services:
+  identity-samples-currency-exchange-mcp-server:
+    container_name: identity-samples-currency-exchange-mcp-server
+    build:
+      context: ./mcp/currency-exchange
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "9090"
