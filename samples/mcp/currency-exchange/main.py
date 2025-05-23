@@ -6,7 +6,6 @@ import logging
 import httpx
 import uvicorn
 from fastapi import FastAPI
-
 from mcp.server.fastmcp import FastMCP
 
 logging.basicConfig(level=logging.INFO)

@@ -2,15 +2,17 @@
 # SPDX-License-Identifier: Apache-2.0
 
 [project]
-name = "identity-currency-exchange-mcp-sample-server"
-version = "0.0.0"
-description = "Sample Currency Exchange MCP Server"
+name = "identity-currency-exchange-a2a-sample-agent"
+version = "0.0.1"
+description = "Sample LangGraph currency agent with A2A Protocol"
 requires-python = ">=3.12"
 dependencies = [
-    "uvicorn",
-    "fastapi[standard]",
-    "httpx",
-    "mcp",
+    "click>=8.1.8",
+    "httpx>=0.28.1",
+    "langchain-google-genai>=2.0.10",
+    "langgraph>=0.3.18",
+    "pydantic>=2.10.6",
+    "python-dotenv>=1.1.0",
 ]
 
 [tool.hatch.build.targets.wheel]

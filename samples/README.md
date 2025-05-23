@@ -6,8 +6,8 @@
 <p align="center">
   <a href="https://agntcy.org">
     <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="img/_logo-Agntcy_White@2x.png" width="300">
-      <img alt="" src="img/_logo-Agntcy_FullColor@2x.png" width="300">
+      <source media="(prefers-color-scheme: dark)" srcset="../img/_logo-Agntcy_White@2x.png" width="300">
+      <img alt="" src="../img/_logo-Agntcy_FullColor@2x.png" width="300">
     </picture>
   </a>
   <br />
