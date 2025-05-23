@@ -10,8 +10,6 @@ from mcp.server.fastmcp import FastMCP
 
 logging.basicConfig(level=logging.INFO)
 
-##### MCP Tools and Resources #####
-
 mcp = FastMCP("GitHub", stateless_http=True)
 
 
@@ -48,14 +46,8 @@ def get_exchange_rate(
         return {"error": "Invalid JSON response from API."}
 
 
-##### MCP Tools and Resources #####
-
-##### Server and Middlewares #####
-
 app = FastAPI(lifespan=lambda _: mcp.session_manager.run())
 app.mount("/", mcp.streamable_http_app())
-
-##### Server and Middlewares #####
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=9090)

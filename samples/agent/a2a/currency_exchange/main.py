@@ -1,5 +1,6 @@
 # Copyright 2025 Copyright AGNTCY Contributors (https://github.com/agntcy)
 # SPDX-License-Identifier: Apache-2.0
+"""Main entry point for the Currency Agent server."""
 
 import logging
 import sys

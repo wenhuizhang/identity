@@ -52,16 +52,16 @@ To run the samples, follow these steps:
 
 1. Clone the repository:
 
-```bash
-git clone https://github.com/agntcy/identity.git
-```
+   ```bash
+   git clone https://github.com/agntcy/identity.git
+   ```
 
 2. Navigate to the `samples` directory and run the following command
    to start the Docker containers:
 
-```bash
-docker-compose up -d
-```
+   ```bash
+   docker-compose up -d
+   ```
 
 ## Testing the Samples
 

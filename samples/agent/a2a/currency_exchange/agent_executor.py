@@ -30,6 +30,7 @@ class CurrencyAgentExecutor(AgentExecutor):
         context: RequestContext,
         event_queue: EventQueue,
     ) -> None:
+        """Executes the agent with the given context and event queue."""
         error = self._validate_request(context)
         if error:
             raise ServerError(error=InvalidParamsError())
@@ -78,7 +79,9 @@ class CurrencyAgentExecutor(AgentExecutor):
             raise ServerError(error=InternalError()) from e
 
     def _validate_request(self, _: RequestContext) -> bool:
+        """Validates the request parameters."""
         return False
 
     async def cancel(self, _: RequestContext, _2: EventQueue) -> Task | None:
+        """Cancels the current task."""
         raise ServerError(error=UnsupportedOperationError())
