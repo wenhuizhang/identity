@@ -29,13 +29,7 @@ var VaultCmd = &cobra.Command{
 	Use:   "vault",
 	Short: "Manage your vaults and generate cryptographic keys",
 	Long: `
-The vault command is used to configure and manage your vaults. You can use it to:
-
-- (create) Create new vault configurations and generate cryptographic keys
-- (list) List your existing vault configurations
-- (show) Show details of a vault configuration
-- (load) Load a vault configuration
-- (forget) Forget a vault configuration
+The vault command is used to configure and manage your vaults.
 `,
 }
 
@@ -43,8 +37,7 @@ var vaultConnectCmd = &cobra.Command{
 	Use:   "create",
 	Short: "Create a new vault configuration and generate cryptographic keys",
 	Long: `
-The create command is used to create a new vault configuration and generate cryptographic keys. You can use:
-- (file) Create a local file with generated cryptographic keys
+The create command is used to create a new vault configuration and generate cryptographic keys.
 `,
 }
 
@@ -110,7 +103,7 @@ var vaultShowCmd = &cobra.Command{
 
 var vaultForgetCmd = &cobra.Command{
 	Use:   "forget",
-	Short: "Forget an vault configuration",
+	Short: "Forget a vault configuration",
 	Run: func(cmd *cobra.Command, args []string) {
 
 		// if the vault id is not set, prompt the user for it interactively

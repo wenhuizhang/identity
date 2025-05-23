@@ -19,7 +19,6 @@ import (
 var OnePasswordCmd = &cobra.Command{
 	Use:   "1password [service-account-token] [vault-id] [item-id]",
 	Short: "Connect to your 1Password account",
-	Long:  "Connect to your 1Password account",
 	Args:  cobra.ExactArgs(3),
 	Run: func(cmd *cobra.Command, args []string) {
 

@@ -25,7 +25,7 @@ var (
 //nolint:lll // Allow long lines for CLI
 var IssueMcpServerCmd = &cobra.Command{
 	Use:   "mcp",
-	Short: "Issue a new badge for the current metadata based on an MCP server URL",
+	Short: "Issue a badge based on an MCP server URL",
 	Run: func(cmd *cobra.Command, args []string) {
 
 		// setup the badge service

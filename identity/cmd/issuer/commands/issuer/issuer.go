@@ -42,13 +42,7 @@ var IssuerCmd = &cobra.Command{
 	Use:   "issuer",
 	Short: "Register as an Issuer and manage issuer configurations",
 	Long: `
-The issuer command is used to register as an Issuer and manage issuer configurations. You can use it to:
-
-- (register) Register with an identity provider, such as DUO or Okta, to manage your Agent and MCP identities
-- (list) List your existing issuer configurations
-- (show) Show details of an issuer configuration
-- (load) Load an issuer configuration
-- (forget) Forget an issuer configuration
+The issuer command is used to register as an Issuer and manage issuer configurations.
 `,
 }
 
@@ -56,7 +50,6 @@ The issuer command is used to register as an Issuer and manage issuer configurat
 var issuerRegisterCmd = &cobra.Command{
 	Use:   "register",
 	Short: "Register as an Issuer",
-	Long:  "Register with an identity provider, such as DUO or Okta, to manage your Agent and MCP identities",
 	Run: func(cmd *cobra.Command, args []string) {
 
 		// load the cache to get the vault id
@@ -65,8 +58,9 @@ var issuerRegisterCmd = &cobra.Command{
 			fmt.Fprintf(os.Stderr, "Error loading local configuration: %v\n", err)
 			return
 		}
-		if cache == nil || cache.VaultId == "" {
-			fmt.Fprintf(os.Stderr, "No vault found in the local configuration. Please load an existing vault or connect to a new vault first.\n")
+		err = cache.ValidateForIssuer()
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error validating local configuration: %v\n", err)
 			return
 		}
 
@@ -218,7 +212,6 @@ var issuerRegisterCmd = &cobra.Command{
 var issuerListCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List your existing issuer configurations",
-	Long:  "List your existing issuer configurations",
 	Run: func(cmd *cobra.Command, args []string) {
 
 		// load the cache to get the vault id
@@ -227,8 +220,9 @@ var issuerListCmd = &cobra.Command{
 			fmt.Fprintf(os.Stderr, "Error loading local configuration: %v\n", err)
 			return
 		}
-		if cache == nil || cache.VaultId == "" {
-			fmt.Fprintf(os.Stderr, "No vault found in the local configuration. Please load an existing vault or connect to a new vault first.\n")
+		err = cache.ValidateForIssuer()
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error validating local configuration: %v\n", err)
 			return
 		}
 
@@ -310,8 +304,9 @@ var issuerForgetCmd = &cobra.Command{
 			fmt.Fprintf(os.Stderr, "Error loading local configuration: %v\n", err)
 			return
 		}
-		if cache == nil || cache.VaultId == "" {
-			fmt.Fprintf(os.Stderr, "No vault found in the local configuration. Please load an existing vault or connect to a new vault first.\n")
+		err = cache.ValidateForIssuer()
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error validating local configuration: %v\n", err)
 			return
 		}
 
@@ -363,8 +358,9 @@ var issuerLoadCmd = &cobra.Command{
 			fmt.Fprintf(os.Stderr, "Error loading local configuration: %v\n", err)
 			return
 		}
-		if cache == nil || cache.VaultId == "" {
-			fmt.Fprintf(os.Stderr, "No vault found in the local configuration. Please load an existing vault or connect to a new vault first.\n")
+		err = cache.ValidateForIssuer()
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error validating local configuration: %v\n", err)
 			return
 		}
 

@@ -6,7 +6,7 @@ package cache
 import "fmt"
 
 func (c *Cache) ValidateVaultId() error {
-	if c.VaultId == "" {
+	if c == nil || c.VaultId == "" {
 		return fmt.Errorf("no vault found in the local configuration. Please load an existing vault or connect to a new vault first")
 	}
 	return nil

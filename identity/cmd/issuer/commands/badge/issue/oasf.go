@@ -21,7 +21,7 @@ var (
 //nolint:lll // Allow long lines for CLI
 var IssueOasfCmd = &cobra.Command{
 	Use:   "oasf",
-	Short: "Issue a new badge for the current metadata based on a local OASF",
+	Short: "Issue a badge based on a local OASF file",
 	Run: func(cmd *cobra.Command, args []string) {
 
 		// setup the badge service

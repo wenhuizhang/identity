@@ -21,7 +21,7 @@ var (
 //nolint:lll // Allow long lines for CLI
 var IssueA2AWellKnownCmd = &cobra.Command{
 	Use:   "a2a",
-	Short: "Issue a new badge for the current metadata based on the well-known URL of an A2A agent",
+	Short: "Issue a badge based on a local file",
 	Run: func(cmd *cobra.Command, args []string) {
 
 		// setup the badge service

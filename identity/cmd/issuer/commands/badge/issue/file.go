@@ -21,7 +21,7 @@ var (
 //nolint:lll // Allow long lines for CLI
 var IssueFileCmd = &cobra.Command{
 	Use:   "file",
-	Short: "Issue a new badge for the current metadata based on a local file",
+	Short: "Issue a badge based on a local file",
 	Run: func(cmd *cobra.Command, args []string) {
 
 		// setup the badge service

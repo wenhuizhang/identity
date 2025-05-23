@@ -26,7 +26,6 @@ var (
 var TxtCmd = &cobra.Command{
 	Use:   "file",
 	Short: "Create a local file with generated cryptographic keys",
-	Long:  "Create a local file with generated cryptographic keys",
 	Run: func(cmd *cobra.Command, args []string) {
 
 		// if the file path is not set, prompt the user for it interactively

@@ -36,13 +36,7 @@ var MetadataCmd = &cobra.Command{
 	Use:   "metadata",
 	Short: "Generate important metadata for your Agent and MCP Server identities",
 	Long: `
-The metadata command is used to generate important metadata for your Agent and MCP Server identities. With it you can:
-
-- (generate) Generate new metadata
-- (list) List all of the existing metadata for the issuer
-- (show) Show details of a specific metadata
-- (load) Load a metadata configuration
-- (forget) Forget a specific metadata
+The metadata command is used to generate important metadata for your Agent and MCP Server identities.
 `,
 }
 
@@ -58,12 +52,9 @@ var metadataGenerateCmd = &cobra.Command{
 			fmt.Fprintf(os.Stderr, "Error loading local configuration: %v\n", err)
 			return
 		}
-		if cache == nil || cache.VaultId == "" {
-			fmt.Fprintf(os.Stderr, "No vault found in the local configuration. Please load an existing vault or connect to a new vault first.\n")
-			return
-		}
-		if cache.IssuerId == "" {
-			fmt.Fprintf(os.Stderr, "No issuer found in the local configuration. Please load an existing issuer or register a new issuer first.\n")
+		err = cache.ValidateForMetadata()
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error validating local configuration: %v\n", err)
 			return
 		}
 
@@ -145,12 +136,9 @@ var metadataListCmd = &cobra.Command{
 			fmt.Fprintf(os.Stderr, "Error loading local configuration: %v\n", err)
 			return
 		}
-		if cache == nil || cache.VaultId == "" {
-			fmt.Fprintf(os.Stderr, "No vault found in the local configuration. Please load an existing vault or connect to a new vault first.\n")
-			return
-		}
-		if cache.IssuerId == "" {
-			fmt.Fprintf(os.Stderr, "No issuer found in the local configuration. Please load an existing issuer or register a new issuer first.\n")
+		err = cache.ValidateForMetadata()
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error validating local configuration: %v\n", err)
 			return
 		}
 
@@ -182,12 +170,9 @@ var metadataShowCmd = &cobra.Command{
 			fmt.Fprintf(os.Stderr, "Error loading local configuration: %v\n", err)
 			return
 		}
-		if cache == nil || cache.VaultId == "" {
-			fmt.Fprintf(os.Stderr, "No vault found in the local configuration. Please load an existing vault or connect to a new vault first.\n")
-			return
-		}
-		if cache.IssuerId == "" {
-			fmt.Fprintf(os.Stderr, "No issuer found in the local configuration. Please load an existing issuer or register a new issuer first.\n")
+		err = cache.ValidateForMetadata()
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error validating local configuration: %v\n", err)
 			return
 		}
 
@@ -231,12 +216,9 @@ var metadataForgetCmd = &cobra.Command{
 			fmt.Fprintf(os.Stderr, "Error loading local configuration: %v\n", err)
 			return
 		}
-		if cache == nil || cache.VaultId == "" {
-			fmt.Fprintf(os.Stderr, "No vault found in the local configuration. Please load an existing vault or connect to a new vault first.\n")
-			return
-		}
-		if cache.IssuerId == "" {
-			fmt.Fprintf(os.Stderr, "No issuer found in the local configuration. Please load an existing issuer or register a new issuer first.\n")
+		err = cache.ValidateForMetadata()
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error validating local configuration: %v\n", err)
 			return
 		}
 
@@ -288,12 +270,9 @@ var metadataLoadCmd = &cobra.Command{
 			fmt.Fprintf(os.Stderr, "Error loading local configuration: %v\n", err)
 			return
 		}
-		if cache == nil || cache.VaultId == "" {
-			fmt.Fprintf(os.Stderr, "No vault found in the local configuration. Please load an existing vault or connect to a new vault first.\n")
-			return
-		}
-		if cache.IssuerId == "" {
-			fmt.Fprintf(os.Stderr, "No issuer found in the local configuration. Please load an existing issuer or register a new issuer first.\n")
+		err = cache.ValidateForMetadata()
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error validating local configuration: %v\n", err)
 			return
 		}
 
