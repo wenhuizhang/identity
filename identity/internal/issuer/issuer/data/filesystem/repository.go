@@ -11,7 +11,7 @@ import (
 
 	internalIssuerConstants "github.com/agntcy/identity/internal/issuer/constants"
 	"github.com/agntcy/identity/internal/issuer/issuer/data"
-	internalIssuerTypes "github.com/agntcy/identity/internal/issuer/types"
+	"github.com/agntcy/identity/internal/issuer/issuer/types"
 	vaultFilesystemRepository "github.com/agntcy/identity/internal/issuer/vault/data/filesystem"
 )
 
@@ -52,10 +52,10 @@ func GetIssuerFilePath(vaultId, issuerId string) (string, error) {
 }
 
 func (r *issuerFilesystemRepository) AddIssuer(
-	vaultId string, issuer *internalIssuerTypes.Issuer,
+	vaultId string, issuer *types.Issuer,
 ) (string, error) {
 	// Create idp locally in the issuer directory
-	issuersDir, err := GetIssuerIdDirectory(vaultId, issuer.Id)
+	issuersDir, err := GetIssuerIdDirectory(vaultId, issuer.ID)
 	if err != nil {
 		return "", err
 	}
@@ -64,7 +64,7 @@ func (r *issuerFilesystemRepository) AddIssuer(
 		return "", err
 	}
 
-	issuerFilePath, err := GetIssuerFilePath(vaultId, issuer.Id)
+	issuerFilePath, err := GetIssuerFilePath(vaultId, issuer.ID)
 	if err != nil {
 		return "", err
 	}
@@ -80,10 +80,10 @@ func (r *issuerFilesystemRepository) AddIssuer(
 		return "", err
 	}
 
-	return issuer.Id, nil
+	return issuer.ID, nil
 }
 
-func (r *issuerFilesystemRepository) GetAllIssuers(vaultId string) ([]*internalIssuerTypes.Issuer, error) {
+func (r *issuerFilesystemRepository) GetAllIssuers(vaultId string) ([]*types.Issuer, error) {
 	// Get the issuers directory
 	issuersDir, err := getIssuersDirectory(vaultId)
 	if err != nil {
@@ -97,7 +97,7 @@ func (r *issuerFilesystemRepository) GetAllIssuers(vaultId string) ([]*internalI
 	}
 
 	// List the issuer IDs
-	var issuers []*internalIssuerTypes.Issuer
+	var issuers []*types.Issuer
 
 	for _, file := range files {
 		if file.IsDir() {
@@ -113,7 +113,7 @@ func (r *issuerFilesystemRepository) GetAllIssuers(vaultId string) ([]*internalI
 	return issuers, nil
 }
 
-func (r *issuerFilesystemRepository) GetIssuer(vaultId, issuerId string) (*internalIssuerTypes.Issuer, error) {
+func (r *issuerFilesystemRepository) GetIssuer(vaultId, issuerId string) (*types.Issuer, error) {
 	// Get the issuer file path
 	issuerFilePath, err := GetIssuerFilePath(vaultId, issuerId)
 	if err != nil {
@@ -127,7 +127,7 @@ func (r *issuerFilesystemRepository) GetIssuer(vaultId, issuerId string) (*inter
 	}
 
 	// Unmarshal the issuer data
-	var issuer internalIssuerTypes.Issuer
+	var issuer types.Issuer
 	if err := json.Unmarshal(issuerData, &issuer); err != nil {
 		return nil, err
 	}

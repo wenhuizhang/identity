@@ -4,15 +4,30 @@
 package vault
 
 import (
-	internalIssuerTypes "github.com/agntcy/identity/internal/issuer/types"
+	"context"
+	"errors"
+
+	idtypes "github.com/agntcy/identity/internal/core/id/types"
+	"github.com/agntcy/identity/internal/core/keystore"
 	"github.com/agntcy/identity/internal/issuer/vault/data"
+	"github.com/agntcy/identity/internal/issuer/vault/types"
 )
 
 type VaultService interface {
-	ConnectVault(vault *internalIssuerTypes.Vault) (string, error)
-	GetAllVaults() ([]*internalIssuerTypes.Vault, error)
-	GetVault(vaultId string) (*internalIssuerTypes.Vault, error)
+	ConnectVault(vault *types.Vault) (string, error)
+	GetAllVaults() ([]*types.Vault, error)
+	GetVault(vaultId string) (*types.Vault, error)
 	ForgetVault(vaultId string) error
+	RetrievePubKey(
+		ctx context.Context,
+		vaultID string,
+		keyID string,
+	) (*idtypes.Jwk, error)
+	RetrievePrivKey(
+		ctx context.Context,
+		vaultID string,
+		keyID string,
+	) (*idtypes.Jwk, error)
 }
 
 type vaultService struct {
@@ -28,7 +43,7 @@ func NewVaultService(
 }
 
 func (s *vaultService) ConnectVault(
-	vault *internalIssuerTypes.Vault,
+	vault *types.Vault,
 ) (string, error) {
 	vaultId, err := s.vaultRepository.AddVault(vault)
 	if err != nil {
@@ -38,7 +53,7 @@ func (s *vaultService) ConnectVault(
 	return vaultId, nil
 }
 
-func (s *vaultService) GetAllVaults() ([]*internalIssuerTypes.Vault, error) {
+func (s *vaultService) GetAllVaults() ([]*types.Vault, error) {
 	vaults, err := s.vaultRepository.GetAllVaults()
 	if err != nil {
 		return nil, err
@@ -47,7 +62,7 @@ func (s *vaultService) GetAllVaults() ([]*internalIssuerTypes.Vault, error) {
 	return vaults, nil
 }
 
-func (s *vaultService) GetVault(vaultId string) (*internalIssuerTypes.Vault, error) {
+func (s *vaultService) GetVault(vaultId string) (*types.Vault, error) {
 	vault, err := s.vaultRepository.GetVault(vaultId)
 	if err != nil {
 		return nil, err
@@ -63,4 +78,66 @@ func (s *vaultService) ForgetVault(vaultId string) error {
 	}
 
 	return nil
+}
+
+func (s *vaultService) RetrievePubKey(
+	ctx context.Context,
+	vaultID string,
+	keyID string,
+) (*idtypes.Jwk, error) {
+	keySrv, err := s.newKeyService(vaultID)
+	if err != nil {
+		return nil, err
+	}
+
+	key, err := keySrv.RetrievePubKey(ctx, keyID)
+	if err != nil {
+		return nil, err
+	}
+
+	return key, nil
+}
+
+func (s *vaultService) RetrievePrivKey(
+	ctx context.Context,
+	vaultID string,
+	keyID string,
+) (*idtypes.Jwk, error) {
+	keySrv, err := s.newKeyService(vaultID)
+	if err != nil {
+		return nil, err
+	}
+
+	key, err := keySrv.RetrievePrivKey(ctx, keyID)
+	if err != nil {
+		return nil, err
+	}
+
+	return key, nil
+}
+
+func (s *vaultService) newKeyService(vaultID string) (keystore.KeyService, error) {
+	vault, err := s.vaultRepository.GetVault(vaultID)
+	if err != nil {
+		return nil, err
+	}
+
+	switch vault.Type {
+	case types.VaultTypeFile:
+		fv, ok := vault.Config.(*types.VaultFile)
+		if !ok {
+			return nil, errors.New("invalid file vault config")
+		}
+
+		keySrv, err := keystore.NewKeyService(keystore.FileStorage, keystore.FileStorageConfig{
+			FilePath: fv.FilePath,
+		})
+		if err != nil {
+			return nil, err
+		}
+
+		return keySrv, nil
+	default:
+		return nil, errors.New("unsupported vault type")
+	}
 }

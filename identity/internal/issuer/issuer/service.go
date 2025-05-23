@@ -10,28 +10,29 @@ import (
 	issuertypes "github.com/agntcy/identity/internal/core/issuer/types"
 	vctypes "github.com/agntcy/identity/internal/core/vc/types"
 	"github.com/agntcy/identity/internal/issuer/issuer/data"
-	internalIssuerTypes "github.com/agntcy/identity/internal/issuer/types"
+	"github.com/agntcy/identity/internal/issuer/issuer/types"
 	"github.com/agntcy/identity/internal/pkg/converters"
+	"github.com/agntcy/identity/internal/pkg/nodeapi"
 	"github.com/agntcy/identity/internal/pkg/oidc"
 )
 
 type IssuerService interface {
-	RegisterIssuer(ctx context.Context, vaultId string, issuer *internalIssuerTypes.Issuer) (string, error)
-	GetAllIssuers(vaultId string) ([]*internalIssuerTypes.Issuer, error)
-	GetIssuer(vaultId, issuerId string) (*internalIssuerTypes.Issuer, error)
+	RegisterIssuer(ctx context.Context, vaultId string, issuer *types.Issuer) (string, error)
+	GetAllIssuers(vaultId string) ([]*types.Issuer, error)
+	GetIssuer(vaultId, issuerId string) (*types.Issuer, error)
 	ForgetIssuer(vaultId, issuerId string) error
 }
 
 type issuerService struct {
 	issuerRepository data.IssuerRepository
 	auth             oidc.Authenticator
-	nodeClientPrv    data.NodeClientProvider
+	nodeClientPrv    nodeapi.ClientProvider
 }
 
 func NewIssuerService(
 	issuerRepository data.IssuerRepository,
 	auth oidc.Authenticator,
-	nodeClientPrv data.NodeClientProvider,
+	nodeClientPrv nodeapi.ClientProvider,
 ) IssuerService {
 	return &issuerService{
 		issuerRepository: issuerRepository,
@@ -43,14 +44,13 @@ func NewIssuerService(
 func (s *issuerService) RegisterIssuer(
 	ctx context.Context,
 	vaultId string,
-	issuer *internalIssuerTypes.Issuer,
+	issuer *types.Issuer,
 ) (string, error) {
 	// Check connection to identity node
 	// Check connection to idp
 	// Check if idp is already created locally
 	// Check if idp is already registered on the identity node
 	// Register idp on the identity node
-
 	token, err := s.auth.Token(
 		ctx,
 		issuer.IdpConfig.IssuerUrl,
@@ -58,7 +58,7 @@ func (s *issuerService) RegisterIssuer(
 		issuer.IdpConfig.ClientSecret,
 	)
 	if err != nil {
-		return "", err // TODO: return ErrInfo
+		return "", err
 	}
 
 	proof := vctypes.Proof{
@@ -66,9 +66,9 @@ func (s *issuerService) RegisterIssuer(
 		ProofValue: token,
 	}
 
-	log.Default().Printf("Registering issuer with request: %s\n", *issuer.Issuer.CommonName)
+	log.Default().Printf("Registering issuer with request: %s\n", issuer.CommonName)
 
-	client, err := s.nodeClientPrv.New(issuer.IdentityNodeConfig.IdentityNodeAddress)
+	client, err := s.nodeClientPrv.New(issuer.IdentityNodeURL)
 	if err != nil {
 		return "", err
 	}
@@ -86,7 +86,7 @@ func (s *issuerService) RegisterIssuer(
 	return issuerId, nil
 }
 
-func (s *issuerService) GetAllIssuers(vaultId string) ([]*internalIssuerTypes.Issuer, error) {
+func (s *issuerService) GetAllIssuers(vaultId string) ([]*types.Issuer, error) {
 	issuers, err := s.issuerRepository.GetAllIssuers(vaultId)
 	if err != nil {
 		return nil, err
@@ -95,7 +95,7 @@ func (s *issuerService) GetAllIssuers(vaultId string) ([]*internalIssuerTypes.Is
 	return issuers, nil
 }
 
-func (s *issuerService) GetIssuer(vaultId, issuerId string) (*internalIssuerTypes.Issuer, error) {
+func (s *issuerService) GetIssuer(vaultId, issuerId string) (*types.Issuer, error) {
 	issuer, err := s.issuerRepository.GetIssuer(vaultId, issuerId)
 	if err != nil {
 		return nil, err

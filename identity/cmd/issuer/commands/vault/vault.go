@@ -171,6 +171,8 @@ var vaultLoadCmd = &cobra.Command{
 		err = cliCache.SaveCache(
 			&cliCache.Cache{
 				VaultId: vault.Id,
+				//nolint:godox // To be fixed in the next PR
+				// TODO: load the KID
 			},
 		)
 		if err != nil {

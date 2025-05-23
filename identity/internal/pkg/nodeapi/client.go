@@ -1,33 +1,34 @@
 // Copyright 2025 Copyright AGNTCY Contributors (https://github.com/agntcy)
 // SPDX-License-Identifier: Apache-2.0
 
-package data
+package nodeapi
 
 import (
 	"context"
-	"errors"
 	"net/url"
 
 	issuertypes "github.com/agntcy/identity/internal/core/issuer/types"
 	vctypes "github.com/agntcy/identity/internal/core/vc/types"
 	"github.com/agntcy/identity/internal/pkg/converters"
+	idsdk "github.com/agntcy/identity/sdk/node-go/client/id_service"
 	issuersdk "github.com/agntcy/identity/sdk/node-go/client/issuer_service"
+	vcsdk "github.com/agntcy/identity/sdk/node-go/client/vc_service"
 	"github.com/agntcy/identity/sdk/node-go/models"
 	httptransport "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
 )
 
-type NodeClientProvider interface {
+type ClientProvider interface {
 	New(host string) (NodeClient, error)
 }
 
-type nodeClientProvider struct{}
+type clientProvider struct{}
 
-func NewNodeClientProvider() NodeClientProvider {
-	return &nodeClientProvider{}
+func NewNodeClientProvider() ClientProvider {
+	return &clientProvider{}
 }
 
-func (nodeClientProvider) New(host string) (NodeClient, error) {
+func (clientProvider) New(host string) (NodeClient, error) {
 	return NewNodeClient(host)
 }
 
@@ -36,7 +37,9 @@ type NodeClient interface {
 }
 
 type nodeClient struct {
+	id     idsdk.ClientService
 	issuer issuersdk.ClientService
+	vc     vcsdk.ClientService
 }
 
 func NewNodeClient(host string) (NodeClient, error) {
@@ -46,12 +49,14 @@ func NewNodeClient(host string) (NodeClient, error) {
 	}
 
 	return &nodeClient{
+		id:     idsdk.New(httptransport.New(u.Host, "", []string{u.Scheme}), strfmt.Default),
 		issuer: issuersdk.New(httptransport.New(u.Host, "", []string{u.Scheme}), strfmt.Default),
+		vc:     vcsdk.New(httptransport.New(u.Host, "", []string{u.Scheme}), strfmt.Default),
 	}, nil
 }
 
 func (c *nodeClient) RegisterIssuer(ctx context.Context, issuer *issuertypes.Issuer, proof *vctypes.Proof) error {
-	resp, err := c.issuer.RegisterIssuer(&issuersdk.RegisterIssuerParams{
+	_, err := c.issuer.RegisterIssuer(&issuersdk.RegisterIssuerParams{
 		Body: &models.V1alpha1RegisterIssuerRequest{
 			Issuer: &models.V1alpha1Issuer{
 				CommonName:      issuer.CommonName,
@@ -67,10 +72,6 @@ func (c *nodeClient) RegisterIssuer(ctx context.Context, issuer *issuertypes.Iss
 	})
 	if err != nil {
 		return err
-	}
-
-	if resp.Code() > 299 {
-		return errors.New("unsuccessful")
 	}
 
 	return nil
