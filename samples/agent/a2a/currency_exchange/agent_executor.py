@@ -74,13 +74,11 @@ class CurrencyAgentExecutor(AgentExecutor):
                     break
 
         except Exception as e:
-            logger.error(f"An error occurred while streaming the response: {e}")
+            logger.error("An error occurred while streaming the response: %e", e)
             raise ServerError(error=InternalError()) from e
 
-    def _validate_request(self, context: RequestContext) -> bool:
+    def _validate_request(self, _: RequestContext) -> bool:
         return False
 
-    async def cancel(
-        self, request: RequestContext, event_queue: EventQueue
-    ) -> Task | None:
+    async def cancel(self, _: RequestContext, _2: EventQueue) -> Task | None:
         raise ServerError(error=UnsupportedOperationError())

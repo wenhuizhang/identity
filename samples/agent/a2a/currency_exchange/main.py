@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import logging
+import sys
 
 import click
 import httpx
@@ -28,6 +29,8 @@ logger = logging.getLogger(__name__)
 @click.option("--ollama-model", default="llama3.2")
 def main(host, port, ollama_host, ollama_model):
     """Starts the Currency Agent server."""
+
+    # pylint: disable=broad-exception-caught
     try:
         capabilities = AgentCapabilities(streaming=True, pushNotifications=True)
         skill = AgentSkill(
@@ -60,9 +63,10 @@ def main(host, port, ollama_host, ollama_model):
 
         uvicorn.run(server.build(), host=host, port=port)
     except Exception as e:
-        logger.error(f"An error occurred during server startup: {e}")
-        exit(1)
+        logger.error("An error occurred during server startup: %e", e)
+        sys.exit(1)
 
 
 if __name__ == "__main__":
+    # pylint: disable=no-value-for-parameter
     main()

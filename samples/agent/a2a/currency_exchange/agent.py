@@ -56,6 +56,7 @@ class ResponseFormat(BaseModel):
 
 
 class CurrencyAgent:
+    # pylint: disable=line-too-long
     SYSTEM_INSTRUCTION = (
         "You are a specialized assistant for currency conversions. "
         "Your sole purpose is to use the 'get_exchange_rate' tool to answer questions about currency exchange rates. "
@@ -85,14 +86,14 @@ class CurrencyAgent:
             response_format=ResponseFormat,
         )
 
-    def invoke(self, query, sessionId) -> str:
-        config = {"configurable": {"thread_id": sessionId}}
+    def invoke(self, query, session_id) -> str:
+        config = {"configurable": {"thread_id": session_id}}
         self.graph.invoke({"messages": [("user", query)]}, config)
         return self.get_agent_response(config)
 
-    async def stream(self, query, sessionId) -> AsyncIterable[Dict[str, Any]]:
+    async def stream(self, query, session_id) -> AsyncIterable[Dict[str, Any]]:
         inputs = {"messages": [("user", query)]}
-        config = {"configurable": {"thread_id": sessionId}}
+        config = {"configurable": {"thread_id": session_id}}
 
         for item in self.graph.stream(inputs, config, stream_mode="values"):
             message = item["messages"][-1]
@@ -125,13 +126,13 @@ class CurrencyAgent:
                     "require_user_input": True,
                     "content": structured_response.message,
                 }
-            elif structured_response.status == "error":
+            if structured_response.status == "error":
                 return {
                     "is_task_complete": False,
                     "require_user_input": True,
                     "content": structured_response.message,
                 }
-            elif structured_response.status == "completed":
+            if structured_response.status == "completed":
                 return {
                     "is_task_complete": True,
                     "require_user_input": False,
