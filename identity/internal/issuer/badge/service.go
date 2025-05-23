@@ -5,7 +5,6 @@ package node
 
 import (
 	"log"
-	"os"
 
 	"github.com/agntcy/identity/internal/issuer/badge/data"
 	"github.com/google/uuid"
@@ -16,7 +15,7 @@ import (
 )
 
 type BadgeService interface {
-	IssueBadge(vaultId, issuerId, metadataId, badgeValueFilePath string) (string, error)
+	IssueBadge(vaultId, issuerId, metadataId, badgeContent string) (string, error)
 	PublishBadge(
 		vaultId, issuerId, metadataId string, badge *internalIssuerTypes.Badge,
 	) (*internalIssuerTypes.Badge, error)
@@ -37,18 +36,11 @@ func NewBadgeService(
 	}
 }
 
-func (s *badgeService) IssueBadge(vaultId, issuerId, metadataId, badgeValueFilePath string) (string, error) {
-	badgeValueData, err := os.ReadFile(badgeValueFilePath)
-	if err != nil {
-		return "", err
-	}
-
-	// Convert the badge value to a string
-	badgeValue := string(badgeValueData)
+func (s *badgeService) IssueBadge(vaultId, issuerId, metadataId, badgeContent string) (string, error) {
 
 	envelopedCredential := coreV1alpha.EnvelopedCredential{
 		EnvelopeType: coreV1alpha.CredentialEnvelopeType_CREDENTIAL_ENVELOPE_TYPE_JOSE.Enum(),
-		Value:        &badgeValue,
+		Value:        &badgeContent,
 	}
 
 	badge := internalIssuerTypes.Badge{

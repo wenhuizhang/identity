@@ -9,6 +9,7 @@ import (
 	"os"
 
 	cliCache "github.com/agntcy/identity/cmd/issuer/cache"
+	"github.com/agntcy/identity/cmd/issuer/commands/badge/issue"
 	badge "github.com/agntcy/identity/internal/issuer/badge"
 	"github.com/agntcy/identity/internal/issuer/badge/data/filesystem"
 	"github.com/spf13/cobra"
@@ -27,6 +28,7 @@ var (
 	loadBadgeId    string
 )
 
+//nolint:lll // Allow long lines for CLI
 var BadgeCmd = &cobra.Command{
 	Use:   "badge",
 	Short: "Issue and publish badges for your Agent and MCP Server identities",
@@ -44,64 +46,15 @@ The badge command is used to issue and publish badges for your Agent and MCP Ser
 //nolint:lll // Allow long lines for CLI
 var badgeIssueCmd = &cobra.Command{
 	Use:   "issue",
-	Short: "Issue a new badge for the current metadata",
-	Run: func(cmd *cobra.Command, args []string) {
+	Short: "Issue badges using different data sources",
+	Long: `
+Issue badges for your Agent and MCP Server identities using various data sources:
 
-		// load the cache to get the vault, issuer and metadata ids
-		cache, err := cliCache.LoadCache()
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error loading local configuration: %v\n", err)
-			return
-		}
-		if cache == nil || cache.VaultId == "" {
-			fmt.Fprintf(
-				os.Stderr,
-				"No vault found in the local configuration. Please load an existing vault or connect to a new vault first.\n")
-			return
-		}
-		if cache.IssuerId == "" {
-			fmt.Fprintf(
-				os.Stderr,
-				"No issuer found in the local configuration. Please load an existing issuer or register a new issuer first.\n")
-			return
-		}
-		if cache.MetadataId == "" {
-			fmt.Fprintf(
-				os.Stderr,
-				"No metadata found in the local configuration. Please load an existing metadata or generate a new metadata first.\n")
-			return
-		}
-
-		// if the file path is not set, prompt the user for it interactively
-		if issueFilePath == "" {
-			fmt.Fprintf(os.Stderr, "Full file path to the data you want to sign in the badge: \n")
-			_, err := fmt.Scanln(&issueFilePath)
-			if err != nil {
-				fmt.Fprintf(os.Stderr, "Error reading file path: %v\n", err)
-				return
-			}
-		}
-		if issueFilePath == "" {
-			fmt.Fprintf(os.Stderr, "No file path provided\n")
-			return
-		}
-
-		badgeId, err := badgeService.IssueBadge(cache.VaultId, cache.IssuerId, cache.MetadataId, issueFilePath)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error issuing badge: %v\n", err)
-			return
-		}
-
-		fmt.Fprintf(os.Stdout, "Issued badge with ID: %s\n", badgeId)
-
-		// Save the badge ID to the cache
-		cache.BadgeId = badgeId
-		err = cliCache.SaveCache(cache)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error saving local configuration: %v\n", err)
-			return
-		}
-	},
+- (file) Issue a badge based on a local file
+- (oasf) Issue a badge based on a local OASF file
+- (mcp) Issue a badge based on an MCP server URL
+- (a2a) Issue a badge based on an A2A server URL
+`,
 }
 
 //nolint:lll // Allow long lines for CLI
@@ -426,7 +379,11 @@ var badgeLoadCmd = &cobra.Command{
 
 //nolint:lll // Allow long lines for CLI
 func init() {
-	badgeIssueCmd.Flags().StringVarP(&issueFilePath, "file-path", "f", "", "The file path to the data you want to sign in the badge")
+
+	badgeIssueCmd.AddCommand(issue.IssueFileCmd)
+	badgeIssueCmd.AddCommand(issue.IssueOasfCmd)
+	badgeIssueCmd.AddCommand(issue.IssueMcpServerCmd)
+	badgeIssueCmd.AddCommand(issue.IssueA2AWellKnownCmd)
 	BadgeCmd.AddCommand(badgeIssueCmd)
 
 	badgePublishCmd.Flags().StringVarP(&publishBadgeId, "badge-id", "b", "", "The ID of the badge to publish")
