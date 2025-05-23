@@ -11,6 +11,8 @@ import (
 	badge "github.com/agntcy/identity/internal/issuer/badge"
 	"github.com/agntcy/identity/internal/issuer/badge/data/filesystem"
 	"github.com/spf13/cobra"
+
+	a2a "github.com/agntcy/identity/internal/issuer/a2a"
 )
 
 var (
@@ -54,9 +56,11 @@ var IssueA2AWellKnownCmd = &cobra.Command{
 		}
 
 		// Convert the badge value to a string
-		badgeContent := "A2A Agent Well-known URL"
 
-		badgeId, err := badgeService.IssueBadge(cache.VaultId, cache.IssuerId, cache.MetadataId, badgeContent)
+		a2aClient := a2a.NewDiscoveryClient()
+		agentCard, err := a2aClient.Discover(issueA2AWellKnown)
+
+		badgeId, err := badgeService.IssueBadge(cache.VaultId, cache.IssuerId, cache.MetadataId, agentCard)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error issuing badge: %v\n", err)
 			return
