@@ -11,7 +11,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-//nolint:lll // Allow long lines for CLI
 var issuerLoadCmd = &cobra.Command{
 	Use:   "load",
 	Short: "Load an issuer configuration",
@@ -23,8 +22,10 @@ var issuerLoadCmd = &cobra.Command{
 			fmt.Fprintf(os.Stderr, "Error loading local configuration: %v\n", err)
 			return
 		}
-		if cache == nil || cache.VaultId == "" {
-			fmt.Fprintf(os.Stderr, "No vault found in the local configuration. Please load an existing vault or connect to a new vault first.\n")
+
+		err = cache.ValidateForIssuer()
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error validating local configuration: %v\n", err)
 			return
 		}
 

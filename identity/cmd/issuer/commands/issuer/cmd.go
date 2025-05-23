@@ -49,13 +49,7 @@ var IssuerCmd = &cobra.Command{
 	Use:   "issuer",
 	Short: "Register as an Issuer and manage issuer configurations",
 	Long: `
-The issuer command is used to register as an Issuer and manage issuer configurations. You can use it to:
-
-- (register) Register with an identity provider, such as DUO or Okta, to manage your Agent and MCP identities
-- (list) List your existing issuer configurations
-- (show) Show details of an issuer configuration
-- (load) Load an issuer configuration
-- (forget) Forget an issuer configuration
+The issuer command is used to register as an Issuer and manage issuer configurations.
 `,
 }
 
