@@ -71,9 +71,6 @@ var IssueOasfCmd = &cobra.Command{
 			return
 		}
 
-		// Convert the badge value to a string
-		badgeContent := string(badgeContentData)
-
 		prvKey, err := vaultSrv.RetrievePrivKey(cmd.Context(), cache.VaultId, cache.KeyID)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error retreiving public key: %v\n", err)
@@ -86,7 +83,7 @@ var IssueOasfCmd = &cobra.Command{
 			cache.MetadataId,
 			&vctypes.CredentialContent[vctypes.BadgeClaims]{
 				Type:    vctypes.CREDENTIAL_CONTENT_TYPE_AGENT_BADGE,
-				Content: vctypes.BadgeClaims{Badge: badgeContent},
+				Content: vctypes.BadgeClaims{Badge: string(badgeContentData)},
 			},
 			prvKey,
 		)

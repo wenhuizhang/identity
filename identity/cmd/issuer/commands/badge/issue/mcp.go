@@ -16,6 +16,8 @@ import (
 	"github.com/agntcy/identity/internal/issuer/badge/mcp"
 	issfs "github.com/agntcy/identity/internal/issuer/issuer/data/filesystem"
 	mdfs "github.com/agntcy/identity/internal/issuer/metadata/data/filesystem"
+	"github.com/agntcy/identity/internal/issuer/vault"
+	vfs "github.com/agntcy/identity/internal/issuer/vault/data/filesystem"
 	"github.com/agntcy/identity/internal/pkg/nodeapi"
 	"github.com/agntcy/identity/internal/pkg/oidc"
 	"github.com/spf13/cobra"
@@ -39,6 +41,8 @@ var IssueMcpServerCmd = &cobra.Command{
 		oidcAuth := oidc.NewAuthenticator()
 		nodeClientPrv := nodeapi.NewNodeClientProvider()
 		badgeService := badge.NewBadgeService(badgeFilesystemRepository, mdRepository, issuerRepository, oidcAuth, nodeClientPrv)
+		vaultRepository := vfs.NewVaultFilesystemRepository()
+		vaultSrv := vault.NewVaultService(vaultRepository)
 
 		// load the cache to get the vault, issuer and metadata ids
 		cache, err := cliCache.LoadCache()
@@ -100,18 +104,21 @@ var IssueMcpServerCmd = &cobra.Command{
 			return
 		}
 
-		badgeContent := string(mcpServerData)
+		prvKey, err := vaultSrv.RetrievePrivKey(cmd.Context(), cache.VaultId, cache.KeyID)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error retreiving public key: %v\n", err)
+			return
+		}
 
-		// TODO
 		badgeId, err := badgeService.IssueBadge(
 			cache.VaultId,
 			cache.IssuerId,
 			cache.MetadataId,
 			&vctypes.CredentialContent[vctypes.BadgeClaims]{
 				Type:    vctypes.CREDENTIAL_CONTENT_TYPE_AGENT_BADGE,
-				Content: vctypes.BadgeClaims{Badge: badgeContent},
+				Content: vctypes.BadgeClaims{Badge: string(mcpServerData)},
 			},
-			nil,
+			prvKey,
 		)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error issuing badge: %v\n", err)

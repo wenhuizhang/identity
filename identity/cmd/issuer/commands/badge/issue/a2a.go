@@ -14,6 +14,8 @@ import (
 	"github.com/agntcy/identity/internal/issuer/badge/data/filesystem"
 	issfs "github.com/agntcy/identity/internal/issuer/issuer/data/filesystem"
 	mdfs "github.com/agntcy/identity/internal/issuer/metadata/data/filesystem"
+	"github.com/agntcy/identity/internal/issuer/vault"
+	vfs "github.com/agntcy/identity/internal/issuer/vault/data/filesystem"
 	"github.com/agntcy/identity/internal/pkg/nodeapi"
 	"github.com/agntcy/identity/internal/pkg/oidc"
 	"github.com/spf13/cobra"
@@ -38,6 +40,8 @@ var IssueA2AWellKnownCmd = &cobra.Command{
 		oidcAuth := oidc.NewAuthenticator()
 		nodeClientPrv := nodeapi.NewNodeClientProvider()
 		badgeService := badge.NewBadgeService(badgeFilesystemRepository, mdRepository, issuerRepository, oidcAuth, nodeClientPrv)
+		vaultRepository := vfs.NewVaultFilesystemRepository()
+		vaultSrv := vault.NewVaultService(vaultRepository)
 
 		// load the cache to get the vault, issuer and metadata ids
 		cache, err := cliCache.LoadCache()
@@ -74,7 +78,12 @@ var IssueA2AWellKnownCmd = &cobra.Command{
 			return
 		}
 
-		// TODO:
+		prvKey, err := vaultSrv.RetrievePrivKey(cmd.Context(), cache.VaultId, cache.KeyID)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error retreiving public key: %v\n", err)
+			return
+		}
+
 		badgeId, err := badgeService.IssueBadge(
 			cache.VaultId,
 			cache.IssuerId,
@@ -83,7 +92,7 @@ var IssueA2AWellKnownCmd = &cobra.Command{
 				Type:    vctypes.CREDENTIAL_CONTENT_TYPE_AGENT_BADGE,
 				Content: vctypes.BadgeClaims{Badge: agentCard},
 			},
-			nil,
+			prvKey,
 		)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error issuing badge: %v\n", err)
