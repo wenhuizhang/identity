@@ -121,7 +121,6 @@ func (s *badgeService) IssueBadge(
 		EnvelopedCredential: &envelopedCredential,
 	}
 
-	// TODO: show we store the keyID?
 	badgeId, err := s.badgeRepository.AddBadge(vaultId, issuerId, metadataId, &badge)
 	if err != nil {
 		return "", err

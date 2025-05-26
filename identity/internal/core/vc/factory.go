@@ -45,6 +45,7 @@ func WithCredentialContent[T types.CredentialSubject](
 ) VerifiableCredentialOption {
 	return func(vc *types.VerifiableCredential) error {
 		var sub map[string]any
+
 		data, err := json.Marshal(content.Content)
 		if err != nil {
 			return err
@@ -57,6 +58,7 @@ func WithCredentialContent[T types.CredentialSubject](
 
 		vc.Type = append(vc.Type, content.Type.String())
 		vc.CredentialSubject = sub
+
 		return nil
 	}
 }

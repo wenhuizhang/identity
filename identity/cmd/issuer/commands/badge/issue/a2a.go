@@ -39,7 +39,13 @@ var IssueA2AWellKnownCmd = &cobra.Command{
 		mdRepository := mdfs.NewMetadataFilesystemRepository()
 		oidcAuth := oidc.NewAuthenticator()
 		nodeClientPrv := nodeapi.NewNodeClientProvider()
-		badgeService := badge.NewBadgeService(badgeFilesystemRepository, mdRepository, issuerRepository, oidcAuth, nodeClientPrv)
+		badgeService := badge.NewBadgeService(
+			badgeFilesystemRepository,
+			mdRepository,
+			issuerRepository,
+			oidcAuth,
+			nodeClientPrv,
+		)
 		vaultRepository := vfs.NewVaultFilesystemRepository()
 		vaultSrv := vault.NewVaultService(vaultRepository)
 
