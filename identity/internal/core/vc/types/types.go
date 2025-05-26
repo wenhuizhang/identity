@@ -122,7 +122,7 @@ type VerifiableCredential struct {
 	Issuer string `json:"issuer"`
 
 	// https://www.w3.org/TR/vc-data-model/#credential-subject
-	CredentialSubject string `json:"credential_subject"`
+	CredentialSubject map[string]any `json:"credential_subject"`
 
 	// https://www.w3.org/TR/vc-data-model/#identifiers
 	ID string `json:"id,omitempty"`

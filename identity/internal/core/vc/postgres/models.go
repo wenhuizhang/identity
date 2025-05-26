@@ -4,10 +4,12 @@
 package postgres
 
 import (
+	"encoding/json"
 	"time"
 
 	"github.com/agntcy/identity/internal/core/vc/types"
 	"github.com/agntcy/identity/internal/pkg/converters"
+	"github.com/agntcy/identity/pkg/log"
 	"github.com/lib/pq"
 )
 
@@ -17,7 +19,7 @@ type VerifiableCredential struct {
 	Context           pq.StringArray `gorm:"type:text[]"`
 	Type              pq.StringArray `gorm:"type:text[]"`
 	Issuer            string
-	CredentialSubject string
+	CredentialSubject json.RawMessage
 	IssuanceDate      string
 	ExpirationDate    string
 	CredentialSchema  []*CredentialSchema `gorm:"foreignKey:VerifiableCredentialID"`
@@ -25,11 +27,18 @@ type VerifiableCredential struct {
 }
 
 func (vm *VerifiableCredential) ToCoreType() *types.VerifiableCredential {
+	var sub map[string]any
+
+	err := json.Unmarshal(vm.CredentialSubject, &sub)
+	if err != nil {
+		log.Warn(err)
+	}
+
 	return &types.VerifiableCredential{
 		Context:           vm.Context,
 		Type:              vm.Type,
 		Issuer:            vm.Issuer,
-		CredentialSubject: vm.CredentialSubject,
+		CredentialSubject: sub,
 		ID:                vm.ID,
 		IssuanceDate:      vm.IssuanceDate,
 		ExpirationDate:    vm.ExpirationDate,
@@ -57,13 +66,18 @@ func (c *CredentialSchema) ToCoreType() *types.CredentialSchema {
 }
 
 func newVerifiableCredentialModel(src *types.VerifiableCredential) *VerifiableCredential {
+	sub, err := json.Marshal(src.CredentialSubject)
+	if err != nil {
+		log.Warn(err)
+	}
+
 	return &VerifiableCredential{
 		ID:                src.ID,
 		CreatedAt:         time.Now().UTC(),
 		Context:           src.Context,
 		Type:              src.Type,
 		Issuer:            src.Issuer,
-		CredentialSubject: src.CredentialSubject,
+		CredentialSubject: sub,
 		IssuanceDate:      src.IssuanceDate,
 		ExpirationDate:    src.ExpirationDate,
 		CredentialSchema:  converters.ConvertSliceCallback(src.CredentialSchema, newCredentialSchemaModel),
