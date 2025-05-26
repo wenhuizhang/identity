@@ -37,7 +37,7 @@ To run the `Node Backend` the `Issuer CLI`, and the `Samples` locally, you need 
 - [Golang](https://go.dev/doc/install) 1.24 or later
 - [Make](https://www.gnu.org/software/make/)
 - [Ollama](https://ollama.com/download)
-- Python 3.12 or later
+- [Python](https://www.python.org/downloads/) 3.12 or later
 
 ### Step 1: Install the Issuer CLI
 
@@ -75,7 +75,15 @@ make start_node
 
 ### Step 5: Register as an Issuer
 
+> [!NOTE]
+> You can now access the `Issuer's Well-Known Public Key` at [`http://localhost:8080/issuer/{common_name}/.well-known/jwks.json`](http://localhost:8080/issuer/{common_name}/.well-known/jwks.json),
+> where `{common_name}` is the common name you provided during registration.
+
 ### Step 6: Onboard an MCP Server
+
+> [!NOTE]
+> You can now access the `VCs as a Well-Known` at [`http://localhost:8080/vc/{client_id}/.well-known/vcs.json`](http://localhost:8080/vc/{client_id}/.well-known/vcs.json),
+> where `{client_id}` is the client ID you provided during onboarding.
 
 ### Step 7: Verify Credentials
 
@@ -86,7 +94,7 @@ For more detailed development instructions please refer to the following section
 - [Node Backend](identity/cmd/node/README.md)
 - [Issuer CLI](identity/cmd/issuer/README.md)
 - [Samples](samples/README.md)
-- [Api Specs](api-spec/README.md)
+- [Api Spec](api-spec/README.md)
 
 ## Roadmap
 

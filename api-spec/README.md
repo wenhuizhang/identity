@@ -1,6 +1,16 @@
-# API specs
+# API Spec
 
 Schema of the external API types that are served by the Identity apps.
+You can find the latest generated `API Spec` in the [Identity API Specs](https://spec.identity.agntcy.org) documentation.
+
+## Prerequisites
+
+To generate the API specs, you need to have the following installed:
+
+- [Golang](https://go.dev/doc/install) 1.24 or later
+- [Buf CLI](https://buf.build/docs/installation) 1.50 or later
+
+## Development
 
 To generate the API specs, run the following command from the root of the repository:
 
