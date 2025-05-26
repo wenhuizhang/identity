@@ -28,7 +28,7 @@ jobs:
 
       - name: Set version
         id: set-version
-        run: echo "version=$(echo $GITHUB_REF | cut -d / -f 3 | cut -c2-)" >> "$GITHUB_OUTPUT"
+        run: echo 'version=$(echo "$GITHUB_REF" | cut -d / -f 3 | cut -c2-)' >> "$GITHUB_OUTPUT"
 
       - name: List all targets
         id: all-targets
