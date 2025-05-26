@@ -29,7 +29,7 @@ make stop_node
 
 > [!NOTE]
 > This will deploy a local persistent `Postgres` database and a local `Node` backend.
-> The `Postgres` database will be available at `0.0.0.0:5432`and the `Node` will be available at`0.0.0.0:8080`.
+> The `Postgres` database will be available at `0.0.0.0:5432`and the `Node` will be available at`0.0.0.0:4000`.
 
 ## Development
 
@@ -52,4 +52,4 @@ make stop_node
 > This is useful for development purposes. If you want to use the pre-built images, you can omit this flag.
 >
 > This will deploy a local persistent `Postgres` database and a local `Node` backend.
-> The `Postgres` database will be available at `0.0.0.0:5432`and the `Node` will be available at`0.0.0.0:8080`.
+> The `Postgres` database will be available at `0.0.0.0:5432`and the `Node` will be available at`0.0.0.0:4000`.
