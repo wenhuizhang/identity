@@ -1,6 +1,6 @@
-# Identity CLI Tool
+# Issuer CLI
 
-The `Identity CLI` tool provides identity management capabilities for the AGNTCY Internet of Agents.
+The `Issuer CLI` tool provides identity management capabilities for the AGNTCY Internet of Agents.
 It allows you to create and manage cryptographic keys, register as an issuer, generate metadata for identities, issue badges for Agent and MCP Server identities, and verify badges for existing identities.
 
 ## Prerequisites

@@ -86,7 +86,7 @@ For more detailed development instructions please refer to the following section
 - [Node Backend](identity/cmd/node/README.md)
 - [Issuer CLI](identity/cmd/issuer/README.md)
 - [Samples](samples/README.md)
-- [Api Specs](api-spec/README.md)
+- [Api Spec](api-spec/README.md)
 
 ## Roadmap
 
