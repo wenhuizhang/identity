@@ -37,7 +37,7 @@ To run the `Node Backend` the `Issuer CLI`, and the `Samples` locally, you need 
 - [Golang](https://go.dev/doc/install) 1.24 or later
 - [Make](https://www.gnu.org/software/make/)
 - [Ollama](https://ollama.com/download)
-- Python 3.12 or later
+- [Python](https://www.python.org/downloads/) 3.12 or later
 
 ### Step 1: Install the Issuer CLI
 
