@@ -147,3 +147,5 @@ test_vc.json
 
 # Worflows
 *.swm
+
+identity/cmd/issuer/guides

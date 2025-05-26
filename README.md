@@ -73,19 +73,65 @@ make start_node
    docker-compose up -d
    ```
 
-### Step 5: Register as an Issuer
+### Step 5: Create a local Vault and generate keys
+
+Create a local vault to store generated cryptographic keys:
+
+```bash
+identity vault create file -f /path/to/keys.json -n "My Vault"
+```
+
+### Step 6: Register as an Issuer
+
+For this quick start we will use Okta as an IdP to create an application for the Issuer. Within Okta, perform the following steps:
+
+- Create a new "API Services" app integration
+- Disable the "Proof of possession" option for the app integration
+- Add a default scope to the authorization server
+- Add an access policy to the authorization server that allows access to the application
+
+Register the Issuer using the `Issuer CLI` and the environment variables from the previous step:
+
+```bash
+identity issuer register -o "My Organization" -c "<CLIENT_ID>" -s "<CLIENT_SECRET>" -u "<ISSUER_URL>"
+```
 
 > [!NOTE]
-> You can now access the `Issuer's Well-Known Public Key` at [`http://localhost:8080/issuer/{common_name}/.well-known/jwks.json`](http://localhost:8080/issuer/{common_name}/.well-known/jwks.json),
+> You can now access the `Issuer's Well-Known Public Key` at [`http://localhost:4000/issuer/{common_name}/.well-known/jwks.json`](http://localhost:4000/issuer/{common_name}/.well-known/jwks.json),
 > where `{common_name}` is the common name you provided during registration.
 
-### Step 6: Onboard an MCP Server
+### Step 7: Generate metadata for an MCP Server
+
+Create a second application for the MCP Server metadata using the Okta. Within Okta, perform the following steps:
+
+- Create a new "API Services" app integration
+- Disable the "Proof of possession" option for the app integration
+- Add a default scope to the authorization server
+- Add an access policy to the authorization server that allows access to the application
+
+Generate metadata for the MCP Server using the `Issuer CLI` and the environment variables from the previous step:
+
+```bash
+identity metadata generate -i "<CLIENT_ID>" -s "<CLIENT_SECRET>" -u "<ISSUER_URL>"
+```
+
+### Step 8: Issue and Publish a Badge for the MCP Server
+
+Issue a badge for the MCP Server:
+
+```bash
+identity badge issue mcp -u http://localhost:9090
+```
+
+Publish the badge:
+
+```bash
+identity badge publish
+```
 
 > [!NOTE]
-> You can now access the `VCs as a Well-Known` at [`http://localhost:8080/vc/{client_id}/.well-known/vcs.json`](http://localhost:8080/vc/{client_id}/.well-known/vcs.json),
+> You can now access the `VCs as a Well-Known` at [`http://localhost:4000/vc/{client_id}/.well-known/vcs.json`](http://localhost:4000/vc/{client_id}/.well-known/vcs.json),
 > where `{client_id}` is the client ID you provided during onboarding.
-
-### Step 7: Verify Credentials
 
 ## Development
 
