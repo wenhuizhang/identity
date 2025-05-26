@@ -1,40 +1,25 @@
 # Identity CLI Tool
 
-The Identity CLI tool provides identity management capabilities for the AGNTCY Internet of Agents.
+The `Identity CLI` tool provides identity management capabilities for the AGNTCY Internet of Agents.
 It allows you to create and manage cryptographic keys, register as an issuer, generate metadata for identities, issue badges for Agent and MCP Server identities, and verify badges for existing identities.
+
+## Prerequisites
+
+To run or build the `CLI` locally, you need to have the following installed:
+
+- [Golang](https://go.dev/doc/install) 1.24 or later
 
 ## Installation
 
-### Build from Source
-
-To build the Identity CLI from source:
+To install the latest version of the `CLI`, you can use the following command:
 
 ```bash
-cd identity
-go build -o identity cmd/issuer/main.go
-```
-
-Then move the binary to a location in your PATH (optional):
-
-```bash
-mv identity /usr/local/bin/
-```
-
-This will allow you to run the CLI from anywhere in your terminal with the command `identity`.
-
-### Run without Building
-
-You can also run the CLI directly without building and installing it.
-This is useful for testing or development purposes:
-
-```bash
-cd identity
-go run cmd/issuer/main.go
+go install github.com/agntcy/identity/cmd/issuer@latest
 ```
 
 ## Usage
 
-The Identity CLI follows a hierarchical command structure:
+The `CLI` follows a hierarchical command structure:
 
 ```bash
 identity [command] [subcommand] [flags]
@@ -141,4 +126,33 @@ For a full command overview:
 
 ```bash
 identity --help
+```
+
+## Development
+
+### Building and Running the Issuer client locally
+
+To build the `CLI` from source:
+
+```bash
+cd identity
+go build -o identity cmd/issuer/main.go
+```
+
+Then move the binary to a location in your PATH (optional):
+
+```bash
+mv identity /usr/local/bin/
+```
+
+This will allow you to run the CLI from anywhere in your terminal with the command `identity`.
+
+### Run without Building
+
+You can also run the CLI directly without building and installing it.
+This is useful for testing or development purposes:
+
+```bash
+cd identity
+go run cmd/issuer/main.go
 ```
