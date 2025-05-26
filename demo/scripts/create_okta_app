@@ -27,7 +27,7 @@ do_run_okta_create_app() {
 # Verify if Okta CLI is installed.
 #######################################
 do_verify_okta_cli() {
-  if ! command -v okta &> /dev/null; then
+  if ! command -v okta > /dev/null; then
     echo "Okta CLI is not installed. Please install it."
     echo "You can install it using the following guid: https://github.com/okta/okta-cli/blob/master/README.md"
 
@@ -55,8 +55,8 @@ do_verify_okta_config() {
 # @param $3 The prefix to remove from the value.
 # #######################################
 do_get_kv() {
-    echo $(echo "$1" | grep -o "$2[^, }]*" | sed "s/^.*$3//" \
-        | tr -d "'" | tr -d '"')
+    echo "$1" | grep -o "$2[^, }]*" | sed "s/^.*$3//" \
+        | tr -d "'" | tr -d '"'
 }
 
 #######################################
@@ -66,7 +66,7 @@ do_get_kv() {
 do_get_okta_var() {
   do_verify_okta_config
 
-  echo $(do_get_kv "$(cat "$OKTA_CONFIG_FILE")" "$1: " ": ")
+  do_get_kv "$(cat "$OKTA_CONFIG_FILE")" "$1: " ": "
 }
 
 #######################################
@@ -86,7 +86,7 @@ do_okta_api_request() {
   body="$2"
 
   # Perform the API request using curl
-  response=$(curl -s "$org_url"/api/v1/authorizationServers/default/"$entity" \
+  response=$("$CURL_BINARY" -s "$org_url"/api/v1/authorizationServers/default/"$entity" \
     --request POST \
     --header 'Accept: application/json' \
     --header 'Content-Type: application/json' \
@@ -94,7 +94,7 @@ do_okta_api_request() {
     --data-raw "${body}")
 
   # Return the ID from the response
-  echo $(do_get_kv "$response" "\"id\":" ":")
+  do_get_kv "$response" "\"id\":" ":"
 }
 
 #######################################
