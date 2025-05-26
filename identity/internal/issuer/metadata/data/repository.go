@@ -4,14 +4,14 @@
 package data
 
 import (
-	internalIssuerTypes "github.com/agntcy/identity/internal/issuer/types"
+	"github.com/agntcy/identity/internal/issuer/metadata/types"
 )
 
 type MetadataRepository interface {
 	AddMetadata(
-		vaultId, issuerId string, metadata *internalIssuerTypes.Metadata,
+		vaultId, issuerId string, metadata *types.Metadata,
 	) (string, error)
-	GetAllMetadata(vaultId, issuerId string) ([]*internalIssuerTypes.Metadata, error)
-	GetMetadata(vaultId, issuerId, metadataId string) (*internalIssuerTypes.Metadata, error)
+	GetAllMetadata(vaultId, issuerId string) ([]*types.Metadata, error)
+	GetMetadata(vaultId, issuerId, metadataId string) (*types.Metadata, error)
 	RemoveMetadata(vaultId, issuerId, metadataId string) error
 }
