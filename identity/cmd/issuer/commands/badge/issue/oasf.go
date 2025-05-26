@@ -80,7 +80,12 @@ var IssueOasfCmd = &cobra.Command{
 	},
 }
 
-//nolint:lll // Allow long lines for CLI
 func init() {
-	IssueFileCmd.Flags().StringVarP(&issueOasfPath, "oasf-path", "o", "", "The file path to the OASF you want to sign in the badge")
+	IssueFileCmd.Flags().StringVarP(
+		&issueOasfPath,
+		"oasf-path",
+		"o",
+		"",
+		"The file path to the OASF you want to sign in the badge",
+	)
 }

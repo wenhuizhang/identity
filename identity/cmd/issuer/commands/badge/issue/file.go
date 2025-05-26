@@ -80,7 +80,12 @@ var IssueFileCmd = &cobra.Command{
 	},
 }
 
-//nolint:lll // Allow long lines for CLI
 func init() {
-	IssueFileCmd.Flags().StringVarP(&issueFilePath, "file-path", "f", "", "The file path to the data you want to sign in the badge")
+	IssueFileCmd.Flags().StringVarP(
+		&issueFilePath,
+		"file-path",
+		"f",
+		"",
+		"The file path to the data you want to sign in the badge",
+	)
 }

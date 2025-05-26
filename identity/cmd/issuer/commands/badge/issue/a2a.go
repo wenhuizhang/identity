@@ -83,7 +83,12 @@ var IssueA2AWellKnownCmd = &cobra.Command{
 	},
 }
 
-//nolint:lll // Allow long lines for CLI
 func init() {
-	IssueA2AWellKnownCmd.Flags().StringVarP(&issueA2AWellKnown, "url", "u", "", "The well-known URL of the A2A agent you want to sign in the badge")
+	IssueA2AWellKnownCmd.Flags().StringVarP(
+		&issueA2AWellKnown,
+		"url",
+		"u",
+		"",
+		"The well-known URL of the A2A agent you want to sign in the badge",
+	)
 }
