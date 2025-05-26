@@ -7,6 +7,10 @@ import (
 	"github.com/agntcy/identity/cmd/issuer/commands/badge/issue"
 	badge "github.com/agntcy/identity/internal/issuer/badge"
 	"github.com/agntcy/identity/internal/issuer/badge/data/filesystem"
+	issfs "github.com/agntcy/identity/internal/issuer/issuer/data/filesystem"
+	mdfs "github.com/agntcy/identity/internal/issuer/metadata/data/filesystem"
+	"github.com/agntcy/identity/internal/pkg/nodeapi"
+	"github.com/agntcy/identity/internal/pkg/oidc"
 	"github.com/spf13/cobra"
 )
 
@@ -29,7 +33,11 @@ type LoadCmdInput struct {
 var (
 	// setup the badge service
 	badgeFilesystemRepository = filesystem.NewBadgeFilesystemRepository()
-	badgeService              = badge.NewBadgeService(badgeFilesystemRepository)
+	issuerRepository          = issfs.NewIssuerFilesystemRepository()
+	mdRepository              = mdfs.NewMetadataFilesystemRepository()
+	oidcAuth                  = oidc.NewAuthenticator()
+	nodeClientPrv             = nodeapi.NewNodeClientProvider()
+	badgeService              = badge.NewBadgeService(badgeFilesystemRepository, mdRepository, issuerRepository, oidcAuth, nodeClientPrv)
 
 	// setup the command flags
 	pubCmdIn  = &PublishCmdInput{}
@@ -47,7 +55,6 @@ The badge command is used to issue and publish badges for your Agent and MCP Ser
 }
 
 func init() {
-	badgeIssueCmd.AddCommand(issue.IssueFileCmd)
 	badgeIssueCmd.AddCommand(issue.IssueOasfCmd)
 	badgeIssueCmd.AddCommand(issue.IssueMcpServerCmd)
 	badgeIssueCmd.AddCommand(issue.IssueA2AWellKnownCmd)

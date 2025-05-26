@@ -10,9 +10,14 @@ import (
 	"os"
 
 	cliCache "github.com/agntcy/identity/cmd/issuer/cache"
+	vctypes "github.com/agntcy/identity/internal/core/vc/types"
 	badge "github.com/agntcy/identity/internal/issuer/badge"
 	"github.com/agntcy/identity/internal/issuer/badge/data/filesystem"
 	"github.com/agntcy/identity/internal/issuer/badge/mcp"
+	issfs "github.com/agntcy/identity/internal/issuer/issuer/data/filesystem"
+	mdfs "github.com/agntcy/identity/internal/issuer/metadata/data/filesystem"
+	"github.com/agntcy/identity/internal/pkg/nodeapi"
+	"github.com/agntcy/identity/internal/pkg/oidc"
 	"github.com/spf13/cobra"
 )
 
@@ -29,7 +34,11 @@ var IssueMcpServerCmd = &cobra.Command{
 
 		// setup the badge service
 		badgeFilesystemRepository := filesystem.NewBadgeFilesystemRepository()
-		badgeService := badge.NewBadgeService(badgeFilesystemRepository)
+		issuerRepository := issfs.NewIssuerFilesystemRepository()
+		mdRepository := mdfs.NewMetadataFilesystemRepository()
+		oidcAuth := oidc.NewAuthenticator()
+		nodeClientPrv := nodeapi.NewNodeClientProvider()
+		badgeService := badge.NewBadgeService(badgeFilesystemRepository, mdRepository, issuerRepository, oidcAuth, nodeClientPrv)
 
 		// load the cache to get the vault, issuer and metadata ids
 		cache, err := cliCache.LoadCache()
@@ -93,7 +102,17 @@ var IssueMcpServerCmd = &cobra.Command{
 
 		badgeContent := string(mcpServerData)
 
-		badgeId, err := badgeService.IssueBadge(cache.VaultId, cache.IssuerId, cache.MetadataId, badgeContent)
+		// TODO
+		badgeId, err := badgeService.IssueBadge(
+			cache.VaultId,
+			cache.IssuerId,
+			cache.MetadataId,
+			&vctypes.CredentialContent[vctypes.BadgeClaims]{
+				Type:    vctypes.CREDENTIAL_CONTENT_TYPE_AGENT_BADGE,
+				Content: vctypes.BadgeClaims{Badge: badgeContent},
+			},
+			nil,
+		)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error issuing badge: %v\n", err)
 			return

@@ -69,7 +69,7 @@ var badgePublishCmd = &cobra.Command{
 			return
 		}
 
-		_, err = badgeService.PublishBadge(cache.VaultId, cache.IssuerId, cache.MetadataId, badge)
+		_, err = badgeService.PublishBadge(cmd.Context(), cache.VaultId, cache.IssuerId, cache.MetadataId, badge)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error publishing badge: %v\n", err)
 			return

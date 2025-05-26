@@ -45,6 +45,10 @@ type NodeClient interface {
 		issuer *issuertypes.Issuer,
 		proof *vctypes.Proof,
 	) (*idtypes.ResolverMetadata, error)
+	PublishVerifiableCredential(
+		vc *vctypes.EnvelopedCredential,
+		proof *vctypes.Proof,
+	) error
 }
 
 type nodeClient struct {
@@ -138,4 +142,33 @@ func (c *nodeClient) GenerateID(
 		),
 		AssertionMethod: md.AssertionMethod,
 	}, nil
+}
+
+func (c *nodeClient) PublishVerifiableCredential(
+	vc *vctypes.EnvelopedCredential,
+	proof *vctypes.Proof,
+) error {
+	resp, err := c.vc.PublishVerifiableCredential(&vcsdk.PublishVerifiableCredentialParams{
+		Body: &apimodels.V1alpha1PublishRequest{
+			Vc: &apimodels.V1alpha1EnvelopedCredential{
+				EnvelopeType: apimodels.NewV1alpha1CredentialEnvelopeType(
+					apimodels.V1alpha1CredentialEnvelopeType(vc.EnvelopeType.String()),
+				),
+				Value: vc.Value,
+			},
+			Proof: &apimodels.V1alpha1Proof{
+				Type:       proof.Type,
+				ProofValue: proof.ProofValue,
+			},
+		},
+	})
+	if err != nil {
+		return err
+	}
+
+	if resp == nil {
+		return errors.New("empty response payload")
+	}
+
+	return nil
 }

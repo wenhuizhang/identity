@@ -43,7 +43,13 @@ var (
 
 	// setup the badge service
 	badgeFilesystemRepository = bfr.NewBadgeFilesystemRepository()
-	badgeService              = bsvc.NewBadgeService(badgeFilesystemRepository)
+	badgeService              = bsvc.NewBadgeService(
+		badgeFilesystemRepository,
+		metadataFilesystemRepository,
+		issuerFilesystemRepository,
+		oidcAuth,
+		nodeClientPrv,
+	)
 )
 
 var ConfigurationCmd = &cobra.Command{
