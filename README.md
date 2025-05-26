@@ -75,7 +75,15 @@ make start_node
 
 ### Step 5: Register as an Issuer
 
+> [!NOTE]
+> You can now access the `Issuer's Well-Known Public Key` at [`http://localhost:8080/issuer/{common_name}/.well-known/jwks.json`](http://localhost:8080/issuer/{common_name}/.well-known/jwks.json),
+> where `{common_name}` is the common name you provided during registration.
+
 ### Step 6: Onboard an MCP Server
+
+> [!NOTE]
+> You can now access the `VCs as a Well-Known` at [`http://localhost:8080/vc/{client_id}/.well-known/vcs.json`](http://localhost:8080/vc/{client_id}/.well-known/vcs.json),
+> where `{client_id}` is the client ID you provided during onboarding.
 
 ### Step 7: Verify Credentials
 
