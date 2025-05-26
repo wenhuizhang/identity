@@ -4,12 +4,13 @@
 package types
 
 import (
-	coreV1alpha "github.com/agntcy/identity/api/agntcy/identity/core/v1alpha1"
+	vctypes "github.com/agntcy/identity/internal/core/vc/types"
 )
 
 type Badge struct {
 	// The badge ID
 	Id string `json:"id,omitempty"`
+
 	// The verifiable credential
-	EnvelopedCredential *coreV1alpha.EnvelopedCredential `json:"badge,omitempty"`
+	EnvelopedCredential *vctypes.EnvelopedCredential `json:"badge,omitempty"`
 }

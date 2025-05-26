@@ -6,8 +6,8 @@ package testing
 import (
 	"context"
 
-	mcptypes "github.com/agntcy/identity/internal/core/mcp/types"
-	"github.com/agntcy/identity/internal/issuer/mcp"
+	"github.com/agntcy/identity/internal/issuer/badge/mcp"
+	mcptypes "github.com/agntcy/identity/internal/issuer/badge/mcp/types"
 )
 
 type FakeDiscoveryClient struct {

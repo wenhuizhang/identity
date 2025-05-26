@@ -1,6 +1,8 @@
 // Copyright 2025 AGNTCY Contributors (https://github.com/agntcy)
 // SPDX-License-Identifier: Apache-2.0
 
+//go:generate stringer -type=CredentialEnvelopeType
+
 package types
 
 import (
@@ -43,6 +45,17 @@ const (
 	CREDENTIAL_CONTENT_TYPE_MCP_BADGE
 )
 
+func (t CredentialContentType) String() string {
+	switch t {
+	case CREDENTIAL_CONTENT_TYPE_AGENT_BADGE:
+		return "AgentBadge"
+	case CREDENTIAL_CONTENT_TYPE_MCP_BADGE:
+		return "MCPServerBadge"
+	default:
+		return ""
+	}
+}
+
 // EnvelopedCredential represents a Credential enveloped in a specific format.
 type EnvelopedCredential struct {
 	// EnvelopeType specifies the type of the envelope used to store the credential.
@@ -53,12 +66,12 @@ type EnvelopedCredential struct {
 }
 
 // CredentialContent represents the content of a Verifiable Credential.
-type CredentialContent struct {
+type CredentialContent[T CredentialSubject] struct {
 	// Type specifies the type of the content of the credential.
 	Type CredentialContentType `json:"content_type,omitempty"`
 
 	// The content representation in JSON-LD format.
-	Content string `json:"content,omitempty"`
+	Content T `json:"content,omitempty"`
 }
 
 // CredentialSchema represents the credentialSchema property of a Verifiable Credential.
@@ -109,7 +122,7 @@ type VerifiableCredential struct {
 	Issuer string `json:"issuer"`
 
 	// https://www.w3.org/TR/vc-data-model/#credential-subject
-	CredentialSubject string `json:"credential_subject"`
+	CredentialSubject map[string]any `json:"credential_subject"`
 
 	// https://www.w3.org/TR/vc-data-model/#identifiers
 	ID string `json:"id,omitempty"`
@@ -142,4 +155,17 @@ type VerifiablePresentation struct {
 
 	// https://w3id.org/security#proof
 	Proof *Proof `json:"proof,omitempty"`
+}
+
+type CredentialSubject interface {
+	GetID() string
+}
+
+type BadgeClaims struct {
+	ID    string `json:"id"`
+	Badge string `json:"badge"`
+}
+
+func (c BadgeClaims) GetID() string {
+	return c.ID
 }

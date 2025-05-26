@@ -59,9 +59,9 @@ func (s *metadataService) GenerateMetadata(
 
 	token, err := s.auth.Token(
 		ctx,
-		issuer.IdpConfig.IssuerUrl,
-		issuer.IdpConfig.ClientId,
-		issuer.IdpConfig.ClientSecret,
+		idpConfig.IssuerUrl,
+		idpConfig.ClientId,
+		idpConfig.ClientSecret,
 	)
 	if err != nil {
 		return "", err

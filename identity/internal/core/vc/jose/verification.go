@@ -62,5 +62,10 @@ func Verify(
 		)
 	}
 
+	validatedVC.Proof = &vctypes.Proof{
+		Type:       "JWT",
+		ProofValue: credential.Value,
+	}
+
 	return &validatedVC, nil
 }

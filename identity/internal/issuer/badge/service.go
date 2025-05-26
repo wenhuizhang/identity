@@ -4,20 +4,38 @@
 package node
 
 import (
-	"log"
+	"context"
+	"encoding/json"
 
 	"github.com/agntcy/identity/internal/issuer/badge/data"
+	issdata "github.com/agntcy/identity/internal/issuer/issuer/data"
+	mddata "github.com/agntcy/identity/internal/issuer/metadata/data"
+	"github.com/agntcy/identity/internal/pkg/errutil"
+	"github.com/agntcy/identity/internal/pkg/joseutil"
+	"github.com/agntcy/identity/internal/pkg/nodeapi"
+	"github.com/agntcy/identity/internal/pkg/oidc"
 	"github.com/google/uuid"
 
-	coreV1alpha "github.com/agntcy/identity/api/agntcy/identity/core/v1alpha1"
-	nodeV1alpha "github.com/agntcy/identity/api/agntcy/identity/node/v1alpha1"
+	idtypes "github.com/agntcy/identity/internal/core/id/types"
+	"github.com/agntcy/identity/internal/core/vc"
+	vctypes "github.com/agntcy/identity/internal/core/vc/types"
 	internalIssuerTypes "github.com/agntcy/identity/internal/issuer/types"
 )
 
 type BadgeService interface {
-	IssueBadge(vaultId, issuerId, metadataId, badgeContent string) (string, error)
+	IssueBadge(
+		vaultId string,
+		issuerId string,
+		metadataId string,
+		content *vctypes.CredentialContent[vctypes.BadgeClaims],
+		privateKey *idtypes.Jwk,
+	) (string, error)
 	PublishBadge(
-		vaultId, issuerId, metadataId string, badge *internalIssuerTypes.Badge,
+		ctx context.Context,
+		vaultId string,
+		issuerId string,
+		metadataId string,
+		badge *internalIssuerTypes.Badge,
 	) (*internalIssuerTypes.Badge, error)
 	GetAllBadges(vaultId, issuerId, metadataId string) ([]*internalIssuerTypes.Badge, error)
 	GetBadge(vaultId, issuerId, metadataId, badgeId string) (*internalIssuerTypes.Badge, error)
@@ -25,21 +43,77 @@ type BadgeService interface {
 }
 
 type badgeService struct {
-	badgeRepository data.BadgeRepository
+	badgeRepository    data.BadgeRepository
+	metadataRepository mddata.MetadataRepository
+	issuerRepository   issdata.IssuerRepository
+	auth               oidc.Authenticator
+	nodeClientPrv      nodeapi.ClientProvider
 }
 
 func NewBadgeService(
 	badgeRepository data.BadgeRepository,
+	metadataRepository mddata.MetadataRepository,
+	issuerRepository issdata.IssuerRepository,
+	auth oidc.Authenticator,
+	nodeClientPrv nodeapi.ClientProvider,
 ) BadgeService {
 	return &badgeService{
-		badgeRepository: badgeRepository,
+		badgeRepository:    badgeRepository,
+		metadataRepository: metadataRepository,
+		issuerRepository:   issuerRepository,
+		auth:               auth,
+		nodeClientPrv:      nodeClientPrv,
 	}
 }
 
-func (s *badgeService) IssueBadge(vaultId, issuerId, metadataId, badgeContent string) (string, error) {
-	envelopedCredential := coreV1alpha.EnvelopedCredential{
-		EnvelopeType: coreV1alpha.CredentialEnvelopeType_CREDENTIAL_ENVELOPE_TYPE_JOSE.Enum(),
-		Value:        &badgeContent,
+func (s *badgeService) IssueBadge(
+	vaultId string,
+	issuerId string,
+	metadataId string,
+	content *vctypes.CredentialContent[vctypes.BadgeClaims],
+	privateKey *idtypes.Jwk,
+) (string, error) {
+	issuer, err := s.issuerRepository.GetIssuer(vaultId, issuerId)
+	if err != nil {
+		return "", err
+	}
+
+	md, err := s.metadataRepository.GetMetadata(vaultId, issuerId, metadataId)
+	if err != nil {
+		return "", errutil.Err(err, "unable to fetch the metadata")
+	}
+
+	if content.Type == vctypes.CREDENTIAL_CONTENT_TYPE_UNSPECIFIED {
+		return "", errutil.Err(nil, "unsupported content type")
+	}
+
+	if privateKey == nil {
+		return "", errutil.Err(nil, "invalid privateKey argument")
+	}
+
+	content.Content.ID = md.ID
+
+	credential, err := vc.New(
+		vc.WithIssuer(&issuer.Issuer),
+		vc.WithCredentialContent(content),
+	)
+	if err != nil {
+		return "", err
+	}
+
+	payload, err := json.Marshal(credential)
+	if err != nil {
+		return "", err
+	}
+
+	signed, err := joseutil.Sign(privateKey, payload)
+	if err != nil {
+		return "", errutil.Err(err, "unable to sign the badge")
+	}
+
+	envelopedCredential := vctypes.EnvelopedCredential{
+		EnvelopeType: vctypes.CREDENTIAL_ENVELOPE_TYPE_JOSE,
+		Value:        string(signed),
 	}
 
 	badge := internalIssuerTypes.Badge{
@@ -56,20 +130,46 @@ func (s *badgeService) IssueBadge(vaultId, issuerId, metadataId, badgeContent st
 }
 
 func (s *badgeService) PublishBadge(
-	vaultId, issuerId, metadataId string, badge *internalIssuerTypes.Badge,
+	ctx context.Context,
+	vaultId string,
+	issuerId string,
+	metadataId string,
+	badge *internalIssuerTypes.Badge,
 ) (*internalIssuerTypes.Badge, error) {
-	proof := coreV1alpha.Proof{
-		Type:         func() *string { s := "RsaSignature2018"; return &s }(),
-		ProofPurpose: func() *string { s := "assertionMethod"; return &s }(),
-		ProofValue:   func() *string { s := "example-proof-value"; return &s }(),
+	issuer, err := s.issuerRepository.GetIssuer(vaultId, issuerId)
+	if err != nil {
+		return nil, err
 	}
 
-	publishRequest := nodeV1alpha.PublishRequest{
-		Vc:    badge.EnvelopedCredential,
-		Proof: &proof,
+	md, err := s.metadataRepository.GetMetadata(vaultId, issuerId, metadataId)
+	if err != nil {
+		return nil, errutil.Err(err, "unable to fetch the metadata")
 	}
 
-	log.Default().Println("Publishing badge with request: ", &publishRequest)
+	token, err := s.auth.Token(
+		ctx,
+		md.IdpConfig.IssuerUrl,
+		md.IdpConfig.ClientId,
+		md.IdpConfig.ClientSecret,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	proof := vctypes.Proof{
+		Type:       "JWT",
+		ProofValue: token,
+	}
+
+	client, err := s.nodeClientPrv.New(issuer.IdentityNodeURL)
+	if err != nil {
+		return nil, err
+	}
+
+	err = client.PublishVerifiableCredential(badge.EnvelopedCredential, &proof)
+	if err != nil {
+		return nil, err
+	}
 
 	return badge, nil
 }

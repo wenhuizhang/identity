@@ -8,7 +8,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	mcptypes "github.com/agntcy/identity/internal/core/mcp/types"
+	mcptypes "github.com/agntcy/identity/internal/issuer/badge/mcp/types"
 	"github.com/agntcy/identity/internal/pkg/errutil"
 	"github.com/mark3labs/mcp-go/client"
 	"github.com/mark3labs/mcp-go/mcp"

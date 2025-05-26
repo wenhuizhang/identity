@@ -13,6 +13,7 @@ import (
 	"github.com/agntcy/identity/internal/pkg/errutil"
 	"github.com/agntcy/identity/pkg/db"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type idPostgresRepository struct {
@@ -47,7 +48,10 @@ func (r *idPostgresRepository) ResolveID(
 ) (*idtypes.ResolverMetadata, error) {
 	var metadata ResolverMetadata
 
-	result := r.dbContext.Client().First(&metadata, id)
+	result := r.dbContext.Client().
+		Model(&ResolverMetadata{}).
+		Preload(clause.Associations).
+		First(&metadata, "id = ?", id)
 	if result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 			return nil, errcore.ErrResourceNotFound

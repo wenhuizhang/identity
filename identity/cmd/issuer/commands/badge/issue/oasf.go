@@ -8,8 +8,15 @@ import (
 	"os"
 
 	cliCache "github.com/agntcy/identity/cmd/issuer/cache"
+	vctypes "github.com/agntcy/identity/internal/core/vc/types"
 	badge "github.com/agntcy/identity/internal/issuer/badge"
 	"github.com/agntcy/identity/internal/issuer/badge/data/filesystem"
+	issfs "github.com/agntcy/identity/internal/issuer/issuer/data/filesystem"
+	mdfs "github.com/agntcy/identity/internal/issuer/metadata/data/filesystem"
+	"github.com/agntcy/identity/internal/issuer/vault"
+	vfs "github.com/agntcy/identity/internal/issuer/vault/data/filesystem"
+	"github.com/agntcy/identity/internal/pkg/nodeapi"
+	"github.com/agntcy/identity/internal/pkg/oidc"
 	"github.com/spf13/cobra"
 )
 
@@ -22,10 +29,21 @@ var IssueOasfCmd = &cobra.Command{
 	Use:   "oasf",
 	Short: "Issue a badge based on a local OASF file",
 	Run: func(cmd *cobra.Command, args []string) {
-
 		// setup the badge service
 		badgeFilesystemRepository := filesystem.NewBadgeFilesystemRepository()
-		badgeService := badge.NewBadgeService(badgeFilesystemRepository)
+		issuerRepository := issfs.NewIssuerFilesystemRepository()
+		mdRepository := mdfs.NewMetadataFilesystemRepository()
+		oidcAuth := oidc.NewAuthenticator()
+		nodeClientPrv := nodeapi.NewNodeClientProvider()
+		badgeService := badge.NewBadgeService(
+			badgeFilesystemRepository,
+			mdRepository,
+			issuerRepository,
+			oidcAuth,
+			nodeClientPrv,
+		)
+		vaultRepository := vfs.NewVaultFilesystemRepository()
+		vaultSrv := vault.NewVaultService(vaultRepository)
 
 		// load the cache to get the vault, issuer and metadata ids
 		cache, err := cliCache.LoadCache()
@@ -59,10 +77,22 @@ var IssueOasfCmd = &cobra.Command{
 			return
 		}
 
-		// Convert the badge value to a string
-		badgeContent := string(badgeContentData)
+		prvKey, err := vaultSrv.RetrievePrivKey(cmd.Context(), cache.VaultId, cache.KeyID)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error retreiving public key: %v\n", err)
+			return
+		}
 
-		badgeId, err := badgeService.IssueBadge(cache.VaultId, cache.IssuerId, cache.MetadataId, badgeContent)
+		badgeId, err := badgeService.IssueBadge(
+			cache.VaultId,
+			cache.IssuerId,
+			cache.MetadataId,
+			&vctypes.CredentialContent[vctypes.BadgeClaims]{
+				Type:    vctypes.CREDENTIAL_CONTENT_TYPE_AGENT_BADGE,
+				Content: vctypes.BadgeClaims{Badge: string(badgeContentData)},
+			},
+			prvKey,
+		)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error issuing badge: %v\n", err)
 			return
@@ -80,7 +110,12 @@ var IssueOasfCmd = &cobra.Command{
 	},
 }
 
-//nolint:lll // Allow long lines for CLI
 func init() {
-	IssueFileCmd.Flags().StringVarP(&issueOasfPath, "oasf-path", "o", "", "The file path to the OASF you want to sign in the badge")
+	IssueOasfCmd.Flags().StringVarP(
+		&issueOasfPath,
+		"oasf-path",
+		"o",
+		"",
+		"The file path to the OASF you want to sign in the badge",
+	)
 }
