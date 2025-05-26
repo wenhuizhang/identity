@@ -8,8 +8,7 @@ To generate the API specs, run the following command from the root of the reposi
 make generate_proto
 ```
 
-> [!NOTE]
-> This will generate the `Protobuf` definitions, the `OpenAPI` specs and the `gRPC` stubs for the `Node` backend and the `Issuer` client.
+This will generate the `Protobuf` definitions, the `OpenAPI` specs and the `gRPC` stubs for the `Node` backend and the `Issuer` client.
 
 > [!NOTE]
 > The `Go` code will be generated in the `identity/api` directory.

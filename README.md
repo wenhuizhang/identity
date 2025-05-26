@@ -106,7 +106,3 @@ appreciated**. For detailed contributing guidelines, please see
 
 Distributed under Apache 2.0 License. See LICENSE for more information.
 Copyright [AGNTCY](https://github.com/agntcy) Contributors.
-
-```
-
-```

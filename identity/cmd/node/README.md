@@ -50,7 +50,6 @@ make stop_node
 > [!NOTE]
 > The `dev=true` flag is used to build the docker containers from the source code.
 > This is useful for development purposes. If you want to use the pre-built images, you can omit this flag.
-
-> [!NOTE]
+>
 > This will deploy a local persistent `Postgres` database and a local `Node` backend.
 > The `Postgres` database will be available at `0.0.0.0:5432`and the `Node` will be available at`0.0.0.0:8080`.
