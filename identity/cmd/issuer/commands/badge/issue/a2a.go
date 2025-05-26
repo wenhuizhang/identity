@@ -13,7 +13,7 @@ import (
 	"github.com/agntcy/identity/internal/issuer/badge/data/filesystem"
 	"github.com/spf13/cobra"
 
-	a2a "github.com/agntcy/identity/internal/issuer/a2a"
+	"github.com/agntcy/identity/internal/issuer/badge/a2a"
 )
 
 var (

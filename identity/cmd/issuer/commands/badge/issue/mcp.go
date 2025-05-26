@@ -12,7 +12,7 @@ import (
 	cliCache "github.com/agntcy/identity/cmd/issuer/cache"
 	badge "github.com/agntcy/identity/internal/issuer/badge"
 	"github.com/agntcy/identity/internal/issuer/badge/data/filesystem"
-	mcp "github.com/agntcy/identity/internal/issuer/mcp"
+	"github.com/agntcy/identity/internal/issuer/badge/mcp"
 	"github.com/spf13/cobra"
 )
 
