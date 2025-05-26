@@ -1,0 +1,142 @@
+#!/bin/sh
+# Copyright 2025 AGNTCY Contributors (https://github.com/agntcy)
+# SPDX-License-Identifier: Apache-2.0
+
+# Constants
+OKTA_CONFIG_FILE="$HOME/.okta/okta.yaml"
+OKTA_BINARY="okta"
+CURL_BINARY="curl"
+CONFIG_FILE=".env"
+APP_NAME="SampleOktaApp"
+
+#######################################
+# Run Okta registration using the Okta CLI.
+#######################################
+do_run_okta_register() {
+  "$OKTA_BINARY" register
+}
+
+#######################################
+# Create an Okta application using the Okta CLI.
+#######################################
+do_run_okta_create_app() {
+  "$OKTA_BINARY" apps create --app-name="$APP_NAME" --config-file="$CONFIG_FILE"
+}
+
+#######################################
+# Verify if Okta CLI is installed.
+#######################################
+do_verify_okta_cli() {
+  if ! command -v okta &> /dev/null; then
+    echo "Okta CLI is not installed. Please install it."
+    echo "You can install it using the following guid: https://github.com/okta/okta-cli/blob/master/README.md"
+
+    exit 1
+  fi
+}
+
+#######################################
+# Verify if the Okta configuration file exists.
+# If it does not exist, prompt the user to run Okta registration.
+# If it exists, proceed with the application creation.
+# #######################################
+do_verify_okta_config() {
+  if [ ! -e "$OKTA_CONFIG_FILE" ]; then
+    echo "You must run 'okta register or login' first to create the local okta.yaml file."
+
+    exit 1
+  fi
+}
+
+#######################################
+# Get a key-value pair from a string.
+# @param $1 The string to search in.
+# @param $2 The key to search for.
+# @param $3 The prefix to remove from the value.
+# #######################################
+do_get_kv() {
+    echo $(echo "$1" | grep -o "$2[^, }]*" | sed "s/^.*$3//" \
+        | tr -d "'" | tr -d '"')
+}
+
+#######################################
+# Get a variable from the Okta configuration file.
+# @param $1 The variable name to retrieve.
+# #######################################
+do_get_okta_var() {
+  do_verify_okta_config
+
+  echo $(do_get_kv "$(cat "$OKTA_CONFIG_FILE")" "$1: " ": ")
+}
+
+#######################################
+# Perform an API request to Okta.
+# @param $1 The entity to request (e.g., "scopes", "policies").
+# @param $2 The body of the request in JSON format.
+# #######################################
+do_okta_api_request() {
+  # Get the token from Okta configuration
+  token=$(do_get_okta_var "token")
+
+  # Get the Okta domain from the configuration
+  org_url=$(do_get_okta_var "orgUrl")
+
+  # Get argument values
+  entity="$1"
+  body="$2"
+
+  # Perform the API request using curl
+  response=$(curl -s "$org_url"/api/v1/authorizationServers/default/"$entity" \
+    --request POST \
+    --header 'Accept: application/json' \
+    --header 'Content-Type: application/json' \
+    --header 'Authorization: SSWS '"$token"  \
+    --data-raw "${body}")
+
+  # Return the ID from the response
+  echo $(do_get_kv "$response" "\"id\":" ":")
+}
+
+#######################################
+# Set up Okta by creating a scope and a default policy.
+# This function creates a scope named "customscope" and a default policy with a rule that allows all clients.
+# #######################################
+do_setup_okta() {
+  # Create a scope "customscope"
+  _=$(do_okta_api_request "scopes" '{"consent":"IMPLICIT","metadataPublish":"NO_CLIENTS","name":"customscope","default":true}')
+
+  # Create a default policy
+  policy_id=$(do_okta_api_request "policies" '{"name":"Default","description":"Default","conditions":{"clients":{"include":["ALL_CLIENTS"]}},"type":"OAUTH_AUTHORIZATION_POLICY"}')
+
+  # Add a default rule to the policy
+  _=$(do_okta_api_request "policies/$policy_id/rules" '{"type":"RESOURCE_ACCESS","system":false,"name":"Default","conditions":{"grantTypes":{"include":["client_credentials","authorization_code","urn:ietf:params:oauth:grant-type:device_code"]},"people":{"users":{"include":[],"exclude":[]},"groups":{"include":["EVERYONE"],"exclude":[]}},"scopes":{"include":["*"]}},"actions":{"token":{"inlineHook":null,"accessTokenLifetimeMinutes":60,"refreshTokenLifetimeMinutes":129600,"refreshTokenWindowMinutes":10080}}}')
+}
+
+#######################################
+# Create an Okta application.
+# This function checks if the Okta configuration file exists, and if not, it prompts the user to run Okta registration.
+# If the configuration file exists, it proceeds to create the Okta application.
+# #######################################
+do_create_okta_app() {
+  echo "Creating Okta application..."
+
+  # Verify if the Okta configuration file exists
+  if [ ! -e "$OKTA_CONFIG_FILE" ]; then
+    echo "No Okta configuration file found. Running Okta registration..."
+
+    # If the configuration file does not exist, run Okta registration
+    do_run_okta_register
+  fi
+
+    # Set up Okta if the configuration file exists
+    do_setup_okta
+
+    # Create the Okta application
+    do_run_okta_create_app
+}
+
+# Check if the Okta CLI is installed
+do_verify_okta_cli
+
+# Create the Okta application
+do_create_okta_app
