@@ -68,7 +68,8 @@ make start_node
    ollama run llama3.2
    ```
 
-2. Navigate to the `samples` directory and run the following command:
+2. Navigate to the `samples` directory and run the following command
+   to deploy the `Currency Exchange A2A Agent` leveraging a `Currency Exchange MCP Server`:
 
    ```bash
    docker-compose up -d
