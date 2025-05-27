@@ -74,6 +74,8 @@ make start_node
    docker-compose up -d
    ```
 
+3. [Optional] Test the samples using the provided [test clients](./samples/README.md#testing-the-samples).
+
 ### Step 5: Create a local Vault and generate keys
 
 1. Create a local vault to store generated cryptographic keys:
