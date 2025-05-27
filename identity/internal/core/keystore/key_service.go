@@ -11,7 +11,7 @@ import (
 
 // KeyService defines methods for generating, saving, and retrieving JWKs.
 type KeyService interface {
-	// SaveKey saves a JWK to the key storage. it supports local file, 1Password, and OS keychain.
+	// SaveKey saves a JWK to the key storage. it supports local file, and hashicorp vault
 	SaveKey(ctx context.Context, id string, jwk *types.Jwk) error
 
 	// RetrieveKey retrieves a public JWK by its ID.
