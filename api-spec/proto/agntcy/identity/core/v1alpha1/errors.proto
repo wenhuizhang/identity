@@ -63,3 +63,8 @@ enum ErrorReason {
   // Unknown Identity Provider
   ERROR_REASON_UNKNOWN_IDP = 15;
 }
+
+  ERROR_REASON_RESOLVER_METADATA_NOT_FOUND = 14;
+  // Unknown Identity Provider
+  ERROR_REASON_UNKNOWN_IDP = 15;
+}
