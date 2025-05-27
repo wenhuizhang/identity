@@ -79,7 +79,13 @@ make start_node
 Create a local vault to store generated cryptographic keys:
 
 ```bash
-identity vault create file -f /path/to/keys.json -n "My Vault"
+identity vault create file -f /path/to/vault.json -n "My Vault"
+```
+
+Generate a new key pair and store it in the vault:
+
+```bash
+identity vault key generate
 ```
 
 ### Step 6: Register as an Issuer
