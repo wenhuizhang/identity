@@ -1,3 +1,6 @@
+# Copyright 2025 AGNTCY Contributors (https://github.com/agntcy)
+# SPDX-License-Identifier: Apache-2.0
+
 .PHONY: do_generate_proto do_generate_node_sdk do_start_node
 
 do_generate_proto:
