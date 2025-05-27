@@ -99,7 +99,8 @@ For this quick start we will use Okta as an IdP to create an application for the
 3. Register the Issuer using the `Issuer CLI` and the environment variables from the previous step:
 
    ```bash
-   identity issuer register -o "My Organization" -c "<OKTA_OAUTH2_CLIENT_ID>" -s "<OKTA_OAUTH2_CLIENT_SECRET>" -u "<OKTA_OAUTH2_ISSUER>"
+   identity issuer register -o "My Organization" \
+       -c "<OKTA_OAUTH2_CLIENT_ID>" -s "<OKTA_OAUTH2_CLIENT_SECRET>" -u "<OKTA_OAUTH2_ISSUER>"
    ```
 
 > [!NOTE]
@@ -123,7 +124,8 @@ Create a second application for the MCP Server metadata using the Okta, similar 
 3. Generate metadata for the MCP Server using the `Issuer CLI` and the environment variables from the previous step:
 
    ```bash
-   identity metadata generate -i "<OKTA_OAUTH2_CLIENT_ID>" -s "<OKTA_OAUTH2_CLIENT_SECRET>" -u "<OKTA_OAUTH2_ISSUER>"
+   identity metadata generate -i "<OKTA_OAUTH2_CLIENT_ID>" \
+       -s "<OKTA_OAUTH2_CLIENT_SECRET>" -u "<OKTA_OAUTH2_ISSUER>"
    ```
 
 ### Step 8: Issue and Publish a Badge for the MCP Server
