@@ -28,7 +28,14 @@ func getIssuersDirectory(vaultId, keyId string) (string, error) {
 		return "", err
 	}
 
-	return filepath.Join(vaultIdDir, "issuers"), nil
+	vaultKeyIdDir := filepath.Join(vaultIdDir, "keys", keyId)
+	if _, err := os.Stat(vaultKeyIdDir); os.IsNotExist(err) {
+		if err := os.MkdirAll(vaultKeyIdDir, internalIssuerConstants.DirPerm); err != nil {
+			return "", err
+		}
+	}
+
+	return filepath.Join(vaultKeyIdDir, "issuers"), nil
 }
 
 // GetIssuerIdDirectory returns the path to the issuer ID directory

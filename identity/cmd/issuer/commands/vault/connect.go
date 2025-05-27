@@ -8,9 +8,9 @@ import (
 )
 
 var vaultConnectCmd = &cobra.Command{
-	Use:   "create",
-	Short: "Create a new vault configuration and generate cryptographic keys",
+	Use:   "connect",
+	Short: "Connect a new vault configuration to generate and store cryptographic keys",
 	Long: `
-The create command is used to create a new vault configuration and generate cryptographic keys.
+The connect command is used to connect a new vault configuration to generate and store cryptographic keys.
 `,
 }
