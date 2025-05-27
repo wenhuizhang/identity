@@ -23,6 +23,10 @@ const filePerm = 0o644 // Read and write permissions for the owner only
 
 // SaveKey saves or updates a JWK in the local file.
 func (s *LocalFileKeyService) SaveKey(ctx context.Context, id string, jwk *types.Jwk) error {
+	if jwk == nil {
+		return errors.New("jwk cannot be nil")
+	}
+
 	s.mu.Lock()
 	defer s.mu.Unlock()
 

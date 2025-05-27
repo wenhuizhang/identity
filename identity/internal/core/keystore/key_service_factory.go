@@ -6,17 +6,19 @@ package keystore
 import (
 	"errors"
 	"fmt"
+
+	"github.com/hashicorp/vault/api"
 )
 
 type StorageType int
 
 const (
 	FileStorage StorageType = iota
-	OnePasswordStorage
+	VaultStorage
 )
 
 func (s StorageType) String() string {
-	return [...]string{"file", "1password"}[s]
+	return [...]string{"file", "vault"}[s]
 }
 
 type FileStorageConfig struct {
@@ -33,14 +35,45 @@ func NewKeyService(storageType StorageType, config interface{}) (KeyService, err
 
 		return &LocalFileKeyService{FilePath: c.FilePath}, nil
 
-	case OnePasswordStorage:
-		// Commented out until implemented
-		// c, err := getConfig[OnePasswordConfig](config)
-		// if err != nil {
-		//     return nil, err
-		// }
-		// return &OnePasswordKeyService{...}, nil
-		return nil, errors.New("1password storage not implemented")
+	case VaultStorage:
+		c, err := getConfig[VaultStorageConfig](config)
+		if err != nil {
+			return nil, err
+		}
+
+		vaultConfig := api.DefaultConfig()
+		if c.Address != "" {
+			vaultConfig.Address = c.Address
+		}
+
+		client, err := api.NewClient(vaultConfig)
+		if err != nil {
+			return nil, fmt.Errorf("failed to create Vault client: %w", err)
+		}
+
+		if c.Token != "" {
+			client.SetToken(c.Token)
+		}
+
+		if c.Namespace != "" {
+			client.SetNamespace(c.Namespace)
+		}
+
+		mountPath := c.MountPath
+		if mountPath == "" {
+			mountPath = "secret"
+		}
+
+		keyBasePath := c.KeyBasePath
+		if keyBasePath == "" {
+			keyBasePath = "jwks"
+		}
+
+		return &VaultKeyService{
+			client:      client,
+			mountPath:   mountPath,
+			keyBasePath: keyBasePath,
+		}, nil
 	default:
 		return nil, fmt.Errorf("unsupported storage type: %s", storageType)
 	}
