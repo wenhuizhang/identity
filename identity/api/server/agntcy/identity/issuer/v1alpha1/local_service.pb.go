@@ -10,7 +10,7 @@
 package identity_issuer_sdk_go
 
 import (
-	v1alpha1 "github.com/agntcy/identity/api/agntcy/identity/core/v1alpha1"
+	v1alpha1 "github.com/agntcy/identity/api/server/agntcy/identity/core/v1alpha1"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
@@ -197,7 +197,7 @@ const file_agntcy_identity_issuer_v1alpha1_local_service_proto_rawDesc = "" +
 	"\akeypair\x18\x01 \x01(\v2\".agntcy.identity.core.v1alpha1.JwkR\akeypair2\xcf\x01\n" +
 	"\fLocalService\x12Q\n" +
 	"\x06KeyGen\x12\x16.google.protobuf.Empty\x1a/.agntcy.identity.issuer.v1alpha1.KeyGenResponse\x12l\n" +
-	"\aIssueVC\x12/.agntcy.identity.issuer.v1alpha1.IssueVCRequest\x1a0.agntcy.identity.issuer.v1alpha1.IssueVCResponseBWZUgithub.com/agntcy/identity/api/agntcy/identity/issuer/v1alpha1;identity_issuer_sdk_gob\x06proto3"
+	"\aIssueVC\x12/.agntcy.identity.issuer.v1alpha1.IssueVCRequest\x1a0.agntcy.identity.issuer.v1alpha1.IssueVCResponseB^Z\\github.com/agntcy/identity/api/server/agntcy/identity/issuer/v1alpha1;identity_issuer_sdk_gob\x06proto3"
 
 var (
 	file_agntcy_identity_issuer_v1alpha1_local_service_proto_rawDescOnce sync.Once

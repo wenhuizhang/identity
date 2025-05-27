@@ -353,7 +353,7 @@ const file_agntcy_identity_core_v1alpha1_mcp_proto_rawDesc = "" +
 	"\x18bearer_methods_supported\x18\x03 \x03(\tR\x16bearerMethodsSupported\x12)\n" +
 	"\x10scopes_supported\x18\x04 \x03(\tR\x0fscopesSupportedB\v\n" +
 	"\t_resourceB\x18\n" +
-	"\x16_authorization_serversBSZQgithub.com/agntcy/identity/api/agntcy/identity/core/v1alpha1;identity_core_sdk_gob\x06proto3"
+	"\x16_authorization_serversBZZXgithub.com/agntcy/identity/api/server/agntcy/identity/core/v1alpha1;identity_core_sdk_gob\x06proto3"
 
 var (
 	file_agntcy_identity_core_v1alpha1_mcp_proto_rawDescOnce sync.Once

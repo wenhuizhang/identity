@@ -109,7 +109,7 @@ const file_agntcy_identity_core_v1alpha1_pagination_proto_rawDesc = "" +
 	"\x04size\x18\x04 \x01(\x05R\x04sizeB\f\n" +
 	"\n" +
 	"_next_pageB\x10\n" +
-	"\x0e_has_next_pageBSZQgithub.com/agntcy/identity/api/agntcy/identity/core/v1alpha1;identity_core_sdk_gob\x06proto3"
+	"\x0e_has_next_pageBZZXgithub.com/agntcy/identity/api/server/agntcy/identity/core/v1alpha1;identity_core_sdk_gob\x06proto3"
 
 var (
 	file_agntcy_identity_core_v1alpha1_pagination_proto_rawDescOnce sync.Once

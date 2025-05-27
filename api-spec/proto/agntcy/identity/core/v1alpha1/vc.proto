@@ -7,8 +7,23 @@ syntax = "proto3";
 
 package agntcy.identity.core.v1alpha1;
 
+import "google/protobuf/struct.proto";
+
 // Package-wide variables from generator "generated".
-option go_package = "github.com/agntcy/identity/api/agntcy/identity/core/v1alpha1;identity_core_sdk_go";
+option go_package = "github.com/agntcy/identity/api/server/agntcy/identity/core/v1alpha1;identity_core_sdk_go";
+
+// BadgeClaims represents the content of a Badge VC defined [here]
+//
+// [here]: https://spec.identity.agntcy.org/docs/vc/intro/
+message BadgeClaims {
+  // The ID as defined [here]
+  //
+  // [here]: https://www.w3.org/TR/vc-data-model/#credential-subject
+  optional string id = 1;
+
+  // The content of the badge
+  optional string badge = 2;
+}
 
 // CredentialContent represents the content of a Verifiable Credential.
 message CredentialContent {
@@ -16,10 +31,8 @@ message CredentialContent {
   optional CredentialContentType content_type = 1;
 
   // The content representation in JSON-LD format.
-  optional string content = 2;
+  optional .google.protobuf.Struct content = 2;
 }
-
-
 
 // CredentialSchema represents the credentialSchema property of a Verifiable Credential.
 // more information can be found [here]
@@ -69,7 +82,7 @@ message VerifiableCredential {
   optional string issuer = 3;
 
   // https://www.w3.org/TR/vc-data-model/#credential-subject
-  optional string credential_subject = 4;
+  optional .google.protobuf.Struct content = 4;
 
   // https://www.w3.org/TR/vc-data-model/#identifiers
   optional string id = 5;
@@ -130,4 +143,3 @@ enum CredentialEnvelopeType {
   // JOSE Envelope Type.
   CREDENTIAL_ENVELOPE_TYPE_JOSE = 2;
 }
-

@@ -59,8 +59,12 @@ const (
 	ErrorReason_ERROR_REASON_IDP_REQUIRED ErrorReason = 11
 	// The proof is invalid
 	ErrorReason_ERROR_REASON_INVALID_PROOF ErrorReason = 12
+	// The proof type is not supported
+	ErrorReason_ERROR_REASON_UNSUPPORTED_PROOF ErrorReason = 13
 	// Unable to resolve an ID to a ResolverMetadata
-	ErrorReason_ERROR_REASON_RESOLVER_METADATA_NOT_FOUND ErrorReason = 13
+	ErrorReason_ERROR_REASON_RESOLVER_METADATA_NOT_FOUND ErrorReason = 14
+	// Unknown Identity Provider
+	ErrorReason_ERROR_REASON_UNKNOWN_IDP ErrorReason = 15
 )
 
 // Enum value maps for ErrorReason.
@@ -79,7 +83,9 @@ var (
 		10: "ERROR_REASON_ID_VCS_NOT_FOUND",
 		11: "ERROR_REASON_IDP_REQUIRED",
 		12: "ERROR_REASON_INVALID_PROOF",
-		13: "ERROR_REASON_RESOLVER_METADATA_NOT_FOUND",
+		13: "ERROR_REASON_UNSUPPORTED_PROOF",
+		14: "ERROR_REASON_RESOLVER_METADATA_NOT_FOUND",
+		15: "ERROR_REASON_UNKNOWN_IDP",
 	}
 	ErrorReason_value = map[string]int32{
 		"ERROR_REASON_UNSPECIFIED":                              0,
@@ -95,7 +101,9 @@ var (
 		"ERROR_REASON_ID_VCS_NOT_FOUND":                         10,
 		"ERROR_REASON_IDP_REQUIRED":                             11,
 		"ERROR_REASON_INVALID_PROOF":                            12,
-		"ERROR_REASON_RESOLVER_METADATA_NOT_FOUND":              13,
+		"ERROR_REASON_UNSUPPORTED_PROOF":                        13,
+		"ERROR_REASON_RESOLVER_METADATA_NOT_FOUND":              14,
+		"ERROR_REASON_UNKNOWN_IDP":                              15,
 	}
 )
 
@@ -194,7 +202,7 @@ const file_agntcy_identity_core_v1alpha1_errors_proto_rawDesc = "" +
 	"\amessage\x18\x02 \x01(\tH\x01R\amessage\x88\x01\x01B\t\n" +
 	"\a_reasonB\n" +
 	"\n" +
-	"\b_message*\xc0\x04\n" +
+	"\b_message*\x82\x05\n" +
 	"\vErrorReason\x12\x1c\n" +
 	"\x18ERROR_REASON_UNSPECIFIED\x10\x00\x12\x19\n" +
 	"\x15ERROR_REASON_INTERNAL\x10\x01\x12\x1b\n" +
@@ -209,8 +217,10 @@ const file_agntcy_identity_core_v1alpha1_errors_proto_rawDesc = "" +
 	"\x1dERROR_REASON_ID_VCS_NOT_FOUND\x10\n" +
 	"\x12\x1d\n" +
 	"\x19ERROR_REASON_IDP_REQUIRED\x10\v\x12\x1e\n" +
-	"\x1aERROR_REASON_INVALID_PROOF\x10\f\x12,\n" +
-	"(ERROR_REASON_RESOLVER_METADATA_NOT_FOUND\x10\rBSZQgithub.com/agntcy/identity/api/agntcy/identity/core/v1alpha1;identity_core_sdk_gob\x06proto3"
+	"\x1aERROR_REASON_INVALID_PROOF\x10\f\x12\"\n" +
+	"\x1eERROR_REASON_UNSUPPORTED_PROOF\x10\r\x12,\n" +
+	"(ERROR_REASON_RESOLVER_METADATA_NOT_FOUND\x10\x0e\x12\x1c\n" +
+	"\x18ERROR_REASON_UNKNOWN_IDP\x10\x0fBZZXgithub.com/agntcy/identity/api/server/agntcy/identity/core/v1alpha1;identity_core_sdk_gob\x06proto3"
 
 var (
 	file_agntcy_identity_core_v1alpha1_errors_proto_rawDescOnce sync.Once

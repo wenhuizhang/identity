@@ -6,7 +6,7 @@ package grpcutil
 import (
 	"errors"
 
-	coreapi "github.com/agntcy/identity/api/agntcy/identity/core/v1alpha1"
+	coreapi "github.com/agntcy/identity/api/server/agntcy/identity/core/v1alpha1"
 	errtypes "github.com/agntcy/identity/internal/core/errors/types"
 	"github.com/agntcy/identity/internal/pkg/ptrutil"
 	"github.com/agntcy/identity/pkg/log"

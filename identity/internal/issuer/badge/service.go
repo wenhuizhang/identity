@@ -28,7 +28,7 @@ type BadgeService interface {
 		keyId string,
 		issuerId string,
 		metadataId string,
-		content *vctypes.CredentialContent[vctypes.BadgeClaims],
+		content *vctypes.CredentialContent,
 		privateKey *idtypes.Jwk,
 	) (string, error)
 	PublishBadge(
@@ -73,7 +73,7 @@ func (s *badgeService) IssueBadge(
 	keyId string,
 	issuerId string,
 	metadataId string,
-	content *vctypes.CredentialContent[vctypes.BadgeClaims],
+	content *vctypes.CredentialContent,
 	privateKey *idtypes.Jwk,
 ) (string, error) {
 	issuer, err := s.issuerRepository.GetIssuer(vaultId, keyId, issuerId)
@@ -81,7 +81,7 @@ func (s *badgeService) IssueBadge(
 		return "", err
 	}
 
-	md, err := s.metadataRepository.GetMetadata(vaultId, keyId, issuerId, metadataId)
+	_, err = s.metadataRepository.GetMetadata(vaultId, keyId, issuerId, metadataId)
 	if err != nil {
 		return "", errutil.Err(err, "unable to fetch the metadata")
 	}
@@ -93,8 +93,6 @@ func (s *badgeService) IssueBadge(
 	if privateKey == nil {
 		return "", errutil.Err(nil, "invalid privateKey argument")
 	}
-
-	content.Content.ID = md.ID
 
 	credential, err := vc.New(
 		vc.WithIssuer(&issuer.Issuer),

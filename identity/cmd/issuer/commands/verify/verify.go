@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"os"
 
-	coreV1alpha "github.com/agntcy/identity/api/agntcy/identity/core/v1alpha1"
+	coreV1alpha "github.com/agntcy/identity/api/server/agntcy/identity/core/v1alpha1"
 	issuerVerify "github.com/agntcy/identity/internal/issuer/verify"
 
 	"github.com/spf13/cobra"

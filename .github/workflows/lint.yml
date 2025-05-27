@@ -34,6 +34,7 @@ jobs:
           MARKDOWN_CONFIG_FILE: ".markdownlint.yml"
           YAML_CONFIG_FILE: ".yamllint.yml"
           GO_CONFIG_FILE: ".golangci.yaml"
+          PROTOBUF_CONFIG_FILE: ".protolintrc.yml"
           VALIDATE_ALL_CODEBASE: false
           VALIDATE_MARKDOWN_PRETTIER: false
           VALIDATE_YAML_PRETTIER: false
@@ -47,3 +48,4 @@ jobs:
           VALIDATE_PYTHON_PYINK: false
           VALIDATE_PYTHON_ISORT: false
           MULTI_STATUS: false
+          VALIDATE_JSON_PRETTIER: false

@@ -4,7 +4,7 @@
 package pagination
 
 import (
-	identity_api "github.com/agntcy/identity/api/agntcy/identity/core/v1alpha1"
+	identity_api "github.com/agntcy/identity/api/server/agntcy/identity/core/v1alpha1"
 )
 
 // Creates a PagedResponse object

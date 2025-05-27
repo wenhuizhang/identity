@@ -7,7 +7,7 @@ import (
 	"context"
 	"fmt"
 
-	nodeapi "github.com/agntcy/identity/api/agntcy/identity/node/v1alpha1"
+	nodeapi "github.com/agntcy/identity/api/server/agntcy/identity/node/v1alpha1"
 	errtypes "github.com/agntcy/identity/internal/core/errors/types"
 	vctypes "github.com/agntcy/identity/internal/core/vc/types"
 	"github.com/agntcy/identity/internal/node"

@@ -127,7 +127,7 @@ const file_agntcy_identity_core_v1alpha1_issuer_proto_rawDesc = "" +
 	"\x11_sub_organizationB\x0e\n" +
 	"\f_common_nameB\r\n" +
 	"\v_public_keyB\x0e\n" +
-	"\f_private_keyBSZQgithub.com/agntcy/identity/api/agntcy/identity/core/v1alpha1;identity_core_sdk_gob\x06proto3"
+	"\f_private_keyBZZXgithub.com/agntcy/identity/api/server/agntcy/identity/core/v1alpha1;identity_core_sdk_gob\x06proto3"
 
 var (
 	file_agntcy_identity_core_v1alpha1_issuer_proto_rawDescOnce sync.Once

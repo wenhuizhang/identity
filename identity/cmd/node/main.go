@@ -11,7 +11,7 @@ import (
 	"os/signal"
 	"time"
 
-	identityapi "github.com/agntcy/identity/api"
+	identityapi "github.com/agntcy/identity/api/server"
 	"github.com/agntcy/identity/internal/core"
 	idpg "github.com/agntcy/identity/internal/core/id/postgres"
 	issuerpg "github.com/agntcy/identity/internal/core/issuer/postgres"
