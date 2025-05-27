@@ -44,6 +44,7 @@ ENV Identity_ROOT="/identity"
 COPY scripts/docker/run.sh .
 COPY scripts/docker/protoc.sh .
 COPY identity ./local/github.com/agntcy/identity
+COPY sdk ./local/github.com/agntcy/sdk
 COPY scripts/docker/protos ./third_party/protos
 
 RUN chmod +x run.sh && \

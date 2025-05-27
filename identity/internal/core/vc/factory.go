@@ -4,7 +4,6 @@
 package vc
 
 import (
-	"encoding/json"
 	"time"
 
 	issuertypes "github.com/agntcy/identity/internal/core/issuer/types"
@@ -40,24 +39,12 @@ func WithIssuer(issuer *issuertypes.Issuer) VerifiableCredentialOption {
 	}
 }
 
-func WithCredentialContent[T types.CredentialSubject](
-	content *types.CredentialContent[T],
+func WithCredentialContent(
+	content *types.CredentialContent,
 ) VerifiableCredentialOption {
 	return func(vc *types.VerifiableCredential) error {
-		var sub map[string]any
-
-		data, err := json.Marshal(content.Content)
-		if err != nil {
-			return err
-		}
-
-		err = json.Unmarshal(data, &sub)
-		if err != nil {
-			return err
-		}
-
 		vc.Type = append(vc.Type, content.Type.String())
-		vc.CredentialSubject = sub
+		vc.CredentialSubject = content.Content
 
 		return nil
 	}

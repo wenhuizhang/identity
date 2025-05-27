@@ -66,12 +66,12 @@ type EnvelopedCredential struct {
 }
 
 // CredentialContent represents the content of a Verifiable Credential.
-type CredentialContent[T CredentialSubject] struct {
+type CredentialContent struct {
 	// Type specifies the type of the content of the credential.
 	Type CredentialContentType `json:"content_type,omitempty"`
 
 	// The content representation in JSON-LD format.
-	Content T `json:"content,omitempty"`
+	Content map[string]any `json:"content,omitempty" protobuf:"google.protobuf.Struct,2,opt,name=content"`
 }
 
 // CredentialSchema represents the credentialSchema property of a Verifiable Credential.
@@ -122,7 +122,7 @@ type VerifiableCredential struct {
 	Issuer string `json:"issuer"`
 
 	// https://www.w3.org/TR/vc-data-model/#credential-subject
-	CredentialSubject map[string]any `json:"credential_subject"`
+	CredentialSubject map[string]any `json:"credential_subject" protobuf:"google.protobuf.Struct,4,opt,name=content"`
 
 	// https://www.w3.org/TR/vc-data-model/#identifiers
 	ID string `json:"id,omitempty"`
@@ -166,6 +166,9 @@ type BadgeClaims struct {
 	Badge string `json:"badge"`
 }
 
-func (c BadgeClaims) GetID() string {
-	return c.ID
+func (c *BadgeClaims) ToMap() map[string]any {
+	return map[string]any{
+		"id":    c.ID,
+		"badge": c.Badge,
+	}
 }

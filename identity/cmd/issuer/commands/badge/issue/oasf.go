@@ -83,14 +83,19 @@ var IssueOasfCmd = &cobra.Command{
 			return
 		}
 
+		claims := vctypes.BadgeClaims{
+			ID:    cache.MetadataId,
+			Badge: string(badgeContentData),
+		}
+
 		badgeId, err := badgeService.IssueBadge(
 			cache.VaultId,
 			cache.KeyID,
 			cache.IssuerId,
 			cache.MetadataId,
-			&vctypes.CredentialContent[vctypes.BadgeClaims]{
+			&vctypes.CredentialContent{
 				Type:    vctypes.CREDENTIAL_CONTENT_TYPE_AGENT_BADGE,
-				Content: vctypes.BadgeClaims{Badge: string(badgeContentData)},
+				Content: claims.ToMap(),
 			},
 			prvKey,
 		)
