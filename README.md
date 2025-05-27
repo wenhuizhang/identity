@@ -38,6 +38,7 @@ To run the `Node Backend` the `Issuer CLI`, and the `Samples` locally, you need 
 - [Make](https://www.gnu.org/software/make/)
 - [Ollama](https://ollama.com/download)
 - [Python](https://www.python.org/downloads/) 3.12 or later
+- [Okta CLI](https://cli.okta.com/manual/#installation)
 
 ### Step 1: Install the Issuer CLI
 
@@ -83,18 +84,23 @@ identity vault create file -f /path/to/keys.json -n "My Vault"
 
 ### Step 6: Register as an Issuer
 
-For this quick start we will use Okta as an IdP to create an application for the Issuer. Within Okta, perform the following steps:
+For this quick start we will use Okta as an IdP to create an application for the Issuer:
 
-- Create a new "API Services" app integration
-- Disable the "Proof of possession" option for the app integration
-- Add a default scope to the authorization server
-- Add an access policy to the authorization server that allows access to the application
+1. Run the following command from the root repository to create a new Okta application:
 
-Register the Issuer using the `Issuer CLI` and the environment variables from the previous step:
+   ```bash
+   ./demo/scripts/create_okta_app
+   ```
 
-```bash
-identity issuer register -o "My Organization" -c "<CLIENT_ID>" -s "<CLIENT_SECRET>" -u "<ISSUER_URL>"
-```
+2. In the interactive prompt, choose the following options:
+
+   `> 4: Service (Machine-to-Machine)`, `> 5: Other`
+
+3. Register the Issuer using the `Issuer CLI` and the environment variables from the previous step:
+
+   ```bash
+   identity issuer register -o "My Organization" -c "<OKTA_OAUTH2_CLIENT_ID>" -s "<OKTA_OAUTH2_CLIENT_SECRET>" -u "<OKTA_OAUTH2_ISSUER>"
+   ```
 
 > [!NOTE]
 > You can now access the `Issuer's Well-Known Public Key` at [`http://localhost:4000/issuer/{common_name}/.well-known/jwks.json`](http://localhost:4000/issuer/{common_name}/.well-known/jwks.json),
@@ -102,18 +108,23 @@ identity issuer register -o "My Organization" -c "<CLIENT_ID>" -s "<CLIENT_SECRE
 
 ### Step 7: Generate metadata for an MCP Server
 
-Create a second application for the MCP Server metadata using the Okta. Within Okta, perform the following steps:
+Create a second application for the MCP Server metadata using the Okta, similar to the previous step:
 
-- Create a new "API Services" app integration
-- Disable the "Proof of possession" option for the app integration
-- Add a default scope to the authorization server
-- Add an access policy to the authorization server that allows access to the application
+1. Run the following command from the root repository to create a new Okta application:
 
-Generate metadata for the MCP Server using the `Issuer CLI` and the environment variables from the previous step:
+   ```bash
+   ./demo/scripts/create_okta_app
+   ```
 
-```bash
-identity metadata generate -i "<CLIENT_ID>" -s "<CLIENT_SECRET>" -u "<ISSUER_URL>"
-```
+2. In the interactive prompt, choose the following options:
+
+   `> 4: Service (Machine-to-Machine)`, `> 5: Other`
+
+3. Generate metadata for the MCP Server using the `Issuer CLI` and the environment variables from the previous step:
+
+   ```bash
+   identity metadata generate -i "<OKTA_OAUTH2_CLIENT_ID>" -s "<OKTA_OAUTH2_CLIENT_SECRET>" -u "<OKTA_OAUTH2_ISSUER>"
+   ```
 
 ### Step 8: Issue and Publish a Badge for the MCP Server
 
