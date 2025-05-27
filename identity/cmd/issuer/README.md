@@ -39,7 +39,11 @@ identity [command] [subcommand] [flags]
 #### Step 1: Create a vault to store cryptographic keys
 
 ```bash
-identity vault create file -f /path/to/keys.json -n "My Vault"
+# Configure a vault to store cryptographic keys
+identity vault create file -f /path/to/vault.json -n "My Vault"
+
+# Generate a new key pair and store it in the vault
+identity vault key generate
 ```
 
 #### Step 2: Register as an issuer
