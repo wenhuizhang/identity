@@ -101,6 +101,7 @@ var HashicorpCmd = &cobra.Command{
 	},
 }
 
+//nolint:lll // Allow long lines for CLI
 func init() {
 	HashicorpCmd.Flags().StringVarP(&hashicorpCmdIn.Address, "address", "a", "", "The address of the HashiCorp Vault instance")
 	HashicorpCmd.Flags().StringVarP(&hashicorpCmdIn.Token, "token", "t", "", "The token to authenticate with the HashiCorp Vault instance")

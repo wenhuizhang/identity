@@ -56,18 +56,36 @@ var keyGenerateCmd = &cobra.Command{
 
 		switch vault.Type {
 		case vaulttypes.VaultTypeFile:
+			fileVault, ok := vault.Config.(*vaulttypes.VaultFile)
+			if !ok {
+				fmt.Fprintf(os.Stderr, "Error: vault config is not of type VaultFile\n")
+				return
+			}
 			fileConfig := keystore.FileStorageConfig{
-				FilePath: vault.Config.(*vaulttypes.VaultFile).FilePath,
+				FilePath: fileVault.FilePath,
 			}
 			service, err = keystore.NewKeyService(keystore.FileStorage, fileConfig)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "Error creating key service: %v\n", err)
+				return
+			}
 
 		case vaulttypes.VaultTypeHashicorp:
+			hashicorpVault, ok := vault.Config.(*vaulttypes.VaultHashicorp)
+			if !ok {
+				fmt.Fprintf(os.Stderr, "Error: vault config is not of type VaultHashicorp\n")
+				return
+			}
 			hashicorpConfig := keystore.VaultStorageConfig{
-				Address:   vault.Config.(*vaulttypes.VaultHashicorp).Address,
-				Token:     vault.Config.(*vaulttypes.VaultHashicorp).Token,
-				Namespace: vault.Config.(*vaulttypes.VaultHashicorp).Namespace,
+				Address:   hashicorpVault.Address,
+				Token:     hashicorpVault.Token,
+				Namespace: hashicorpVault.Namespace,
 			}
 			service, err = keystore.NewKeyService(keystore.VaultStorage, hashicorpConfig)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "Error creating key service: %v\n", err)
+				return
+			}
 
 		default:
 			fmt.Fprintf(os.Stderr, "Unsupported vault type: %s\n", vault.Type)

@@ -78,7 +78,9 @@ var metadataGenerateCmd = &cobra.Command{
 			IssuerUrl:    genCmdIn.IdpIssuerURL,
 		}
 
-		metadataId, err := metadataService.GenerateMetadata(cmd.Context(), cache.VaultId, cache.KeyID, cache.IssuerId, &idpConfig)
+		metadataId, err := metadataService.GenerateMetadata(
+			cmd.Context(), cache.VaultId, cache.KeyID, cache.IssuerId, &idpConfig,
+		)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error generating metadata: %v\n", err)
 			return

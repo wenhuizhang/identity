@@ -41,7 +41,6 @@ func (c *Cache) ValidateMetadataId() error {
 	return nil
 }
 
-//nolint:lll // Allow long lines for CLI
 func (c *Cache) ValidateBadgeId() error {
 	if c.BadgeId == "" {
 		return fmt.Errorf("no badge found in the local configuration. Please load an existing badge or issue a new badge")
