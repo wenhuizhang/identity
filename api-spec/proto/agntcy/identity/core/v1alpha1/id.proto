@@ -116,8 +116,3 @@ message VerificationMethod {
   // The public key used for the verification method.
   optional Jwk public_key_jwk = 2;
 }
-optional string id = 1;
-
-  // The public key used for the verification method.
-  optional Jwk public_key_jwk = 2;
-}

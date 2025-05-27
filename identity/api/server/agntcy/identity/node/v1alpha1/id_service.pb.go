@@ -243,7 +243,7 @@ const file_agntcy_identity_node_v1alpha1_id_service_proto_rawDesc = "" +
 	"\bGenerate\x12..agntcy.identity.node.v1alpha1.GenerateRequest\x1a/.agntcy.identity.node.v1alpha1.GenerateResponse\"}\x92AZ\x12LGenerate an Id and its corresponding ResolverMetadata for a specified Issuer*\n" +
 	"GenerateId\x82\xd3\xe4\x93\x02\x1a:\x01*\"\x15/v1alpha1/id/generate\x12\xcc\x01\n" +
 	"\aResolve\x12-.agntcy.identity.node.v1alpha1.ResolveRequest\x1a..agntcy.identity.node.v1alpha1.ResolveResponse\"b\x92A@\x123Resolve an Id to its corresponding ResolverMetadata*\tResolveId\x82\xd3\xe4\x93\x02\x19:\x01*\"\x14/v1alpha1/id/resolve\x1a\x0e\x92A\v\n" +
-	"\tIdServiceBSZQgithub.com/agntcy/identity/api/agntcy/identity/node/v1alpha1;identity_node_sdk_gob\x06proto3"
+	"\tIdServiceBZZXgithub.com/agntcy/identity/api/server/agntcy/identity/node/v1alpha1;identity_node_sdk_gob\x06proto3"
 
 var (
 	file_agntcy_identity_node_v1alpha1_id_service_proto_rawDescOnce sync.Once

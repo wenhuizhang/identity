@@ -28,11 +28,11 @@ var File_agntcy_identity_node_v1alpha1_openapi_proto protoreflect.FileDescriptor
 
 const file_agntcy_identity_node_v1alpha1_openapi_proto_rawDesc = "" +
 	"\n" +
-	"+agntcy/identity/node/v1alpha1/openapi.proto\x12\x1dagntcy.identity.node.v1alpha1\x1a\x1bopenapiv3/annotations.protoB\xfd\x01\xbaG\xa6\x01\x12p\n" +
+	"+agntcy/identity/node/v1alpha1/openapi.proto\x12\x1dagntcy.identity.node.v1alpha1\x1a\x1bopenapiv3/annotations.protoB\x84\x02\xbaG\xa6\x01\x12p\n" +
 	"\rIdentity Node\x12\rIdentity Node\"F\n" +
 	"\vAgntcy Team\x12\"https://github.com/agntcy/identity\x1a\x13identity@agntcy.org2\bv1alpha1\x1a(\n" +
 	"\x13http://0.0.0.0:4000\x12\x11Local environment*\x062\x02\n" +
-	"\x00:\x002\x00ZQgithub.com/agntcy/identity/api/agntcy/identity/node/v1alpha1;identity_node_sdk_gob\x06proto3"
+	"\x00:\x002\x00ZXgithub.com/agntcy/identity/api/server/agntcy/identity/node/v1alpha1;identity_node_sdk_gob\x06proto3"
 
 var file_agntcy_identity_node_v1alpha1_openapi_proto_goTypes = []any{}
 var file_agntcy_identity_node_v1alpha1_openapi_proto_depIdxs = []int32{
