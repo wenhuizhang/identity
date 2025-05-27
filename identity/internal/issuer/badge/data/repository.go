@@ -8,8 +8,8 @@ import (
 )
 
 type BadgeRepository interface {
-	AddBadge(vaultId, issuerId, metadataId string, envelopedCredential *internalIssuerTypes.Badge) (string, error)
-	GetAllBadges(vaultId, issuerId, metadataId string) ([]*internalIssuerTypes.Badge, error)
-	GetBadge(vaultId, issuerId, metadataId, badgeId string) (*internalIssuerTypes.Badge, error)
-	RemoveBadge(vaultId, issuerId, metadataId, badgeId string) error
+	AddBadge(vaultId, keyId, issuerId, metadataId string, envelopedCredential *internalIssuerTypes.Badge) (string, error)
+	GetAllBadges(vaultId, keyId, issuerId, metadataId string) ([]*internalIssuerTypes.Badge, error)
+	GetBadge(vaultId, keyId, issuerId, metadataId, badgeId string) (*internalIssuerTypes.Badge, error)
+	RemoveBadge(vaultId, keyId, issuerId, metadataId, badgeId string) error
 }

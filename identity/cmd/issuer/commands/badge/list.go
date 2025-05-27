@@ -28,7 +28,7 @@ var badgeListCmd = &cobra.Command{
 			return
 		}
 
-		badges, err := badgeService.GetAllBadges(cache.VaultId, cache.IssuerId, cache.MetadataId)
+		badges, err := badgeService.GetAllBadges(cache.VaultId, cache.KeyID, cache.IssuerId, cache.MetadataId)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error listing badges: %v\n", err)
 			return

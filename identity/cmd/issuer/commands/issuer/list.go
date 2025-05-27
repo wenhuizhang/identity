@@ -30,7 +30,7 @@ var issuerListCmd = &cobra.Command{
 			return
 		}
 
-		issuers, err := issuerService.GetAllIssuers(cache.VaultId)
+		issuers, err := issuerService.GetAllIssuers(cache.VaultId, cache.KeyID)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error listing issuers: %v\n", err)
 			return

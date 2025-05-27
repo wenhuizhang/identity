@@ -29,7 +29,7 @@ var metadataListCmd = &cobra.Command{
 			return
 		}
 
-		allMetadata, err := metadataService.GetAllMetadata(cache.VaultId, cache.IssuerId)
+		allMetadata, err := metadataService.GetAllMetadata(cache.VaultId, cache.KeyID, cache.IssuerId)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error listing metadata: %v\n", err)
 			return

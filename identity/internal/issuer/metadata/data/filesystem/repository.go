@@ -22,8 +22,8 @@ func NewMetadataFilesystemRepository() data.MetadataRepository {
 	return &metadataFilesystemRepository{}
 }
 
-func getMetadataDirectory(vaultId, issuerId string) (string, error) {
-	issuerIdDir, err := issuerFilesystemRepository.GetIssuerIdDirectory(vaultId, issuerId)
+func getMetadataDirectory(vaultId, keyId, issuerId string) (string, error) {
+	issuerIdDir, err := issuerFilesystemRepository.GetIssuerIdDirectory(vaultId, keyId, issuerId)
 	if err != nil {
 		return "", err
 	}
@@ -31,8 +31,8 @@ func getMetadataDirectory(vaultId, issuerId string) (string, error) {
 	return filepath.Join(issuerIdDir, "metadata"), nil
 }
 
-func GetMetadataIdDirectory(vaultId, issuerId, metadataId string) (string, error) {
-	metadataDir, err := getMetadataDirectory(vaultId, issuerId)
+func GetMetadataIdDirectory(vaultId, keyId, issuerId, metadataId string) (string, error) {
+	metadataDir, err := getMetadataDirectory(vaultId, keyId, issuerId)
 	if err != nil {
 		return "", err
 	}
@@ -40,8 +40,8 @@ func GetMetadataIdDirectory(vaultId, issuerId, metadataId string) (string, error
 	return filepath.Join(metadataDir, metadataId), nil
 }
 
-func GetMetadataFilePath(vaultId, issuerId, metadataId string) (string, error) {
-	metadataIdDir, err := GetMetadataIdDirectory(vaultId, issuerId, metadataId)
+func GetMetadataFilePath(vaultId, keyId, issuerId, metadataId string) (string, error) {
+	metadataIdDir, err := GetMetadataIdDirectory(vaultId, keyId, issuerId, metadataId)
 	if err != nil {
 		return "", err
 	}
@@ -50,9 +50,9 @@ func GetMetadataFilePath(vaultId, issuerId, metadataId string) (string, error) {
 }
 
 func (r *metadataFilesystemRepository) AddMetadata(
-	vaultId, issuerId string, metadata *types.Metadata,
+	vaultId, keyId, issuerId string, metadata *types.Metadata,
 ) (string, error) {
-	metadataDir, err := getMetadataDirectory(vaultId, issuerId)
+	metadataDir, err := getMetadataDirectory(vaultId, keyId, issuerId)
 	if err != nil {
 		return "", err
 	}
@@ -62,7 +62,7 @@ func (r *metadataFilesystemRepository) AddMetadata(
 	}
 
 	// Create metadata ID directory
-	metadataIdDir, err := GetMetadataIdDirectory(vaultId, issuerId, metadata.ID)
+	metadataIdDir, err := GetMetadataIdDirectory(vaultId, keyId, issuerId, metadata.ID)
 	if err != nil {
 		return "", err
 	}
@@ -72,7 +72,7 @@ func (r *metadataFilesystemRepository) AddMetadata(
 	}
 
 	// Save metadata to file
-	metadataFilePath, err := GetMetadataFilePath(vaultId, issuerId, metadata.ID)
+	metadataFilePath, err := GetMetadataFilePath(vaultId, keyId, issuerId, metadata.ID)
 	if err != nil {
 		return "", err
 	}
@@ -91,10 +91,10 @@ func (r *metadataFilesystemRepository) AddMetadata(
 }
 
 func (r *metadataFilesystemRepository) GetAllMetadata(
-	vaultId, issuerId string,
+	vaultId, keyId, issuerId string,
 ) ([]*types.Metadata, error) {
 	// Get the metadata directory
-	metadataDir, err := getMetadataDirectory(vaultId, issuerId)
+	metadataDir, err := getMetadataDirectory(vaultId, keyId, issuerId)
 	if err != nil {
 		return nil, err
 	}
@@ -110,7 +110,7 @@ func (r *metadataFilesystemRepository) GetAllMetadata(
 
 	for _, file := range files {
 		if file.IsDir() {
-			metadata, err := r.GetMetadata(vaultId, issuerId, file.Name())
+			metadata, err := r.GetMetadata(vaultId, keyId, issuerId, file.Name())
 			if err != nil {
 				return nil, err
 			}
@@ -124,10 +124,10 @@ func (r *metadataFilesystemRepository) GetAllMetadata(
 }
 
 func (r *metadataFilesystemRepository) GetMetadata(
-	vaultId, issuerId, metadataId string,
+	vaultId, keyId, issuerId, metadataId string,
 ) (*types.Metadata, error) {
 	// Get the metadata file path
-	metadataFilePath, err := GetMetadataFilePath(vaultId, issuerId, metadataId)
+	metadataFilePath, err := GetMetadataFilePath(vaultId, keyId, issuerId, metadataId)
 	if err != nil {
 		return nil, err
 	}
@@ -147,9 +147,9 @@ func (r *metadataFilesystemRepository) GetMetadata(
 	return &metadata, nil
 }
 
-func (r *metadataFilesystemRepository) RemoveMetadata(vaultId, issuerId, metadataId string) error {
+func (r *metadataFilesystemRepository) RemoveMetadata(vaultId, keyId, issuerId, metadataId string) error {
 	// Get the metadata directory
-	metadataIdDir, err := GetMetadataIdDirectory(vaultId, issuerId, metadataId)
+	metadataIdDir, err := GetMetadataIdDirectory(vaultId, keyId, issuerId, metadataId)
 	if err != nil {
 		return err
 	}

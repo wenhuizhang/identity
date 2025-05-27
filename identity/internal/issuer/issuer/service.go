@@ -17,10 +17,10 @@ import (
 )
 
 type IssuerService interface {
-	RegisterIssuer(ctx context.Context, vaultId string, issuer *types.Issuer) (string, error)
-	GetAllIssuers(vaultId string) ([]*types.Issuer, error)
-	GetIssuer(vaultId, issuerId string) (*types.Issuer, error)
-	ForgetIssuer(vaultId, issuerId string) error
+	RegisterIssuer(ctx context.Context, vaultId, keyId string, issuer *types.Issuer) (string, error)
+	GetAllIssuers(vaultId, keyId string) ([]*types.Issuer, error)
+	GetIssuer(vaultId, keyId, issuerId string) (*types.Issuer, error)
+	ForgetIssuer(vaultId, keyId, issuerId string) error
 }
 
 type issuerService struct {
@@ -43,7 +43,7 @@ func NewIssuerService(
 
 func (s *issuerService) RegisterIssuer(
 	ctx context.Context,
-	vaultId string,
+	vaultId, keyId string,
 	issuer *types.Issuer,
 ) (string, error) {
 	// Check connection to identity node
@@ -78,7 +78,7 @@ func (s *issuerService) RegisterIssuer(
 		return "", err
 	}
 
-	issuerId, err := s.issuerRepository.AddIssuer(vaultId, issuer)
+	issuerId, err := s.issuerRepository.AddIssuer(vaultId, keyId, issuer)
 	if err != nil {
 		return "", err
 	}
@@ -86,8 +86,8 @@ func (s *issuerService) RegisterIssuer(
 	return issuerId, nil
 }
 
-func (s *issuerService) GetAllIssuers(vaultId string) ([]*types.Issuer, error) {
-	issuers, err := s.issuerRepository.GetAllIssuers(vaultId)
+func (s *issuerService) GetAllIssuers(vaultId, keyId string) ([]*types.Issuer, error) {
+	issuers, err := s.issuerRepository.GetAllIssuers(vaultId, keyId)
 	if err != nil {
 		return nil, err
 	}
@@ -95,8 +95,8 @@ func (s *issuerService) GetAllIssuers(vaultId string) ([]*types.Issuer, error) {
 	return issuers, nil
 }
 
-func (s *issuerService) GetIssuer(vaultId, issuerId string) (*types.Issuer, error) {
-	issuer, err := s.issuerRepository.GetIssuer(vaultId, issuerId)
+func (s *issuerService) GetIssuer(vaultId, keyId, issuerId string) (*types.Issuer, error) {
+	issuer, err := s.issuerRepository.GetIssuer(vaultId, keyId, issuerId)
 	if err != nil {
 		return nil, err
 	}
@@ -104,8 +104,8 @@ func (s *issuerService) GetIssuer(vaultId, issuerId string) (*types.Issuer, erro
 	return issuer, nil
 }
 
-func (s *issuerService) ForgetIssuer(vaultId, issuerId string) error {
-	err := s.issuerRepository.RemoveIssuer(vaultId, issuerId)
+func (s *issuerService) ForgetIssuer(vaultId, keyId, issuerId string) error {
+	err := s.issuerRepository.RemoveIssuer(vaultId, keyId, issuerId)
 	if err != nil {
 		return err
 	}

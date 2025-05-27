@@ -165,7 +165,7 @@ var issuerRegisterCmd = &cobra.Command{
 			IdpConfig:       &idpConfig,
 		}
 
-		issuerId, err := issuerService.RegisterIssuer(cmd.Context(), cache.VaultId, &issuer)
+		issuerId, err := issuerService.RegisterIssuer(cmd.Context(), cache.VaultId, cache.KeyID, &issuer)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error registering as an Issuer: %v\n", err)
 			return

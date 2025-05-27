@@ -9,9 +9,9 @@ import (
 
 type MetadataRepository interface {
 	AddMetadata(
-		vaultId, issuerId string, metadata *types.Metadata,
+		vaultId, keyId, issuerId string, metadata *types.Metadata,
 	) (string, error)
-	GetAllMetadata(vaultId, issuerId string) ([]*types.Metadata, error)
-	GetMetadata(vaultId, issuerId, metadataId string) (*types.Metadata, error)
-	RemoveMetadata(vaultId, issuerId, metadataId string) error
+	GetAllMetadata(vaultId, keyId, issuerId string) ([]*types.Metadata, error)
+	GetMetadata(vaultId, keyId, issuerId, metadataId string) (*types.Metadata, error)
+	RemoveMetadata(vaultId, keyId, issuerId, metadataId string) error
 }

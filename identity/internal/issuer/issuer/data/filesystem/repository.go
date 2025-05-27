@@ -22,7 +22,7 @@ func NewIssuerFilesystemRepository() data.IssuerRepository {
 }
 
 // getIssuersDirectory returns the path to the issuers directory
-func getIssuersDirectory(vaultId string) (string, error) {
+func getIssuersDirectory(vaultId, keyId string) (string, error) {
 	vaultIdDir, err := vaultFilesystemRepository.GetVaultIdDirectory(vaultId)
 	if err != nil {
 		return "", err
@@ -32,8 +32,8 @@ func getIssuersDirectory(vaultId string) (string, error) {
 }
 
 // GetIssuerIdDirectory returns the path to the issuer ID directory
-func GetIssuerIdDirectory(vaultId, issuerId string) (string, error) {
-	issuersDir, err := getIssuersDirectory(vaultId)
+func GetIssuerIdDirectory(vaultId, keyId, issuerId string) (string, error) {
+	issuersDir, err := getIssuersDirectory(vaultId, keyId)
 	if err != nil {
 		return "", err
 	}
@@ -42,8 +42,8 @@ func GetIssuerIdDirectory(vaultId, issuerId string) (string, error) {
 }
 
 // GetIssuerFilePath returns the path to the issuer file
-func GetIssuerFilePath(vaultId, issuerId string) (string, error) {
-	issuerIdDir, err := GetIssuerIdDirectory(vaultId, issuerId)
+func GetIssuerFilePath(vaultId, keyId, issuerId string) (string, error) {
+	issuerIdDir, err := GetIssuerIdDirectory(vaultId, keyId, issuerId)
 	if err != nil {
 		return "", err
 	}
@@ -52,10 +52,10 @@ func GetIssuerFilePath(vaultId, issuerId string) (string, error) {
 }
 
 func (r *issuerFilesystemRepository) AddIssuer(
-	vaultId string, issuer *types.Issuer,
+	vaultId, keyId string, issuer *types.Issuer,
 ) (string, error) {
 	// Create idp locally in the issuer directory
-	issuersDir, err := GetIssuerIdDirectory(vaultId, issuer.ID)
+	issuersDir, err := GetIssuerIdDirectory(vaultId, keyId, issuer.ID)
 	if err != nil {
 		return "", err
 	}
@@ -64,7 +64,7 @@ func (r *issuerFilesystemRepository) AddIssuer(
 		return "", err
 	}
 
-	issuerFilePath, err := GetIssuerFilePath(vaultId, issuer.ID)
+	issuerFilePath, err := GetIssuerFilePath(vaultId, keyId, issuer.ID)
 	if err != nil {
 		return "", err
 	}
@@ -83,9 +83,9 @@ func (r *issuerFilesystemRepository) AddIssuer(
 	return issuer.ID, nil
 }
 
-func (r *issuerFilesystemRepository) GetAllIssuers(vaultId string) ([]*types.Issuer, error) {
+func (r *issuerFilesystemRepository) GetAllIssuers(vaultId, keyId string) ([]*types.Issuer, error) {
 	// Get the issuers directory
-	issuersDir, err := getIssuersDirectory(vaultId)
+	issuersDir, err := getIssuersDirectory(vaultId, keyId)
 	if err != nil {
 		return nil, err
 	}
@@ -101,7 +101,7 @@ func (r *issuerFilesystemRepository) GetAllIssuers(vaultId string) ([]*types.Iss
 
 	for _, file := range files {
 		if file.IsDir() {
-			issuer, err := r.GetIssuer(vaultId, file.Name())
+			issuer, err := r.GetIssuer(vaultId, keyId, file.Name())
 			if err != nil {
 				return nil, err
 			}
@@ -113,9 +113,9 @@ func (r *issuerFilesystemRepository) GetAllIssuers(vaultId string) ([]*types.Iss
 	return issuers, nil
 }
 
-func (r *issuerFilesystemRepository) GetIssuer(vaultId, issuerId string) (*types.Issuer, error) {
+func (r *issuerFilesystemRepository) GetIssuer(vaultId, keyId, issuerId string) (*types.Issuer, error) {
 	// Get the issuer file path
-	issuerFilePath, err := GetIssuerFilePath(vaultId, issuerId)
+	issuerFilePath, err := GetIssuerFilePath(vaultId, keyId, issuerId)
 	if err != nil {
 		return nil, err
 	}
@@ -135,9 +135,9 @@ func (r *issuerFilesystemRepository) GetIssuer(vaultId, issuerId string) (*types
 	return &issuer, nil
 }
 
-func (r *issuerFilesystemRepository) RemoveIssuer(vaultId, issuerId string) error {
+func (r *issuerFilesystemRepository) RemoveIssuer(vaultId, keyId, issuerId string) error {
 	// Get the issuer directory
-	issuerDir, err := GetIssuerIdDirectory(vaultId, issuerId)
+	issuerDir, err := GetIssuerIdDirectory(vaultId, keyId, issuerId)
 	if err != nil {
 		return err
 	}

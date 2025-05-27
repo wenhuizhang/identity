@@ -33,7 +33,7 @@ var (
 )
 
 var KeyCmd = &cobra.Command{
-	Use:   "keys",
+	Use:   "key",
 	Short: "Manage cryptographic keys for vaults",
 	Long: `
 The keys command is used to generate and manage cryptographic keys for in your vault.

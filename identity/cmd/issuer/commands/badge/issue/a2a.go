@@ -86,12 +86,13 @@ var IssueA2AWellKnownCmd = &cobra.Command{
 
 		prvKey, err := vaultSrv.RetrievePrivKey(cmd.Context(), cache.VaultId, cache.KeyID)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error retreiving public key: %v\n", err)
+			fmt.Fprintf(os.Stderr, "Error retrieving public key: %v\n", err)
 			return
 		}
 
 		badgeId, err := badgeService.IssueBadge(
 			cache.VaultId,
+			cache.KeyID,
 			cache.IssuerId,
 			cache.MetadataId,
 			&vctypes.CredentialContent[vctypes.BadgeClaims]{

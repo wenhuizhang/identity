@@ -32,15 +32,15 @@ var keyLoadCmd = &cobra.Command{
 		}
 
 		// if the key id is not set, prompt the user for it interactively
-		if showCmdIn.KeyID == "" {
+		if loadCmdIn.KeyID == "" {
 			fmt.Fprintf(os.Stderr, "Key ID: ")
-			_, err := fmt.Scanln(&showCmdIn.KeyID)
+			_, err := fmt.Scanln(&loadCmdIn.KeyID)
 			if err != nil {
 				fmt.Fprintf(os.Stderr, "Error reading key ID: %v\n", err)
 				return
 			}
 		}
-		if showCmdIn.KeyID == "" {
+		if loadCmdIn.KeyID == "" {
 			fmt.Fprintf(os.Stderr, "No key ID provided\n")
 			return
 		}
@@ -70,12 +70,12 @@ var keyLoadCmd = &cobra.Command{
 		ctx := context.Background()
 
 		// check if the key exists
-		_, err = service.RetrievePrivKey(ctx, showCmdIn.KeyID)
+		_, err = service.RetrievePrivKey(ctx, loadCmdIn.KeyID)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error retrieving private key: %v\n", err)
 			return
 		}
-		_, err = service.RetrievePubKey(ctx, showCmdIn.KeyID)
+		_, err = service.RetrievePubKey(ctx, loadCmdIn.KeyID)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error retrieving public key: %v\n", err)
 			return

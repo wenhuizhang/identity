@@ -42,7 +42,7 @@ var badgeForgetCmd = &cobra.Command{
 			return
 		}
 
-		err = badgeService.ForgetBadge(cache.VaultId, cache.IssuerId, cache.MetadataId, frgtCmdIn.BadgeID)
+		err = badgeService.ForgetBadge(cache.VaultId, cache.KeyID, cache.IssuerId, cache.MetadataId, frgtCmdIn.BadgeID)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error forgetting badge: %v\n", err)
 			return
