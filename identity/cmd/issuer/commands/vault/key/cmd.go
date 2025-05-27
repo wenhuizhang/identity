@@ -9,10 +9,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-type GenerateCmdInput struct {
-	KeyID string
-}
-
 type ShowCmdInput struct {
 	KeyID string
 }
@@ -27,9 +23,8 @@ var (
 	vaultService              = vault.NewVaultService(vaultFilesystemRepository)
 
 	// setup the vault command flags
-	generateCmdIn = &GenerateCmdInput{}
-	showCmdIn     = &ShowCmdInput{}
-	loadCmdIn     = &LoadCmdInput{}
+	showCmdIn = &ShowCmdInput{}
+	loadCmdIn = &LoadCmdInput{}
 )
 
 var KeyCmd = &cobra.Command{
@@ -41,7 +36,6 @@ The keys command is used to generate and manage cryptographic keys for in your v
 }
 
 func init() {
-	keyGenerateCmd.Flags().StringVarP(&generateCmdIn.KeyID, "key-id", "k", "", "The ID of the key to generate")
 	KeyCmd.AddCommand(keyGenerateCmd)
 
 	KeyCmd.AddCommand(keyListCmd)

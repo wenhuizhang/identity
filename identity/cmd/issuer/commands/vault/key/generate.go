@@ -12,6 +12,7 @@ import (
 	"github.com/agntcy/identity/internal/core/keystore"
 	vaulttypes "github.com/agntcy/identity/internal/issuer/vault/types"
 	"github.com/agntcy/identity/internal/pkg/joseutil"
+	"github.com/google/uuid"
 	"github.com/spf13/cobra"
 )
 
@@ -29,20 +30,6 @@ var keyGenerateCmd = &cobra.Command{
 		err = cache.ValidateForKey()
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error validating local configuration: %v\n", err)
-			return
-		}
-
-		// if the key id is not set, prompt the user for it interactively
-		if generateCmdIn.KeyID == "" {
-			fmt.Fprintf(os.Stderr, "Key ID: ")
-			_, err := fmt.Scanln(&generateCmdIn.KeyID)
-			if err != nil {
-				fmt.Fprintf(os.Stderr, "Error reading key ID: %v\n", err)
-				return
-			}
-		}
-		if generateCmdIn.KeyID == "" {
-			fmt.Fprintf(os.Stderr, "No key ID provided\n")
 			return
 		}
 
@@ -97,7 +84,9 @@ var keyGenerateCmd = &cobra.Command{
 			return
 		}
 
-		priv, err := joseutil.GenerateJWK("RS256", "sig", generateCmdIn.KeyID)
+		keyId := uuid.NewString()
+
+		priv, err := joseutil.GenerateJWK("RS256", "sig", keyId)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error generating JWK: %v\n", err)
 			return
@@ -110,9 +99,9 @@ var keyGenerateCmd = &cobra.Command{
 			return
 		}
 
-		cmd.Printf("Successfully generated key with ID: %s\n", generateCmdIn.KeyID)
+		cmd.Printf("Successfully generated key with ID: %s\n", keyId)
 
-		cache.KeyID = generateCmdIn.KeyID
+		cache.KeyID = keyId
 		err = cliCache.SaveCache(cache)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error saving local configuration: %v\n", err)
