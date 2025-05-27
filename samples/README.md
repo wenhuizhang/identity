@@ -43,6 +43,8 @@ To run the samples, follow these steps:
    docker-compose up -d
    ```
 
+3. [Optional] Test the samples using the provided [test clients](./samples/README.md#testing-the-samples).
+
 ## Testing the Samples
 
 ### A2A Agent
