@@ -29,6 +29,9 @@ do_run_okta_create_app() {
   # Create the application
   "$OKTA_BINARY" apps create --app-name="$APP_NAME" --config-file="$temp_file"
 
+  # Load output variables to environment variables
+  source "$temp_file"
+
   # Print the configuration file content
   cat "$temp_file"
 
