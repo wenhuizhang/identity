@@ -4,16 +4,13 @@
 package vault
 
 import (
-	"context"
 	"fmt"
 	"os"
 
 	cliCache "github.com/agntcy/identity/cmd/issuer/cache"
-	"github.com/agntcy/identity/internal/core/keystore"
 	"github.com/agntcy/identity/internal/issuer/vault"
 	"github.com/agntcy/identity/internal/issuer/vault/data/filesystem"
 	vaulttypes "github.com/agntcy/identity/internal/issuer/vault/types"
-	"github.com/agntcy/identity/internal/pkg/joseutil"
 	"github.com/google/uuid"
 	"github.com/spf13/cobra"
 )
@@ -25,12 +22,12 @@ var (
 
 var TxtCmd = &cobra.Command{
 	Use:   "file",
-	Short: "Create a local file with generated cryptographic keys",
+	Short: "Create a local vault file to store your cryptographic keys",
 	Run: func(cmd *cobra.Command, args []string) {
 
 		// if the file path is not set, prompt the user for it interactively
 		if filePath == "" {
-			fmt.Fprintf(os.Stderr, "File path to store the generated keys: ")
+			fmt.Fprintf(os.Stderr, "File path to store the vault: ")
 			_, err := fmt.Scanln(&filePath)
 			if err != nil {
 				fmt.Fprintf(os.Stderr, "Error reading file path: %v\n", err)
@@ -59,33 +56,6 @@ var TxtCmd = &cobra.Command{
 		vaultFilesystemRepository := filesystem.NewVaultFilesystemRepository()
 		vaultService := vault.NewVaultService(vaultFilesystemRepository)
 
-		fileStorageConfig := keystore.FileStorageConfig{
-			FilePath: filePath,
-		}
-
-		service, err := keystore.NewKeyService(keystore.FileStorage, fileStorageConfig)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error creating key service: %v\n", err)
-			return
-		}
-
-		//nolint:godox // To be fixed in the next PR
-		// TODO: should we generate a new one each time?
-		keyID := "test-rsa2"
-
-		priv, err := joseutil.GenerateJWK("RS256", "sig", keyID)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error generating JWK: %v\n", err)
-			return
-		}
-
-		ctx := context.Background()
-		err = service.SaveKey(ctx, priv.KID, priv)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error saving key: %v\n", err)
-			return
-		}
-
 		txtConfig := vaulttypes.VaultFile{
 			FilePath: filePath,
 		}
@@ -105,12 +75,11 @@ var TxtCmd = &cobra.Command{
 			return
 		}
 
-		cmd.Printf("Successfully created file vault with ID: %s\n", vaultId)
+		cmd.Printf("Successfully configured file vault with ID: %s\n", vaultId)
 
 		err = cliCache.SaveCache(
 			&cliCache.Cache{
 				VaultId: vaultId,
-				KeyID:   keyID,
 			},
 		)
 		if err != nil {

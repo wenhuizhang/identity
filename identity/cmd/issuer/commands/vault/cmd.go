@@ -4,6 +4,7 @@
 package vault
 
 import (
+	"github.com/agntcy/identity/cmd/issuer/commands/vault/key"
 	"github.com/agntcy/identity/internal/issuer/vault"
 	"github.com/agntcy/identity/internal/issuer/vault/data/filesystem"
 	"github.com/spf13/cobra"
@@ -56,4 +57,6 @@ func init() {
 
 	vaultLoadCmd.Flags().StringVarP(&loadCmdIn.VaultID, "vault-id", "v", "", "The ID of the vault to load")
 	VaultCmd.AddCommand(vaultLoadCmd)
+
+	VaultCmd.AddCommand(key.KeyCmd)
 }
