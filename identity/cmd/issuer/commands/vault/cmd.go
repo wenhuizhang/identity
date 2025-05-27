@@ -22,15 +22,28 @@ type LoadCmdInput struct {
 	VaultID string
 }
 
+type FileCmdInput struct {
+	FilePath  string
+	VaultName string
+}
+
+type HashicorpCmdInput struct {
+	Address   string
+	Token     string
+	Namespace string
+}
+
 var (
 	// setup the vault service
 	vaultFilesystemRepository = filesystem.NewVaultFilesystemRepository()
 	vaultService              = vault.NewVaultService(vaultFilesystemRepository)
 
 	// setup the vault command flags
-	showCmdIn   = &ShowCmdInput{}
-	forgetCmdIn = &ForgetCmdInput{}
-	loadCmdIn   = &LoadCmdInput{}
+	showCmdIn      = &ShowCmdInput{}
+	forgetCmdIn    = &ForgetCmdInput{}
+	loadCmdIn      = &LoadCmdInput{}
+	fileCmdIn      = &FileCmdInput{}
+	hashicorpCmdIn = &HashicorpCmdInput{}
 )
 
 var VaultCmd = &cobra.Command{
@@ -43,7 +56,8 @@ The vault command is used to configure and manage your vaults.
 
 func init() {
 	// Add the vault types to the vault connect command
-	vaultConnectCmd.AddCommand(TxtCmd)
+	vaultConnectCmd.AddCommand(FileCmd)
+	vaultConnectCmd.AddCommand(HashicorpCmd)
 
 	VaultCmd.AddCommand(vaultConnectCmd)
 

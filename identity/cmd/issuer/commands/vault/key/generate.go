@@ -54,17 +54,29 @@ var keyGenerateCmd = &cobra.Command{
 
 		var service keystore.KeyService
 
-		if vault.Type == vaulttypes.VaultTypeFile {
-
-			fileStorageConfig := keystore.FileStorageConfig{
+		switch vault.Type {
+		case vaulttypes.VaultTypeFile:
+			fileConfig := keystore.FileStorageConfig{
 				FilePath: vault.Config.(*vaulttypes.VaultFile).FilePath,
 			}
+			service, err = keystore.NewKeyService(keystore.FileStorage, fileConfig)
 
-			service, err = keystore.NewKeyService(keystore.FileStorage, fileStorageConfig)
-			if err != nil {
-				fmt.Fprintf(os.Stderr, "Error creating key service: %v\n", err)
-				return
+		case vaulttypes.VaultTypeHashicorp:
+			hashicorpConfig := keystore.VaultStorageConfig{
+				Address:   vault.Config.(*vaulttypes.VaultHashicorp).Address,
+				Token:     vault.Config.(*vaulttypes.VaultHashicorp).Token,
+				Namespace: vault.Config.(*vaulttypes.VaultHashicorp).Namespace,
 			}
+			service, err = keystore.NewKeyService(keystore.VaultStorage, hashicorpConfig)
+
+		default:
+			fmt.Fprintf(os.Stderr, "Unsupported vault type: %s\n", vault.Type)
+			return
+		}
+
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error creating key service: %v\n", err)
+			return
 		}
 
 		priv, err := joseutil.GenerateJWK("RS256", "sig", generateCmdIn.KeyID)

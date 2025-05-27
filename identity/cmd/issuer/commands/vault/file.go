@@ -15,40 +15,35 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var (
-	filePath  string
-	vaultName string
-)
-
-var TxtCmd = &cobra.Command{
+var FileCmd = &cobra.Command{
 	Use:   "file",
 	Short: "Create a local vault file to store your cryptographic keys",
 	Run: func(cmd *cobra.Command, args []string) {
 
 		// if the file path is not set, prompt the user for it interactively
-		if filePath == "" {
+		if fileCmdIn.FilePath == "" {
 			fmt.Fprintf(os.Stderr, "File path to store the vault: ")
-			_, err := fmt.Scanln(&filePath)
+			_, err := fmt.Scanln(&fileCmdIn.FilePath)
 			if err != nil {
 				fmt.Fprintf(os.Stderr, "Error reading file path: %v\n", err)
 				return
 			}
 		}
-		if filePath == "" {
+		if fileCmdIn.FilePath == "" {
 			fmt.Fprintf(os.Stderr, "No file path provided\n")
 			return
 		}
 
 		// if the vault name is not set, prompt the user for it interactively
-		if vaultName == "" {
+		if fileCmdIn.VaultName == "" {
 			fmt.Fprintf(os.Stderr, "Vault name: ")
-			_, err := fmt.Scanln(&vaultName)
+			_, err := fmt.Scanln(&fileCmdIn.VaultName)
 			if err != nil {
 				fmt.Fprintf(os.Stderr, "Error reading vault name: %v\n", err)
 				return
 			}
 		}
-		if vaultName == "" {
+		if fileCmdIn.VaultName == "" {
 			fmt.Fprintf(os.Stderr, "No vault name provided\n")
 			return
 		}
@@ -56,22 +51,22 @@ var TxtCmd = &cobra.Command{
 		vaultFilesystemRepository := filesystem.NewVaultFilesystemRepository()
 		vaultService := vault.NewVaultService(vaultFilesystemRepository)
 
-		txtConfig := vaulttypes.VaultFile{
-			FilePath: filePath,
+		fileConfig := vaulttypes.VaultFile{
+			FilePath: fileCmdIn.FilePath,
 		}
 
-		var config vaulttypes.VaultConfig = &txtConfig
+		var config vaulttypes.VaultConfig = &fileConfig
 
 		vault := vaulttypes.Vault{
 			Id:     uuid.NewString(),
-			Name:   vaultName,
+			Name:   fileCmdIn.VaultName,
 			Type:   vaulttypes.VaultTypeFile,
 			Config: config,
 		}
 
 		vaultId, err := vaultService.ConnectVault(&vault)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error creating file vault: %v\n", err)
+			fmt.Fprintf(os.Stderr, "Error configuring file vault: %v\n", err)
 			return
 		}
 
@@ -91,6 +86,6 @@ var TxtCmd = &cobra.Command{
 
 func init() {
 	// Add flags to the command
-	TxtCmd.Flags().StringVarP(&filePath, "file-path", "f", "", "Path to the file")
-	TxtCmd.Flags().StringVarP(&vaultName, "name", "n", "", "Name of the vault")
+	FileCmd.Flags().StringVarP(&fileCmdIn.FilePath, "file-path", "f", "", "Path to the file")
+	FileCmd.Flags().StringVarP(&fileCmdIn.VaultName, "name", "n", "", "Name of the vault")
 }
