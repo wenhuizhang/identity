@@ -122,7 +122,7 @@ Create a second application for the MCP Server metadata using the Okta, similar 
 1. Run the following command from the root repository to create a new Okta application:
 
    ```bash
-   ./demo/scripts/create_okta_app | export
+   ./demo/scripts/create_okta_app
    ```
 
 2. In the interactive prompt, choose the following options:
