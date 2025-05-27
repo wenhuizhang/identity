@@ -8,14 +8,14 @@ import (
 	"errors"
 	"net/url"
 
+	idsdk "github.com/agntcy/identity/api/client/client/id_service"
+	issuersdk "github.com/agntcy/identity/api/client/client/issuer_service"
+	vcsdk "github.com/agntcy/identity/api/client/client/vc_service"
+	apimodels "github.com/agntcy/identity/api/client/models"
 	idtypes "github.com/agntcy/identity/internal/core/id/types"
 	issuertypes "github.com/agntcy/identity/internal/core/issuer/types"
 	vctypes "github.com/agntcy/identity/internal/core/vc/types"
 	"github.com/agntcy/identity/internal/pkg/converters"
-	idsdk "github.com/agntcy/identity/sdk/node-go/client/id_service"
-	issuersdk "github.com/agntcy/identity/sdk/node-go/client/issuer_service"
-	vcsdk "github.com/agntcy/identity/sdk/node-go/client/vc_service"
-	apimodels "github.com/agntcy/identity/sdk/node-go/models"
 	httptransport "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
 )

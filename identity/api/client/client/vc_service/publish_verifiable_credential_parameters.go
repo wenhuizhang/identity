@@ -15,7 +15,7 @@ import (
 	cr "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
 
-	"github.com/agntcy/identity/sdk/node-go/models"
+	"github.com/agntcy/identity/api/client/models"
 )
 
 // NewPublishVerifiableCredentialParams creates a new PublishVerifiableCredentialParams object,

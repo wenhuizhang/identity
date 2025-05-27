@@ -7,7 +7,7 @@
 # Globals
 ROOT_DIR="/identity"
 OUT_DIR="$ROOT_DIR/out"
-SDK_DIR="sdk/node-go"
+SDK_DIR="/identity/api/client"
 SPEC_DIR="$OUT_DIR/api-spec"
 SWAGGER_DIR="generated"
 PLATFORM_V1ALPHA1_PROTO_PATH="proto/agntcy/identity/node/v1alpha1"
