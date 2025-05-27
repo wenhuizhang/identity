@@ -92,7 +92,7 @@ var IssueA2AWellKnownCmd = &cobra.Command{
 
 		claims := vctypes.BadgeClaims{
 			ID:    cache.MetadataId,
-			Badge: string(agentCard),
+			Badge: agentCard,
 		}
 
 		badgeId, err := badgeService.IssueBadge(

@@ -96,7 +96,7 @@ if [ -n "${packages_comma_separated}" ]; then
     if grep -q "GoogleStruct" "$protofile"; then
       sed -i 's/optional GoogleStruct/optional \.google\.protobuf\.Struct/g' "$protofile"
       sed -i '/message GoogleStruct {/,/}/d' "$protofile"
-      echo -e "\nimport \"google/protobuf/struct.proto\";\n" >> "$protofile"
+      echo "import \"google/protobuf/struct.proto\";" >> "$protofile"
     fi
 
     cp "local/${package}/generated.proto" "local/output/${module_name}.proto"
