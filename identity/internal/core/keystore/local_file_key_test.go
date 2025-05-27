@@ -5,6 +5,7 @@ package keystore_test
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"testing"
 
@@ -102,4 +103,68 @@ func TestNewKeyService_InvalidConfig(t *testing.T) {
 
 	_, err = keystore.NewKeyService(keystore.FileStorage, nil)
 	assert.Error(t, err, "Should error when using nil config")
+}
+
+func TestLocalFileKeyService_DeleteAndList(t *testing.T) {
+	t.Parallel()
+
+	filePath := tempFilePath()
+	defer os.Remove(filePath) // This will clean up the file regardless of test outcome
+
+	config := keystore.FileStorageConfig{
+		FilePath: filePath,
+	}
+
+	service, err := keystore.NewKeyService(keystore.FileStorage, config)
+	assert.NoError(t, err, "Failed to create key service")
+
+	ctx := context.Background()
+
+	// Initially, there should be no keys
+	keys, err := service.ListKeys(ctx)
+	assert.NoError(t, err, "ListKeys failed")
+	assert.Empty(t, keys, "Initially there should be no keys")
+
+	// Create keys with a test prefix for identification
+	var testKeyIDs []string
+
+	for i := 1; i <= 3; i++ {
+		kid := fmt.Sprintf("test-key-%d", i)
+		testKeyIDs = append(testKeyIDs, kid)
+
+		jwk, err := joseutil.GenerateJWK("RS256", "sig", kid)
+		assert.NoError(t, err, "GenerateJWK failed")
+
+		err = service.SaveKey(ctx, jwk.KID, jwk)
+		assert.NoError(t, err, "SaveKey failed")
+	}
+
+	// Now we should have 3 keys
+	keys, err = service.ListKeys(ctx)
+	assert.NoError(t, err, "ListKeys failed")
+	assert.Len(t, keys, 3, "Should have 3 keys")
+	assert.Contains(t, keys, "test-key-1", "Should contain test-key-1")
+	assert.Contains(t, keys, "test-key-2", "Should contain test-key-2")
+	assert.Contains(t, keys, "test-key-3", "Should contain test-key-3")
+
+	// Delete one key
+	err = service.DeleteKey(ctx, "test-key-2")
+	assert.NoError(t, err, "DeleteKey failed")
+
+	// Now we should have 2 keys
+	keys, err = service.ListKeys(ctx)
+	assert.NoError(t, err, "ListKeys failed")
+	assert.Len(t, keys, 2, "Should have 2 keys")
+	assert.Contains(t, keys, "test-key-1", "Should contain test-key-1")
+	assert.Contains(t, keys, "test-key-3", "Should contain test-key-3")
+	assert.NotContains(t, keys, "test-key-2", "Should not contain test-key-2")
+
+	// Delete non-existent key should fail
+	err = service.DeleteKey(ctx, "non-existent")
+	assert.Error(t, err, "DeleteKey should fail for non-existent key")
+
+	// Clean up remaining test keys
+	for _, kid := range testKeyIDs {
+		_ = service.DeleteKey(ctx, kid) // Ignore errors during cleanup
+	}
 }

@@ -133,3 +133,55 @@ func (s *LocalFileKeyService) readAll() ([]types.Jwk, error) {
 
 	return jwks, nil
 }
+
+func (s *LocalFileKeyService) DeleteKey(ctx context.Context, id string) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	jwks, err := s.readAll()
+	if err != nil {
+		return err
+	}
+
+	found := false
+	filteredJwks := make([]types.Jwk, 0, len(jwks))
+
+	for i := range jwks {
+		if jwks[i].KID != id {
+			filteredJwks = append(filteredJwks, jwks[i])
+		} else {
+			found = true
+		}
+	}
+
+	if !found {
+		return errors.New("key not found")
+	}
+
+	file, err := os.OpenFile(s.FilePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, filePerm)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	encoder := json.NewEncoder(file)
+
+	return encoder.Encode(filteredJwks)
+}
+
+func (s *LocalFileKeyService) ListKeys(ctx context.Context) ([]string, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	jwks, err := s.readAll()
+	if err != nil {
+		return nil, err
+	}
+
+	keyIDs := make([]string, 0, len(jwks))
+	for i := range jwks {
+		keyIDs = append(keyIDs, jwks[i].KID)
+	}
+
+	return keyIDs, nil
+}

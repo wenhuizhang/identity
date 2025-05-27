@@ -19,4 +19,10 @@ type KeyService interface {
 
 	// RetrieveKey retrieves a private JWK by its ID.
 	RetrievePrivKey(ctx context.Context, id string) (*types.Jwk, error)
+
+	// DeleteKey deletes a JWK by its ID.
+	DeleteKey(ctx context.Context, id string) error
+
+	// ListKeys returns all available key IDs.
+	ListKeys(ctx context.Context) ([]string, error)
 }

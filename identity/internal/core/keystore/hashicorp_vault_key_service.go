@@ -67,6 +67,61 @@ func (s *VaultKeyService) RetrievePrivKey(ctx context.Context, id string) (*type
 	return s.retrieveKey(ctx, id)
 }
 
+func (s *VaultKeyService) DeleteKey(ctx context.Context, id string) error {
+	metadataPath := path.Join(s.mountPath, "metadata", s.keyBasePath, id)
+
+	dataPath := buildKeyPath(s.mountPath, s.keyBasePath, id)
+
+	secret, err := s.client.Logical().ReadWithContext(ctx, dataPath)
+	if err != nil {
+		return fmt.Errorf("failed to check if key exists: %w", err)
+	}
+
+	if secret == nil || secret.Data == nil {
+		return errors.New("key not found")
+	}
+
+	_, err = s.client.Logical().DeleteWithContext(ctx, metadataPath)
+	if err != nil {
+		return fmt.Errorf("failed to delete key from Vault: %w", err)
+	}
+
+	return nil
+}
+
+func (s *VaultKeyService) ListKeys(ctx context.Context) ([]string, error) {
+	listPath := path.Join(s.mountPath, "metadata", s.keyBasePath)
+
+	secret, err := s.client.Logical().ListWithContext(ctx, listPath)
+	if err != nil {
+		return nil, fmt.Errorf("failed to list keys in Vault: %w", err)
+	}
+
+	if secret == nil || secret.Data == nil {
+		return []string{}, nil
+	}
+
+	keysRaw, ok := secret.Data["keys"]
+	if !ok {
+		return []string{}, nil
+	}
+
+	keysInterface, ok := keysRaw.([]interface{})
+	if !ok {
+		return nil, errors.New("unexpected format for keys list")
+	}
+
+	keys := make([]string, 0, len(keysInterface))
+
+	for _, k := range keysInterface {
+		if keyStr, ok := k.(string); ok {
+			keys = append(keys, keyStr)
+		}
+	}
+
+	return keys, nil
+}
+
 func (s *VaultKeyService) retrieveKey(ctx context.Context, id string) (*types.Jwk, error) {
 	fullPath := buildKeyPath(s.mountPath, s.keyBasePath, id)
 
