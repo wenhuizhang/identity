@@ -56,9 +56,9 @@ The issuer command is used to register as an Issuer and manage issuer configurat
 //nolint:lll // Allow long lines for CLI
 func init() {
 	issuerRegisterCmd.Flags().StringVarP(&registerCmdIn.IdentityNodeURL, "identity-node-address", "i", "", "Identity node address")
-	issuerRegisterCmd.Flags().StringVarP(&registerCmdIn.ClientID, "client-id", "c", "", "IdP client ID")
-	issuerRegisterCmd.Flags().StringVarP(&registerCmdIn.ClientSecret, "client-secret", "s", "", "IdP client secret")
-	issuerRegisterCmd.Flags().StringVarP(&registerCmdIn.IssuerURL, "issuer-url", "u", "", "IdP issuer URL")
+	issuerRegisterCmd.Flags().StringVarP(&registerCmdIn.ClientID, "idp-client-id", "c", "", "IdP client ID")
+	issuerRegisterCmd.Flags().StringVarP(&registerCmdIn.ClientSecret, "idp-client-secret", "s", "", "IdP client secret")
+	issuerRegisterCmd.Flags().StringVarP(&registerCmdIn.IssuerURL, "idp-issuer-url", "u", "", "IdP issuer URL")
 	issuerRegisterCmd.Flags().StringVarP(&registerCmdIn.Organization, "organization", "o", "", "Organization name")
 	issuerRegisterCmd.Flags().StringVarP(&registerCmdIn.SubOrganization, "sub-organization", "b", "", "Sub-organization name")
 	IssuerCmd.AddCommand(issuerRegisterCmd)

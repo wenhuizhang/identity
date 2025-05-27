@@ -71,7 +71,7 @@ var TxtCmd = &cobra.Command{
 
 		//nolint:godox // To be fixed in the next PR
 		// TODO: should we generate a new one each time?
-		keyID := "test-rsa"
+		keyID := "test-rsa2"
 
 		priv, err := joseutil.GenerateJWK("RS256", "sig", keyID)
 		if err != nil {
