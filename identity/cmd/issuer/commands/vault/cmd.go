@@ -31,6 +31,7 @@ type HashicorpCmdInput struct {
 	Address   string
 	Token     string
 	Namespace string
+	VaultName string
 }
 
 var (

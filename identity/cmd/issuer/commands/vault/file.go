@@ -87,5 +87,5 @@ var FileCmd = &cobra.Command{
 func init() {
 	// Add flags to the command
 	FileCmd.Flags().StringVarP(&fileCmdIn.FilePath, "file-path", "f", "", "Path to the file")
-	FileCmd.Flags().StringVarP(&fileCmdIn.VaultName, "name", "n", "", "Name of the vault")
+	FileCmd.Flags().StringVarP(&fileCmdIn.VaultName, "vault-name", "v", "", "Name of the vault")
 }

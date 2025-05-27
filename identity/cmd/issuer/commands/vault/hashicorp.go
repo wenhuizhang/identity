@@ -50,15 +50,27 @@ var HashicorpCmd = &cobra.Command{
 
 		// if the vault namespace is not set, prompt the user for it interactively
 		if hashicorpCmdIn.Namespace == "" {
-			fmt.Fprintf(os.Stderr, "Namespace to use in the HashiCorp Vault instance: ")
+			fmt.Fprintf(os.Stderr, "(Optional) Namespace to use in the HashiCorp Vault instance: ")
 			_, err := fmt.Scanln(&hashicorpCmdIn.Namespace)
-			if err != nil {
+			// If the user just presses Enter, Namespace will be "" and err will be an "unexpected newline" error.
+			// We should allow this and use the empty value.
+			if err.Error() != "unexpected newline" {
 				fmt.Fprintf(os.Stderr, "Error reading vault namespace: %v\n", err)
 				return
 			}
 		}
-		if hashicorpCmdIn.Namespace == "" {
-			fmt.Fprintf(os.Stderr, "No vault namespace provided\n")
+
+		// if the vault name is not set, prompt the user for it interactively
+		if hashicorpCmdIn.VaultName == "" {
+			fmt.Fprintf(os.Stderr, "Name of the vault: ")
+			_, err := fmt.Scanln(&hashicorpCmdIn.VaultName)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "Error reading vault name: %v\n", err)
+				return
+			}
+		}
+		if hashicorpCmdIn.VaultName == "" {
+			fmt.Fprintf(os.Stderr, "No vault name provided\n")
 			return
 		}
 
@@ -75,7 +87,7 @@ var HashicorpCmd = &cobra.Command{
 
 		vault := vaulttypes.Vault{
 			Id:     uuid.NewString(),
-			Name:   hashicorpCmdIn.Namespace,
+			Name:   hashicorpCmdIn.VaultName,
 			Type:   vaulttypes.VaultTypeHashicorp,
 			Config: config,
 		}
@@ -106,4 +118,5 @@ func init() {
 	HashicorpCmd.Flags().StringVarP(&hashicorpCmdIn.Address, "address", "a", "", "The address of the HashiCorp Vault instance")
 	HashicorpCmd.Flags().StringVarP(&hashicorpCmdIn.Token, "token", "t", "", "The token to authenticate with the HashiCorp Vault instance")
 	HashicorpCmd.Flags().StringVarP(&hashicorpCmdIn.Namespace, "namespace", "n", "", "The namespace to use in the HashiCorp Vault instance")
+	HashicorpCmd.Flags().StringVarP(&hashicorpCmdIn.VaultName, "vault-name", "v", "", "Name of the vault")
 }
