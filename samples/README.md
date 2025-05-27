@@ -2,12 +2,17 @@
 
 You can find sample code and examples in the `samples` directory.
 These samples are designed to help you understand how to use the Identity platform effectively.
+The samples are composed of a `Curency Exchange A2A Agent` leveraging a `Currency Exchange MCP Server` and an `OASF Agent Definition`.
 
 You can create and verify the following type of badges:
 
-- A2A Agent Badge based on the [A2A Agent Example](agent/a2a), based on the [A2A Agent Example](https://github.com/google/A2A/blob/main/samples/python/agents/langgraph)
-- OASF Agent Badge based on the [OASF Agent Definition Example](agent/oasf), based on the [OASF Agent Example](https://hub.agntcy.org/)
-- MCP Server Badge based on the [MCP Server Example](mcp), based on the [MCP Server Example](https://github.com/google/A2A/blob/main/samples/python/agents/langgraph)
+- A2A Agent Badge based on the [`Currency Exchange A2A Agent`](agent/a2a)
+- OASF Agent Badge based on a [OASF Agent Definition Example](agent/oasf)
+- MCP Server Badge based on the [`Currency Exchange MCP Server`](mcp)
+
+> [!NOTE]
+> These samples are based on the following [A2A Agent Example](https://github.com/google/A2A/blob/main/samples/python/agents/langgraph).
+> The `OASF Agent Definitions` could be found in the [Agent Directory](https://hub.agntcy.org/explore).
 
 ## Prerequisites
 
