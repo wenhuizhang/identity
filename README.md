@@ -138,17 +138,17 @@ Create a second application for the MCP Server metadata using the Okta, similar 
 
 ### Step 8: Issue and Publish a Badge for the MCP Server
 
-Issue a badge for the MCP Server:
+1. Issue a badge for the MCP Server:
 
-```bash
-identity badge issue mcp -u http://localhost:9090 -n "My MCP Server"
-```
+   ```bash
+   identity badge issue mcp -u http://localhost:9090 -n "My MCP Server"
+   ```
 
-Publish the badge:
+2. Publish the badge:
 
-```bash
-identity badge publish
-```
+   ```bash
+   identity badge publish
+   ```
 
 > [!NOTE]
 > You can now access the `VCs as a Well-Known` at [`http://localhost:4000/v1alpha1/vc/{client_id}/.well-known/vcs.json`](http://localhost:4000/v1alpha1/vc/{client_id}/.well-known/vcs.json),
