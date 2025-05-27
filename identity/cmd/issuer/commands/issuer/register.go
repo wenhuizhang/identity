@@ -171,7 +171,7 @@ var issuerRegisterCmd = &cobra.Command{
 			return
 		}
 
-		fmt.Fprintf(os.Stdout, "\nSuccessfully registered as an Issuer with ID: %s\n", issuerId)
+		fmt.Fprintf(os.Stdout, "\nSuccessfully registered as an Issuer with:\n- ID: %s\n- Common Name: %s\n", issuerId, commonName)
 
 		// Update the cache with the new issuer ID
 		cache.IssuerId = issuerId

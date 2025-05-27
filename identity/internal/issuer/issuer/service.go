@@ -5,7 +5,6 @@ package issuer
 
 import (
 	"context"
-	"log"
 
 	issuertypes "github.com/agntcy/identity/internal/core/issuer/types"
 	vctypes "github.com/agntcy/identity/internal/core/vc/types"
@@ -65,8 +64,6 @@ func (s *issuerService) RegisterIssuer(
 		Type:       "JWT",
 		ProofValue: token,
 	}
-
-	log.Default().Printf("Registering issuer with request: %s\n", issuer.CommonName)
 
 	client, err := s.nodeClientPrv.New(issuer.IdentityNodeURL)
 	if err != nil {
