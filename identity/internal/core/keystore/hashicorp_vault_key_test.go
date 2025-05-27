@@ -24,9 +24,11 @@ func setupVaultService(t *testing.T, uniquePath bool) (keystore.KeyService, cont
 
 	vaultAddr := os.Getenv("VAULT_ADDR")
 	vaultToken := os.Getenv("VAULT_TOKEN")
+	vaultNamespace := os.Getenv("VAULT_NAMESPACE")
 
 	require.NotEmpty(t, vaultAddr, "VAULT_ADDR environment variable must be set")
 	require.NotEmpty(t, vaultToken, "VAULT_TOKEN environment variable must be set")
+	require.NotEmpty(t, vaultNamespace, "VAULT_NAMESPACE environment variable must be set")
 
 	basePath := "test-jwks"
 
@@ -40,7 +42,7 @@ func setupVaultService(t *testing.T, uniquePath bool) (keystore.KeyService, cont
 		Token:       vaultToken,
 		MountPath:   "secret",
 		KeyBasePath: basePath,
-		Namespace:   "eticloud/apps/pyramid",
+		Namespace:   vaultNamespace,
 	}
 
 	service, err := keystore.NewKeyService(keystore.VaultStorage, config)
