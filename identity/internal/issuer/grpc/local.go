@@ -7,7 +7,7 @@ import (
 	"context"
 	"fmt"
 
-	issuerapi "github.com/agntcy/identity/api/agntcy/identity/issuer/v1alpha1"
+	issuerapi "github.com/agntcy/identity/api/server/agntcy/identity/issuer/v1alpha1"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
