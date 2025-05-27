@@ -79,7 +79,7 @@ make start_node
 1. Create a local vault to store generated cryptographic keys:
 
    ```bash
-   identity vault create file -f /path/to/vault.json -n "My Vault"
+   identity vault connect file -f ~/.identity/vault.json -v "My Vault"
    ```
 
 2. Generate a new key pair and store it in the vault:
@@ -130,7 +130,7 @@ Create a second application for the MCP Server metadata using the Okta, similar 
 3. Generate metadata for the MCP Server using the `Issuer CLI` and the environment variables from the previous step:
 
    ```bash
-   identity metadata generate -i "<OKTA_OAUTH2_CLIENT_ID>" \
+   identity metadata generate -c "<OKTA_OAUTH2_CLIENT_ID>" \
        -s "<OKTA_OAUTH2_CLIENT_SECRET>" -u "<OKTA_OAUTH2_ISSUER>"
    ```
 
@@ -139,7 +139,7 @@ Create a second application for the MCP Server metadata using the Okta, similar 
 Issue a badge for the MCP Server:
 
 ```bash
-identity badge issue mcp -u http://localhost:9090
+identity badge issue mcp -u http://localhost:9090 -n "My MCP Server"
 ```
 
 Publish the badge:
