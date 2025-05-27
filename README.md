@@ -108,11 +108,11 @@ For this quick start we will use Okta as an IdP to create an application for the
 
    ```bash
    identity issuer register -o "My Organization" \
-       -c "<OKTA_OAUTH2_CLIENT_ID>" -s "<OKTA_OAUTH2_CLIENT_SECRET>" -u "<OKTA_OAUTH2_ISSUER>"
+       -c "$OKTA_OAUTH2_CLIENT_ID" -s "$OKTA_OAUTH2_CLIENT_SECRET" -u "$OKTA_OAUTH2_ISSUER"
    ```
 
 > [!NOTE]
-> You can now access the `Issuer's Well-Known Public Key` at [`http://localhost:4000/issuer/{common_name}/.well-known/jwks.json`](http://localhost:4000/issuer/{common_name}/.well-known/jwks.json),
+> You can now access the `Issuer's Well-Known Public Key` at [`http://localhost:4000/v1alpha1/issuer/{common_name}/.well-known/jwks.json`](http://localhost:4000/v1alpha1/issuer/{common_name}/.well-known/jwks.json),
 > where `{common_name}` is the common name you provided during registration.
 
 ### Step 7: Generate metadata for an MCP Server
@@ -122,7 +122,7 @@ Create a second application for the MCP Server metadata using the Okta, similar 
 1. Run the following command from the root repository to create a new Okta application:
 
    ```bash
-   ./demo/scripts/create_okta_app
+   ./demo/scripts/create_okta_app | export
    ```
 
 2. In the interactive prompt, choose the following options:
@@ -132,8 +132,8 @@ Create a second application for the MCP Server metadata using the Okta, similar 
 3. Generate metadata for the MCP Server using the `Issuer CLI` and the environment variables from the previous step:
 
    ```bash
-   identity metadata generate -c "<OKTA_OAUTH2_CLIENT_ID>" \
-       -s "<OKTA_OAUTH2_CLIENT_SECRET>" -u "<OKTA_OAUTH2_ISSUER>"
+   identity metadata generate -c "$OKTA_OAUTH2_CLIENT_ID" \
+       -s "$OKTA_OAUTH2_CLIENT_SECRET" -u "$OKTA_OAUTH2_ISSUER"
    ```
 
 ### Step 8: Issue and Publish a Badge for the MCP Server
@@ -151,7 +151,7 @@ identity badge publish
 ```
 
 > [!NOTE]
-> You can now access the `VCs as a Well-Known` at [`http://localhost:4000/vc/{client_id}/.well-known/vcs.json`](http://localhost:4000/vc/{client_id}/.well-known/vcs.json),
+> You can now access the `VCs as a Well-Known` at [`http://localhost:4000/v1alpha1/vc/{client_id}/.well-known/vcs.json`](http://localhost:4000/v1alpha1/vc/{client_id}/.well-known/vcs.json),
 > where `{client_id}` is the client ID you provided during onboarding.
 
 ## Development
