@@ -13,7 +13,7 @@ builds:
     # Can be a path (e.g. `bin/app`) to wrap the binary in a directory.
     #
     # Default: Project directory name.
-    binary: issuer-cli
+    binary: identity
 
     # GOOS list to build for.
     # For more info refer to: https://pkg.go.dev/cmd/go#hdr-Environment_variables
