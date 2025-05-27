@@ -20,11 +20,6 @@ WORKDIR /home/web
 
 COPY --from=builder /build/identity-node .
 
-# Install ffmpeg
-RUN apk update
-RUN apk upgrade
-RUN apk add ffmpeg
-
 # Give permissions
 RUN chmod +x identity-node && \
     chown -R web:web .
