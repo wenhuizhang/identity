@@ -54,9 +54,11 @@ var HashicorpCmd = &cobra.Command{
 			_, err := fmt.Scanln(&hashicorpCmdIn.Namespace)
 			// If the user just presses Enter, Namespace will be "" and err will be an "unexpected newline" error.
 			// We should allow this and use the empty value.
-			if err.Error() != "unexpected newline" {
-				fmt.Fprintf(os.Stderr, "Error reading vault namespace: %v\n", err)
-				return
+			if err != nil {
+				if err.Error() != "unexpected newline" {
+					fmt.Fprintf(os.Stderr, "Error reading vault namespace: %v\n", err)
+					return
+				}
 			}
 		}
 
