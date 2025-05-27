@@ -40,6 +40,21 @@ for file in $type_files; do
   packages="$packages $package"
 done
 
+# go-to-protobuf doesn't support protobuf type "google.protobuf.Struct"
+# this hack will add support for that.
+for file in $type_files; do
+  if grep -q "google.protobuf.Struct" "$file"; then
+      echo "Tagging 'google.protobuf.Struct' fields..."
+      sed -i 's/google\.protobuf\.Struct/GoogleStruct/g' "$file"
+
+      if ! grep -q '^type GoogleStruct struct{}' "$file"; then
+          echo "" >> "$file"
+          echo "type GoogleStruct struct{}" >> "$file"
+          echo "Added 'type GoogleStruct struct{}' at the end of $file."
+      fi
+  fi
+done
+
 packages=$(echo "$packages" | sed 's/\s$//' | sed 's/^\s//')
 
 cd "${Identity_ROOT}/local/github.com/agntcy/identity"
@@ -75,6 +90,15 @@ if [ -n "${packages_comma_separated}" ]; then
   for package in $packages; do
     mkdir -p "local/output"
     module_name=$(get_module_name_from_package "${package}")
+    protofile="local/${package}/generated.proto"
+
+    # Patch the google.protobuf.Struct tag
+    if grep -q "GoogleStruct" "$protofile"; then
+      sed -i 's/optional GoogleStruct/optional \.google\.protobuf\.Struct/g' "$protofile"
+      sed -i '/message GoogleStruct {/,/}/d' "$protofile"
+      echo -e "\nimport \"google/protobuf/struct.proto\";\n" >> "$protofile"
+    fi
+
     cp "local/${package}/generated.proto" "local/output/${module_name}.proto"
   done
 
@@ -82,7 +106,7 @@ if [ -n "${packages_comma_separated}" ]; then
 
   for m in $protos; do
     sed -i 's/syntax = "proto2";/syntax = "proto3";/g' "${m}"
-    sed -i 's|go_package = [^ ]\+|go_package = "github.com/agntcy/identity/api/agntcy/identity/core/v1alpha1;identity_core_sdk_go";|g' "${m}"
+    sed -i 's|go_package = [^ ]\+|go_package = "github.com/agntcy/identity/api/server/agntcy/identity/core/v1alpha1;identity_core_sdk_go";|g' "${m}"
   done
 
   for package in $packages; do
@@ -107,9 +131,12 @@ echo "| |_/ / |_| | |     | |_\ \  __/ | | |  __/ | | (_| | ||  __/"
 echo "\____/ \___/\_|      \____/\___|_| |_|\___|_|  \__,_|\__\___|"
 echo ""
 
-rm -rvf "${Identity_ROOT}/code/identity/api" 2>&1 || true
+rm -rvf "${Identity_ROOT}/code/identity/api/server" 2>&1 || true
 
 cd "${Identity_ROOT}/code/api-spec"
+
+# Format
+/usr/local/bin/buf format -w
 
 # Go
 /usr/local/bin/buf generate --debug -v

@@ -68,7 +68,7 @@ type EnvelopedCredential struct {
 // CredentialContent represents the content of a Verifiable Credential.
 type CredentialContent struct {
 	// Type specifies the type of the content of the credential.
-	Type CredentialContentType `json:"content_type,omitempty"`
+	Type CredentialContentType `json:"content_type,omitempty" protobuf:"bytes,1,opt,name=content_type"`
 
 	// The content representation in JSON-LD format.
 	Content map[string]any `json:"content,omitempty" protobuf:"google.protobuf.Struct,2,opt,name=content"`
@@ -113,31 +113,31 @@ func (p *Proof) IsJWT() bool {
 // [here]: https://www.w3.org/TR/vc-data-model/
 type VerifiableCredential struct {
 	// https://www.w3.org/TR/vc-data-model/#contexts
-	Context []string `json:"context"`
+	Context []string `json:"context" protobuf:"bytes,1,opt,name=context"`
 
 	// https://www.w3.org/TR/vc-data-model/#dfn-type
-	Type []string `json:"type"`
+	Type []string `json:"type" protobuf:"bytes,2,opt,name=type"`
 
 	// https://www.w3.org/TR/vc-data-model/#issuer
-	Issuer string `json:"issuer"`
+	Issuer string `json:"issuer" protobuf:"bytes,3,opt,name=issuer"`
 
 	// https://www.w3.org/TR/vc-data-model/#credential-subject
 	CredentialSubject map[string]any `json:"credential_subject" protobuf:"google.protobuf.Struct,4,opt,name=content"`
 
 	// https://www.w3.org/TR/vc-data-model/#identifiers
-	ID string `json:"id,omitempty"`
+	ID string `json:"id,omitempty" protobuf:"bytes,5,opt,name=id"`
 
 	// https://www.w3.org/TR/vc-data-model/#issuance-date
-	IssuanceDate string `json:"issuance_date"`
+	IssuanceDate string `json:"issuance_date" protobuf:"bytes,6,opt,name=issuance_date"`
 
 	// https://www.w3.org/TR/vc-data-model/#expiration
-	ExpirationDate string `json:"expiration_date,omitempty"`
+	ExpirationDate string `json:"expiration_date,omitempty" protobuf:"bytes,7,opt,name=expiration_date"`
 
 	// https://www.w3.org/TR/vc-data-model-2.0/#data-schemas
-	CredentialSchema []*CredentialSchema `json:"credential_schema,omitempty"`
+	CredentialSchema []*CredentialSchema `json:"credential_schema,omitempty" protobuf:"bytes,8,opt,name=credential_schema"`
 
 	// https://w3id.org/security#proof
-	Proof *Proof `json:"proof,omitempty"`
+	Proof *Proof `json:"proof,omitempty" protobuf:"bytes,9,opt,name=proof"`
 }
 
 // DataModel represents the W3C Verifiable Presentation Data Model defined [here]
@@ -157,12 +157,16 @@ type VerifiablePresentation struct {
 	Proof *Proof `json:"proof,omitempty"`
 }
 
-type CredentialSubject interface {
-	GetID() string
-}
-
+// BadgeClaims represents the content of a Badge VC defined [here]
+//
+// [here]: https://spec.identity.agntcy.org/docs/vc/intro/
 type BadgeClaims struct {
-	ID    string `json:"id"`
+	// The ID as defined [here]
+	//
+	// [here]: https://www.w3.org/TR/vc-data-model/#credential-subject
+	ID string `json:"id"`
+
+	// The content of the badge
 	Badge string `json:"badge"`
 }
 

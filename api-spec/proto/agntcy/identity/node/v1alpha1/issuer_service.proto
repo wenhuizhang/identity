@@ -16,16 +16,14 @@ option go_package = "github.com/agntcy/identity/api/agntcy/identity/node/v1alpha
 
 // IssuerService is the service that provides ISSUER node operations.
 service IssuerService {
-  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_tag) = {
-    name: "IssuerService";
-  };
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_tag) = {name: "IssuerService"};
 
   // Register an issuer by providing the issuer details
   rpc Register(RegisterIssuerRequest) returns (RegisterIssuerResponse) {
     option (google.api.http) = {
-            post: "/v1alpha1/issuer/register"
-            body: "*"
-        };
+      post: "/v1alpha1/issuer/register"
+      body: "*"
+    };
 
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       operation_id: "RegisterIssuer";
@@ -33,13 +31,10 @@ service IssuerService {
     };
   }
 
-
   // Returns the well-known document content for an issuer in
   // Json Web Key Set (JWKS) format
   rpc GetWellKnown(GetIssuerWellKnownRequest) returns (GetIssuerWellKnownResponse) {
-    option (google.api.http) = {
-            get: "/v1alpha1/issuer/{common_name}/.well-known/jwks.json"
-        };
+    option (google.api.http) = {get: "/v1alpha1/issuer/{common_name}/.well-known/jwks.json"};
 
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       operation_id: "GetIssuerWellKnown";

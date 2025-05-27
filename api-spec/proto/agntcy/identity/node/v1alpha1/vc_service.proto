@@ -15,16 +15,14 @@ option go_package = "github.com/agntcy/identity/api/agntcy/identity/node/v1alpha
 
 // VC is the service that provides VC operations.
 service VcService {
-  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_tag) = {
-    name: "VcService";
-  };
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_tag) = {name: "VcService"};
 
   // Publish an issued Verifiable Credential
   rpc Publish(PublishRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-            post: "/v1alpha1/vc/publish"
-            body: "*"
-        };
+      post: "/v1alpha1/vc/publish"
+      body: "*"
+    };
 
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       operation_id: "PublishVerifiableCredential";
@@ -35,9 +33,9 @@ service VcService {
   // Verify an existing Verifiable Credential
   rpc Verify(VerifyRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-            post: "/v1alpha1/vc/verify"
-            body: "*"
-        };
+      post: "/v1alpha1/vc/verify"
+      body: "*"
+    };
 
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       operation_id: "VerifyVerifiableCredential";
@@ -47,9 +45,7 @@ service VcService {
 
   // Returns the well-known Verifiable Credentials for the specified Id
   rpc GetWellKnown(GetVcWellKnownRequest) returns (GetVcWellKnownResponse) {
-    option (google.api.http) = {
-            get: "/v1alpha1/vc/{id}/.well-known/vcs.json"
-        };
+    option (google.api.http) = {get: "/v1alpha1/vc/{id}/.well-known/vcs.json"};
 
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       operation_id: "GetVcWellKnown";
@@ -60,9 +56,9 @@ service VcService {
   // Search for Verifiable Credentials based on the specified criteria
   rpc Search(SearchRequest) returns (SearchResponse) {
     option (google.api.http) = {
-            post: "/v1alpha1/vc/search"
-            body: "*"
-        };
+      post: "/v1alpha1/vc/search"
+      body: "*"
+    };
 
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       operation_id: "SearchVerifiableCredentials";
