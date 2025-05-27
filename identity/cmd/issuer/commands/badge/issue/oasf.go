@@ -85,6 +85,7 @@ var IssueOasfCmd = &cobra.Command{
 
 		badgeId, err := badgeService.IssueBadge(
 			cache.VaultId,
+			cache.KeyID,
 			cache.IssuerId,
 			cache.MetadataId,
 			&vctypes.CredentialContent[vctypes.BadgeClaims]{

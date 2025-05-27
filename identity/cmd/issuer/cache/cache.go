@@ -11,10 +11,10 @@ import (
 
 type Cache struct {
 	VaultId    string `json:"vaultId,omitempty"`
+	KeyID      string `json:"kid,omitempty"`
 	IssuerId   string `json:"issuerId,omitempty"`
 	MetadataId string `json:"metadata,omitempty"`
 	BadgeId    string `json:"badgeId,omitempty"`
-	KeyID      string `json:"kid,omitempty"`
 }
 
 // getCacheFile returns the path to the cache file

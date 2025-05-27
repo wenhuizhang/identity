@@ -44,7 +44,7 @@ var metadataShowCmd = &cobra.Command{
 			return
 		}
 
-		metadata, err := metadataService.GetMetadata(cache.VaultId, cache.IssuerId, showCmdIn.MetadataID)
+		metadata, err := metadataService.GetMetadata(cache.VaultId, cache.KeyID, cache.IssuerId, showCmdIn.MetadataID)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error getting metadata: %v\n", err)
 			return

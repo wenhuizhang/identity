@@ -8,8 +8,8 @@ import (
 )
 
 type IssuerRepository interface {
-	AddIssuer(vaultId string, issuer *types.Issuer) (string, error)
-	GetAllIssuers(vaultId string) ([]*types.Issuer, error)
-	GetIssuer(vaultId, issuerId string) (*types.Issuer, error)
-	RemoveIssuer(vaultId, issuerId string) error
+	AddIssuer(vaultId, keyId string, issuer *types.Issuer) (string, error)
+	GetAllIssuers(vaultId, keyId string) ([]*types.Issuer, error)
+	GetIssuer(vaultId, keyId, issuerId string) (*types.Issuer, error)
+	RemoveIssuer(vaultId, keyId, issuerId string) error
 }

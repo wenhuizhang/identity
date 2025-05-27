@@ -43,7 +43,7 @@ var issuerForgetCmd = &cobra.Command{
 			return
 		}
 
-		err = issuerService.ForgetIssuer(cache.VaultId, forgetIssuerId)
+		err = issuerService.ForgetIssuer(cache.VaultId, cache.KeyID, forgetIssuerId)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error forgetting issuer: %v\n", err)
 			return

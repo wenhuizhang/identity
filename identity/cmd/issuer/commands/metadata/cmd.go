@@ -19,7 +19,7 @@ type GenerateCmdInput struct {
 	IdpIssuerURL    string
 }
 
-type ShowCmdIntput struct {
+type ShowCmdInput struct {
 	MetadataID string
 }
 
@@ -47,7 +47,7 @@ var (
 	// setup the command flags
 
 	genCmdIn  = &GenerateCmdInput{}
-	showCmdIn = &ShowCmdIntput{}
+	showCmdIn = &ShowCmdInput{}
 	forgCmdIn = &ForgetCmdInput{}
 	loadCmdIn = &LoadCmdInput{}
 )
@@ -61,7 +61,7 @@ The metadata command is used to generate important metadata for your Agent and M
 }
 
 func init() {
-	metadataGenerateCmd.Flags().StringVarP(&genCmdIn.IdpClientID, "idp-client-id", "i", "", "IDP Client ID")
+	metadataGenerateCmd.Flags().StringVarP(&genCmdIn.IdpClientID, "idp-client-id", "c", "", "IDP Client ID")
 	metadataGenerateCmd.Flags().StringVarP(&genCmdIn.IdpClientSecret, "idp-client-secret", "s", "", "IDP Client Secret")
 	metadataGenerateCmd.Flags().StringVarP(&genCmdIn.IdpIssuerURL, "idp-issuer-url", "u", "", "IDP Issuer URL")
 	MetadataCmd.AddCommand(metadataGenerateCmd)

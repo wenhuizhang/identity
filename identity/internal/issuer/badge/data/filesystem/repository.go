@@ -22,8 +22,8 @@ func NewBadgeFilesystemRepository() data.BadgeRepository {
 }
 
 // getBadgeDirectory returns the path to the badges directory for a metadata
-func getBadgesDirectory(vaultId, issuerId, metadataId string) (string, error) {
-	metadataIdDir, err := metadataFilesystemRepository.GetMetadataIdDirectory(vaultId, issuerId, metadataId)
+func getBadgesDirectory(vaultId, keyId, issuerId, metadataId string) (string, error) {
+	metadataIdDir, err := metadataFilesystemRepository.GetMetadataIdDirectory(vaultId, keyId, issuerId, metadataId)
 	if err != nil {
 		return "", err
 	}
@@ -32,8 +32,8 @@ func getBadgesDirectory(vaultId, issuerId, metadataId string) (string, error) {
 }
 
 // GetBadgeIdDirectory returns the path to the badge ID directory
-func GetBadgeIdDirectory(vaultId, issuerId, metadataId, badgeId string) (string, error) {
-	badgesDir, err := getBadgesDirectory(vaultId, issuerId, metadataId)
+func GetBadgeIdDirectory(vaultId, keyId, issuerId, metadataId, badgeId string) (string, error) {
+	badgesDir, err := getBadgesDirectory(vaultId, keyId, issuerId, metadataId)
 	if err != nil {
 		return "", err
 	}
@@ -42,8 +42,8 @@ func GetBadgeIdDirectory(vaultId, issuerId, metadataId, badgeId string) (string,
 }
 
 // GetBadgeFilePath returns the path to the badge file
-func GetBadgeFilePath(vaultId, issuerId, metadataId, badgeId string) (string, error) {
-	badgeIdDir, err := GetBadgeIdDirectory(vaultId, issuerId, metadataId, badgeId)
+func GetBadgeFilePath(vaultId, keyId, issuerId, metadataId, badgeId string) (string, error) {
+	badgeIdDir, err := GetBadgeIdDirectory(vaultId, keyId, issuerId, metadataId, badgeId)
 	if err != nil {
 		return "", err
 	}
@@ -52,10 +52,10 @@ func GetBadgeFilePath(vaultId, issuerId, metadataId, badgeId string) (string, er
 }
 
 func (r *badgeFilesystemRepository) AddBadge(
-	vaultId, issuerId, metadataId string, badge *internalIssuerTypes.Badge,
+	vaultId, keyId, issuerId, metadataId string, badge *internalIssuerTypes.Badge,
 ) (string, error) {
 	// Ensure badges directory exists
-	badgesDir, err := getBadgesDirectory(vaultId, issuerId, metadataId)
+	badgesDir, err := getBadgesDirectory(vaultId, keyId, issuerId, metadataId)
 	if err != nil {
 		return "", err
 	}
@@ -64,7 +64,7 @@ func (r *badgeFilesystemRepository) AddBadge(
 		return "", err
 	}
 
-	badgesIdDir, err := GetBadgeIdDirectory(vaultId, issuerId, metadataId, badge.Id)
+	badgesIdDir, err := GetBadgeIdDirectory(vaultId, keyId, issuerId, metadataId, badge.Id)
 	if err != nil {
 		return "", err
 	}
@@ -74,7 +74,7 @@ func (r *badgeFilesystemRepository) AddBadge(
 	}
 
 	// Save badge to file
-	badgeFilePath, err := GetBadgeFilePath(vaultId, issuerId, metadataId, badge.Id)
+	badgeFilePath, err := GetBadgeFilePath(vaultId, keyId, issuerId, metadataId, badge.Id)
 	if err != nil {
 		return "", err
 	}
@@ -92,10 +92,10 @@ func (r *badgeFilesystemRepository) AddBadge(
 }
 
 func (r *badgeFilesystemRepository) GetAllBadges(
-	vaultId, issuerId, metadataId string,
+	vaultId, keyId, issuerId, metadataId string,
 ) ([]*internalIssuerTypes.Badge, error) {
 	// Get the badges directory
-	badgesDir, err := getBadgesDirectory(vaultId, issuerId, metadataId)
+	badgesDir, err := getBadgesDirectory(vaultId, keyId, issuerId, metadataId)
 	if err != nil {
 		return nil, err
 	}
@@ -111,7 +111,7 @@ func (r *badgeFilesystemRepository) GetAllBadges(
 
 	for _, file := range files {
 		if file.IsDir() {
-			badge, err := r.GetBadge(vaultId, issuerId, metadataId, file.Name())
+			badge, err := r.GetBadge(vaultId, keyId, issuerId, metadataId, file.Name())
 			if err != nil {
 				return nil, err
 			}
@@ -124,10 +124,10 @@ func (r *badgeFilesystemRepository) GetAllBadges(
 }
 
 func (r *badgeFilesystemRepository) GetBadge(
-	vaultId, issuerId, metadataId, badgeId string,
+	vaultId, keyId, issuerId, metadataId, badgeId string,
 ) (*internalIssuerTypes.Badge, error) {
 	// Get the badge file path
-	badgeFilePath, err := GetBadgeFilePath(vaultId, issuerId, metadataId, badgeId)
+	badgeFilePath, err := GetBadgeFilePath(vaultId, keyId, issuerId, metadataId, badgeId)
 	if err != nil {
 		return nil, err
 	}
@@ -147,9 +147,9 @@ func (r *badgeFilesystemRepository) GetBadge(
 	return &badge, nil
 }
 
-func (r *badgeFilesystemRepository) RemoveBadge(vaultId, issuerId, metadataId, badgeId string) error {
+func (r *badgeFilesystemRepository) RemoveBadge(vaultId, keyId, issuerId, metadataId, badgeId string) error {
 	// Get the badge directory
-	badgeIdDir, err := GetBadgeIdDirectory(vaultId, issuerId, metadataId, badgeId)
+	badgeIdDir, err := GetBadgeIdDirectory(vaultId, keyId, issuerId, metadataId, badgeId)
 	if err != nil {
 		return err
 	}

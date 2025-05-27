@@ -83,9 +83,15 @@ var ConfigurationCmd = &cobra.Command{
 			fmt.Fprintf(os.Stdout, "- Vault: %s (%s vault), id: %s\n", vault.Name, vault.Type, vault.Id)
 		}
 
+		if cache.KeyID != "" {
+			fmt.Fprintf(os.Stdout, "- Key ID: %s\n", cache.KeyID)
+		} else {
+			fmt.Fprintf(os.Stdout, "- Key ID: Not set\n")
+		}
+
 		if cache.IssuerId != "" {
 
-			issuer, err := issuerService.GetIssuer(cache.VaultId, cache.IssuerId)
+			issuer, err := issuerService.GetIssuer(cache.VaultId, cache.KeyID, cache.IssuerId)
 			if err != nil {
 				fmt.Fprintf(os.Stderr, "Error loading issuer: %v\n", err)
 				return
@@ -99,7 +105,7 @@ var ConfigurationCmd = &cobra.Command{
 		}
 
 		if cache.MetadataId != "" {
-			metadata, err := metadataService.GetMetadata(cache.VaultId, cache.IssuerId, cache.MetadataId)
+			metadata, err := metadataService.GetMetadata(cache.VaultId, cache.KeyID, cache.IssuerId, cache.MetadataId)
 			if err != nil {
 				fmt.Fprintf(os.Stderr, "Error loading metadata: %v\n", err)
 				return
@@ -113,7 +119,7 @@ var ConfigurationCmd = &cobra.Command{
 		}
 
 		if cache.BadgeId != "" {
-			badge, err := badgeService.GetBadge(cache.VaultId, cache.IssuerId, cache.MetadataId, cache.BadgeId)
+			badge, err := badgeService.GetBadge(cache.VaultId, cache.KeyID, cache.IssuerId, cache.MetadataId, cache.BadgeId)
 			if err != nil {
 				fmt.Fprintf(os.Stderr, "Error loading badge: %v\n", err)
 				return

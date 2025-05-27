@@ -4,54 +4,46 @@
 package vault
 
 import (
-	"context"
 	"fmt"
 	"os"
 
 	cliCache "github.com/agntcy/identity/cmd/issuer/cache"
-	"github.com/agntcy/identity/internal/core/keystore"
 	"github.com/agntcy/identity/internal/issuer/vault"
 	"github.com/agntcy/identity/internal/issuer/vault/data/filesystem"
 	vaulttypes "github.com/agntcy/identity/internal/issuer/vault/types"
-	"github.com/agntcy/identity/internal/pkg/joseutil"
 	"github.com/google/uuid"
 	"github.com/spf13/cobra"
 )
 
-var (
-	filePath  string
-	vaultName string
-)
-
-var TxtCmd = &cobra.Command{
+var FileCmd = &cobra.Command{
 	Use:   "file",
-	Short: "Create a local file with generated cryptographic keys",
+	Short: "Create a local vault file to store your cryptographic keys",
 	Run: func(cmd *cobra.Command, args []string) {
 
 		// if the file path is not set, prompt the user for it interactively
-		if filePath == "" {
-			fmt.Fprintf(os.Stderr, "File path to store the generated keys: ")
-			_, err := fmt.Scanln(&filePath)
+		if fileCmdIn.FilePath == "" {
+			fmt.Fprintf(os.Stderr, "File path to store the vault: ")
+			_, err := fmt.Scanln(&fileCmdIn.FilePath)
 			if err != nil {
 				fmt.Fprintf(os.Stderr, "Error reading file path: %v\n", err)
 				return
 			}
 		}
-		if filePath == "" {
+		if fileCmdIn.FilePath == "" {
 			fmt.Fprintf(os.Stderr, "No file path provided\n")
 			return
 		}
 
 		// if the vault name is not set, prompt the user for it interactively
-		if vaultName == "" {
+		if fileCmdIn.VaultName == "" {
 			fmt.Fprintf(os.Stderr, "Vault name: ")
-			_, err := fmt.Scanln(&vaultName)
+			_, err := fmt.Scanln(&fileCmdIn.VaultName)
 			if err != nil {
 				fmt.Fprintf(os.Stderr, "Error reading vault name: %v\n", err)
 				return
 			}
 		}
-		if vaultName == "" {
+		if fileCmdIn.VaultName == "" {
 			fmt.Fprintf(os.Stderr, "No vault name provided\n")
 			return
 		}
@@ -59,58 +51,30 @@ var TxtCmd = &cobra.Command{
 		vaultFilesystemRepository := filesystem.NewVaultFilesystemRepository()
 		vaultService := vault.NewVaultService(vaultFilesystemRepository)
 
-		fileStorageConfig := keystore.FileStorageConfig{
-			FilePath: filePath,
+		fileConfig := vaulttypes.VaultFile{
+			FilePath: fileCmdIn.FilePath,
 		}
 
-		service, err := keystore.NewKeyService(keystore.FileStorage, fileStorageConfig)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error creating key service: %v\n", err)
-			return
-		}
-
-		//nolint:godox // To be fixed in the next PR
-		// TODO: should we generate a new one each time?
-		keyID := "test-rsa"
-
-		priv, err := joseutil.GenerateJWK("RS256", "sig", keyID)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error generating JWK: %v\n", err)
-			return
-		}
-
-		ctx := context.Background()
-		err = service.SaveKey(ctx, priv.KID, priv)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error saving key: %v\n", err)
-			return
-		}
-
-		txtConfig := vaulttypes.VaultFile{
-			FilePath: filePath,
-		}
-
-		var config vaulttypes.VaultConfig = &txtConfig
+		var config vaulttypes.VaultConfig = &fileConfig
 
 		vault := vaulttypes.Vault{
 			Id:     uuid.NewString(),
-			Name:   vaultName,
+			Name:   fileCmdIn.VaultName,
 			Type:   vaulttypes.VaultTypeFile,
 			Config: config,
 		}
 
 		vaultId, err := vaultService.ConnectVault(&vault)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error creating file vault: %v\n", err)
+			fmt.Fprintf(os.Stderr, "Error configuring file vault: %v\n", err)
 			return
 		}
 
-		cmd.Printf("Successfully created file vault with ID: %s\n", vaultId)
+		cmd.Printf("Successfully configured file vault with ID: %s\n", vaultId)
 
 		err = cliCache.SaveCache(
 			&cliCache.Cache{
 				VaultId: vaultId,
-				KeyID:   keyID,
 			},
 		)
 		if err != nil {
@@ -122,6 +86,6 @@ var TxtCmd = &cobra.Command{
 
 func init() {
 	// Add flags to the command
-	TxtCmd.Flags().StringVarP(&filePath, "file-path", "f", "", "Path to the file")
-	TxtCmd.Flags().StringVarP(&vaultName, "name", "n", "", "Name of the vault")
+	FileCmd.Flags().StringVarP(&fileCmdIn.FilePath, "file-path", "f", "", "Path to the file")
+	FileCmd.Flags().StringVarP(&fileCmdIn.VaultName, "vault-name", "v", "", "Name of the vault")
 }

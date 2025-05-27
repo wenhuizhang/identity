@@ -63,13 +63,13 @@ var badgePublishCmd = &cobra.Command{
 			return
 		}
 
-		badge, err := badgeService.GetBadge(cache.VaultId, cache.IssuerId, cache.MetadataId, pubCmdIn.BadgeID)
+		badge, err := badgeService.GetBadge(cache.VaultId, cache.KeyID, cache.IssuerId, cache.MetadataId, pubCmdIn.BadgeID)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error getting badge: %v\n", err)
 			return
 		}
 
-		_, err = badgeService.PublishBadge(cmd.Context(), cache.VaultId, cache.IssuerId, cache.MetadataId, badge)
+		_, err = badgeService.PublishBadge(cmd.Context(), cache.VaultId, cache.KeyID, cache.IssuerId, cache.MetadataId, badge)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error publishing badge: %v\n", err)
 			return

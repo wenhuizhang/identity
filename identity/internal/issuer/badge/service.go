@@ -25,6 +25,7 @@ import (
 type BadgeService interface {
 	IssueBadge(
 		vaultId string,
+		keyId string,
 		issuerId string,
 		metadataId string,
 		content *vctypes.CredentialContent[vctypes.BadgeClaims],
@@ -33,13 +34,14 @@ type BadgeService interface {
 	PublishBadge(
 		ctx context.Context,
 		vaultId string,
+		keyId string,
 		issuerId string,
 		metadataId string,
 		badge *internalIssuerTypes.Badge,
 	) (*internalIssuerTypes.Badge, error)
-	GetAllBadges(vaultId, issuerId, metadataId string) ([]*internalIssuerTypes.Badge, error)
-	GetBadge(vaultId, issuerId, metadataId, badgeId string) (*internalIssuerTypes.Badge, error)
-	ForgetBadge(vaultId, issuerId, metadataId, badgeId string) error
+	GetAllBadges(vaultId, keyId, issuerId, metadataId string) ([]*internalIssuerTypes.Badge, error)
+	GetBadge(vaultId, keyId, issuerId, metadataId, badgeId string) (*internalIssuerTypes.Badge, error)
+	ForgetBadge(vaultId, keyId, issuerId, metadataId, badgeId string) error
 }
 
 type badgeService struct {
@@ -68,17 +70,18 @@ func NewBadgeService(
 
 func (s *badgeService) IssueBadge(
 	vaultId string,
+	keyId string,
 	issuerId string,
 	metadataId string,
 	content *vctypes.CredentialContent[vctypes.BadgeClaims],
 	privateKey *idtypes.Jwk,
 ) (string, error) {
-	issuer, err := s.issuerRepository.GetIssuer(vaultId, issuerId)
+	issuer, err := s.issuerRepository.GetIssuer(vaultId, keyId, issuerId)
 	if err != nil {
 		return "", err
 	}
 
-	md, err := s.metadataRepository.GetMetadata(vaultId, issuerId, metadataId)
+	md, err := s.metadataRepository.GetMetadata(vaultId, keyId, issuerId, metadataId)
 	if err != nil {
 		return "", errutil.Err(err, "unable to fetch the metadata")
 	}
@@ -121,7 +124,7 @@ func (s *badgeService) IssueBadge(
 		EnvelopedCredential: &envelopedCredential,
 	}
 
-	badgeId, err := s.badgeRepository.AddBadge(vaultId, issuerId, metadataId, &badge)
+	badgeId, err := s.badgeRepository.AddBadge(vaultId, keyId, issuerId, metadataId, &badge)
 	if err != nil {
 		return "", err
 	}
@@ -132,16 +135,17 @@ func (s *badgeService) IssueBadge(
 func (s *badgeService) PublishBadge(
 	ctx context.Context,
 	vaultId string,
+	keyId string,
 	issuerId string,
 	metadataId string,
 	badge *internalIssuerTypes.Badge,
 ) (*internalIssuerTypes.Badge, error) {
-	issuer, err := s.issuerRepository.GetIssuer(vaultId, issuerId)
+	issuer, err := s.issuerRepository.GetIssuer(vaultId, keyId, issuerId)
 	if err != nil {
 		return nil, err
 	}
 
-	md, err := s.metadataRepository.GetMetadata(vaultId, issuerId, metadataId)
+	md, err := s.metadataRepository.GetMetadata(vaultId, keyId, issuerId, metadataId)
 	if err != nil {
 		return nil, errutil.Err(err, "unable to fetch the metadata")
 	}
@@ -174,8 +178,8 @@ func (s *badgeService) PublishBadge(
 	return badge, nil
 }
 
-func (s *badgeService) GetAllBadges(vaultId, issuerId, metadataId string) ([]*internalIssuerTypes.Badge, error) {
-	badges, err := s.badgeRepository.GetAllBadges(vaultId, issuerId, metadataId)
+func (s *badgeService) GetAllBadges(vaultId, keyId, issuerId, metadataId string) ([]*internalIssuerTypes.Badge, error) {
+	badges, err := s.badgeRepository.GetAllBadges(vaultId, keyId, issuerId, metadataId)
 	if err != nil {
 		return nil, err
 	}
@@ -184,9 +188,9 @@ func (s *badgeService) GetAllBadges(vaultId, issuerId, metadataId string) ([]*in
 }
 
 func (s *badgeService) GetBadge(
-	vaultId, issuerId, metadataId, badgeId string,
+	vaultId, keyId, issuerId, metadataId, badgeId string,
 ) (*internalIssuerTypes.Badge, error) {
-	badge, err := s.badgeRepository.GetBadge(vaultId, issuerId, metadataId, badgeId)
+	badge, err := s.badgeRepository.GetBadge(vaultId, keyId, issuerId, metadataId, badgeId)
 	if err != nil {
 		return nil, err
 	}
@@ -194,8 +198,8 @@ func (s *badgeService) GetBadge(
 	return badge, nil
 }
 
-func (s *badgeService) ForgetBadge(vaultId, issuerId, metadataId, badgeId string) error {
-	err := s.badgeRepository.RemoveBadge(vaultId, issuerId, metadataId, badgeId)
+func (s *badgeService) ForgetBadge(vaultId, keyId, issuerId, metadataId, badgeId string) error {
+	err := s.badgeRepository.RemoveBadge(vaultId, keyId, issuerId, metadataId, badgeId)
 	if err != nil {
 		return err
 	}

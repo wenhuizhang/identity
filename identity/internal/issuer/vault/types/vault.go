@@ -13,7 +13,7 @@ type VaultType string
 
 const (
 	VaultTypeFile      VaultType = "file"
-	VaultType1Password VaultType = "1password"
+	VaultTypeHashicorp VaultType = "hashicorp"
 )
 
 // VaultConfig is an interface that all vault implementations must satisfy
@@ -42,18 +42,18 @@ func (v *VaultFile) GetVaultType() VaultType {
 	return VaultTypeFile
 }
 
-type Vault1Password struct {
-	// The 1Password service account token
-	ServiceAccountToken string `json:"serviceAccountToken,omitempty"`
-	// The 1Password vault ID
-	VaultID string `json:"vaultId,omitempty"`
-	// The 1Password item ID
-	ItemID string `json:"itemId,omitempty"`
+type VaultHashicorp struct {
+	// The address of the HashiCorp Vault server
+	Address string `json:"address,omitempty"`
+	// The token to authenticate with the HashiCorp Vault server
+	Token string `json:"token,omitempty"`
+	// The namespace to use in the HashiCorp Vault server
+	Namespace string `json:"namespace,omitempty"`
 }
 
 // GetVaultType returns the type of this vault implementation
-func (v *Vault1Password) GetVaultType() VaultType {
-	return VaultType1Password
+func (v *VaultHashicorp) GetVaultType() VaultType {
+	return VaultTypeHashicorp
 }
 
 // UnmarshalVault implements custom JSON unmarshaling for Vault
@@ -91,8 +91,8 @@ func (v *Vault) UnmarshalVault(data []byte) error {
 		}
 		v.Config = &config
 
-	case VaultType1Password:
-		var config Vault1Password
+	case VaultTypeHashicorp:
+		var config VaultHashicorp
 		if err := json.Unmarshal(temp.Config, &config); err != nil {
 			return err
 		}

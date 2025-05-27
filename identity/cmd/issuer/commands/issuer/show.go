@@ -43,7 +43,7 @@ var issuerShowCmd = &cobra.Command{
 			return
 		}
 
-		issuer, err := issuerService.GetIssuer(cache.VaultId, showIssuerId)
+		issuer, err := issuerService.GetIssuer(cache.VaultId, cache.KeyID, showIssuerId)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error getting issuer: %v\n", err)
 			return

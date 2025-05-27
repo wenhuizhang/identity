@@ -18,12 +18,12 @@ import (
 type MetadataService interface {
 	GenerateMetadata(
 		ctx context.Context,
-		vaultId, issuerId string,
+		vaultId, keyId, issuerId string,
 		idpConfig *idptypes.IdpConfig,
 	) (string, error)
-	GetAllMetadata(vaultId, issuerId string) ([]*types.Metadata, error)
-	GetMetadata(vaultId, issuerId, metadataId string) (*types.Metadata, error)
-	ForgetMetadata(vaultId, issuerId, metadataId string) error
+	GetAllMetadata(vaultId, keyId, issuerId string) ([]*types.Metadata, error)
+	GetMetadata(vaultId, keyId, issuerId, metadataId string) (*types.Metadata, error)
+	ForgetMetadata(vaultId, keyId, issuerId, metadataId string) error
 }
 
 type metadataService struct {
@@ -49,10 +49,10 @@ func NewMetadataService(
 
 func (s *metadataService) GenerateMetadata(
 	ctx context.Context,
-	vaultId, issuerId string,
+	vaultId, keyId, issuerId string,
 	idpConfig *idptypes.IdpConfig,
 ) (string, error) {
-	issuer, err := s.issuerRepository.GetIssuer(vaultId, issuerId)
+	issuer, err := s.issuerRepository.GetIssuer(vaultId, keyId, issuerId)
 	if err != nil {
 		return "", err
 	}
@@ -87,7 +87,7 @@ func (s *metadataService) GenerateMetadata(
 		IdpConfig:        idpConfig,
 	}
 
-	metadataId, err := s.metadataRepository.AddMetadata(vaultId, issuerId, &metadata)
+	metadataId, err := s.metadataRepository.AddMetadata(vaultId, keyId, issuerId, &metadata)
 	if err != nil {
 		return "", err
 	}
@@ -95,8 +95,8 @@ func (s *metadataService) GenerateMetadata(
 	return metadataId, nil
 }
 
-func (s *metadataService) GetAllMetadata(vaultId, issuerId string) ([]*types.Metadata, error) {
-	metadata, err := s.metadataRepository.GetAllMetadata(vaultId, issuerId)
+func (s *metadataService) GetAllMetadata(vaultId, keyId, issuerId string) ([]*types.Metadata, error) {
+	metadata, err := s.metadataRepository.GetAllMetadata(vaultId, keyId, issuerId)
 	if err != nil {
 		return nil, err
 	}
@@ -104,8 +104,8 @@ func (s *metadataService) GetAllMetadata(vaultId, issuerId string) ([]*types.Met
 	return metadata, nil
 }
 
-func (s *metadataService) GetMetadata(vaultId, issuerId, metadataId string) (*types.Metadata, error) {
-	metadata, err := s.metadataRepository.GetMetadata(vaultId, issuerId, metadataId)
+func (s *metadataService) GetMetadata(vaultId, keyId, issuerId, metadataId string) (*types.Metadata, error) {
+	metadata, err := s.metadataRepository.GetMetadata(vaultId, keyId, issuerId, metadataId)
 	if err != nil {
 		return nil, err
 	}
@@ -113,8 +113,8 @@ func (s *metadataService) GetMetadata(vaultId, issuerId, metadataId string) (*ty
 	return metadata, nil
 }
 
-func (s *metadataService) ForgetMetadata(vaultId, issuerId, metadataId string) error {
-	err := s.metadataRepository.RemoveMetadata(vaultId, issuerId, metadataId)
+func (s *metadataService) ForgetMetadata(vaultId, keyId, issuerId, metadataId string) error {
+	err := s.metadataRepository.RemoveMetadata(vaultId, keyId, issuerId, metadataId)
 	if err != nil {
 		return err
 	}

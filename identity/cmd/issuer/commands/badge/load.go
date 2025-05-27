@@ -43,7 +43,7 @@ var badgeLoadCmd = &cobra.Command{
 		}
 
 		// check the badge id is valid
-		badge, err := badgeService.GetBadge(cache.VaultId, cache.IssuerId, cache.MetadataId, loadCmdIn.BadgeID)
+		badge, err := badgeService.GetBadge(cache.VaultId, cache.KeyID, cache.IssuerId, cache.MetadataId, loadCmdIn.BadgeID)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error getting badge: %v\n", err)
 			return

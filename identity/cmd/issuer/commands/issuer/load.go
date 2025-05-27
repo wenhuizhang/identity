@@ -44,7 +44,7 @@ var issuerLoadCmd = &cobra.Command{
 		}
 
 		// check the issuer id is valid
-		issuer, err := issuerService.GetIssuer(cache.VaultId, loadIssuerId)
+		issuer, err := issuerService.GetIssuer(cache.VaultId, cache.KeyID, loadIssuerId)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error getting issuer: %v\n", err)
 			return

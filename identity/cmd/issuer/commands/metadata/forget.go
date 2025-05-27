@@ -43,7 +43,7 @@ var metadataForgetCmd = &cobra.Command{
 			return
 		}
 
-		err = metadataService.ForgetMetadata(cache.VaultId, cache.IssuerId, forgCmdIn.MetadataID)
+		err = metadataService.ForgetMetadata(cache.VaultId, cache.KeyID, cache.IssuerId, forgCmdIn.MetadataID)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error forgetting metadata: %v\n", err)
 			return
