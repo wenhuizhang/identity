@@ -4,63 +4,101 @@
 package issuer
 
 import (
+	"context"
 	"fmt"
 	"os"
 
-	cliCache "github.com/agntcy/identity/cmd/issuer/cache"
+	clicache "github.com/agntcy/identity/cmd/issuer/cache"
+	issuer "github.com/agntcy/identity/internal/issuer/issuer"
 	"github.com/spf13/cobra"
 )
 
-var issuerForgetCmd = &cobra.Command{
-	Use:   "forget",
-	Short: "Forget an issuer configuration",
-	Run: func(cmd *cobra.Command, args []string) {
+type ForgetFlags struct {
+	IssuerID string
+}
 
-		// load the cache to get the vault id
-		cache, err := cliCache.LoadCache()
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error loading local configuration: %v\n", err)
-			return
-		}
+type ForgetCommand struct {
+	cache         *clicache.Cache
+	issuerService issuer.IssuerService
+}
 
-		err = cache.ValidateForIssuer()
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error validating local configuration: %v\n", err)
-			return
-		}
+func NewCmdForget(
+	cache *clicache.Cache,
+	issuerService issuer.IssuerService,
+) *cobra.Command {
+	flags := NewForgetFlags()
 
-		// if the issuer id is not set, prompt the user for it interactively
-		if forgetIssuerId == "" {
-			fmt.Fprintf(os.Stderr, "Issuer ID to forget:\n")
-			_, err := fmt.Scanln(&forgetIssuerId)
-			if err != nil {
-				fmt.Fprintf(os.Stderr, "Error reading issuer ID: %v\n", err)
-				return
+	cmd := &cobra.Command{
+		Use:   "forget",
+		Short: "Forget an issuer configuration",
+		Run: func(cmd *cobra.Command, args []string) {
+			c := ForgetCommand{
+				cache:         cache,
+				issuerService: issuerService,
 			}
-		}
-		if forgetIssuerId == "" {
-			fmt.Fprintf(os.Stderr, "No issuer ID provided.\n")
-			return
-		}
 
-		err = issuerService.ForgetIssuer(cache.VaultId, cache.KeyID, forgetIssuerId)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error forgetting issuer: %v\n", err)
-			return
-		}
-
-		// If the issuer was the current issuer in the cache, clear the cache of issuer, metadata, and badge IDs
-		if cache.IssuerId == forgetIssuerId {
-			cache.IssuerId = ""
-			cache.MetadataId = ""
-			cache.BadgeId = ""
-			err = cliCache.SaveCache(cache)
+			err := c.Run(cmd.Context(), flags)
 			if err != nil {
-				fmt.Fprintf(os.Stderr, "Error saving local configuration: %v\n", err)
-				return
+				fmt.Fprintf(os.Stderr, "%v\n", err)
+				os.Exit(1)
 			}
-		}
+		},
+	}
 
-		fmt.Fprintf(os.Stdout, "Forgot issuer with ID: %s\n", forgetIssuerId)
-	},
+	flags.AddFlags(cmd)
+
+	return cmd
+}
+
+func NewForgetFlags() *ForgetFlags {
+	return &ForgetFlags{}
+}
+
+func (f *ForgetFlags) AddFlags(cmd *cobra.Command) {
+	cmd.Flags().StringVarP(&f.IssuerID, "issuer-id", "i", "", "The ID of the issuer to forget")
+}
+
+func (cmd *ForgetCommand) Run(ctx context.Context, flags *ForgetFlags) error {
+	err := cmd.cache.ValidateForIssuer()
+	if err != nil {
+		return fmt.Errorf("error validating local configuration: %v", err)
+	}
+
+	// if the issuer id is not set, prompt the user for it interactively
+	if flags.IssuerID == "" {
+		fmt.Fprintf(os.Stdout, "Issuer ID to forget:\n")
+
+		_, err := fmt.Scanln(&flags.IssuerID)
+		if err != nil {
+			return fmt.Errorf("error reading issuer ID: %v", err)
+		}
+	}
+
+	if flags.IssuerID == "" {
+		return fmt.Errorf("no issuer ID provided")
+	}
+
+	err = cmd.issuerService.ForgetIssuer(
+		cmd.cache.VaultId,
+		cmd.cache.KeyID,
+		flags.IssuerID,
+	)
+	if err != nil {
+		return fmt.Errorf("error forgetting issuer: %v", err)
+	}
+
+	// If the issuer was the current issuer in the cache, clear the cache of issuer, metadata, and badge IDs
+	if cmd.cache.IssuerId == flags.IssuerID {
+		cmd.cache.IssuerId = ""
+		cmd.cache.MetadataId = ""
+		cmd.cache.BadgeId = ""
+		err = clicache.SaveCache(cmd.cache)
+		if err != nil {
+			return fmt.Errorf("error saving local configuration: %v", err)
+		}
+	}
+
+	fmt.Fprintf(os.Stdout, "Forgot issuer with ID: %s\n", flags.IssuerID)
+
+	return nil
 }

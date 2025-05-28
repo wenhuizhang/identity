@@ -4,64 +4,98 @@
 package issuer
 
 import (
+	"context"
 	"fmt"
 	"os"
 
-	cliCache "github.com/agntcy/identity/cmd/issuer/cache"
+	clicache "github.com/agntcy/identity/cmd/issuer/cache"
+	issuer "github.com/agntcy/identity/internal/issuer/issuer"
 	"github.com/spf13/cobra"
 )
 
-var issuerLoadCmd = &cobra.Command{
-	Use:   "load",
-	Short: "Load an issuer configuration",
-	Run: func(cmd *cobra.Command, args []string) {
+type LoadFlags struct {
+	IssuerID string
+}
 
-		// load the cache to get the vault id
-		cache, err := cliCache.LoadCache()
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error loading local configuration: %v\n", err)
-			return
-		}
+type LoadCommand struct {
+	cache         *clicache.Cache
+	issuerService issuer.IssuerService
+}
 
-		err = cache.ValidateForIssuer()
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error validating local configuration: %v\n", err)
-			return
-		}
+func NewCmdLoad(
+	cache *clicache.Cache,
+	issuerService issuer.IssuerService,
+) *cobra.Command {
+	flags := NewLoadFlags()
 
-		// if the issuer id is not set, prompt the user for it interactively
-		if loadIssuerId == "" {
-			fmt.Fprintf(os.Stderr, "Issuer ID to load:\n")
-			_, err := fmt.Scanln(&loadIssuerId)
-			if err != nil {
-				fmt.Fprintf(os.Stderr, "Error reading issuer ID: %v\n", err)
-				return
+	cmd := &cobra.Command{
+		Use:   "load",
+		Short: "Load an issuer configuration",
+		Run: func(cmd *cobra.Command, args []string) {
+			c := LoadCommand{
+				cache:         cache,
+				issuerService: issuerService,
 			}
-		}
-		if loadIssuerId == "" {
-			fmt.Fprintf(os.Stderr, "No issuer ID provided.\n")
-			return
-		}
 
-		// check the issuer id is valid
-		issuer, err := issuerService.GetIssuer(cache.VaultId, cache.KeyID, loadIssuerId)
+			err := c.Run(cmd.Context(), flags)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "%v\n", err)
+				os.Exit(1)
+			}
+		},
+	}
+
+	flags.AddFlags(cmd)
+
+	return cmd
+}
+
+func NewLoadFlags() *LoadFlags {
+	return &LoadFlags{}
+}
+
+func (f *LoadFlags) AddFlags(cmd *cobra.Command) {
+	cmd.Flags().StringVarP(&f.IssuerID, "issuer-id", "i", "", "The ID of the issuer to load")
+}
+
+func (cmd *LoadCommand) Run(ctx context.Context, flags *LoadFlags) error {
+	err := cmd.cache.ValidateForIssuer()
+	if err != nil {
+		return fmt.Errorf("error validating local configuration: %v", err)
+	}
+
+	// if the issuer id is not set, prompt the user for it interactively
+	if flags.IssuerID == "" {
+		fmt.Fprintf(os.Stdout, "Issuer ID to load:\n")
+
+		_, err := fmt.Scanln(&flags.IssuerID)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error getting issuer: %v\n", err)
-			return
+			return fmt.Errorf("error reading issuer ID: %v", err)
 		}
-		if issuer == nil {
-			fmt.Fprintf(os.Stderr, "No issuer found with ID: %s\n", loadIssuerId)
-			return
-		}
+	}
+	if flags.IssuerID == "" {
+		return fmt.Errorf("no issuer ID provided")
+	}
 
-		// save the issuer id to the cache
-		cache.IssuerId = loadIssuerId
-		err = cliCache.SaveCache(cache)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error saving local configuration: %v\n", err)
-			return
-		}
-		fmt.Fprintf(os.Stdout, "Loaded issuer with ID: %s\n", loadIssuerId)
+	// check the issuer id is valid
+	issuer, err := cmd.issuerService.GetIssuer(cmd.cache.VaultId, cmd.cache.KeyID, flags.IssuerID)
+	if err != nil {
+		return fmt.Errorf("error getting issuer: %v", err)
+	}
 
-	},
+	if issuer == nil {
+		return fmt.Errorf("no issuer found with ID: %s", flags.IssuerID)
+	}
+
+	// save the issuer id to the cache
+	cmd.cache.IssuerId = flags.IssuerID
+
+	err = clicache.SaveCache(cmd.cache)
+	if err != nil {
+		return fmt.Errorf("error saving local configuration: %v", err)
+	}
+
+	fmt.Fprintf(os.Stdout, "Loaded issuer with ID: %s\n", flags.IssuerID)
+
+	return nil
 }
