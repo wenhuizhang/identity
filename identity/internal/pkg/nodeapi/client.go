@@ -49,6 +49,10 @@ type NodeClient interface {
 		vc *vctypes.EnvelopedCredential,
 		proof *vctypes.Proof,
 	) error
+	ResolveMetadataByID(
+		ctx context.Context,
+		id string,
+	) (*idtypes.ResolverMetadata, error)
 }
 
 type nodeClient struct {
@@ -179,4 +183,45 @@ func (c *nodeClient) PublishVerifiableCredential(
 	}
 
 	return nil
+}
+
+func (c *nodeClient) ResolveMetadataByID(
+	ctx context.Context,
+	id string,
+) (*idtypes.ResolverMetadata, error) {
+	resp, err := c.id.ResolveID(&idsdk.ResolveIDParams{
+		Body: &apimodels.V1alpha1ResolveRequest{
+			ID: id,
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	if resp == nil || resp.Payload == nil || resp.Payload.ResolverMetadata == nil {
+		return nil, errors.New("empty response payload")
+	}
+
+	md := resp.Payload.ResolverMetadata
+
+	return &idtypes.ResolverMetadata{
+		ID: md.ID,
+		VerificationMethod: converters.ConvertSliceCallback(
+			md.VerificationMethod,
+			func(vm *apimodels.V1alpha1VerificationMethod) *idtypes.VerificationMethod {
+				return &idtypes.VerificationMethod{
+					ID:           vm.ID,
+					PublicKeyJwk: converters.Convert[idtypes.Jwk](vm.PublicKeyJwk),
+				}
+			},
+		),
+		Service: converters.ConvertSliceCallback(
+			md.Service,
+			func(s *apimodels.V1alpha1Service) *idtypes.Service {
+				return &idtypes.Service{
+					ServiceEndpoint: s.ServiceEndpoint,
+				}
+			},
+		),
+	}, nil
 }
