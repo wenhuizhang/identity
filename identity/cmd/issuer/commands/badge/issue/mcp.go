@@ -44,6 +44,8 @@ func NewCmdMcp(
 			c := IssueMcpCommand{
 				cache:        cache,
 				badgeService: badgeService,
+				vaultSrv:     vaultSrv,
+				mcpClient:    mcpClient,
 			}
 
 			err := c.Run(cmd.Context(), flags)

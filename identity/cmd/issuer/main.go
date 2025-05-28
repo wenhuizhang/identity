@@ -9,7 +9,7 @@ import (
 
 	clicache "github.com/agntcy/identity/cmd/issuer/cache"
 	badgecmd "github.com/agntcy/identity/cmd/issuer/commands/badge"
-	"github.com/agntcy/identity/cmd/issuer/commands/configuration"
+	configcmd "github.com/agntcy/identity/cmd/issuer/commands/configuration"
 	issuercmd "github.com/agntcy/identity/cmd/issuer/commands/issuer"
 	mdcmd "github.com/agntcy/identity/cmd/issuer/commands/metadata"
 	vaultcmd "github.com/agntcy/identity/cmd/issuer/commands/vault"
@@ -96,7 +96,13 @@ The Identity CLI tool is a command line interface for generating, publishing and
 		mcpClient,
 	))
 	rootCmd.AddCommand(verifycmd.NewCmd(verifyService))
-	rootCmd.AddCommand(configuration.ConfigurationCmd)
+	rootCmd.AddCommand(configcmd.NewCmd(
+		cache,
+		vaultService,
+		issuerService,
+		metadataService,
+		badgeService,
+	))
 
 	err = rootCmd.Execute()
 	if err != nil {

@@ -43,6 +43,8 @@ func NewCmdIssueA2A(
 			c := IssueA2ACommand{
 				cache:        cache,
 				badgeService: badgeService,
+				vaultSrv:     vaultSrv,
+				a2aClient:    a2aClient,
 			}
 
 			err := c.Run(cmd.Context(), flags)
