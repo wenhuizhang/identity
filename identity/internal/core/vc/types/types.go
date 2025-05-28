@@ -6,6 +6,7 @@
 package types
 
 import (
+	"fmt"
 	"slices"
 	"strings"
 )
@@ -175,4 +176,20 @@ func (c *BadgeClaims) ToMap() map[string]any {
 		"id":    c.ID,
 		"badge": c.Badge,
 	}
+}
+
+func (c *BadgeClaims) FromMap(src map[string]any) error {
+	if id, ok := src["id"]; ok {
+		c.ID = id.(string)
+	} else {
+		return fmt.Errorf("invalid badge claim: missing Resolver Metadata ID")
+	}
+
+	if b, ok := src["badge"]; ok {
+		c.Badge = b.(string)
+	} else {
+		return fmt.Errorf("invalid badge claim: missing badge content")
+	}
+
+	return nil
 }

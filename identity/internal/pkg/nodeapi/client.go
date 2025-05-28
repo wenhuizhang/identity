@@ -223,5 +223,6 @@ func (c *nodeClient) ResolveMetadataByID(
 				}
 			},
 		),
+		AssertionMethod: md.AssertionMethod,
 	}, nil
 }
