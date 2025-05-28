@@ -4,45 +4,27 @@
 package key
 
 import (
+	clicache "github.com/agntcy/identity/cmd/issuer/cache"
 	"github.com/agntcy/identity/internal/issuer/vault"
-	"github.com/agntcy/identity/internal/issuer/vault/data/filesystem"
 	"github.com/spf13/cobra"
 )
 
-type ShowCmdInput struct {
-	KeyID string
-}
-
-type LoadCmdInput struct {
-	KeyID string
-}
-
-var (
-	// setup the vault service
-	vaultFilesystemRepository = filesystem.NewVaultFilesystemRepository()
-	vaultService              = vault.NewVaultService(vaultFilesystemRepository)
-
-	// setup the vault command flags
-	showCmdIn = &ShowCmdInput{}
-	loadCmdIn = &LoadCmdInput{}
-)
-
-var KeyCmd = &cobra.Command{
-	Use:   "key",
-	Short: "Manage cryptographic keys for vaults",
-	Long: `
+func NewCmd(
+	cache *clicache.Cache,
+	vaultService vault.VaultService,
+) *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "key",
+		Short: "Manage cryptographic keys for vaults",
+		Long: `
 The keys command is used to generate and manage cryptographic keys for in your vault.
 `,
-}
+	}
 
-func init() {
-	KeyCmd.AddCommand(keyGenerateCmd)
+	cmd.AddCommand(NewCmdGenerate(cache, vaultService))
+	cmd.AddCommand(NewCmdList(cache, vaultService))
+	cmd.AddCommand(NewCmdShow(cache, vaultService))
+	cmd.AddCommand(NewCmdLoad(cache, vaultService))
 
-	KeyCmd.AddCommand(keyListCmd)
-
-	keyShowCmd.Flags().StringVarP(&showCmdIn.KeyID, "key-id", "k", "", "The ID of the key to show")
-	KeyCmd.AddCommand(keyShowCmd)
-
-	keyLoadCmd.Flags().StringVarP(&loadCmdIn.KeyID, "key-id", "k", "", "The ID of the key to load")
-	KeyCmd.AddCommand(keyLoadCmd)
+	return cmd
 }

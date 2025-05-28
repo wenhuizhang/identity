@@ -10,129 +10,119 @@ import (
 	"os"
 
 	cliCache "github.com/agntcy/identity/cmd/issuer/cache"
-	"github.com/agntcy/identity/internal/core/keystore"
-	vaulttypes "github.com/agntcy/identity/internal/issuer/vault/types"
+	"github.com/agntcy/identity/internal/issuer/vault"
 	"github.com/spf13/cobra"
 )
 
-var keyShowCmd = &cobra.Command{
-	Use:   "show",
-	Short: "Show details of a specific key in the vault",
-	Run: func(cmd *cobra.Command, args []string) {
+type ShowFlags struct {
+	KeyID string
+}
 
-		// load the cache to get the vault and issuer id
-		cache, err := cliCache.LoadCache()
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error loading local configuration: %v\n", err)
-			return
-		}
-		err = cache.ValidateForKey()
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error validating local configuration: %v\n", err)
-			return
-		}
+type ShowCommand struct {
+	cache        *cliCache.Cache
+	vaultService vault.VaultService
+}
 
-		// if the key id is not set, prompt the user for it interactively
-		if showCmdIn.KeyID == "" {
-			fmt.Fprintf(os.Stderr, "Key ID: ")
-			_, err := fmt.Scanln(&showCmdIn.KeyID)
+func NewCmdShow(
+	cache *cliCache.Cache,
+	vaultService vault.VaultService,
+) *cobra.Command {
+	flags := NewShowFlags()
+
+	cmd := &cobra.Command{
+		Use:   "show",
+		Short: "Show details of a specific key in the vault",
+		Run: func(cmd *cobra.Command, args []string) {
+			c := ShowCommand{
+				cache:        cache,
+				vaultService: vaultService,
+			}
+
+			err := c.Run(cmd.Context(), flags)
 			if err != nil {
-				fmt.Fprintf(os.Stderr, "Error reading key ID: %v\n", err)
-				return
+				fmt.Fprintf(os.Stderr, "%v\n", err)
+				os.Exit(1)
 			}
-		}
-		if showCmdIn.KeyID == "" {
-			fmt.Fprintf(os.Stderr, "No key ID provided\n")
-			return
-		}
+		},
+	}
 
-		// get the vault configuration
-		vault, err := vaultService.GetVault(cache.VaultId)
+	flags.AddFlags(cmd)
+
+	return cmd
+}
+
+func NewShowFlags() *ShowFlags {
+	return &ShowFlags{}
+}
+
+func (f *ShowFlags) AddFlags(cmd *cobra.Command) {
+	cmd.Flags().StringVarP(&f.KeyID, "key-id", "k", "", "The ID of the key to show")
+}
+
+func (cmd *ShowCommand) Run(ctx context.Context, flags *ShowFlags) error {
+	err := cmd.cache.ValidateForKey()
+	if err != nil {
+		return fmt.Errorf("error validating local configuration: %v", err)
+	}
+
+	// if the key id is not set, prompt the user for it interactively
+	if flags.KeyID == "" {
+		fmt.Fprintf(os.Stdout, "Key ID: ")
+
+		_, err := fmt.Scanln(&flags.KeyID)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error getting vault: %v\n", err)
-			return
+			return fmt.Errorf("error reading key ID: %v", err)
 		}
+	}
 
-		var service keystore.KeyService
+	if flags.KeyID == "" {
+		return fmt.Errorf("no key ID provided")
+	}
 
-		switch vault.Type {
-		case vaulttypes.VaultTypeFile:
-			fileVault, ok := vault.Config.(*vaulttypes.VaultFile)
-			if !ok {
-				fmt.Fprintf(os.Stderr, "Error: vault config is not of type VaultFile\n")
-				return
-			}
-			fileConfig := keystore.FileStorageConfig{
-				FilePath: fileVault.FilePath,
-			}
-			service, err = keystore.NewKeyService(keystore.FileStorage, fileConfig)
-			if err != nil {
-				fmt.Fprintf(os.Stderr, "Error creating key service: %v\n", err)
-				return
-			}
+	// get the vault configuration
+	vault, err := cmd.vaultService.GetVault(cmd.cache.VaultId)
+	if err != nil {
+		return fmt.Errorf("error getting vault: %v", err)
+	}
 
-		case vaulttypes.VaultTypeHashicorp:
-			hashicorpVault, ok := vault.Config.(*vaulttypes.VaultHashicorp)
-			if !ok {
-				fmt.Fprintf(os.Stderr, "Error: vault config is not of type VaultHashicorp\n")
-				return
-			}
-			hashicorpConfig := keystore.VaultStorageConfig{
-				Address:   hashicorpVault.Address,
-				Token:     hashicorpVault.Token,
-				Namespace: hashicorpVault.Namespace,
-			}
-			service, err = keystore.NewKeyService(keystore.VaultStorage, hashicorpConfig)
-			if err != nil {
-				fmt.Fprintf(os.Stderr, "Error creating key service: %v\n", err)
-				return
-			}
+	service, err := newKeyService(vault)
+	if err != nil {
+		return fmt.Errorf("error creating key service: %v", err)
+	}
 
-		default:
-			fmt.Fprintf(os.Stderr, "Unsupported vault type: %s\n", vault.Type)
-			return
-		}
+	publicKey, err := service.RetrievePubKey(ctx, flags.KeyID)
+	if err != nil {
+		return fmt.Errorf("error retrieving public key: %v", err)
+	}
 
-		ctx := context.Background()
+	if publicKey == nil {
+		return fmt.Errorf("no public key found for Key ID: %s", flags.KeyID)
+	}
 
-		publicKey, err := service.RetrievePubKey(ctx, showCmdIn.KeyID)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error retrieving public key: %v\n", err)
-			return
-		}
+	// convert the public key to a string representation
+	publicKeyStr, err := json.MarshalIndent(publicKey, "", "  ")
+	if err != nil {
+		return fmt.Errorf("error marshalling public key: %v", err)
+	}
 
-		if publicKey == nil {
-			fmt.Fprintf(os.Stderr, "No public key found for Key ID: %s\n", showCmdIn.KeyID)
-			return
-		}
+	privateKey, err := service.RetrievePrivKey(ctx, flags.KeyID)
+	if err != nil {
+		return fmt.Errorf("error retrieving private key: %v", err)
+	}
 
-		// convert the public key to a string representation
-		publicKeyStr, err := json.MarshalIndent(publicKey, "", "  ")
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error marshalling public key: %v\n", err)
-			return
-		}
+	// convert the private key to a string representation
+	if privateKey == nil {
+		return fmt.Errorf("no private key found for Key ID: %s", flags.KeyID)
+	}
 
-		privateKey, err := service.RetrievePrivKey(ctx, showCmdIn.KeyID)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error retrieving private key: %v\n", err)
-			return
-		}
+	privateKeyStr, err := json.MarshalIndent(privateKey, "", "  ")
+	if err != nil {
+		return fmt.Errorf("error marshalling private key: %v", err)
+	}
 
-		// convert the private key to a string representation
-		if privateKey == nil {
-			fmt.Fprintf(os.Stderr, "No private key found for Key ID: %s\n", showCmdIn.KeyID)
-			return
-		}
+	fmt.Fprintf(os.Stdout, "\nKey ID: %s\n", flags.KeyID)
+	fmt.Fprintf(os.Stdout, "\nPublic Key: %s\n", publicKeyStr)
+	fmt.Fprintf(os.Stdout, "\nPrivate Key: %s\n", privateKeyStr)
 
-		privateKeyStr, err := json.MarshalIndent(privateKey, "", "  ")
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error marshalling private key: %v\n", err)
-			return
-		}
-
-		fmt.Fprintf(os.Stdout, "\nKey ID: %s\n", showCmdIn.KeyID)
-		fmt.Fprintf(os.Stdout, "\nPublic Key: %s\n", publicKeyStr)
-		fmt.Fprintf(os.Stdout, "\nPrivate Key: %s\n", privateKeyStr)
-	},
+	return nil
 }

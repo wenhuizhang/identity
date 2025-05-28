@@ -74,7 +74,7 @@ The Identity CLI tool is a command line interface for generating, publishing and
 		oidcAuth,
 		nodeClientPrv,
 	)
-	vaultSrv := vault.NewVaultService(vaultRepository)
+	vaultService := vault.NewVaultService(vaultRepository)
 	issuerService := issuer.NewIssuerService(issuerRepository, oidcAuth, nodeClientPrv)
 	metadataService := metadata.NewMetadataService(
 		mdRepository,
@@ -83,13 +83,13 @@ The Identity CLI tool is a command line interface for generating, publishing and
 		nodeClientPrv,
 	)
 
-	rootCmd.AddCommand(vaultcmd.VaultCmd)
-	rootCmd.AddCommand(issuercmd.NewCmd(cache, issuerService, vaultSrv))
+	rootCmd.AddCommand(vaultcmd.NewCmd(cache, vaultService))
+	rootCmd.AddCommand(issuercmd.NewCmd(cache, issuerService, vaultService))
 	rootCmd.AddCommand(mdcmd.NewCmd(cache, metadataService))
 	rootCmd.AddCommand(badgecmd.NewCmd(
 		cache,
 		badgeService,
-		vaultSrv,
+		vaultService,
 		a2aClient,
 		mcpClient,
 	))
