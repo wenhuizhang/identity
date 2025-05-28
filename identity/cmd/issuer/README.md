@@ -57,7 +57,7 @@ identity issuer register -o "My Organization" \
 
 ```bash
 identity metadata generate \
-    -i "client-id" -s "client-secret" -u "https://idp.example.com"
+    -c "client-id" -s "client-secret" -u "https://idp.example.com"
 ```
 
 #### Step 4: Issue a badge
