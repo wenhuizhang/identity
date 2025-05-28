@@ -4,79 +4,34 @@
 package badge
 
 import (
-	"github.com/agntcy/identity/cmd/issuer/commands/badge/issue"
+	clicache "github.com/agntcy/identity/cmd/issuer/cache"
 	badge "github.com/agntcy/identity/internal/issuer/badge"
-	"github.com/agntcy/identity/internal/issuer/badge/data/filesystem"
-	issfs "github.com/agntcy/identity/internal/issuer/issuer/data/filesystem"
-	mdfs "github.com/agntcy/identity/internal/issuer/metadata/data/filesystem"
-	"github.com/agntcy/identity/internal/pkg/nodeapi"
-	"github.com/agntcy/identity/internal/pkg/oidc"
+	"github.com/agntcy/identity/internal/issuer/badge/a2a"
+	"github.com/agntcy/identity/internal/issuer/badge/mcp"
+	"github.com/agntcy/identity/internal/issuer/vault"
 	"github.com/spf13/cobra"
 )
 
-type PublishCmdInput struct {
-	BadgeID string
-}
-
-type ShowCmdInput struct {
-	BadgeID string
-}
-
-type ForgetCmdInput struct {
-	BadgeID string
-}
-
-type LoadCmdInput struct {
-	BadgeID string
-}
-
-var (
-	// setup the badge service
-	badgeFilesystemRepository = filesystem.NewBadgeFilesystemRepository()
-	issuerRepository          = issfs.NewIssuerFilesystemRepository()
-	mdRepository              = mdfs.NewMetadataFilesystemRepository()
-	oidcAuth                  = oidc.NewAuthenticator()
-	nodeClientPrv             = nodeapi.NewNodeClientProvider()
-	badgeService              = badge.NewBadgeService(
-		badgeFilesystemRepository,
-		mdRepository,
-		issuerRepository,
-		oidcAuth,
-		nodeClientPrv,
-	)
-
-	// setup the command flags
-	pubCmdIn  = &PublishCmdInput{}
-	showCmdIn = &ShowCmdInput{}
-	frgtCmdIn = &ForgetCmdInput{}
-	loadCmdIn = &LoadCmdInput{}
-)
-
-var BadgeCmd = &cobra.Command{
-	Use:   "badge",
-	Short: "Issue and publish badges for your Agent and MCP Server identities",
-	Long: `
+func NewCmd(
+	cache *clicache.Cache,
+	badgeService badge.BadgeService,
+	vaultSrv vault.VaultService,
+	a2aClient a2a.DiscoveryClient,
+	mcpClient mcp.DiscoveryClient,
+) *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "badge",
+		Short: "Issue and publish badges for your Agent and MCP Server identities",
+		Long: `
 The badge command is used to issue and publish badges for your Agent and MCP Server identities.
 `,
-}
+	}
 
-func init() {
-	badgeIssueCmd.AddCommand(issue.IssueOasfCmd)
-	badgeIssueCmd.AddCommand(issue.IssueMcpServerCmd)
-	badgeIssueCmd.AddCommand(issue.IssueA2AWellKnownCmd)
-	BadgeCmd.AddCommand(badgeIssueCmd)
+	cmd.AddCommand(NewCmdIssue(cache, badgeService, vaultSrv, a2aClient, mcpClient))
+	cmd.AddCommand(NewCmdPublish(cache, badgeService))
+	cmd.AddCommand(NewCmdList(cache, badgeService))
+	cmd.AddCommand(NewCmdShow(cache, badgeService))
+	cmd.AddCommand(NewCmdLoad(cache, badgeService))
 
-	badgePublishCmd.Flags().StringVarP(&pubCmdIn.BadgeID, "badge-id", "b", "", "The ID of the badge to publish")
-	BadgeCmd.AddCommand(badgePublishCmd)
-
-	BadgeCmd.AddCommand(badgeListCmd)
-
-	badgeShowCmd.Flags().StringVarP(&showCmdIn.BadgeID, "badge-id", "b", "", "The ID of the badge to show")
-	BadgeCmd.AddCommand(badgeShowCmd)
-
-	badgeForgetCmd.Flags().StringVarP(&frgtCmdIn.BadgeID, "badge-id", "b", "", "The ID of the badge to forget")
-	BadgeCmd.AddCommand(badgeForgetCmd)
-
-	badgeLoadCmd.Flags().StringVarP(&loadCmdIn.BadgeID, "badge-id", "b", "", "The ID of the badge to load")
-	BadgeCmd.AddCommand(badgeLoadCmd)
+	return cmd
 }

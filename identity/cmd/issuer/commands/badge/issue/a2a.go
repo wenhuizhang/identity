@@ -8,127 +8,134 @@ import (
 	"fmt"
 	"os"
 
-	cliCache "github.com/agntcy/identity/cmd/issuer/cache"
+	clicache "github.com/agntcy/identity/cmd/issuer/cache"
 	vctypes "github.com/agntcy/identity/internal/core/vc/types"
 	badge "github.com/agntcy/identity/internal/issuer/badge"
-	"github.com/agntcy/identity/internal/issuer/badge/data/filesystem"
-	issfs "github.com/agntcy/identity/internal/issuer/issuer/data/filesystem"
-	mdfs "github.com/agntcy/identity/internal/issuer/metadata/data/filesystem"
 	"github.com/agntcy/identity/internal/issuer/vault"
-	vfs "github.com/agntcy/identity/internal/issuer/vault/data/filesystem"
-	"github.com/agntcy/identity/internal/pkg/nodeapi"
-	"github.com/agntcy/identity/internal/pkg/oidc"
 	"github.com/spf13/cobra"
 
 	"github.com/agntcy/identity/internal/issuer/badge/a2a"
 )
 
-var (
-	// setup the command flags
-	issueA2AWellKnown string
-)
-
-var IssueA2AWellKnownCmd = &cobra.Command{
-	Use:   "a2a",
-	Short: "Issue a badge based on a local file",
-	Run: func(cmd *cobra.Command, args []string) {
-
-		// setup the badge service
-		badgeFilesystemRepository := filesystem.NewBadgeFilesystemRepository()
-		issuerRepository := issfs.NewIssuerFilesystemRepository()
-		mdRepository := mdfs.NewMetadataFilesystemRepository()
-		oidcAuth := oidc.NewAuthenticator()
-		nodeClientPrv := nodeapi.NewNodeClientProvider()
-		badgeService := badge.NewBadgeService(
-			badgeFilesystemRepository,
-			mdRepository,
-			issuerRepository,
-			oidcAuth,
-			nodeClientPrv,
-		)
-		vaultRepository := vfs.NewVaultFilesystemRepository()
-		vaultSrv := vault.NewVaultService(vaultRepository)
-
-		// load the cache to get the vault, issuer and metadata ids
-		cache, err := cliCache.LoadCache()
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error loading local configuration: %v\n", err)
-			return
-		}
-		err = cache.ValidateForBadge()
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error validating local configuration: %v\n", err)
-			return
-		}
-
-		// if the mcp server url is not set, prompt the user for it interactively
-		if issueA2AWellKnown == "" {
-			fmt.Fprintf(os.Stderr, "Well-known URL of the A2A agent you want to sign in the badge: \n")
-			_, err := fmt.Scanln(&issueA2AWellKnown)
-			if err != nil {
-				fmt.Fprintf(os.Stderr, "Error reading A2A well-known URL: %v\n", err)
-				return
-			}
-		}
-		if issueA2AWellKnown == "" {
-			fmt.Fprintf(os.Stderr, "No A2A well-known URL provided\n")
-			return
-		}
-
-		// Convert the badge value to a string
-		context := context.Background()
-		a2aClient := a2a.NewDiscoveryClient()
-		agentCard, err := a2aClient.Discover(context, issueA2AWellKnown)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error discovering A2A agent: %v\n", err)
-			return
-		}
-
-		prvKey, err := vaultSrv.RetrievePrivKey(cmd.Context(), cache.VaultId, cache.KeyID)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error retrieving public key: %v\n", err)
-			return
-		}
-
-		claims := vctypes.BadgeClaims{
-			ID:    cache.MetadataId,
-			Badge: agentCard,
-		}
-
-		badgeId, err := badgeService.IssueBadge(
-			cache.VaultId,
-			cache.KeyID,
-			cache.IssuerId,
-			cache.MetadataId,
-			&vctypes.CredentialContent{
-				Type:    vctypes.CREDENTIAL_CONTENT_TYPE_AGENT_BADGE,
-				Content: claims.ToMap(),
-			},
-			prvKey,
-		)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error issuing badge: %v\n", err)
-			return
-		}
-
-		fmt.Fprintf(os.Stdout, "Issued badge with ID: %s\n", badgeId)
-
-		// Save the badge ID to the cache
-		cache.BadgeId = badgeId
-		err = cliCache.SaveCache(cache)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error saving local configuration: %v\n", err)
-			return
-		}
-	},
+type IssueA2AFlags struct {
+	A2AWellKnown string
 }
 
-func init() {
-	IssueA2AWellKnownCmd.Flags().StringVarP(
-		&issueA2AWellKnown,
+type IssueA2ACommand struct {
+	cache        *clicache.Cache
+	badgeService badge.BadgeService
+	vaultSrv     vault.VaultService
+	a2aClient    a2a.DiscoveryClient
+}
+
+func NewCmdIssueA2A(
+	cache *clicache.Cache,
+	badgeService badge.BadgeService,
+	vaultSrv vault.VaultService,
+	a2aClient a2a.DiscoveryClient,
+) *cobra.Command {
+	flags := NewIssueA2AFlags()
+
+	cmd := &cobra.Command{
+		Use:   "a2a",
+		Short: "Issue a badge based on a local file",
+		Run: func(cmd *cobra.Command, args []string) {
+			c := IssueA2ACommand{
+				cache:        cache,
+				badgeService: badgeService,
+			}
+
+			err := c.Run(cmd.Context(), flags)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "%v\n", err)
+				os.Exit(1)
+			}
+		},
+	}
+
+	flags.AddFlags(cmd)
+
+	return cmd
+}
+
+func NewIssueA2AFlags() *IssueA2AFlags {
+	return &IssueA2AFlags{}
+}
+
+func (f *IssueA2AFlags) AddFlags(cmd *cobra.Command) {
+	cmd.Flags().StringVarP(
+		&f.A2AWellKnown,
 		"url",
 		"u",
 		"",
 		"The well-known URL of the A2A agent you want to sign in the badge",
 	)
+}
+
+func (cmd *IssueA2ACommand) Run(ctx context.Context, flags *IssueA2AFlags) error {
+	err := cmd.cache.ValidateForBadge()
+	if err != nil {
+		return fmt.Errorf("error validating local configuration: %v", err)
+	}
+
+	// if the mcp server url is not set, prompt the user for it interactively
+	if flags.A2AWellKnown == "" {
+		fmt.Fprintf(os.Stderr, "Well-known URL of the A2A agent you want to sign in the badge: \n")
+
+		_, err := fmt.Scanln(&flags.A2AWellKnown)
+		if err != nil {
+			return fmt.Errorf("error reading A2A well-known URL: %v", err)
+		}
+	}
+
+	if flags.A2AWellKnown == "" {
+		return fmt.Errorf("no A2A well-known URL provided")
+	}
+
+	// Convert the badge value to a string
+	agentCard, err := cmd.a2aClient.Discover(ctx, flags.A2AWellKnown)
+	if err != nil {
+		return fmt.Errorf("error discovering A2A agent: %v", err)
+	}
+
+	prvKey, err := cmd.vaultSrv.RetrievePrivKey(
+		ctx,
+		cmd.cache.VaultId,
+		cmd.cache.KeyID,
+	)
+	if err != nil {
+		return fmt.Errorf("error retrieving public key: %v", err)
+	}
+
+	claims := vctypes.BadgeClaims{
+		ID:    cmd.cache.MetadataId,
+		Badge: agentCard,
+	}
+
+	badgeId, err := cmd.badgeService.IssueBadge(
+		cmd.cache.VaultId,
+		cmd.cache.KeyID,
+		cmd.cache.IssuerId,
+		cmd.cache.MetadataId,
+		&vctypes.CredentialContent{
+			Type:    vctypes.CREDENTIAL_CONTENT_TYPE_AGENT_BADGE,
+			Content: claims.ToMap(),
+		},
+		prvKey,
+	)
+	if err != nil {
+		return fmt.Errorf("error issuing badge: %v", err)
+	}
+
+	fmt.Fprintf(os.Stdout, "Issued badge with ID: %s\n", badgeId)
+
+	// Save the badge ID to the cache
+	cmd.cache.BadgeId = badgeId
+
+	err = clicache.SaveCache(cmd.cache)
+	if err != nil {
+		return fmt.Errorf("error saving local configuration: %v", err)
+	}
+
+	return nil
 }

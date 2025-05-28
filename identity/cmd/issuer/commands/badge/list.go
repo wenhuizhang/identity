@@ -4,42 +4,67 @@
 package badge
 
 import (
+	"context"
 	"fmt"
 	"os"
 
 	cliCache "github.com/agntcy/identity/cmd/issuer/cache"
+	badge "github.com/agntcy/identity/internal/issuer/badge"
 	"github.com/spf13/cobra"
 )
 
-var badgeListCmd = &cobra.Command{
-	Use:   "list",
-	Short: "List your existing badges for the current metadata",
-	Run: func(cmd *cobra.Command, args []string) {
+type ListCommand struct {
+	cache        *cliCache.Cache
+	badgeService badge.BadgeService
+}
 
-		// load the cache to get the vault, issuer and metadata ids
-		cache, err := cliCache.LoadCache()
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error loading local configuration: %v\n", err)
-			return
-		}
-		err = cache.ValidateForBadge()
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error validating local configuration: %v\n", err)
-			return
-		}
+func NewCmdList(
+	cache *cliCache.Cache,
+	badgeService badge.BadgeService,
+) *cobra.Command {
+	return &cobra.Command{
+		Use:   "list",
+		Short: "List your existing badges for the current metadata",
+		Run: func(cmd *cobra.Command, args []string) {
+			c := ListCommand{
+				cache:        cache,
+				badgeService: badgeService,
+			}
 
-		badges, err := badgeService.GetAllBadges(cache.VaultId, cache.KeyID, cache.IssuerId, cache.MetadataId)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error listing badges: %v\n", err)
-			return
-		}
-		if len(badges) == 0 {
-			fmt.Fprintf(os.Stdout, "%s\n", "No badges found")
-			return
-		}
-		fmt.Fprintf(os.Stdout, "%s\n", "Existing badge ids:")
-		for _, badge := range badges {
-			fmt.Fprintf(os.Stdout, "- %s\n", badge.Id)
-		}
-	},
+			err := c.Run(cmd.Context())
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "%v\n", err)
+				os.Exit(1)
+			}
+		},
+	}
+}
+
+func (cmd *ListCommand) Run(ctx context.Context) error {
+	err := cmd.cache.ValidateForBadge()
+	if err != nil {
+		return fmt.Errorf("error validating local configuration: %v", err)
+	}
+
+	badges, err := cmd.badgeService.GetAllBadges(
+		cmd.cache.VaultId,
+		cmd.cache.KeyID,
+		cmd.cache.IssuerId,
+		cmd.cache.MetadataId,
+	)
+	if err != nil {
+		return fmt.Errorf("error listing badges: %v", err)
+	}
+
+	if len(badges) == 0 {
+		return fmt.Errorf("no badges found")
+	}
+
+	fmt.Fprintf(os.Stdout, "%s\n", "Existing badge ids:")
+
+	for _, badge := range badges {
+		fmt.Fprintf(os.Stdout, "- %s\n", badge.Id)
+	}
+
+	return nil
 }
