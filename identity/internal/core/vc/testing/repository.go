@@ -23,7 +23,16 @@ func NewFakeVCRepository() vccore.Repository {
 func (r *FakeVCRepository) Create(
 	ctx context.Context,
 	credential *vctypes.VerifiableCredential,
+	resolverMetadataID string,
 ) (*vctypes.VerifiableCredential, error) {
 	r.store[credential.ID] = credential
 	return credential, nil
+}
+
+func (r *FakeVCRepository) GetWellKnown(
+	ctx context.Context,
+	resolverMetadataID string,
+) (*[]*vctypes.EnvelopedCredential, error) {
+	var credentials []*vctypes.EnvelopedCredential
+	return &credentials, nil
 }

@@ -26,6 +26,12 @@ type VerifiableCredentialService interface {
 		credential *vctypes.EnvelopedCredential,
 		proof *vctypes.Proof,
 	) error
+
+	// Find the vcs by resolver metadata ID
+	GetWellKnown(
+		ctx context.Context,
+		resolverMetadataID string,
+	) (*[]*vctypes.EnvelopedCredential, error)
 }
 
 type verifiableCredentialService struct {
@@ -115,7 +121,7 @@ func (s *verifiableCredentialService) Publish(
 
 	log.Debug("Storing the Verifiable Credential")
 
-	_, err = s.vcRepository.Create(ctx, validatedVC)
+	_, err = s.vcRepository.Create(ctx, validatedVC, id)
 	if err != nil {
 		return errutil.ErrInfo(
 			errtypes.ERROR_REASON_INTERNAL,
@@ -125,4 +131,31 @@ func (s *verifiableCredentialService) Publish(
 	}
 
 	return nil
+}
+
+func (s *verifiableCredentialService) GetWellKnown(
+	ctx context.Context,
+	resolverMetadataID string,
+) (*[]*vctypes.EnvelopedCredential, error) {
+	vcs, err := s.vcRepository.GetWellKnown(ctx, resolverMetadataID)
+	if err != nil {
+		return nil, errutil.ErrInfo(
+			errtypes.ERROR_REASON_INTERNAL,
+			"unable to retrieve well-known verifiable credentials",
+			err,
+		)
+	}
+
+	if vcs == nil || len(*vcs) == 0 {
+		log.Debug("No well-known verifiable credentials found for resolver metadata ID ", resolverMetadataID)
+		// Return an empty slice instead of nil to avoid nil pointer dereference
+		emptySlice := []*vctypes.EnvelopedCredential{}
+
+		return &emptySlice, nil
+	}
+
+	log.Debug("Found well-known verifiable credentials for resolver metadata ID ", resolverMetadataID)
+	// Return the found verifiable credentials
+
+	return vcs, nil
 }

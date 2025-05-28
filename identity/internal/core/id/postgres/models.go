@@ -5,16 +5,18 @@ package postgres
 
 import (
 	"github.com/agntcy/identity/internal/core/id/types"
+	vc "github.com/agntcy/identity/internal/core/vc/postgres"
 	"github.com/agntcy/identity/internal/pkg/converters"
 	"github.com/google/uuid"
 	"github.com/lib/pq"
 )
 
 type ResolverMetadata struct {
-	ID                 string                `gorm:"primaryKey"`
-	VerificationMethod []*VerificationMethod `gorm:"foreignKey:ResolverMetadataID"`
-	Service            []*Service            `gorm:"foreignKey:ResolverMetadataID"`
-	AssertionMethod    pq.StringArray        `gorm:"type:text[]"`
+	ID                 string                     `gorm:"primaryKey"`
+	VerificationMethod []*VerificationMethod      `gorm:"foreignKey:ResolverMetadataID"`
+	Service            []*Service                 `gorm:"foreignKey:ResolverMetadataID"`
+	VC                 []*vc.VerifiableCredential `gorm:"foreignKey:ResolverMetadataID"`
+	AssertionMethod    pq.StringArray             `gorm:"type:text[]"`
 }
 
 func (md *ResolverMetadata) ToCoreType() *types.ResolverMetadata {
