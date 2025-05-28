@@ -13,5 +13,11 @@ type Repository interface {
 	Create(
 		ctx context.Context,
 		credential *types.VerifiableCredential,
+		resolverMetadataID string,
 	) (*types.VerifiableCredential, error)
+
+	GetByResolverMetadata(
+		ctx context.Context,
+		resolverMetadataID string,
+	) ([]*types.VerifiableCredential, error)
 }

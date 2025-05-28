@@ -7,6 +7,7 @@ import (
 	"context"
 	"fmt"
 
+	coreapi "github.com/agntcy/identity/api/server/agntcy/identity/core/v1alpha1"
 	nodeapi "github.com/agntcy/identity/api/server/agntcy/identity/node/v1alpha1"
 	errtypes "github.com/agntcy/identity/internal/core/errors/types"
 	vctypes "github.com/agntcy/identity/internal/core/vc/types"
@@ -56,11 +57,30 @@ func (vcService) Verify(
 }
 
 // Returns the well-known Verifiable Credentials for the specified Id
-func (vcService) GetWellKnown(
+func (s *vcService) GetWellKnown(
 	ctx context.Context,
 	req *nodeapi.GetVcWellKnownRequest,
 ) (*nodeapi.GetVcWellKnownResponse, error) {
-	return nil, fmt.Errorf("not implemented")
+	vcs, err := s.vcSrv.GetWellKnown(
+		ctx,
+		req.Id,
+	)
+	if err != nil {
+		if errtypes.IsErrorInfo(err, errtypes.ERROR_REASON_INTERNAL) {
+			return nil, grpcutil.InternalError(err)
+		}
+
+		return nil, grpcutil.BadRequestError(err)
+	}
+
+	response := &nodeapi.GetVcWellKnownResponse{
+		Vcs: make([]*coreapi.EnvelopedCredential, 0, len(vcs)),
+	}
+	for _, vc := range vcs {
+		response.Vcs = append(response.Vcs, converters.Convert[coreapi.EnvelopedCredential](vc))
+	}
+
+	return response, nil
 }
 
 // Search for Verifiable Credentials based on the specified criteria

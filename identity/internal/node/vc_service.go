@@ -26,6 +26,12 @@ type VerifiableCredentialService interface {
 		credential *vctypes.EnvelopedCredential,
 		proof *vctypes.Proof,
 	) error
+
+	// Find the vcs by resolver metadata ID
+	GetWellKnown(
+		ctx context.Context,
+		resolverMetadataID string,
+	) ([]*vctypes.EnvelopedCredential, error)
 }
 
 type verifiableCredentialService struct {
@@ -115,7 +121,7 @@ func (s *verifiableCredentialService) Publish(
 
 	log.Debug("Storing the Verifiable Credential")
 
-	_, err = s.vcRepository.Create(ctx, validatedVC)
+	_, err = s.vcRepository.Create(ctx, validatedVC, id)
 	if err != nil {
 		return errutil.ErrInfo(
 			errtypes.ERROR_REASON_INTERNAL,
@@ -125,4 +131,59 @@ func (s *verifiableCredentialService) Publish(
 	}
 
 	return nil
+}
+
+func (s *verifiableCredentialService) GetWellKnown(
+	ctx context.Context,
+	resolverMetadataID string,
+) ([]*vctypes.EnvelopedCredential, error) {
+	log.Debug("Retrieving well-known verifiable credentials for resolver metadata ID: ", resolverMetadataID)
+
+	vcs, err := s.vcRepository.GetByResolverMetadata(ctx, resolverMetadataID)
+	if err != nil {
+		if errors.Is(err, errcore.ErrResourceNotFound) {
+			log.Debug("No well-known verifiable credentials found for resolver metadata ID ", resolverMetadataID)
+
+			return []*vctypes.EnvelopedCredential{}, nil
+		}
+
+		return nil, errutil.ErrInfo(
+			errtypes.ERROR_REASON_INTERNAL,
+			"unable to retrieve well-known verifiable credentials",
+			err,
+		)
+	}
+
+	log.Debug("Found well-known verifiable credentials for resolver metadata ID ", resolverMetadataID)
+
+	var envelopedCredentials []*vctypes.EnvelopedCredential
+
+	for _, cred := range vcs {
+		if cred.Proof == nil {
+			log.Debug("Skipping credential with empty proof for ID: ", cred.ID)
+			continue
+		}
+
+		if cred.Proof.Type == "" {
+			log.Debug("Skipping credential with empty proof type for ID: ", cred.ID)
+			continue
+		}
+
+		if cred.Proof.ProofValue == "" {
+			log.Debug("Skipping credential with empty proof value for ID: ", cred.ID)
+			continue
+		}
+
+		switch cred.Proof.Type {
+		case "JWT":
+			envelopedCredentials = append(envelopedCredentials, &vctypes.EnvelopedCredential{
+				EnvelopeType: vctypes.CREDENTIAL_ENVELOPE_TYPE_JOSE,
+				Value:        cred.Proof.ProofValue,
+			})
+		default:
+			log.Debug("Skipping credential with unsupported proof type: ", cred.Proof.Type, " for ID: ", cred.ID)
+		}
+	}
+
+	return envelopedCredentials, nil
 }

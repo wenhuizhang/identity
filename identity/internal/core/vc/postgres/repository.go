@@ -25,8 +25,9 @@ func NewRepository(dbContext db.Context) vccore.Repository {
 func (r *vcPostgresRepository) Create(
 	ctx context.Context,
 	credential *types.VerifiableCredential,
+	resolverMetadataID string,
 ) (*types.VerifiableCredential, error) {
-	model := newVerifiableCredentialModel(credential)
+	model := newVerifiableCredentialModel(credential, resolverMetadataID)
 
 	result := r.dbContext.Client().Create(model)
 	if result.Error != nil {
@@ -36,4 +37,28 @@ func (r *vcPostgresRepository) Create(
 	}
 
 	return credential, nil
+}
+
+func (r *vcPostgresRepository) GetByResolverMetadata(
+	ctx context.Context,
+	resolverMetadataID string,
+) ([]*types.VerifiableCredential, error) {
+	var storedVCs []*VerifiableCredential
+
+	result := r.dbContext.Client().
+		Model(&VerifiableCredential{}).
+		Where("resolver_metadata_id = ?", resolverMetadataID).
+		Find(&storedVCs)
+	if result.Error != nil {
+		return nil, errutil.Err(
+			result.Error, "there was an error fetching the verifiable credentials",
+		)
+	}
+
+	vcs := make([]*types.VerifiableCredential, 0, len(storedVCs))
+	for _, vc := range storedVCs {
+		vcs = append(vcs, vc.ToCoreType())
+	}
+
+	return vcs, nil
 }
