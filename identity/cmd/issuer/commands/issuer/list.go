@@ -9,18 +9,18 @@ import (
 	"os"
 
 	clicache "github.com/agntcy/identity/cmd/issuer/cache"
-	issuer "github.com/agntcy/identity/internal/issuer/issuer"
+	issuersrv "github.com/agntcy/identity/internal/issuer/issuer"
 	"github.com/spf13/cobra"
 )
 
 type ListCommand struct {
 	cache         *clicache.Cache
-	issuerService issuer.IssuerService
+	issuerService issuersrv.IssuerService
 }
 
 func NewCmdList(
 	cache *clicache.Cache,
-	issuerService issuer.IssuerService,
+	issuerService issuersrv.IssuerService,
 ) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "list",
@@ -46,12 +46,12 @@ func NewCmdList(
 func (cmd *ListCommand) Run(ctx context.Context) error {
 	err := cmd.cache.ValidateForIssuer()
 	if err != nil {
-		return fmt.Errorf("error validating local configuration: %v", err)
+		return fmt.Errorf("error validating local configuration: %w", err)
 	}
 
 	issuers, err := cmd.issuerService.GetAllIssuers(cmd.cache.VaultId, cmd.cache.KeyID)
 	if err != nil {
-		return fmt.Errorf("error listing issuers: %v", err)
+		return fmt.Errorf("error listing issuers: %w", err)
 	}
 
 	if len(issuers) == 0 {

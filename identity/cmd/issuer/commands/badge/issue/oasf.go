@@ -12,6 +12,7 @@ import (
 	vctypes "github.com/agntcy/identity/internal/core/vc/types"
 	badge "github.com/agntcy/identity/internal/issuer/badge"
 	"github.com/agntcy/identity/internal/issuer/vault"
+	"github.com/agntcy/identity/internal/pkg/cmdutil"
 	"github.com/spf13/cobra"
 )
 
@@ -72,31 +73,25 @@ func (f *IssueOasfFlags) AddFlags(cmd *cobra.Command) {
 func (cmd *IssueOasfCommand) Run(ctx context.Context, flags *IssueOasfFlags) error {
 	err := cmd.cache.ValidateForBadge()
 	if err != nil {
-		return fmt.Errorf("error validating local configuration: %v", err)
+		return fmt.Errorf("error validating local configuration: %w", err)
 	}
 
 	// if the file path is not set, prompt the user for it interactively
 	if flags.OasfPath == "" {
-		fmt.Fprintf(os.Stdout, "Full file path to the OASF you want to sign in the badge: \n")
-
-		_, err := fmt.Scanln(&flags.OasfPath)
+		err := cmdutil.ScanRequired("Full file path to the OASF you want to sign in the badge", &flags.OasfPath)
 		if err != nil {
-			return fmt.Errorf("error reading OASF path: %v", err)
+			return fmt.Errorf("error reading OASF path: %w", err)
 		}
-	}
-
-	if flags.OasfPath == "" {
-		return fmt.Errorf("no OASF path provided")
 	}
 
 	badgeContentData, err := os.ReadFile(flags.OasfPath)
 	if err != nil {
-		return fmt.Errorf("error reading file: %v", err)
+		return fmt.Errorf("error reading file: %w", err)
 	}
 
 	prvKey, err := cmd.vaultSrv.RetrievePrivKey(ctx, cmd.cache.VaultId, cmd.cache.KeyID)
 	if err != nil {
-		return fmt.Errorf("error retreiving public key: %v", err)
+		return fmt.Errorf("error retreiving public key: %w", err)
 	}
 
 	claims := vctypes.BadgeClaims{
@@ -116,7 +111,7 @@ func (cmd *IssueOasfCommand) Run(ctx context.Context, flags *IssueOasfFlags) err
 		prvKey,
 	)
 	if err != nil {
-		return fmt.Errorf("error issuing badge: %v", err)
+		return fmt.Errorf("error issuing badge: %w", err)
 	}
 
 	fmt.Fprintf(os.Stdout, "Issued badge with ID: %s\n", badgeId)
@@ -126,7 +121,7 @@ func (cmd *IssueOasfCommand) Run(ctx context.Context, flags *IssueOasfFlags) err
 
 	err = cliCache.SaveCache(cmd.cache)
 	if err != nil {
-		return fmt.Errorf("error saving local configuration: %v", err)
+		return fmt.Errorf("error saving local configuration: %w", err)
 	}
 
 	return nil

@@ -9,8 +9,9 @@ import (
 	"os"
 
 	cliCache "github.com/agntcy/identity/cmd/issuer/cache"
-	"github.com/agntcy/identity/internal/issuer/vault"
+	vaultsrv "github.com/agntcy/identity/internal/issuer/vault"
 	vaulttypes "github.com/agntcy/identity/internal/issuer/vault/types"
+	"github.com/agntcy/identity/internal/pkg/cmdutil"
 	"github.com/google/uuid"
 	"github.com/spf13/cobra"
 )
@@ -21,10 +22,10 @@ type FileFlags struct {
 }
 
 type FileCommand struct {
-	vaultService vault.VaultService
+	vaultService vaultsrv.VaultService
 }
 
-func NewCmdFile(vaultService vault.VaultService) *cobra.Command {
+func NewCmdFile(vaultService vaultsrv.VaultService) *cobra.Command {
 	flags := NewFileFlags()
 
 	cmd := &cobra.Command{
@@ -60,30 +61,18 @@ func (f *FileFlags) AddFlags(cmd *cobra.Command) {
 func (cmd *FileCommand) Run(ctx context.Context, flags *FileFlags) error {
 	// if the file path is not set, prompt the user for it interactively
 	if flags.FilePath == "" {
-		fmt.Fprintf(os.Stdout, "File path to store the vault: ")
-
-		_, err := fmt.Scanln(&flags.FilePath)
+		err := cmdutil.ScanRequired("File path to store the vault", &flags.FilePath)
 		if err != nil {
-			return fmt.Errorf("error reading file path: %v", err)
+			return fmt.Errorf("error reading file path: %w", err)
 		}
-	}
-
-	if flags.FilePath == "" {
-		return fmt.Errorf("no file path provided")
 	}
 
 	// if the vault name is not set, prompt the user for it interactively
 	if flags.VaultName == "" {
-		fmt.Fprintf(os.Stdout, "Vault name: ")
-
-		_, err := fmt.Scanln(&flags.VaultName)
+		err := cmdutil.ScanRequired("Vault name", &flags.VaultName)
 		if err != nil {
-			return fmt.Errorf("error reading vault name: %v", err)
+			return fmt.Errorf("error reading vault name: %w", err)
 		}
-	}
-
-	if flags.VaultName == "" {
-		return fmt.Errorf("no vault name provided")
 	}
 
 	fileConfig := vaulttypes.VaultFile{
@@ -101,7 +90,7 @@ func (cmd *FileCommand) Run(ctx context.Context, flags *FileFlags) error {
 
 	vaultId, err := cmd.vaultService.ConnectVault(&vault)
 	if err != nil {
-		return fmt.Errorf("error configuring file vault: %v", err)
+		return fmt.Errorf("error configuring file vault: %w", err)
 	}
 
 	fmt.Fprintf(os.Stdout, "Successfully configured file vault with ID: %s\n", vaultId)
@@ -112,7 +101,7 @@ func (cmd *FileCommand) Run(ctx context.Context, flags *FileFlags) error {
 		},
 	)
 	if err != nil {
-		return fmt.Errorf("error saving local configuration: %v", err)
+		return fmt.Errorf("error saving local configuration: %w", err)
 	}
 
 	return nil

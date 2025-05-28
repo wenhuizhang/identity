@@ -10,7 +10,8 @@ import (
 	"os"
 
 	clicache "github.com/agntcy/identity/cmd/issuer/cache"
-	issuer "github.com/agntcy/identity/internal/issuer/issuer"
+	issuersrv "github.com/agntcy/identity/internal/issuer/issuer"
+	"github.com/agntcy/identity/internal/pkg/cmdutil"
 	"github.com/spf13/cobra"
 )
 
@@ -20,12 +21,12 @@ type ShowFlags struct {
 
 type ShowCommand struct {
 	cache         *clicache.Cache
-	issuerService issuer.IssuerService
+	issuerService issuersrv.IssuerService
 }
 
 func NewCmdShow(
 	cache *clicache.Cache,
-	issuerService issuer.IssuerService,
+	issuerService issuersrv.IssuerService,
 ) *cobra.Command {
 	flags := NewShowFlags()
 
@@ -62,26 +63,20 @@ func (f *ShowFlags) AddFlags(cmd *cobra.Command) {
 func (cmd *ShowCommand) Run(ctx context.Context, flags *ShowFlags) error {
 	err := cmd.cache.ValidateVaultId()
 	if err != nil {
-		return fmt.Errorf("error validating local configuration: %v", err)
+		return fmt.Errorf("error validating local configuration: %w", err)
 	}
 
 	// if the issuer id is not set, prompt the user for it interactively
 	if flags.IssuerID == "" {
-		fmt.Fprintf(os.Stdout, "Issuer ID to show:\n")
-
-		_, err := fmt.Scanln(&flags.IssuerID)
+		err := cmdutil.ScanRequired("Issuer ID to show", &flags.IssuerID)
 		if err != nil {
-			return fmt.Errorf("error reading issuer ID: %v", err)
+			return fmt.Errorf("error reading issuer ID: %w", err)
 		}
-	}
-
-	if flags.IssuerID == "" {
-		return fmt.Errorf("no issuer ID provided")
 	}
 
 	issuer, err := cmd.issuerService.GetIssuer(cmd.cache.VaultId, cmd.cache.KeyID, flags.IssuerID)
 	if err != nil {
-		return fmt.Errorf("error getting issuer: %v", err)
+		return fmt.Errorf("error getting issuer: %w", err)
 	}
 
 	if issuer == nil {
@@ -90,7 +85,7 @@ func (cmd *ShowCommand) Run(ctx context.Context, flags *ShowFlags) error {
 
 	issuerJSON, err := json.MarshalIndent(issuer, "", "  ")
 	if err != nil {
-		return fmt.Errorf("error marshaling metadata to JSON: %v", err)
+		return fmt.Errorf("error marshaling metadata to JSON: %w", err)
 	}
 
 	fmt.Fprintf(os.Stdout, "%s\n", string(issuerJSON))

@@ -14,6 +14,7 @@ import (
 	badge "github.com/agntcy/identity/internal/issuer/badge"
 	"github.com/agntcy/identity/internal/issuer/badge/mcp"
 	"github.com/agntcy/identity/internal/issuer/vault"
+	"github.com/agntcy/identity/internal/pkg/cmdutil"
 	"github.com/spf13/cobra"
 )
 
@@ -73,40 +74,29 @@ func (f *IssueMcpFlags) AddFlags(cmd *cobra.Command) {
 func (cmd *IssueMcpCommand) Run(ctx context.Context, flags *IssueMcpFlags) error {
 	err := cmd.cache.ValidateForBadge()
 	if err != nil {
-		return fmt.Errorf("error validating local configuration: %v", err)
+		return fmt.Errorf("error validating local configuration: %w", err)
 	}
 
 	// if the mcp server url is not set, prompt the user for it interactively
 	if flags.McpServerUrl == "" {
-		fmt.Fprintf(os.Stdout, "URL of the MCP server you want to sign in the badge: \n")
-
-		_, err := fmt.Scanln(&flags.McpServerUrl)
+		err := cmdutil.ScanRequired("URL of the MCP server you want to sign in the badge", &flags.McpServerUrl)
 		if err != nil {
-			return fmt.Errorf("error reading mcp server URL: %v", err)
+			return fmt.Errorf("error reading mcp server URL: %w", err)
 		}
-	}
-	if flags.McpServerUrl == "" {
-		return fmt.Errorf("no MCP server URL provided")
 	}
 
 	// if the mcp server name is not set, prompt the user for it interactively
 	if flags.McpServerName == "" {
-		fmt.Fprintf(os.Stdout, "Name of the MCP server you want to sign in the badge: ")
-
-		_, err := fmt.Scanln(&flags.McpServerName)
+		err := cmdutil.ScanRequired("Name of the MCP server you want to sign in the badge", &flags.McpServerName)
 		if err != nil {
-			return fmt.Errorf("error reading mcp server name: %v", err)
+			return fmt.Errorf("error reading mcp server name: %w", err)
 		}
-	}
-
-	if flags.McpServerName == "" {
-		return fmt.Errorf("no MCP server name provided")
 	}
 
 	// Retrieve the MCP server data
 	mcpServer, err := cmd.mcpClient.Discover(ctx, flags.McpServerName, flags.McpServerUrl)
 	if err != nil {
-		return fmt.Errorf("error discovering MCP server: %v", err)
+		return fmt.Errorf("error discovering MCP server: %w", err)
 	}
 
 	if mcpServer == nil {
@@ -116,12 +106,12 @@ func (cmd *IssueMcpCommand) Run(ctx context.Context, flags *IssueMcpFlags) error
 	// Marshal the MCP server to JSON
 	mcpServerData, err := json.Marshal(mcpServer)
 	if err != nil {
-		return fmt.Errorf("error marshalling MCP server: %v", err)
+		return fmt.Errorf("error marshalling MCP server: %w", err)
 	}
 
 	prvKey, err := cmd.vaultSrv.RetrievePrivKey(ctx, cmd.cache.VaultId, cmd.cache.KeyID)
 	if err != nil {
-		return fmt.Errorf("error retrieving public key: %v", err)
+		return fmt.Errorf("error retrieving public key: %w", err)
 	}
 
 	claims := vctypes.BadgeClaims{
@@ -141,7 +131,7 @@ func (cmd *IssueMcpCommand) Run(ctx context.Context, flags *IssueMcpFlags) error
 		prvKey,
 	)
 	if err != nil {
-		return fmt.Errorf("error issuing badge: %v", err)
+		return fmt.Errorf("error issuing badge: %w", err)
 	}
 
 	fmt.Fprintf(os.Stdout, "Issued badge with ID: %s\n", badgeId)
@@ -151,7 +141,7 @@ func (cmd *IssueMcpCommand) Run(ctx context.Context, flags *IssueMcpFlags) error
 
 	err = clicache.SaveCache(cmd.cache)
 	if err != nil {
-		return fmt.Errorf("error saving local configuration: %v", err)
+		return fmt.Errorf("error saving local configuration: %w", err)
 	}
 
 	return nil

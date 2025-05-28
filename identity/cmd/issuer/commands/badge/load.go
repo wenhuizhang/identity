@@ -9,7 +9,8 @@ import (
 	"os"
 
 	clicache "github.com/agntcy/identity/cmd/issuer/cache"
-	badge "github.com/agntcy/identity/internal/issuer/badge"
+	badgesrv "github.com/agntcy/identity/internal/issuer/badge"
+	"github.com/agntcy/identity/internal/pkg/cmdutil"
 	"github.com/spf13/cobra"
 )
 
@@ -19,12 +20,12 @@ type LoadFlags struct {
 
 type LoadCommand struct {
 	cache        *clicache.Cache
-	badgeService badge.BadgeService
+	badgeService badgesrv.BadgeService
 }
 
 func NewCmdLoad(
 	cache *clicache.Cache,
-	badgeService badge.BadgeService,
+	badgeService badgesrv.BadgeService,
 ) *cobra.Command {
 	flags := NewLoadFlags()
 
@@ -61,21 +62,15 @@ func (f *LoadFlags) AddFlags(cmd *cobra.Command) {
 func (cmd *LoadCommand) Run(ctx context.Context, flags *LoadFlags) error {
 	err := cmd.cache.ValidateForBadge()
 	if err != nil {
-		return fmt.Errorf("error validating local configuration: %v", err)
+		return fmt.Errorf("error validating local configuration: %w", err)
 	}
 
 	// if the badge id is not set, prompt the user for it interactively
 	if flags.BadgeID == "" {
-		fmt.Fprintf(os.Stdout, "Badge ID to load:\n")
-
-		_, err := fmt.Scanln(&flags.BadgeID)
+		err := cmdutil.ScanRequired("Badge ID to load", &flags.BadgeID)
 		if err != nil {
-			return fmt.Errorf("error reading badge ID: %v", err)
+			return fmt.Errorf("error reading badge ID: %w", err)
 		}
-	}
-
-	if flags.BadgeID == "" {
-		return fmt.Errorf("no badge ID provided")
 	}
 
 	// check the badge id is valid
@@ -87,7 +82,7 @@ func (cmd *LoadCommand) Run(ctx context.Context, flags *LoadFlags) error {
 		flags.BadgeID,
 	)
 	if err != nil {
-		return fmt.Errorf("error getting badge: %v", err)
+		return fmt.Errorf("error getting badge: %w", err)
 	}
 
 	if badge == nil {
@@ -99,7 +94,7 @@ func (cmd *LoadCommand) Run(ctx context.Context, flags *LoadFlags) error {
 
 	err = clicache.SaveCache(cmd.cache)
 	if err != nil {
-		return fmt.Errorf("error saving local configuration: %v", err)
+		return fmt.Errorf("error saving local configuration: %w", err)
 	}
 
 	fmt.Fprintf(os.Stdout, "Loaded badge with ID: %s\n", flags.BadgeID)

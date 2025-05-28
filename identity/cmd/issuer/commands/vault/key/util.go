@@ -24,7 +24,7 @@ func newKeyService(vault *vaulttypes.Vault) (keystore.KeyService, error) {
 
 		service, err := keystore.NewKeyService(keystore.FileStorage, fileConfig)
 		if err != nil {
-			return nil, fmt.Errorf("error creating key service: %v", err)
+			return nil, fmt.Errorf("error creating key service: %w", err)
 		}
 
 		return service, nil
@@ -42,7 +42,7 @@ func newKeyService(vault *vaulttypes.Vault) (keystore.KeyService, error) {
 
 		service, err := keystore.NewKeyService(keystore.VaultStorage, hashicorpConfig)
 		if err != nil {
-			return nil, fmt.Errorf("error creating key service: %v", err)
+			return nil, fmt.Errorf("error creating key service: %w", err)
 		}
 
 		return service, nil

@@ -9,8 +9,9 @@ import (
 	"os"
 
 	cliCache "github.com/agntcy/identity/cmd/issuer/cache"
-	"github.com/agntcy/identity/internal/issuer/vault"
+	vaultsrv "github.com/agntcy/identity/internal/issuer/vault"
 	vaulttypes "github.com/agntcy/identity/internal/issuer/vault/types"
+	"github.com/agntcy/identity/internal/pkg/cmdutil"
 	"github.com/google/uuid"
 	"github.com/spf13/cobra"
 )
@@ -23,10 +24,10 @@ type HashicorpFlags struct {
 }
 
 type HashicorpCommand struct {
-	vaultService vault.VaultService
+	vaultService vaultsrv.VaultService
 }
 
-func NewCmdHashicorp(vaultService vault.VaultService) *cobra.Command {
+func NewCmdHashicorp(vaultService vaultsrv.VaultService) *cobra.Command {
 	flags := NewHashicorpFlags()
 
 	cmd := &cobra.Command{
@@ -87,52 +88,34 @@ func (f *HashicorpFlags) AddFlags(cmd *cobra.Command) {
 func (cmd *HashicorpCommand) Run(ctx context.Context, flags *HashicorpFlags) error {
 	// if the vault address is not set, prompt the user for it interactively
 	if flags.Address == "" {
-		fmt.Fprintf(os.Stdout, "Address of the HashiCorp Vault instance: ")
-
-		_, err := fmt.Scanln(&flags.Address)
+		err := cmdutil.ScanRequired("Address of the HashiCorp Vault instance", &flags.Address)
 		if err != nil {
-			return fmt.Errorf("error reading vault address: %v", err)
+			return fmt.Errorf("error reading vault address: %w", err)
 		}
-	}
-	if flags.Address == "" {
-		return fmt.Errorf("no vault address provided")
 	}
 
 	// if the vault token is not set, prompt the user for it interactively
 	if flags.Token == "" {
-		fmt.Fprintf(os.Stdout, "Token to authenticate with the HashiCorp Vault instance: ")
-		_, err := fmt.Scanln(&flags.Token)
+		err := cmdutil.ScanRequired("Token to authenticate with the HashiCorp Vault instance", &flags.Token)
 		if err != nil {
-			return fmt.Errorf("error reading vault token: %v", err)
+			return fmt.Errorf("error reading vault token: %w", err)
 		}
-	}
-	if flags.Token == "" {
-		return fmt.Errorf("no vault token provided")
 	}
 
 	// if the vault namespace is not set, prompt the user for it interactively
 	if flags.Namespace == "" {
-		fmt.Fprintf(os.Stdout, "(Optional) Namespace to use in the HashiCorp Vault instance: ")
-		_, err := fmt.Scanln(&flags.Namespace)
-		// If the user just presses Enter, Namespace will be "" and err will be an "unexpected newline" error.
-		// We should allow this and use the empty value.
+		err := cmdutil.ScanOptional("Namespace to use in the HashiCorp Vault instance", &flags.Namespace)
 		if err != nil {
-			if err.Error() != "unexpected newline" {
-				return fmt.Errorf("error reading vault namespace: %v", err)
-			}
+			return fmt.Errorf("error reading vault namespace: %w", err)
 		}
 	}
 
 	// if the vault name is not set, prompt the user for it interactively
 	if flags.VaultName == "" {
-		fmt.Fprintf(os.Stdout, "Name of the vault: ")
-		_, err := fmt.Scanln(&flags.VaultName)
+		err := cmdutil.ScanRequired("Name of the vault", &flags.VaultName)
 		if err != nil {
-			return fmt.Errorf("error reading vault name: %v", err)
+			return fmt.Errorf("error reading vault name: %w", err)
 		}
-	}
-	if flags.VaultName == "" {
-		return fmt.Errorf("no vault name provided")
 	}
 
 	hashicorpConfig := vaulttypes.VaultHashicorp{
@@ -152,7 +135,7 @@ func (cmd *HashicorpCommand) Run(ctx context.Context, flags *HashicorpFlags) err
 
 	vaultId, err := cmd.vaultService.ConnectVault(&vault)
 	if err != nil {
-		return fmt.Errorf("error configuring Hashicorp vault: %v", err)
+		return fmt.Errorf("error configuring Hashicorp vault: %w", err)
 	}
 
 	fmt.Fprintf(os.Stdout, "Successfully configured Hashicorp vault with ID: %s\n", vaultId)
@@ -163,7 +146,7 @@ func (cmd *HashicorpCommand) Run(ctx context.Context, flags *HashicorpFlags) err
 		},
 	)
 	if err != nil {
-		return fmt.Errorf("error saving local configuration: %v", err)
+		return fmt.Errorf("error saving local configuration: %w", err)
 	}
 
 	return nil

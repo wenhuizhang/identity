@@ -11,17 +11,17 @@ import (
 	"github.com/spf13/cobra"
 
 	clicache "github.com/agntcy/identity/cmd/issuer/cache"
-	"github.com/agntcy/identity/internal/issuer/metadata"
+	mdsrv "github.com/agntcy/identity/internal/issuer/metadata"
 )
 
 type ListCommand struct {
 	cache           *clicache.Cache
-	metadataService metadata.MetadataService
+	metadataService mdsrv.MetadataService
 }
 
 func NewCmdList(
 	cache *clicache.Cache,
-	metadataService metadata.MetadataService,
+	metadataService mdsrv.MetadataService,
 ) *cobra.Command {
 	return &cobra.Command{
 		Use:   "list",
@@ -44,7 +44,7 @@ func NewCmdList(
 func (cmd *ListCommand) Run(ctx context.Context) error {
 	err := cmd.cache.ValidateForMetadata()
 	if err != nil {
-		return fmt.Errorf("error validating local configuration: %v", err)
+		return fmt.Errorf("error validating local configuration: %w", err)
 	}
 
 	allMetadata, err := cmd.metadataService.GetAllMetadata(
@@ -53,7 +53,7 @@ func (cmd *ListCommand) Run(ctx context.Context) error {
 		cmd.cache.IssuerId,
 	)
 	if err != nil {
-		return fmt.Errorf("error listing metadata: %v", err)
+		return fmt.Errorf("error listing metadata: %w", err)
 	}
 
 	if len(allMetadata) == 0 {

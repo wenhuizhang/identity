@@ -8,15 +8,15 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/agntcy/identity/internal/issuer/vault"
+	vaultsrv "github.com/agntcy/identity/internal/issuer/vault"
 	"github.com/spf13/cobra"
 )
 
 type ListCommand struct {
-	vaultService vault.VaultService
+	vaultService vaultsrv.VaultService
 }
 
-func NewCmdList(vaultService vault.VaultService) *cobra.Command {
+func NewCmdList(vaultService vaultsrv.VaultService) *cobra.Command {
 	return &cobra.Command{
 		Use:   "list",
 		Short: "List your existing vault configurations",
@@ -37,7 +37,7 @@ func NewCmdList(vaultService vault.VaultService) *cobra.Command {
 func (cmd *ListCommand) Run(ctx context.Context) error {
 	vaults, err := cmd.vaultService.GetAllVaults()
 	if err != nil {
-		return fmt.Errorf("error listing vaults: %v", err)
+		return fmt.Errorf("error listing vaults: %w", err)
 	}
 
 	if len(vaults) == 0 {

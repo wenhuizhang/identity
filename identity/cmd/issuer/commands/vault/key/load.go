@@ -9,7 +9,8 @@ import (
 	"os"
 
 	cliCache "github.com/agntcy/identity/cmd/issuer/cache"
-	"github.com/agntcy/identity/internal/issuer/vault"
+	vaultsrv "github.com/agntcy/identity/internal/issuer/vault"
+	"github.com/agntcy/identity/internal/pkg/cmdutil"
 	"github.com/spf13/cobra"
 )
 
@@ -19,12 +20,12 @@ type LoadFlags struct {
 
 type LoadCommand struct {
 	cache        *cliCache.Cache
-	vaultService vault.VaultService
+	vaultService vaultsrv.VaultService
 }
 
 func NewCmdLoad(
 	cache *cliCache.Cache,
-	vaultService vault.VaultService,
+	vaultService vaultsrv.VaultService,
 ) *cobra.Command {
 	flags := NewLoadFlags()
 
@@ -61,43 +62,37 @@ func (f *LoadFlags) AddFlags(cmd *cobra.Command) {
 func (cmd *LoadCommand) Run(ctx context.Context, flags *LoadFlags) error {
 	err := cmd.cache.ValidateForKey()
 	if err != nil {
-		return fmt.Errorf("error validating local configuration: %v", err)
+		return fmt.Errorf("error validating local configuration: %w", err)
 	}
 
 	// if the key id is not set, prompt the user for it interactively
 	if flags.KeyID == "" {
-		fmt.Fprintf(os.Stdout, "Key ID: ")
-
-		_, err := fmt.Scanln(&flags.KeyID)
+		err := cmdutil.ScanRequired("Key ID", &flags.KeyID)
 		if err != nil {
-			return fmt.Errorf("error reading key ID: %v", err)
+			return fmt.Errorf("error reading key ID: %w", err)
 		}
-	}
-
-	if flags.KeyID == "" {
-		return fmt.Errorf("no key ID provided")
 	}
 
 	// get the vault configuration
 	vault, err := cmd.vaultService.GetVault(cmd.cache.VaultId)
 	if err != nil {
-		return fmt.Errorf("error getting vault: %v", err)
+		return fmt.Errorf("error getting vault: %w", err)
 	}
 
 	service, err := newKeyService(vault)
 	if err != nil {
-		return fmt.Errorf("error creating key service: %v", err)
+		return fmt.Errorf("error creating key service: %w", err)
 	}
 
 	// check if the key exists
 	_, err = service.RetrievePrivKey(ctx, flags.KeyID)
 	if err != nil {
-		return fmt.Errorf("error retrieving private key: %v", err)
+		return fmt.Errorf("error retrieving private key: %w", err)
 	}
 
 	_, err = service.RetrievePubKey(ctx, flags.KeyID)
 	if err != nil {
-		return fmt.Errorf("error retrieving public key: %v", err)
+		return fmt.Errorf("error retrieving public key: %w", err)
 	}
 
 	// save the key id to the cache
@@ -105,7 +100,7 @@ func (cmd *LoadCommand) Run(ctx context.Context, flags *LoadFlags) error {
 
 	err = cliCache.SaveCache(cmd.cache)
 	if err != nil {
-		return fmt.Errorf("error saving local configuration: %v", err)
+		return fmt.Errorf("error saving local configuration: %w", err)
 	}
 
 	fmt.Fprintf(os.Stdout, "Loaded Key with ID: %s\n", flags.KeyID)

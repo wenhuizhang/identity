@@ -9,7 +9,8 @@ import (
 	"os"
 
 	clicache "github.com/agntcy/identity/cmd/issuer/cache"
-	"github.com/agntcy/identity/internal/issuer/vault"
+	vaultsrv "github.com/agntcy/identity/internal/issuer/vault"
+	"github.com/agntcy/identity/internal/pkg/cmdutil"
 	"github.com/spf13/cobra"
 )
 
@@ -18,10 +19,10 @@ type ForgetFlags struct {
 }
 
 type ForgetCommand struct {
-	vaultService vault.VaultService
+	vaultService vaultsrv.VaultService
 }
 
-func NewCmdForget(vaultService vault.VaultService) *cobra.Command {
+func NewCmdForget(vaultService vaultsrv.VaultService) *cobra.Command {
 	flags := NewForgetFlags()
 
 	cmd := &cobra.Command{
@@ -56,26 +57,21 @@ func (f *ForgetFlags) AddFlags(cmd *cobra.Command) {
 func (cmd *ForgetCommand) Run(ctx context.Context, flags *ForgetFlags) error {
 	// if the vault id is not set, prompt the user for it interactively
 	if flags.VaultID == "" {
-		fmt.Fprintf(os.Stdout, "Vault ID to forget:\n")
-
-		_, err := fmt.Scanln(&flags.VaultID)
+		err := cmdutil.ScanRequired("Vault ID to forget", &flags.VaultID)
 		if err != nil {
-			return fmt.Errorf("error reading vault ID: %v", err)
+			return fmt.Errorf("error reading vault ID: %w", err)
 		}
-	}
-	if flags.VaultID == "" {
-		return fmt.Errorf("no vault ID provided")
 	}
 
 	err := cmd.vaultService.ForgetVault(flags.VaultID)
 	if err != nil {
-		return fmt.Errorf("error forgetting vault: %v", err)
+		return fmt.Errorf("error forgetting vault: %w", err)
 	}
 
 	// Remove the cache
 	err = clicache.ClearCache()
 	if err != nil {
-		return fmt.Errorf("error removing local configuration: %v", err)
+		return fmt.Errorf("error removing local configuration: %w", err)
 	}
 
 	fmt.Fprintf(os.Stdout, "Forgot vault with ID: %s\n", flags.VaultID)

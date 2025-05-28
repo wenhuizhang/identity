@@ -9,18 +9,18 @@ import (
 	"os"
 
 	cliCache "github.com/agntcy/identity/cmd/issuer/cache"
-	badge "github.com/agntcy/identity/internal/issuer/badge"
+	badgesrv "github.com/agntcy/identity/internal/issuer/badge"
 	"github.com/spf13/cobra"
 )
 
 type ListCommand struct {
 	cache        *cliCache.Cache
-	badgeService badge.BadgeService
+	badgeService badgesrv.BadgeService
 }
 
 func NewCmdList(
 	cache *cliCache.Cache,
-	badgeService badge.BadgeService,
+	badgeService badgesrv.BadgeService,
 ) *cobra.Command {
 	return &cobra.Command{
 		Use:   "list",
@@ -43,7 +43,7 @@ func NewCmdList(
 func (cmd *ListCommand) Run(ctx context.Context) error {
 	err := cmd.cache.ValidateForBadge()
 	if err != nil {
-		return fmt.Errorf("error validating local configuration: %v", err)
+		return fmt.Errorf("error validating local configuration: %w", err)
 	}
 
 	badges, err := cmd.badgeService.GetAllBadges(
@@ -53,7 +53,7 @@ func (cmd *ListCommand) Run(ctx context.Context) error {
 		cmd.cache.MetadataId,
 	)
 	if err != nil {
-		return fmt.Errorf("error listing badges: %v", err)
+		return fmt.Errorf("error listing badges: %w", err)
 	}
 
 	if len(badges) == 0 {

@@ -9,7 +9,8 @@ import (
 	"os"
 
 	clicache "github.com/agntcy/identity/cmd/issuer/cache"
-	issuer "github.com/agntcy/identity/internal/issuer/issuer"
+	issuersrv "github.com/agntcy/identity/internal/issuer/issuer"
+	"github.com/agntcy/identity/internal/pkg/cmdutil"
 	"github.com/spf13/cobra"
 )
 
@@ -19,12 +20,12 @@ type ForgetFlags struct {
 
 type ForgetCommand struct {
 	cache         *clicache.Cache
-	issuerService issuer.IssuerService
+	issuerService issuersrv.IssuerService
 }
 
 func NewCmdForget(
 	cache *clicache.Cache,
-	issuerService issuer.IssuerService,
+	issuerService issuersrv.IssuerService,
 ) *cobra.Command {
 	flags := NewForgetFlags()
 
@@ -61,21 +62,15 @@ func (f *ForgetFlags) AddFlags(cmd *cobra.Command) {
 func (cmd *ForgetCommand) Run(ctx context.Context, flags *ForgetFlags) error {
 	err := cmd.cache.ValidateForIssuer()
 	if err != nil {
-		return fmt.Errorf("error validating local configuration: %v", err)
+		return fmt.Errorf("error validating local configuration: %w", err)
 	}
 
 	// if the issuer id is not set, prompt the user for it interactively
 	if flags.IssuerID == "" {
-		fmt.Fprintf(os.Stdout, "Issuer ID to forget:\n")
-
-		_, err := fmt.Scanln(&flags.IssuerID)
+		err := cmdutil.ScanRequired("Issuer ID to forget", &flags.IssuerID)
 		if err != nil {
-			return fmt.Errorf("error reading issuer ID: %v", err)
+			return fmt.Errorf("error reading issuer ID: %w", err)
 		}
-	}
-
-	if flags.IssuerID == "" {
-		return fmt.Errorf("no issuer ID provided")
 	}
 
 	err = cmd.issuerService.ForgetIssuer(
@@ -84,7 +79,7 @@ func (cmd *ForgetCommand) Run(ctx context.Context, flags *ForgetFlags) error {
 		flags.IssuerID,
 	)
 	if err != nil {
-		return fmt.Errorf("error forgetting issuer: %v", err)
+		return fmt.Errorf("error forgetting issuer: %w", err)
 	}
 
 	// If the issuer was the current issuer in the cache, clear the cache of issuer, metadata, and badge IDs
@@ -92,9 +87,10 @@ func (cmd *ForgetCommand) Run(ctx context.Context, flags *ForgetFlags) error {
 		cmd.cache.IssuerId = ""
 		cmd.cache.MetadataId = ""
 		cmd.cache.BadgeId = ""
+
 		err = clicache.SaveCache(cmd.cache)
 		if err != nil {
-			return fmt.Errorf("error saving local configuration: %v", err)
+			return fmt.Errorf("error saving local configuration: %w", err)
 		}
 	}
 

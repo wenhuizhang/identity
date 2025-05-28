@@ -5,13 +5,13 @@ package metadata
 
 import (
 	clicache "github.com/agntcy/identity/cmd/issuer/cache"
-	"github.com/agntcy/identity/internal/issuer/metadata"
+	mdsrv "github.com/agntcy/identity/internal/issuer/metadata"
 	"github.com/spf13/cobra"
 )
 
 func NewCmd(
 	cache *clicache.Cache,
-	metadataService metadata.MetadataService,
+	metadataService mdsrv.MetadataService,
 ) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "metadata",

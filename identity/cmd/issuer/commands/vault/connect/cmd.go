@@ -4,11 +4,11 @@
 package connect
 
 import (
-	"github.com/agntcy/identity/internal/issuer/vault"
+	vaultsrv "github.com/agntcy/identity/internal/issuer/vault"
 	"github.com/spf13/cobra"
 )
 
-func NewCmd(vaultService vault.VaultService) *cobra.Command {
+func NewCmd(vaultService vaultsrv.VaultService) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "connect",
 		Short: "Connect a new vault configuration to generate and store cryptographic keys",

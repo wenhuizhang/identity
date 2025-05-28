@@ -54,12 +54,12 @@ func NewCmd(
 func (cmd *ConfigurationCommand) Run() error {
 	err := cmd.cache.ValidateVaultId()
 	if err != nil {
-		return fmt.Errorf("error validating local configuration: %v", err)
+		return fmt.Errorf("error validating local configuration: %w", err)
 	}
 
 	vault, err := cmd.vaultService.GetVault(cmd.cache.VaultId)
 	if err != nil {
-		return fmt.Errorf("error loading vault: %v", err)
+		return fmt.Errorf("error loading vault: %w", err)
 	}
 
 	if vault == nil {
@@ -106,7 +106,7 @@ func (cmd *ConfigurationCommand) verifyIssuer() error {
 		cmd.cache.IssuerId,
 	)
 	if err != nil {
-		return fmt.Errorf("error loading issuer: %v", err)
+		return fmt.Errorf("error loading issuer: %w", err)
 	}
 
 	if issuer == nil {
@@ -130,7 +130,7 @@ func (cmd *ConfigurationCommand) verifyResolverMetadata() error {
 		cmd.cache.MetadataId,
 	)
 	if err != nil {
-		return fmt.Errorf("error loading metadata: %v", err)
+		return fmt.Errorf("error loading metadata: %w", err)
 	}
 
 	if metadata == nil {
@@ -155,7 +155,7 @@ func (cmd *ConfigurationCommand) verifyBadge() error {
 		cmd.cache.BadgeId,
 	)
 	if err != nil {
-		return fmt.Errorf("error loading badge: %v", err)
+		return fmt.Errorf("error loading badge: %w", err)
 	}
 
 	if badge == nil {

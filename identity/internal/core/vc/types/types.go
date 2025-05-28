@@ -179,17 +179,27 @@ func (c *BadgeClaims) ToMap() map[string]any {
 }
 
 func (c *BadgeClaims) FromMap(src map[string]any) error {
-	if id, ok := src["id"]; ok {
-		c.ID = id.(string)
+	if id, ok := c.getMapItem(src, "id"); ok {
+		c.ID = id
 	} else {
 		return fmt.Errorf("invalid badge claim: missing Resolver Metadata ID")
 	}
 
-	if b, ok := src["badge"]; ok {
-		c.Badge = b.(string)
+	if b, ok := c.getMapItem(src, "badge"); ok {
+		c.Badge = b
 	} else {
 		return fmt.Errorf("invalid badge claim: missing badge content")
 	}
 
 	return nil
+}
+
+func (c *BadgeClaims) getMapItem(src map[string]any, key string) (string, bool) {
+	if val, ok := src[key]; ok {
+		if str, ok := val.(string); ok {
+			return str, true
+		}
+	}
+
+	return "", false
 }

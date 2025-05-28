@@ -9,7 +9,8 @@ import (
 	"os"
 
 	clicache "github.com/agntcy/identity/cmd/issuer/cache"
-	badge "github.com/agntcy/identity/internal/issuer/badge"
+	badgesrv "github.com/agntcy/identity/internal/issuer/badge"
+	"github.com/agntcy/identity/internal/pkg/cmdutil"
 	"github.com/spf13/cobra"
 )
 
@@ -19,12 +20,12 @@ type PublishFlags struct {
 
 type PublishCommand struct {
 	cache        *clicache.Cache
-	badgeService badge.BadgeService
+	badgeService badgesrv.BadgeService
 }
 
 func NewCmdPublish(
 	cache *clicache.Cache,
-	badgeService badge.BadgeService,
+	badgeService badgesrv.BadgeService,
 ) *cobra.Command {
 	flags := NewPublishFlags()
 
@@ -61,40 +62,21 @@ func (f *PublishFlags) AddFlags(cmd *cobra.Command) {
 func (cmd *PublishCommand) Run(ctx context.Context, flags *PublishFlags) error {
 	err := cmd.cache.ValidateForBadge()
 	if err != nil {
-		return fmt.Errorf("error validating local configuration: %v", err)
+		return fmt.Errorf("error validating local configuration: %w", err)
 	}
 
 	// if the badge id is not set, prompt the user for it interactively
 	// if there is a badge id in the cache, use it as the default when prompting
 	if flags.BadgeID == "" {
 		if cmd.cache.BadgeId != "" {
-			fmt.Fprintf(os.Stdout, "Badge ID to publish (default: %s):\n", cmd.cache.BadgeId)
-
-			_, err = fmt.Scanln(&flags.BadgeID)
-			if err != nil {
-				// If the user just presses Enter, flags.BadgeId will be "" and err will be an "unexpected newline" error.
-				// We should allow this and use the default value.
-				if err.Error() != "unexpected newline" {
-					return fmt.Errorf("error reading badge ID: %v", err)
-				}
-			}
-			// If the user just presses Enter, flags.BadgeId will be "" and we should use the default value from the cache.
-			if flags.BadgeID == "" {
-				flags.BadgeID = cmd.cache.BadgeId
-			}
+			err = cmdutil.ScanWithDefault("Badge ID to publish", cmd.cache.BadgeId, &flags.BadgeID)
 		} else {
-			fmt.Fprintf(os.Stdout, "Badge ID to publish:\n")
-
-			_, err := fmt.Scanln(&flags.BadgeID)
-			if err != nil {
-				return fmt.Errorf("error reading badge ID: %v", err)
-			}
+			err = cmdutil.ScanRequired("Badge ID to publish", &flags.BadgeID)
 		}
-	}
 
-	// if the badge id is still not set, then the cache badge is empty and the user has not provided one
-	if flags.BadgeID == "" {
-		return fmt.Errorf("no badge ID provided")
+		if err != nil {
+			return fmt.Errorf("error reading badge ID: %w", err)
+		}
 	}
 
 	badge, err := cmd.badgeService.GetBadge(
@@ -105,7 +87,7 @@ func (cmd *PublishCommand) Run(ctx context.Context, flags *PublishFlags) error {
 		flags.BadgeID,
 	)
 	if err != nil {
-		return fmt.Errorf("error getting badge: %v", err)
+		return fmt.Errorf("error getting badge: %w", err)
 	}
 
 	_, err = cmd.badgeService.PublishBadge(
@@ -117,7 +99,7 @@ func (cmd *PublishCommand) Run(ctx context.Context, flags *PublishFlags) error {
 		badge,
 	)
 	if err != nil {
-		return fmt.Errorf("error publishing badge: %v", err)
+		return fmt.Errorf("error publishing badge: %w", err)
 	}
 
 	fmt.Fprintf(os.Stdout, "%s\n", "Publishing the current badge")

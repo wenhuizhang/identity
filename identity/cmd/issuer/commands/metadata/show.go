@@ -12,7 +12,8 @@ import (
 	"github.com/spf13/cobra"
 
 	clicache "github.com/agntcy/identity/cmd/issuer/cache"
-	"github.com/agntcy/identity/internal/issuer/metadata"
+	mdsrv "github.com/agntcy/identity/internal/issuer/metadata"
+	"github.com/agntcy/identity/internal/pkg/cmdutil"
 )
 
 type ShowFlags struct {
@@ -21,12 +22,12 @@ type ShowFlags struct {
 
 type ShowCommand struct {
 	cache           *clicache.Cache
-	metadataService metadata.MetadataService
+	metadataService mdsrv.MetadataService
 }
 
 func NewCmdShow(
 	cache *clicache.Cache,
-	metadataService metadata.MetadataService,
+	metadataService mdsrv.MetadataService,
 ) *cobra.Command {
 	flags := NewShowFlags()
 
@@ -63,21 +64,15 @@ func (f *ShowFlags) AddFlags(cmd *cobra.Command) {
 func (cmd *ShowCommand) Run(ctx context.Context, flags *ShowFlags) error {
 	err := cmd.cache.ValidateForMetadata()
 	if err != nil {
-		return fmt.Errorf("error validating local configuration: %v", err)
+		return fmt.Errorf("error validating local configuration: %w", err)
 	}
 
 	// if the metadata id is not set, prompt the user for it interactively
 	if flags.MetadataID == "" {
-		fmt.Fprintf(os.Stdout, "Metadata ID: ")
-
-		_, err := fmt.Scanln(&flags.MetadataID)
+		err := cmdutil.ScanRequired("Metadata ID", &flags.MetadataID)
 		if err != nil {
-			return fmt.Errorf("error reading metadata ID: %v", err)
+			return fmt.Errorf("error reading metadata ID: %w", err)
 		}
-	}
-
-	if flags.MetadataID == "" {
-		return fmt.Errorf("no metadata ID provided")
 	}
 
 	metadata, err := cmd.metadataService.GetMetadata(
@@ -87,12 +82,12 @@ func (cmd *ShowCommand) Run(ctx context.Context, flags *ShowFlags) error {
 		flags.MetadataID,
 	)
 	if err != nil {
-		return fmt.Errorf("error getting metadata: %v", err)
+		return fmt.Errorf("error getting metadata: %w", err)
 	}
 
 	metadataJSON, err := json.MarshalIndent(metadata, "", "  ")
 	if err != nil {
-		return fmt.Errorf("error marshaling metadata to JSON: %v", err)
+		return fmt.Errorf("error marshaling metadata to JSON: %w", err)
 	}
 
 	fmt.Fprintf(os.Stdout, "%s\n", string(metadataJSON))

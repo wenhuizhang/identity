@@ -11,7 +11,8 @@ import (
 	"github.com/spf13/cobra"
 
 	clicache "github.com/agntcy/identity/cmd/issuer/cache"
-	"github.com/agntcy/identity/internal/issuer/metadata"
+	mdsrv "github.com/agntcy/identity/internal/issuer/metadata"
+	"github.com/agntcy/identity/internal/pkg/cmdutil"
 )
 
 type ForgetFlags struct {
@@ -20,12 +21,12 @@ type ForgetFlags struct {
 
 type ForgetCommand struct {
 	cache           *clicache.Cache
-	metadataService metadata.MetadataService
+	metadataService mdsrv.MetadataService
 }
 
 func NewCmdForget(
 	cache *clicache.Cache,
-	metadataService metadata.MetadataService,
+	metadataService mdsrv.MetadataService,
 ) *cobra.Command {
 	flags := NewForgetFlags()
 
@@ -62,21 +63,15 @@ func (f *ForgetFlags) AddFlags(cmd *cobra.Command) {
 func (cmd *ForgetCommand) Run(ctx context.Context, flags *ForgetFlags) error {
 	err := cmd.cache.ValidateForMetadata()
 	if err != nil {
-		return fmt.Errorf("error validating local configuration: %v", err)
+		return fmt.Errorf("error validating local configuration: %w", err)
 	}
 
 	// if the metadata id is not set, prompt the user for it interactively
 	if flags.MetadataID == "" {
-		fmt.Fprintf(os.Stdout, "Metadata ID: ")
-
-		_, err := fmt.Scanln(&flags.MetadataID)
+		err := cmdutil.ScanRequired("Metadata ID", &flags.MetadataID)
 		if err != nil {
-			return fmt.Errorf("error reading metadata ID: %v", err)
+			return fmt.Errorf("error reading metadata ID: %w", err)
 		}
-	}
-
-	if flags.MetadataID == "" {
-		return fmt.Errorf("no metadata ID provided")
 	}
 
 	err = cmd.metadataService.ForgetMetadata(
@@ -86,7 +81,7 @@ func (cmd *ForgetCommand) Run(ctx context.Context, flags *ForgetFlags) error {
 		flags.MetadataID,
 	)
 	if err != nil {
-		return fmt.Errorf("error forgetting metadata: %v", err)
+		return fmt.Errorf("error forgetting metadata: %w", err)
 	}
 
 	// If the metadata was the current metadata in the cache, clear the cache of metadata, and badge IDs
@@ -96,7 +91,7 @@ func (cmd *ForgetCommand) Run(ctx context.Context, flags *ForgetFlags) error {
 
 		err = clicache.SaveCache(cmd.cache)
 		if err != nil {
-			return fmt.Errorf("error saving local configuration: %v", err)
+			return fmt.Errorf("error saving local configuration: %w", err)
 		}
 	}
 

@@ -54,17 +54,18 @@ func (v *verifyService) VerifyCredential(
 		// Decode the JWT
 		raw, err := jws.Parse([]byte(credential.Value))
 		if err != nil {
-			return nil, fmt.Errorf("error parsing JWT: %v", err)
+			return nil, fmt.Errorf("error parsing JWT: %w", err)
 		}
 
 		var validatedVC vctypes.VerifiableCredential
 
 		err = json.Unmarshal(raw.Payload(), &validatedVC)
 		if err != nil {
-			return nil, fmt.Errorf("error unmarshaling JWT payload: %v", err)
+			return nil, fmt.Errorf("error unmarshaling JWT payload: %w", err)
 		}
 
 		claims := &vctypes.BadgeClaims{}
+
 		err = claims.FromMap(validatedVC.CredentialSubject)
 		if err != nil {
 			return nil, err
@@ -73,7 +74,7 @@ func (v *verifyService) VerifyCredential(
 		// Resolve the Resolver Metadata ID to get the public key
 		resolvedMetadata, err := client.ResolveMetadataByID(ctx, claims.ID)
 		if err != nil {
-			return nil, fmt.Errorf("error resolving Resolver Metadata ID: %v", err)
+			return nil, fmt.Errorf("error resolving Resolver Metadata ID: %w", err)
 		}
 
 		// convert resolvedMetadata.VerificationMethods to JWKs
@@ -85,7 +86,7 @@ func (v *verifyService) VerifyCredential(
 		// Verify the badge using the Resolver Metadata public key
 		parsedVC, err := jose.Verify(&jwks, credential)
 		if err != nil {
-			return nil, fmt.Errorf("error verifying badge: %v", err)
+			return nil, fmt.Errorf("error verifying badge: %w", err)
 		}
 
 		return parsedVC, nil

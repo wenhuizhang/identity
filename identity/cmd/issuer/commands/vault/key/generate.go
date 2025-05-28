@@ -9,7 +9,7 @@ import (
 	"os"
 
 	clicache "github.com/agntcy/identity/cmd/issuer/cache"
-	"github.com/agntcy/identity/internal/issuer/vault"
+	vaultsrv "github.com/agntcy/identity/internal/issuer/vault"
 	"github.com/agntcy/identity/internal/pkg/joseutil"
 	"github.com/google/uuid"
 	"github.com/spf13/cobra"
@@ -17,12 +17,12 @@ import (
 
 type GenerateCommand struct {
 	cache        *clicache.Cache
-	vaultService vault.VaultService
+	vaultService vaultsrv.VaultService
 }
 
 func NewCmdGenerate(
 	cache *clicache.Cache,
-	vaultService vault.VaultService,
+	vaultService vaultsrv.VaultService,
 ) *cobra.Command {
 	return &cobra.Command{
 		Use:   "generate",
@@ -45,29 +45,29 @@ func NewCmdGenerate(
 func (cmd *GenerateCommand) Run(ctx context.Context) error {
 	err := cmd.cache.ValidateForKey()
 	if err != nil {
-		return fmt.Errorf("error validating local configuration: %v", err)
+		return fmt.Errorf("error validating local configuration: %w", err)
 	}
 
 	vault, err := cmd.vaultService.GetVault(cmd.cache.VaultId)
 	if err != nil {
-		return fmt.Errorf("error getting vault: %v", err)
+		return fmt.Errorf("error getting vault: %w", err)
 	}
 
 	service, err := newKeyService(vault)
 	if err != nil {
-		return fmt.Errorf("error creating key service: %v", err)
+		return fmt.Errorf("error creating key service: %w", err)
 	}
 
 	keyId := uuid.NewString()
 
 	priv, err := joseutil.GenerateJWK("RS256", "sig", keyId)
 	if err != nil {
-		return fmt.Errorf("error generating JWK: %v", err)
+		return fmt.Errorf("error generating JWK: %w", err)
 	}
 
 	err = service.SaveKey(ctx, priv.KID, priv)
 	if err != nil {
-		return fmt.Errorf("error saving key: %v", err)
+		return fmt.Errorf("error saving key: %w", err)
 	}
 
 	fmt.Fprintf(os.Stdout, "Successfully generated key with ID: %s\n", keyId)
@@ -76,7 +76,7 @@ func (cmd *GenerateCommand) Run(ctx context.Context) error {
 
 	err = clicache.SaveCache(cmd.cache)
 	if err != nil {
-		return fmt.Errorf("error saving local configuration: %v", err)
+		return fmt.Errorf("error saving local configuration: %w", err)
 	}
 
 	return nil

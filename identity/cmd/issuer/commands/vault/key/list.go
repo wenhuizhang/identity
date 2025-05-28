@@ -9,18 +9,18 @@ import (
 	"os"
 
 	cliCache "github.com/agntcy/identity/cmd/issuer/cache"
-	"github.com/agntcy/identity/internal/issuer/vault"
+	vaultsrv "github.com/agntcy/identity/internal/issuer/vault"
 	"github.com/spf13/cobra"
 )
 
 type ListCommand struct {
 	cache        *cliCache.Cache
-	vaultService vault.VaultService
+	vaultService vaultsrv.VaultService
 }
 
 func NewCmdList(
 	cache *cliCache.Cache,
-	vaultService vault.VaultService,
+	vaultService vaultsrv.VaultService,
 ) *cobra.Command {
 	return &cobra.Command{
 		Use:   "list",
@@ -43,23 +43,23 @@ func NewCmdList(
 func (cmd *ListCommand) Run(ctx context.Context) error {
 	err := cmd.cache.ValidateForKey()
 	if err != nil {
-		return fmt.Errorf("error validating local configuration: %v", err)
+		return fmt.Errorf("error validating local configuration: %w", err)
 	}
 
 	// get the vault configuration
 	vault, err := cmd.vaultService.GetVault(cmd.cache.VaultId)
 	if err != nil {
-		return fmt.Errorf("error getting vault: %v", err)
+		return fmt.Errorf("error getting vault: %w", err)
 	}
 
 	service, err := newKeyService(vault)
 	if err != nil {
-		return fmt.Errorf("error creating key service: %v", err)
+		return fmt.Errorf("error creating key service: %w", err)
 	}
 
 	keys, err := service.ListKeys(ctx)
 	if err != nil {
-		return fmt.Errorf("error listing keys: %v", err)
+		return fmt.Errorf("error listing keys: %w", err)
 	}
 
 	if len(keys) == 0 {

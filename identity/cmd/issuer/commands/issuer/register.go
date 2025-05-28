@@ -11,10 +11,11 @@ import (
 
 	clicache "github.com/agntcy/identity/cmd/issuer/cache"
 	coreissuertypes "github.com/agntcy/identity/internal/core/issuer/types"
-	issuer "github.com/agntcy/identity/internal/issuer/issuer"
+	issuersrv "github.com/agntcy/identity/internal/issuer/issuer"
 	issuertypes "github.com/agntcy/identity/internal/issuer/issuer/types"
 	idptypes "github.com/agntcy/identity/internal/issuer/types"
 	"github.com/agntcy/identity/internal/issuer/vault"
+	"github.com/agntcy/identity/internal/pkg/cmdutil"
 	"github.com/spf13/cobra"
 )
 
@@ -33,18 +34,17 @@ type RegisterFlags struct {
 
 type RegisterCommand struct {
 	cache         *clicache.Cache
-	issuerService issuer.IssuerService
+	issuerService issuersrv.IssuerService
 	vaultSrv      vault.VaultService
 }
 
 func NewCmdRegister(
 	cache *clicache.Cache,
-	issuerService issuer.IssuerService,
+	issuerService issuersrv.IssuerService,
 	vaultSrv vault.VaultService,
 ) *cobra.Command {
 	flags := NewRegisterFlags()
 
-	//nolint:lll // Allow long lines for CLI
 	cmd := &cobra.Command{
 		Use:   "register",
 		Short: "Register as an Issuer",
@@ -73,7 +73,6 @@ func NewRegisterFlags() *RegisterFlags {
 	return &RegisterFlags{}
 }
 
-//nolint:lll // Allow long lines for CLI
 func (f *RegisterFlags) AddFlags(cmd *cobra.Command) {
 	cmd.Flags().StringVarP(&f.IdentityNodeURL, "identity-node-address", "i", "", "Identity node address")
 	cmd.Flags().StringVarP(&f.ClientID, "idp-client-id", "c", "", "IdP client ID")
@@ -86,96 +85,12 @@ func (f *RegisterFlags) AddFlags(cmd *cobra.Command) {
 func (cmd *RegisterCommand) Run(ctx context.Context, flags *RegisterFlags) error {
 	err := cmd.cache.ValidateForIssuer()
 	if err != nil {
-		return fmt.Errorf("error validating local configuration: %v", err)
+		return fmt.Errorf("error validating local configuration: %w", err)
 	}
 
-	// if the identity node address is not set, prompt the user for it interactively
-	if flags.IdentityNodeURL == "" {
-		fmt.Fprintf(os.Stdout, "Identity node address (default %s): ", defaultNodeAddress)
-
-		_, err = fmt.Scanln(&flags.IdentityNodeURL)
-		if err != nil {
-			// If the user just presses Enter, registerIdentityNodeAddress will be "" and err will be an "unexpected newline" error.
-			// We should allow this and use the default value.
-			if err.Error() != "unexpected newline" {
-				return fmt.Errorf("error reading identity node address: %v", err)
-			}
-		}
-	}
-	// If no address was entered (input was empty or only whitespace), use the default.
-	if flags.IdentityNodeURL == "" {
-		flags.IdentityNodeURL = defaultNodeAddress
-	}
-
-	// if the client ID is not set, prompt the user for it interactively
-	if flags.ClientID == "" {
-		fmt.Fprintf(os.Stdout, "IdP client ID: ")
-
-		_, err = fmt.Scanln(&flags.ClientID)
-		if err != nil {
-			return fmt.Errorf("error reading IdP client ID: %v", err)
-		}
-
-		if flags.ClientID == "" {
-			return fmt.Errorf("idp Client ID cannot be empty")
-		}
-	}
-
-	// if the client secret is not set, prompt the user for it interactively
-	if flags.ClientSecret == "" {
-		fmt.Fprintf(os.Stdout, "IdP client secret: ")
-		_, err = fmt.Scanln(&flags.ClientSecret)
-		if err != nil {
-			return fmt.Errorf("error reading IdP client secret: %v", err)
-		}
-		if flags.ClientSecret == "" {
-			return fmt.Errorf("idp client secret cannot be empty")
-		}
-	}
-
-	// if the issuer URL is not set, prompt the user for it interactively
-	if flags.IssuerURL == "" {
-		fmt.Fprintf(os.Stdout, "IdP issuer URL: ")
-		_, err = fmt.Scanln(&flags.IssuerURL)
-
-		if err != nil {
-			return fmt.Errorf("error reading IdP issuer URL: %v", err)
-		}
-
-		if flags.IssuerURL == "" {
-			return fmt.Errorf("idp issuer URL cannot be empty")
-		}
-	}
-
-	// if the organization is not set, prompt the user for it interactively
-	if flags.Organization == "" {
-		fmt.Fprintf(os.Stdout, "Organization name: ")
-		_, err = fmt.Scanln(&flags.Organization)
-		if err != nil {
-			return fmt.Errorf("error reading organization name: %v", err)
-		}
-
-		if flags.Organization == "" {
-			return fmt.Errorf("organization name cannot be empty")
-		}
-	}
-
-	// if the sub-organization is not set, prompt the user for it interactively
-	if flags.SubOrganization == "" {
-		fmt.Fprintf(os.Stdout, "Sub-organization name (default %s): ", flags.Organization)
-
-		_, err = fmt.Scanln(&flags.SubOrganization)
-		if err != nil {
-			// If the user just presses Enter, registerSubOrganization will be "" and err will be an "unexpected newline" error.
-			// We should allow this and use the default value.
-			if err.Error() != "unexpected newline" {
-				return fmt.Errorf("error reading sub-organization name: %v", err)
-			}
-
-			if flags.SubOrganization == "" {
-				flags.SubOrganization = flags.Organization
-			}
-		}
+	err = cmd.validateFlags(flags)
+	if err != nil {
+		return err
 	}
 
 	idpConfig := idptypes.IdpConfig{
@@ -187,17 +102,17 @@ func (cmd *RegisterCommand) Run(ctx context.Context, flags *RegisterFlags) error
 	// extract the root url from the issuer URL as the common name
 	issuerUrl, err := url.Parse(idpConfig.IssuerUrl)
 	if err != nil {
-		return fmt.Errorf("error parsing issuer URL: %v", err)
+		return fmt.Errorf("error parsing issuer URL: %w", err)
 	}
 
 	commonName := issuerUrl.Hostname()
 	if commonName == "" {
-		return fmt.Errorf("error extracting common name from issuer URL: %v", err)
+		return fmt.Errorf("error extracting common name from issuer URL: %w", err)
 	}
 
 	pubKey, err := cmd.vaultSrv.RetrievePubKey(ctx, cmd.cache.VaultId, cmd.cache.KeyID)
 	if err != nil {
-		return fmt.Errorf("error retreiving public key: %v", err)
+		return fmt.Errorf("error retreiving public key: %w", err)
 	}
 
 	coreIssuer := coreissuertypes.Issuer{
@@ -221,7 +136,7 @@ func (cmd *RegisterCommand) Run(ctx context.Context, flags *RegisterFlags) error
 		&issuer,
 	)
 	if err != nil {
-		return fmt.Errorf("error registering as an Issuer: %v", err)
+		return fmt.Errorf("error registering as an Issuer: %w", err)
 	}
 
 	fmt.Fprintf(
@@ -236,7 +151,59 @@ func (cmd *RegisterCommand) Run(ctx context.Context, flags *RegisterFlags) error
 
 	err = clicache.SaveCache(cmd.cache)
 	if err != nil {
-		return fmt.Errorf("error saving local configuration: %v", err)
+		return fmt.Errorf("error saving local configuration: %w", err)
+	}
+
+	return nil
+}
+
+func (cmd *RegisterCommand) validateFlags(flags *RegisterFlags) error {
+	// if the identity node address is not set, prompt the user for it interactively
+	if flags.IdentityNodeURL == "" {
+		err := cmdutil.ScanWithDefault("Identity node address", defaultNodeAddress, &flags.IdentityNodeURL)
+		if err != nil {
+			return fmt.Errorf("error reading identity node address: %w", err)
+		}
+	}
+
+	// if the client ID is not set, prompt the user for it interactively
+	if flags.ClientID == "" {
+		err := cmdutil.ScanRequired("IdP client ID", &flags.ClientID)
+		if err != nil {
+			return fmt.Errorf("error reading IdP client ID: %w", err)
+		}
+	}
+
+	// if the client secret is not set, prompt the user for it interactively
+	if flags.ClientSecret == "" {
+		err := cmdutil.ScanRequired("IdP client secret", &flags.ClientSecret)
+		if err != nil {
+			return fmt.Errorf("error reading IdP client secret: %w", err)
+		}
+	}
+
+	// if the issuer URL is not set, prompt the user for it interactively
+	if flags.IssuerURL == "" {
+		err := cmdutil.ScanRequired("IdP issuer URL", &flags.IssuerURL)
+		if err != nil {
+			return fmt.Errorf("error reading IdP issuer URL: %w", err)
+		}
+	}
+
+	// if the organization is not set, prompt the user for it interactively
+	if flags.Organization == "" {
+		err := cmdutil.ScanRequired("Organization name", &flags.Organization)
+		if err != nil {
+			return fmt.Errorf("error reading organization name: %w", err)
+		}
+	}
+
+	// if the sub-organization is not set, prompt the user for it interactively
+	if flags.SubOrganization == "" {
+		err := cmdutil.ScanWithDefault("Sub-organization name", flags.Organization, &flags.SubOrganization)
+		if err != nil {
+			return fmt.Errorf("error reading sub-organization name: %w", err)
+		}
 	}
 
 	return nil

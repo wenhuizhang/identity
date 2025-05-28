@@ -9,7 +9,8 @@ import (
 	"os"
 
 	clicache "github.com/agntcy/identity/cmd/issuer/cache"
-	issuer "github.com/agntcy/identity/internal/issuer/issuer"
+	issuersrv "github.com/agntcy/identity/internal/issuer/issuer"
+	"github.com/agntcy/identity/internal/pkg/cmdutil"
 	"github.com/spf13/cobra"
 )
 
@@ -19,12 +20,12 @@ type LoadFlags struct {
 
 type LoadCommand struct {
 	cache         *clicache.Cache
-	issuerService issuer.IssuerService
+	issuerService issuersrv.IssuerService
 }
 
 func NewCmdLoad(
 	cache *clicache.Cache,
-	issuerService issuer.IssuerService,
+	issuerService issuersrv.IssuerService,
 ) *cobra.Command {
 	flags := NewLoadFlags()
 
@@ -61,26 +62,21 @@ func (f *LoadFlags) AddFlags(cmd *cobra.Command) {
 func (cmd *LoadCommand) Run(ctx context.Context, flags *LoadFlags) error {
 	err := cmd.cache.ValidateForIssuer()
 	if err != nil {
-		return fmt.Errorf("error validating local configuration: %v", err)
+		return fmt.Errorf("error validating local configuration: %w", err)
 	}
 
 	// if the issuer id is not set, prompt the user for it interactively
 	if flags.IssuerID == "" {
-		fmt.Fprintf(os.Stdout, "Issuer ID to load:\n")
-
-		_, err := fmt.Scanln(&flags.IssuerID)
+		err := cmdutil.ScanRequired("Issuer ID to load", &flags.IssuerID)
 		if err != nil {
-			return fmt.Errorf("error reading issuer ID: %v", err)
+			return fmt.Errorf("error reading issuer ID: %w", err)
 		}
-	}
-	if flags.IssuerID == "" {
-		return fmt.Errorf("no issuer ID provided")
 	}
 
 	// check the issuer id is valid
 	issuer, err := cmd.issuerService.GetIssuer(cmd.cache.VaultId, cmd.cache.KeyID, flags.IssuerID)
 	if err != nil {
-		return fmt.Errorf("error getting issuer: %v", err)
+		return fmt.Errorf("error getting issuer: %w", err)
 	}
 
 	if issuer == nil {
@@ -92,7 +88,7 @@ func (cmd *LoadCommand) Run(ctx context.Context, flags *LoadFlags) error {
 
 	err = clicache.SaveCache(cmd.cache)
 	if err != nil {
-		return fmt.Errorf("error saving local configuration: %v", err)
+		return fmt.Errorf("error saving local configuration: %w", err)
 	}
 
 	fmt.Fprintf(os.Stdout, "Loaded issuer with ID: %s\n", flags.IssuerID)

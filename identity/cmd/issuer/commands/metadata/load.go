@@ -11,7 +11,8 @@ import (
 	"github.com/spf13/cobra"
 
 	clicache "github.com/agntcy/identity/cmd/issuer/cache"
-	"github.com/agntcy/identity/internal/issuer/metadata"
+	mdsrv "github.com/agntcy/identity/internal/issuer/metadata"
+	"github.com/agntcy/identity/internal/pkg/cmdutil"
 )
 
 type LoadFlags struct {
@@ -20,12 +21,12 @@ type LoadFlags struct {
 
 type LoadCommand struct {
 	cache           *clicache.Cache
-	metadataService metadata.MetadataService
+	metadataService mdsrv.MetadataService
 }
 
 func NewCmdLoad(
 	cache *clicache.Cache,
-	metadataService metadata.MetadataService,
+	metadataService mdsrv.MetadataService,
 ) *cobra.Command {
 	flags := NewLoadFlags()
 
@@ -62,21 +63,15 @@ func (f *LoadFlags) AddFlags(cmd *cobra.Command) {
 func (cmd *LoadCommand) Run(ctx context.Context, flags *LoadFlags) error {
 	err := cmd.cache.ValidateForMetadata()
 	if err != nil {
-		return fmt.Errorf("error validating local configuration: %v", err)
+		return fmt.Errorf("error validating local configuration: %w", err)
 	}
 
 	// if the metadata id is not set, prompt the user for it interactively
 	if flags.MetadataID == "" {
-		fmt.Fprintf(os.Stdout, "Metadata ID: ")
-
-		_, err := fmt.Scanln(&flags.MetadataID)
+		err := cmdutil.ScanRequired("Metadata ID", &flags.MetadataID)
 		if err != nil {
-			return fmt.Errorf("error reading metadata ID: %v", err)
+			return fmt.Errorf("error reading metadata ID: %w", err)
 		}
-	}
-
-	if flags.MetadataID == "" {
-		return fmt.Errorf("no metadata ID provided")
 	}
 
 	// check the metadata id is valid
@@ -87,7 +82,7 @@ func (cmd *LoadCommand) Run(ctx context.Context, flags *LoadFlags) error {
 		flags.MetadataID,
 	)
 	if err != nil {
-		return fmt.Errorf("error getting metadata: %v", err)
+		return fmt.Errorf("error getting metadata: %w", err)
 	}
 
 	if metadata == nil {
@@ -99,7 +94,7 @@ func (cmd *LoadCommand) Run(ctx context.Context, flags *LoadFlags) error {
 
 	err = clicache.SaveCache(cmd.cache)
 	if err != nil {
-		return fmt.Errorf("error saving local configuration: %v", err)
+		return fmt.Errorf("error saving local configuration: %w", err)
 	}
 
 	fmt.Fprintf(os.Stdout, "Loaded metadata with ID: %s\n", flags.MetadataID)

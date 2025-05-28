@@ -5,14 +5,14 @@ package issuer
 
 import (
 	clicache "github.com/agntcy/identity/cmd/issuer/cache"
-	issuer "github.com/agntcy/identity/internal/issuer/issuer"
+	issuersrv "github.com/agntcy/identity/internal/issuer/issuer"
 	"github.com/agntcy/identity/internal/issuer/vault"
 	"github.com/spf13/cobra"
 )
 
 func NewCmd(
 	cache *clicache.Cache,
-	issuerService issuer.IssuerService,
+	issuerService issuersrv.IssuerService,
 	vaultSrv vault.VaultService,
 ) *cobra.Command {
 	cmd := &cobra.Command{

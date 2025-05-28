@@ -9,7 +9,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/agntcy/identity/internal/issuer/vault"
+	vaultsrv "github.com/agntcy/identity/internal/issuer/vault"
+	"github.com/agntcy/identity/internal/pkg/cmdutil"
 	"github.com/spf13/cobra"
 )
 
@@ -18,10 +19,10 @@ type ShowFlags struct {
 }
 
 type ShowCommand struct {
-	vaultService vault.VaultService
+	vaultService vaultsrv.VaultService
 }
 
-func NewCmdShow(vaultService vault.VaultService) *cobra.Command {
+func NewCmdShow(vaultService vaultsrv.VaultService) *cobra.Command {
 	flags := NewShowFlags()
 
 	cmd := &cobra.Command{
@@ -56,21 +57,16 @@ func (f *ShowFlags) AddFlags(cmd *cobra.Command) {
 func (cmd *ShowCommand) Run(ctx context.Context, flags *ShowFlags) error {
 	// if the vault id is not set, prompt the user for it interactively
 	if flags.VaultID == "" {
-		fmt.Fprintf(os.Stdout, "Vault ID to show:\n")
-
-		_, err := fmt.Scanln(&flags.VaultID)
+		err := cmdutil.ScanRequired("Vault ID to show", &flags.VaultID)
 		if err != nil {
-			return fmt.Errorf("error reading vault ID: %v", err)
+			return fmt.Errorf("error reading vault ID: %w", err)
 		}
-	}
-	if flags.VaultID == "" {
-		return fmt.Errorf("no vault ID provided")
 	}
 
 	// check the vault id is valid
 	vault, err := cmd.vaultService.GetVault(flags.VaultID)
 	if err != nil {
-		return fmt.Errorf("error getting vault: %v", err)
+		return fmt.Errorf("error getting vault: %w", err)
 	}
 
 	if vault == nil {
@@ -79,7 +75,7 @@ func (cmd *ShowCommand) Run(ctx context.Context, flags *ShowFlags) error {
 
 	vaultJSON, err := json.MarshalIndent(vault, "", "  ")
 	if err != nil {
-		return fmt.Errorf("error marshaling metadata to JSON: %v", err)
+		return fmt.Errorf("error marshaling metadata to JSON: %w", err)
 	}
 
 	fmt.Fprintf(os.Stdout, "%s\n", string(vaultJSON))

@@ -10,7 +10,8 @@ import (
 	"os"
 
 	vctypes "github.com/agntcy/identity/internal/core/vc/types"
-	"github.com/agntcy/identity/internal/issuer/verify"
+	verifysrv "github.com/agntcy/identity/internal/issuer/verify"
+	"github.com/agntcy/identity/internal/pkg/cmdutil"
 
 	"github.com/spf13/cobra"
 )
@@ -25,10 +26,10 @@ type VerifyFlags struct {
 }
 
 type VerifyCommand struct {
-	verifyService verify.VerifyService
+	verifyService verifysrv.VerifyService
 }
 
-func NewCmd(verifyService verify.VerifyService) *cobra.Command {
+func NewCmd(verifyService verifysrv.VerifyService) *cobra.Command {
 	flags := NewVerifyFlags()
 
 	cmd := &cobra.Command{
@@ -64,33 +65,18 @@ func (f *VerifyFlags) AddFlags(cmd *cobra.Command) {
 func (cmd *VerifyCommand) Run(ctx context.Context, flags *VerifyFlags) error {
 	// if the file path is not set, prompt the user for it interactively
 	if flags.BadgeFilePath == "" {
-		fmt.Fprintf(os.Stdout, "Full file path to the badge file: ")
-
-		_, err := fmt.Scanln(&flags.BadgeFilePath)
+		err := cmdutil.ScanRequired("Full file path to the badge file", &flags.BadgeFilePath)
 		if err != nil {
-			return fmt.Errorf("error reading file path: %v", err)
+			return fmt.Errorf("error reading file path: %w", err)
 		}
-	}
-	if flags.BadgeFilePath == "" {
-		return fmt.Errorf("no file path provided")
 	}
 
 	// if the identity node address is not set, prompt the user for it interactively
 	if flags.IdentityNodeURL == "" {
-		fmt.Fprintf(os.Stdout, "Identity node address (default %s): ", defaultNodeAddress)
-
-		_, err := fmt.Scanln(&flags.IdentityNodeURL)
+		err := cmdutil.ScanWithDefault("Identity node address", defaultNodeAddress, &flags.IdentityNodeURL)
 		if err != nil {
-			// If the user just presses Enter, registerIdentityNodeAddress will be "" and err will
-			// be an "unexpected newline" error. We should allow this and use the default value.
-			if err.Error() != "unexpected newline" {
-				return fmt.Errorf("error reading identity node address: %v", err)
-			}
+			return fmt.Errorf("error reading identity node address: %w", err)
 		}
-	}
-	// If no address was entered (input was empty or only whitespace), use the default.
-	if flags.IdentityNodeURL == "" {
-		flags.IdentityNodeURL = defaultNodeAddress
 	}
 
 	// Check if the badge file exists
@@ -101,13 +87,13 @@ func (cmd *VerifyCommand) Run(ctx context.Context, flags *VerifyFlags) error {
 	// Read the badge file
 	vcData, err := os.ReadFile(flags.BadgeFilePath)
 	if err != nil {
-		return fmt.Errorf("error reading file: %v", err)
+		return fmt.Errorf("error reading file: %w", err)
 	}
 
 	// Unmarshal the badge data
 	var vc vctypes.EnvelopedCredential
 	if err := json.Unmarshal(vcData, &vc); err != nil {
-		return fmt.Errorf("error unmarshaling badge data: %v", err)
+		return fmt.Errorf("error unmarshaling badge data: %w", err)
 	}
 
 	verifiedVC, err := cmd.verifyService.VerifyCredential(ctx, &vc, flags.IdentityNodeURL)
@@ -124,7 +110,7 @@ func (cmd *VerifyCommand) Run(ctx context.Context, flags *VerifyFlags) error {
 	// Create a more readable output of credential subject
 	credentialSubjectBytes, err := json.MarshalIndent(verifiedVC.CredentialSubject, "", "  ")
 	if err != nil {
-		return fmt.Errorf("error formatting credential subject: %v", err)
+		return fmt.Errorf("error formatting credential subject: %w", err)
 	}
 
 	fmt.Fprintf(os.Stdout, "Badge Credential Subject: %v\n\n", string(credentialSubjectBytes))

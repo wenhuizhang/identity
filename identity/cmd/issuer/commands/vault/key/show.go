@@ -10,7 +10,8 @@ import (
 	"os"
 
 	cliCache "github.com/agntcy/identity/cmd/issuer/cache"
-	"github.com/agntcy/identity/internal/issuer/vault"
+	vaultsrv "github.com/agntcy/identity/internal/issuer/vault"
+	"github.com/agntcy/identity/internal/pkg/cmdutil"
 	"github.com/spf13/cobra"
 )
 
@@ -20,12 +21,12 @@ type ShowFlags struct {
 
 type ShowCommand struct {
 	cache        *cliCache.Cache
-	vaultService vault.VaultService
+	vaultService vaultsrv.VaultService
 }
 
 func NewCmdShow(
 	cache *cliCache.Cache,
-	vaultService vault.VaultService,
+	vaultService vaultsrv.VaultService,
 ) *cobra.Command {
 	flags := NewShowFlags()
 
@@ -62,37 +63,31 @@ func (f *ShowFlags) AddFlags(cmd *cobra.Command) {
 func (cmd *ShowCommand) Run(ctx context.Context, flags *ShowFlags) error {
 	err := cmd.cache.ValidateForKey()
 	if err != nil {
-		return fmt.Errorf("error validating local configuration: %v", err)
+		return fmt.Errorf("error validating local configuration: %w", err)
 	}
 
 	// if the key id is not set, prompt the user for it interactively
 	if flags.KeyID == "" {
-		fmt.Fprintf(os.Stdout, "Key ID: ")
-
-		_, err := fmt.Scanln(&flags.KeyID)
+		err := cmdutil.ScanRequired("Key ID", &flags.KeyID)
 		if err != nil {
-			return fmt.Errorf("error reading key ID: %v", err)
+			return fmt.Errorf("error reading key ID: %w", err)
 		}
-	}
-
-	if flags.KeyID == "" {
-		return fmt.Errorf("no key ID provided")
 	}
 
 	// get the vault configuration
 	vault, err := cmd.vaultService.GetVault(cmd.cache.VaultId)
 	if err != nil {
-		return fmt.Errorf("error getting vault: %v", err)
+		return fmt.Errorf("error getting vault: %w", err)
 	}
 
 	service, err := newKeyService(vault)
 	if err != nil {
-		return fmt.Errorf("error creating key service: %v", err)
+		return fmt.Errorf("error creating key service: %w", err)
 	}
 
 	publicKey, err := service.RetrievePubKey(ctx, flags.KeyID)
 	if err != nil {
-		return fmt.Errorf("error retrieving public key: %v", err)
+		return fmt.Errorf("error retrieving public key: %w", err)
 	}
 
 	if publicKey == nil {
@@ -102,12 +97,12 @@ func (cmd *ShowCommand) Run(ctx context.Context, flags *ShowFlags) error {
 	// convert the public key to a string representation
 	publicKeyStr, err := json.MarshalIndent(publicKey, "", "  ")
 	if err != nil {
-		return fmt.Errorf("error marshalling public key: %v", err)
+		return fmt.Errorf("error marshalling public key: %w", err)
 	}
 
 	privateKey, err := service.RetrievePrivKey(ctx, flags.KeyID)
 	if err != nil {
-		return fmt.Errorf("error retrieving private key: %v", err)
+		return fmt.Errorf("error retrieving private key: %w", err)
 	}
 
 	// convert the private key to a string representation
@@ -117,7 +112,7 @@ func (cmd *ShowCommand) Run(ctx context.Context, flags *ShowFlags) error {
 
 	privateKeyStr, err := json.MarshalIndent(privateKey, "", "  ")
 	if err != nil {
-		return fmt.Errorf("error marshalling private key: %v", err)
+		return fmt.Errorf("error marshalling private key: %w", err)
 	}
 
 	fmt.Fprintf(os.Stdout, "\nKey ID: %s\n", flags.KeyID)

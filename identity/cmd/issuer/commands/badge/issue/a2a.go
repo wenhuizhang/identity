@@ -12,6 +12,7 @@ import (
 	vctypes "github.com/agntcy/identity/internal/core/vc/types"
 	badge "github.com/agntcy/identity/internal/issuer/badge"
 	"github.com/agntcy/identity/internal/issuer/vault"
+	"github.com/agntcy/identity/internal/pkg/cmdutil"
 	"github.com/spf13/cobra"
 
 	"github.com/agntcy/identity/internal/issuer/badge/a2a"
@@ -77,27 +78,21 @@ func (f *IssueA2AFlags) AddFlags(cmd *cobra.Command) {
 func (cmd *IssueA2ACommand) Run(ctx context.Context, flags *IssueA2AFlags) error {
 	err := cmd.cache.ValidateForBadge()
 	if err != nil {
-		return fmt.Errorf("error validating local configuration: %v", err)
+		return fmt.Errorf("error validating local configuration: %w", err)
 	}
 
 	// if the mcp server url is not set, prompt the user for it interactively
 	if flags.A2AWellKnown == "" {
-		fmt.Fprintf(os.Stderr, "Well-known URL of the A2A agent you want to sign in the badge: \n")
-
-		_, err := fmt.Scanln(&flags.A2AWellKnown)
+		err := cmdutil.ScanRequired("Well-known URL of the A2A agent you want to sign in the badge", &flags.A2AWellKnown)
 		if err != nil {
-			return fmt.Errorf("error reading A2A well-known URL: %v", err)
+			return fmt.Errorf("error reading A2A well-known URL: %w", err)
 		}
-	}
-
-	if flags.A2AWellKnown == "" {
-		return fmt.Errorf("no A2A well-known URL provided")
 	}
 
 	// Convert the badge value to a string
 	agentCard, err := cmd.a2aClient.Discover(ctx, flags.A2AWellKnown)
 	if err != nil {
-		return fmt.Errorf("error discovering A2A agent: %v", err)
+		return fmt.Errorf("error discovering A2A agent: %w", err)
 	}
 
 	prvKey, err := cmd.vaultSrv.RetrievePrivKey(
@@ -106,7 +101,7 @@ func (cmd *IssueA2ACommand) Run(ctx context.Context, flags *IssueA2AFlags) error
 		cmd.cache.KeyID,
 	)
 	if err != nil {
-		return fmt.Errorf("error retrieving public key: %v", err)
+		return fmt.Errorf("error retrieving public key: %w", err)
 	}
 
 	claims := vctypes.BadgeClaims{
@@ -126,7 +121,7 @@ func (cmd *IssueA2ACommand) Run(ctx context.Context, flags *IssueA2AFlags) error
 		prvKey,
 	)
 	if err != nil {
-		return fmt.Errorf("error issuing badge: %v", err)
+		return fmt.Errorf("error issuing badge: %w", err)
 	}
 
 	fmt.Fprintf(os.Stdout, "Issued badge with ID: %s\n", badgeId)
@@ -136,7 +131,7 @@ func (cmd *IssueA2ACommand) Run(ctx context.Context, flags *IssueA2AFlags) error
 
 	err = clicache.SaveCache(cmd.cache)
 	if err != nil {
-		return fmt.Errorf("error saving local configuration: %v", err)
+		return fmt.Errorf("error saving local configuration: %w", err)
 	}
 
 	return nil

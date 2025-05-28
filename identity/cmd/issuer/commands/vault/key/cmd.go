@@ -5,13 +5,13 @@ package key
 
 import (
 	clicache "github.com/agntcy/identity/cmd/issuer/cache"
-	"github.com/agntcy/identity/internal/issuer/vault"
+	vaultsrv "github.com/agntcy/identity/internal/issuer/vault"
 	"github.com/spf13/cobra"
 )
 
 func NewCmd(
 	cache *clicache.Cache,
-	vaultService vault.VaultService,
+	vaultService vaultsrv.VaultService,
 ) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "key",

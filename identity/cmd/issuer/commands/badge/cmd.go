@@ -5,7 +5,7 @@ package badge
 
 import (
 	clicache "github.com/agntcy/identity/cmd/issuer/cache"
-	badge "github.com/agntcy/identity/internal/issuer/badge"
+	badgesrv "github.com/agntcy/identity/internal/issuer/badge"
 	"github.com/agntcy/identity/internal/issuer/badge/a2a"
 	"github.com/agntcy/identity/internal/issuer/badge/mcp"
 	"github.com/agntcy/identity/internal/issuer/vault"
@@ -14,7 +14,7 @@ import (
 
 func NewCmd(
 	cache *clicache.Cache,
-	badgeService badge.BadgeService,
+	badgeService badgesrv.BadgeService,
 	vaultSrv vault.VaultService,
 	a2aClient a2a.DiscoveryClient,
 	mcpClient mcp.DiscoveryClient,
