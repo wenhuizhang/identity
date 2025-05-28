@@ -34,13 +34,19 @@
 To run the `Node Backend` the `Issuer CLI`, and the `Samples` locally, you need to have the following installed:
 
 - [Docker](https://docs.docker.com/get-docker/)
-- [Golang](https://go.dev/doc/install) 1.24 or later
-- [Make](https://www.gnu.org/software/make/)
 - [Ollama](https://ollama.com/download)
-- [Python](https://www.python.org/downloads/) 3.12 or later
 - [Okta CLI](https://cli.okta.com/manual/#installation)
 
 ### Step 1: Install the Issuer CLI
+
+Download the `Issuer CLI` binary corresponding to your platform from the [latest releases](https://github.com/agntcy/identity/releases).
+
+> [!NOTE]
+> On some platforms you might need to add execution permissions and/or approve the binary in `System Security Settings`.
+>
+> For easier use, consider moving the binary to your `$PATH` or to the `/usr/local/bin` folder.
+
+If you have `Golang` set up locally, you could also use the `go install command`:
 
 ```bash
 go install github.com/agntcy/identity/cmd/issuer@latest
@@ -55,6 +61,12 @@ git clone https://github.com/agntcy/identity.git
 ### Step 3: Start the Node Backend with Docker
 
 Run the following command from the root of the repository:
+
+```bash
+./deployments/scripts/identity/launch_node.sh
+```
+
+Or use `make` if available locally:
 
 ```bash
 make start_node
