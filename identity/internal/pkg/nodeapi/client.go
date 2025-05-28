@@ -70,14 +70,20 @@ func NewNodeClient(host string) (NodeClient, error) {
 	}, nil
 }
 
-func (c *nodeClient) RegisterIssuer(ctx context.Context, issuer *issuertypes.Issuer, proof *vctypes.Proof) error {
+func (c *nodeClient) RegisterIssuer(
+	ctx context.Context,
+	issuer *issuertypes.Issuer,
+	proof *vctypes.Proof,
+) error {
 	_, err := c.issuer.RegisterIssuer(&issuersdk.RegisterIssuerParams{
 		Body: &apimodels.V1alpha1RegisterIssuerRequest{
 			Issuer: &apimodels.V1alpha1Issuer{
 				CommonName:      issuer.CommonName,
 				Organization:    issuer.Organization,
 				SubOrganization: issuer.SubOrganization,
-				PublicKey:       converters.Convert[apimodels.V1alpha1Jwk](issuer.PublicKey.PublicKey()),
+				PublicKey: converters.Convert[apimodels.V1alpha1Jwk](
+					issuer.PublicKey.PublicKey(),
+				),
 			},
 			Proof: &apimodels.V1alpha1Proof{
 				Type:       proof.Type,
@@ -103,7 +109,9 @@ func (c *nodeClient) GenerateID(
 				CommonName:      issuer.CommonName,
 				Organization:    issuer.Organization,
 				SubOrganization: issuer.SubOrganization,
-				PublicKey:       converters.Convert[apimodels.V1alpha1Jwk](issuer.PublicKey.PublicKey()),
+				PublicKey: converters.Convert[apimodels.V1alpha1Jwk](
+					issuer.PublicKey.PublicKey(),
+				),
 			},
 			Proof: &apimodels.V1alpha1Proof{
 				Type:       proof.Type,

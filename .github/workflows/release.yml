@@ -8,6 +8,13 @@ on:
   push:
     tags:
       - "v?[0-9]+.[0-9]+.[0-9]+"
+
+# Declare write permissions
+permissions:
+  contents: 'write'
+  packages: 'write'
+  attestations: 'read'
+
 jobs:
   pre-release-test:
     name: Pre Release Test
@@ -51,7 +58,7 @@ jobs:
       image-tag: ${{ needs.prepare-release.outputs.version }}
       image-repo: ghcr.io/${{ github.repository }}
     secrets:
-      github-token: ${{ secrets.GHCR_TOKEN }}
+      github-token: ${{ secrets.GITHUB_TOKEN }}
 
   build-and-release-issuer-client:
     name: Build and Release Issuer Cli
@@ -61,4 +68,4 @@ jobs:
       workdir: ./identity/cmd/issuer
       config: ../../../.github/configs/issuer-cli-goreleaser.yml
     secrets:
-      github-token: ${{ secrets.GHCR_TOKEN }}
+      github-token: ${{ secrets.GITHUB_TOKEN }}

@@ -8,7 +8,7 @@ include:
 services:
   identity-node:
     container_name: identity-node
-    image: ghcr.io/cisco-eti/pyramid/node:latest # TODO: Update to agntcy and delete this line
+    image: ghcr.io/agntcy/identity/node:latest
     restart: always
     depends_on:
       - identity-postgres

@@ -29,12 +29,6 @@ on:
         description: "Github token"
         required: false
 
-# Declare default permissions
-permissions:
-  contents: 'read'
-  packages: 'write'
-  attestations: 'write'
-
 jobs:
   build-and-push:
     name: Build and Push Docker Images
