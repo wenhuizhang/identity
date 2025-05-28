@@ -36,3 +36,18 @@ func (r *FakeVCRepository) GetWellKnown(
 	var credentials []*vctypes.EnvelopedCredential
 	return &credentials, nil
 }
+
+func (r *FakeVCRepository) GetByResolverMetadata(
+	ctx context.Context,
+	resolverMetadataID string,
+) ([]*vctypes.VerifiableCredential, error) {
+	result := make([]*vctypes.VerifiableCredential, 0)
+
+	for _, vc := range r.store {
+		if vc.CredentialSubject["id"] == resolverMetadataID {
+			result = append(result, vc)
+		}
+	}
+
+	return result, nil
+}

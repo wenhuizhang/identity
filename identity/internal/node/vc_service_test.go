@@ -23,6 +23,7 @@ import (
 	"github.com/agntcy/identity/internal/node"
 	"github.com/agntcy/identity/internal/pkg/oidc"
 	oidctesting "github.com/agntcy/identity/internal/pkg/oidc/testing"
+	"github.com/google/uuid"
 	"github.com/lestrrat-go/jwx/v3/jwa"
 	"github.com/lestrrat-go/jwx/v3/jwk"
 	"github.com/lestrrat-go/jwx/v3/jws"
@@ -163,6 +164,32 @@ func TestPublishVC_Should_Return_Issuer_Not_Registered(t *testing.T) {
 	err = sut.Publish(context.Background(), envelope, &vctypes.Proof{Type: "JWT"})
 
 	assertErrorInfoReason(t, err, errtypes.ERROR_REASON_ISSUER_NOT_REGISTERED)
+}
+
+func TestGetWellKnown_Should_Return_Items(t *testing.T) {
+	t.Parallel()
+
+	vcRepo := vctesting.NewFakeVCRepository()
+	sut := node.NewVerifiableCredentialService(nil, nil, nil, vcRepo, nil)
+	resolverMetadatID := "my-id"
+
+	validVC, _ := vcRepo.Create(t.Context(), &vctypes.VerifiableCredential{
+		ID:                uuid.NewString(),
+		CredentialSubject: map[string]any{"id": resolverMetadatID},
+		Proof:             &vctypes.Proof{Type: "JWT", ProofValue: "PROOF"},
+	}, resolverMetadatID)
+	_, _ = vcRepo.Create(t.Context(), &vctypes.VerifiableCredential{
+		ID:                uuid.NewString(),
+		CredentialSubject: map[string]any{"id": resolverMetadatID},
+		Proof:             &vctypes.Proof{Type: "NOPE", ProofValue: "PROOF"},
+	}, resolverMetadatID)
+
+	actual, err := sut.GetWellKnown(t.Context(), resolverMetadatID)
+
+	assert.NoError(t, err)
+	assert.Len(t, actual, 1)
+	assert.Equal(t, vctypes.CREDENTIAL_ENVELOPE_TYPE_JOSE, actual[0].EnvelopeType)
+	assert.Equal(t, validVC.Proof.ProofValue, actual[0].Value)
 }
 
 func signVCWithJose(vc *vctypes.VerifiableCredential) (*vctypes.EnvelopedCredential, *idtypes.Jwk, error) {

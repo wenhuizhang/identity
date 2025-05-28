@@ -16,8 +16,8 @@ type Repository interface {
 		resolverMetadataID string,
 	) (*types.VerifiableCredential, error)
 
-	GetWellKnown(
+	GetByResolverMetadata(
 		ctx context.Context,
 		resolverMetadataID string,
-	) (*[]*types.EnvelopedCredential, error)
+	) ([]*types.VerifiableCredential, error)
 }

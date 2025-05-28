@@ -73,17 +73,11 @@ func (s *vcService) GetWellKnown(
 		return nil, grpcutil.BadRequestError(err)
 	}
 
-	if vcs == nil || len(*vcs) == 0 {
-		return &nodeapi.GetVcWellKnownResponse{
-			Vcs: []*coreapi.EnvelopedCredential{},
-		}, nil
-	}
-
 	response := &nodeapi.GetVcWellKnownResponse{
-		Vcs: make([]*coreapi.EnvelopedCredential, len(*vcs)),
+		Vcs: make([]*coreapi.EnvelopedCredential, 0, len(vcs)),
 	}
-	for i, vc := range *vcs {
-		response.Vcs[i] = converters.Convert[coreapi.EnvelopedCredential](vc)
+	for _, vc := range vcs {
+		response.Vcs = append(response.Vcs, converters.Convert[coreapi.EnvelopedCredential](vc))
 	}
 
 	return response, nil

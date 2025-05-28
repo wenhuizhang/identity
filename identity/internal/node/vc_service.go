@@ -31,7 +31,7 @@ type VerifiableCredentialService interface {
 	GetWellKnown(
 		ctx context.Context,
 		resolverMetadataID string,
-	) (*[]*vctypes.EnvelopedCredential, error)
+	) ([]*vctypes.EnvelopedCredential, error)
 }
 
 type verifiableCredentialService struct {
@@ -136,9 +136,17 @@ func (s *verifiableCredentialService) Publish(
 func (s *verifiableCredentialService) GetWellKnown(
 	ctx context.Context,
 	resolverMetadataID string,
-) (*[]*vctypes.EnvelopedCredential, error) {
-	vcs, err := s.vcRepository.GetWellKnown(ctx, resolverMetadataID)
+) ([]*vctypes.EnvelopedCredential, error) {
+	log.Debug("Retrieving well-known verifiable credentials for resolver metadata ID: ", resolverMetadataID)
+
+	vcs, err := s.vcRepository.GetByResolverMetadata(ctx, resolverMetadataID)
 	if err != nil {
+		if errors.Is(err, errcore.ErrResourceNotFound) {
+			log.Debug("No well-known verifiable credentials found for resolver metadata ID ", resolverMetadataID)
+
+			return []*vctypes.EnvelopedCredential{}, nil
+		}
+
 		return nil, errutil.ErrInfo(
 			errtypes.ERROR_REASON_INTERNAL,
 			"unable to retrieve well-known verifiable credentials",
@@ -146,16 +154,36 @@ func (s *verifiableCredentialService) GetWellKnown(
 		)
 	}
 
-	if vcs == nil || len(*vcs) == 0 {
-		log.Debug("No well-known verifiable credentials found for resolver metadata ID ", resolverMetadataID)
-		// Return an empty slice instead of nil to avoid nil pointer dereference
-		emptySlice := []*vctypes.EnvelopedCredential{}
+	log.Debug("Found well-known verifiable credentials for resolver metadata ID ", resolverMetadataID)
 
-		return &emptySlice, nil
+	var envelopedCredentials []*vctypes.EnvelopedCredential
+
+	for _, cred := range vcs {
+		if cred.Proof == nil {
+			log.Debug("Skipping credential with empty proof for ID: ", cred.ID)
+			continue
+		}
+
+		if cred.Proof.Type == "" {
+			log.Debug("Skipping credential with empty proof type for ID: ", cred.ID)
+			continue
+		}
+
+		if cred.Proof.ProofValue == "" {
+			log.Debug("Skipping credential with empty proof value for ID: ", cred.ID)
+			continue
+		}
+
+		switch cred.Proof.Type {
+		case "JWT":
+			envelopedCredentials = append(envelopedCredentials, &vctypes.EnvelopedCredential{
+				EnvelopeType: vctypes.CREDENTIAL_ENVELOPE_TYPE_JOSE,
+				Value:        cred.Proof.ProofValue,
+			})
+		default:
+			log.Debug("Skipping credential with unsupported proof type: ", cred.Proof.Type, " for ID: ", cred.ID)
+		}
 	}
 
-	log.Debug("Found well-known verifiable credentials for resolver metadata ID ", resolverMetadataID)
-	// Return the found verifiable credentials
-
-	return vcs, nil
+	return envelopedCredentials, nil
 }
