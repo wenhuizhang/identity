@@ -40,7 +40,7 @@ identity [command] [subcommand] [flags]
 
 ```bash
 # Configure a vault to store cryptographic keys
-identity vault create file -f /path/to/vault.json -n "My Vault"
+identity vault connect file -f ~/.identity/vault.json -v "My Vault"
 
 # Generate a new key pair and store it in the vault
 identity vault key generate
@@ -49,13 +49,15 @@ identity vault key generate
 #### Step 2: Register as an issuer
 
 ```bash
-identity issuer register -o "My Organization" -c "client-id" -s "client-secret" -u "https://idp.example.com"
+identity issuer register -o "My Organization" \
+    -c "client-id" -s "client-secret" -u "https://idp.example.com"
 ```
 
 #### Step 3: Generate metadata
 
 ```bash
-identity metadata generate -i "client-id" -s "client-secret" -u "https://idp.example.com"
+identity metadata generate \
+    -c "client-id" -s "client-secret" -u "https://idp.example.com"
 ```
 
 #### Step 4: Issue a badge

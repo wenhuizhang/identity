@@ -8,7 +8,6 @@ It provides a RESTful API for interaction with the Identity services.
 To run the `Node Backend` locally, you need to have the following installed:
 
 - [Docker](https://docs.docker.com/get-docker/)
-- [Golang](https://go.dev/doc/install) 1.24 or later
 - [Make](https://www.gnu.org/software/make/)
 
 ## Installation
