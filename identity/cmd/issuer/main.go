@@ -11,7 +11,7 @@ import (
 	badgecmd "github.com/agntcy/identity/cmd/issuer/commands/badge"
 	"github.com/agntcy/identity/cmd/issuer/commands/configuration"
 	issuercmd "github.com/agntcy/identity/cmd/issuer/commands/issuer"
-	"github.com/agntcy/identity/cmd/issuer/commands/metadata"
+	mdcmd "github.com/agntcy/identity/cmd/issuer/commands/metadata"
 	vaultcmd "github.com/agntcy/identity/cmd/issuer/commands/vault"
 	"github.com/agntcy/identity/cmd/issuer/commands/verify"
 	"github.com/agntcy/identity/internal/issuer/badge"
@@ -20,6 +20,7 @@ import (
 	"github.com/agntcy/identity/internal/issuer/badge/mcp"
 	"github.com/agntcy/identity/internal/issuer/issuer"
 	issuerfs "github.com/agntcy/identity/internal/issuer/issuer/data/filesystem"
+	"github.com/agntcy/identity/internal/issuer/metadata"
 	mdfs "github.com/agntcy/identity/internal/issuer/metadata/data/filesystem"
 	"github.com/agntcy/identity/internal/issuer/vault"
 	vaultfs "github.com/agntcy/identity/internal/issuer/vault/data/filesystem"
@@ -75,10 +76,16 @@ The Identity CLI tool is a command line interface for generating, publishing and
 	)
 	vaultSrv := vault.NewVaultService(vaultRepository)
 	issuerService := issuer.NewIssuerService(issuerRepository, oidcAuth, nodeClientPrv)
+	metadataService := metadata.NewMetadataService(
+		mdRepository,
+		issuerRepository,
+		oidcAuth,
+		nodeClientPrv,
+	)
 
 	rootCmd.AddCommand(vaultcmd.VaultCmd)
 	rootCmd.AddCommand(issuercmd.NewCmd(cache, issuerService, vaultSrv))
-	rootCmd.AddCommand(metadata.MetadataCmd)
+	rootCmd.AddCommand(mdcmd.NewCmd(cache, metadataService))
 	rootCmd.AddCommand(badgecmd.NewCmd(
 		cache,
 		badgeService,

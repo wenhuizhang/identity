@@ -4,56 +4,98 @@
 package metadata
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"os"
 
 	"github.com/spf13/cobra"
 
-	cliCache "github.com/agntcy/identity/cmd/issuer/cache"
+	clicache "github.com/agntcy/identity/cmd/issuer/cache"
+	"github.com/agntcy/identity/internal/issuer/metadata"
 )
 
-var metadataShowCmd = &cobra.Command{
-	Use:   "show [metadata_id]",
-	Short: "Show the chosen metadata",
-	Run: func(cmd *cobra.Command, args []string) {
+type ShowFlags struct {
+	MetadataID string
+}
 
-		// load the cache to get the vault and issuer id
-		cache, err := cliCache.LoadCache()
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error loading local configuration: %v\n", err)
-			return
-		}
-		err = cache.ValidateForMetadata()
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error validating local configuration: %v\n", err)
-			return
-		}
+type ShowCommand struct {
+	cache           *clicache.Cache
+	metadataService metadata.MetadataService
+}
 
-		// if the metadata id is not set, prompt the user for it interactively
-		if showCmdIn.MetadataID == "" {
-			fmt.Fprintf(os.Stderr, "Metadata ID: ")
-			_, err := fmt.Scanln(&showCmdIn.MetadataID)
-			if err != nil {
-				fmt.Fprintf(os.Stderr, "Error reading metadata ID: %v\n", err)
-				return
+func NewCmdShow(
+	cache *clicache.Cache,
+	metadataService metadata.MetadataService,
+) *cobra.Command {
+	flags := NewShowFlags()
+
+	cmd := &cobra.Command{
+		Use:   "show [metadata_id]",
+		Short: "Show the chosen metadata",
+		Run: func(cmd *cobra.Command, args []string) {
+			c := ShowCommand{
+				cache:           cache,
+				metadataService: metadataService,
 			}
-		}
-		if showCmdIn.MetadataID == "" {
-			fmt.Fprintf(os.Stderr, "No metadata ID provided\n")
-			return
-		}
 
-		metadata, err := metadataService.GetMetadata(cache.VaultId, cache.KeyID, cache.IssuerId, showCmdIn.MetadataID)
+			err := c.Run(cmd.Context(), flags)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "%v\n", err)
+				os.Exit(1)
+			}
+		},
+	}
+
+	flags.AddFlags(cmd)
+
+	return cmd
+}
+
+func NewShowFlags() *ShowFlags {
+	return &ShowFlags{}
+}
+
+func (f *ShowFlags) AddFlags(cmd *cobra.Command) {
+	cmd.Flags().StringVarP(&f.MetadataID, "metadata-id", "m", "", "The ID of the metadata to show")
+}
+
+func (cmd *ShowCommand) Run(ctx context.Context, flags *ShowFlags) error {
+	err := cmd.cache.ValidateForMetadata()
+	if err != nil {
+		return fmt.Errorf("error validating local configuration: %v", err)
+	}
+
+	// if the metadata id is not set, prompt the user for it interactively
+	if flags.MetadataID == "" {
+		fmt.Fprintf(os.Stdout, "Metadata ID: ")
+
+		_, err := fmt.Scanln(&flags.MetadataID)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error getting metadata: %v\n", err)
-			return
+			return fmt.Errorf("error reading metadata ID: %v", err)
 		}
-		metadataJSON, err := json.MarshalIndent(metadata, "", "  ")
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error marshaling metadata to JSON: %v\n", err)
-			return
-		}
-		fmt.Fprintf(os.Stdout, "%s\n", string(metadataJSON))
-	},
+	}
+
+	if flags.MetadataID == "" {
+		return fmt.Errorf("no metadata ID provided")
+	}
+
+	metadata, err := cmd.metadataService.GetMetadata(
+		cmd.cache.VaultId,
+		cmd.cache.KeyID,
+		cmd.cache.IssuerId,
+		flags.MetadataID,
+	)
+	if err != nil {
+		return fmt.Errorf("error getting metadata: %v", err)
+	}
+
+	metadataJSON, err := json.MarshalIndent(metadata, "", "  ")
+	if err != nil {
+		return fmt.Errorf("error marshaling metadata to JSON: %v", err)
+	}
+
+	fmt.Fprintf(os.Stdout, "%s\n", string(metadataJSON))
+
+	return nil
 }

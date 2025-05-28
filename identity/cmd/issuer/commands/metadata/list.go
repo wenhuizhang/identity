@@ -4,43 +4,67 @@
 package metadata
 
 import (
+	"context"
 	"fmt"
 	"os"
 
 	"github.com/spf13/cobra"
 
-	cliCache "github.com/agntcy/identity/cmd/issuer/cache"
+	clicache "github.com/agntcy/identity/cmd/issuer/cache"
+	"github.com/agntcy/identity/internal/issuer/metadata"
 )
 
-var metadataListCmd = &cobra.Command{
-	Use:   "list",
-	Short: "List your existing metadata",
-	Run: func(cmd *cobra.Command, args []string) {
+type ListCommand struct {
+	cache           *clicache.Cache
+	metadataService metadata.MetadataService
+}
 
-		// load the cache to get the vault and issuer id
-		cache, err := cliCache.LoadCache()
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error loading local configuration: %v\n", err)
-			return
-		}
-		err = cache.ValidateForMetadata()
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error validating local configuration: %v\n", err)
-			return
-		}
+func NewCmdList(
+	cache *clicache.Cache,
+	metadataService metadata.MetadataService,
+) *cobra.Command {
+	return &cobra.Command{
+		Use:   "list",
+		Short: "List your existing metadata",
+		Run: func(cmd *cobra.Command, args []string) {
+			c := ListCommand{
+				cache:           cache,
+				metadataService: metadataService,
+			}
 
-		allMetadata, err := metadataService.GetAllMetadata(cache.VaultId, cache.KeyID, cache.IssuerId)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error listing metadata: %v\n", err)
-			return
-		}
-		if len(allMetadata) == 0 {
-			fmt.Fprintf(os.Stdout, "%s\n", "No metadata found")
-			return
-		}
-		fmt.Fprintf(os.Stdout, "%s\n", "Existing metadata ids:")
-		for _, metadata := range allMetadata {
-			fmt.Fprintf(os.Stdout, "- %s\n", metadata.ID)
-		}
-	},
+			err := c.Run(cmd.Context())
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "%v\n", err)
+				os.Exit(1)
+			}
+		},
+	}
+}
+
+func (cmd *ListCommand) Run(ctx context.Context) error {
+	err := cmd.cache.ValidateForMetadata()
+	if err != nil {
+		return fmt.Errorf("error validating local configuration: %v", err)
+	}
+
+	allMetadata, err := cmd.metadataService.GetAllMetadata(
+		cmd.cache.VaultId,
+		cmd.cache.KeyID,
+		cmd.cache.IssuerId,
+	)
+	if err != nil {
+		return fmt.Errorf("error listing metadata: %v", err)
+	}
+
+	if len(allMetadata) == 0 {
+		fmt.Fprintf(os.Stdout, "%s\n", "No metadata found")
+	}
+
+	fmt.Fprintf(os.Stdout, "%s\n", "Existing metadata ids:")
+
+	for _, metadata := range allMetadata {
+		fmt.Fprintf(os.Stdout, "- %s\n", metadata.ID)
+	}
+
+	return nil
 }

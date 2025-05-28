@@ -4,63 +4,103 @@
 package metadata
 
 import (
+	"context"
 	"fmt"
 	"os"
 
 	"github.com/spf13/cobra"
 
-	cliCache "github.com/agntcy/identity/cmd/issuer/cache"
+	clicache "github.com/agntcy/identity/cmd/issuer/cache"
+	"github.com/agntcy/identity/internal/issuer/metadata"
 )
 
-var metadataForgetCmd = &cobra.Command{
-	Use:   "forget [metadata_id]",
-	Short: "Forget the chosen metadata",
-	Run: func(cmd *cobra.Command, args []string) {
+type ForgetFlags struct {
+	MetadataID string
+}
 
-		// load the cache to get the vault and issuer id
-		cache, err := cliCache.LoadCache()
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error loading local configuration: %v\n", err)
-			return
-		}
-		err = cache.ValidateForMetadata()
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error validating local configuration: %v\n", err)
-			return
-		}
+type ForgetCommand struct {
+	cache           *clicache.Cache
+	metadataService metadata.MetadataService
+}
 
-		// if the metadata id is not set, prompt the user for it interactively
-		if forgCmdIn.MetadataID == "" {
-			fmt.Fprintf(os.Stderr, "Metadata ID: ")
-			_, err := fmt.Scanln(&forgCmdIn.MetadataID)
-			if err != nil {
-				fmt.Fprintf(os.Stderr, "Error reading metadata ID: %v\n", err)
-				return
+func NewCmdForget(
+	cache *clicache.Cache,
+	metadataService metadata.MetadataService,
+) *cobra.Command {
+	flags := NewForgetFlags()
+
+	cmd := &cobra.Command{
+		Use:   "forget [metadata_id]",
+		Short: "Forget the chosen metadata",
+		Run: func(cmd *cobra.Command, args []string) {
+			c := ForgetCommand{
+				cache:           cache,
+				metadataService: metadataService,
 			}
-		}
-		if forgCmdIn.MetadataID == "" {
-			fmt.Fprintf(os.Stderr, "No metadata ID provided\n")
-			return
-		}
 
-		err = metadataService.ForgetMetadata(cache.VaultId, cache.KeyID, cache.IssuerId, forgCmdIn.MetadataID)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error forgetting metadata: %v\n", err)
-			return
-		}
-
-		// If the metadata was the current metadata in the cache, clear the cache of metadata, and badge IDs
-		if cache.MetadataId == forgCmdIn.MetadataID {
-			cache.MetadataId = ""
-			cache.BadgeId = ""
-			err = cliCache.SaveCache(cache)
+			err := c.Run(cmd.Context(), flags)
 			if err != nil {
-				fmt.Fprintf(os.Stderr, "Error saving local configuration: %v\n", err)
-				return
+				fmt.Fprintf(os.Stderr, "%v\n", err)
+				os.Exit(1)
 			}
+		},
+	}
+
+	flags.AddFlags(cmd)
+
+	return cmd
+}
+
+func NewForgetFlags() *ForgetFlags {
+	return &ForgetFlags{}
+}
+
+func (f *ForgetFlags) AddFlags(cmd *cobra.Command) {
+	cmd.Flags().StringVarP(&f.MetadataID, "metadata-id", "m", "", "The ID of the metadata to forget")
+}
+
+func (cmd *ForgetCommand) Run(ctx context.Context, flags *ForgetFlags) error {
+	err := cmd.cache.ValidateForMetadata()
+	if err != nil {
+		return fmt.Errorf("error validating local configuration: %v", err)
+	}
+
+	// if the metadata id is not set, prompt the user for it interactively
+	if flags.MetadataID == "" {
+		fmt.Fprintf(os.Stdout, "Metadata ID: ")
+
+		_, err := fmt.Scanln(&flags.MetadataID)
+		if err != nil {
+			return fmt.Errorf("error reading metadata ID: %v", err)
 		}
+	}
 
-		fmt.Fprintf(os.Stdout, "Forgot metadata with ID: %s\n", forgCmdIn.MetadataID)
+	if flags.MetadataID == "" {
+		return fmt.Errorf("no metadata ID provided")
+	}
 
-	},
+	err = cmd.metadataService.ForgetMetadata(
+		cmd.cache.VaultId,
+		cmd.cache.KeyID,
+		cmd.cache.IssuerId,
+		flags.MetadataID,
+	)
+	if err != nil {
+		return fmt.Errorf("error forgetting metadata: %v", err)
+	}
+
+	// If the metadata was the current metadata in the cache, clear the cache of metadata, and badge IDs
+	if cmd.cache.MetadataId == flags.MetadataID {
+		cmd.cache.MetadataId = ""
+		cmd.cache.BadgeId = ""
+
+		err = clicache.SaveCache(cmd.cache)
+		if err != nil {
+			return fmt.Errorf("error saving local configuration: %v", err)
+		}
+	}
+
+	fmt.Fprintf(os.Stdout, "Forgot metadata with ID: %s\n", flags.MetadataID)
+
+	return nil
 }

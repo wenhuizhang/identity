@@ -4,96 +4,140 @@
 package metadata
 
 import (
+	"context"
 	"fmt"
 	"os"
 
 	"github.com/spf13/cobra"
 
-	cliCache "github.com/agntcy/identity/cmd/issuer/cache"
+	clicache "github.com/agntcy/identity/cmd/issuer/cache"
+	"github.com/agntcy/identity/internal/issuer/metadata"
 	issuerTypes "github.com/agntcy/identity/internal/issuer/types"
 )
 
-var metadataGenerateCmd = &cobra.Command{
-	Use:   "generate",
-	Short: "Generate new metadata for your Agent and MCP Server identities",
-	Run: func(cmd *cobra.Command, args []string) {
+type GenerateFlags struct {
+	IdpClientID     string
+	IdpClientSecret string
+	IdpIssuerURL    string
+}
 
-		// load the cache to get the vault and issuer id
-		cache, err := cliCache.LoadCache()
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error loading local configuration: %v\n", err)
-			return
-		}
-		err = cache.ValidateForMetadata()
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error validating local configuration: %v\n", err)
-			return
-		}
+type GenerateCommand struct {
+	cache           *clicache.Cache
+	metadataService metadata.MetadataService
+}
 
-		// if the idp client id is not set, prompt the user for it interactively
-		if genCmdIn.IdpClientID == "" {
-			fmt.Fprintf(os.Stderr, "IDP Client ID: ")
-			_, err := fmt.Scanln(&genCmdIn.IdpClientID)
-			if err != nil {
-				fmt.Fprintf(os.Stderr, "Error reading IDP Client ID: %v\n", err)
-				return
+func NewCmdGenerate(
+	cache *clicache.Cache,
+	metadataService metadata.MetadataService,
+) *cobra.Command {
+	flags := NewGenerateFlags()
+
+	cmd := &cobra.Command{
+		Use:   "generate",
+		Short: "Generate new metadata for your Agent and MCP Server identities",
+		Run: func(cmd *cobra.Command, args []string) {
+			c := GenerateCommand{
+				cache:           cache,
+				metadataService: metadataService,
 			}
-		}
-		if genCmdIn.IdpClientID == "" {
-			fmt.Fprintf(os.Stderr, "No IDP Client ID provided\n")
-			return
-		}
 
-		// if the idp client secret is not set, prompt the user for it interactively
-		if genCmdIn.IdpClientSecret == "" {
-			fmt.Fprintf(os.Stderr, "IDP Client Secret: ")
-			_, err := fmt.Scanln(&genCmdIn.IdpClientSecret)
+			err := c.Run(cmd.Context(), flags)
 			if err != nil {
-				fmt.Fprintf(os.Stderr, "Error reading IDP Client Secret: %v\n", err)
-				return
+				fmt.Fprintf(os.Stderr, "%v\n", err)
+				os.Exit(1)
 			}
-		}
-		if genCmdIn.IdpClientSecret == "" {
-			fmt.Fprintf(os.Stderr, "No IDP Client Secret provided\n")
-			return
-		}
+		},
+	}
 
-		// if the idp issuer url is not set, prompt the user for it interactively
-		if genCmdIn.IdpIssuerURL == "" {
-			fmt.Fprintf(os.Stderr, "IDP Issuer URL: ")
-			_, err := fmt.Scanln(&genCmdIn.IdpIssuerURL)
-			if err != nil {
-				fmt.Fprintf(os.Stderr, "Error reading IDP Issuer URL: %v\n", err)
-				return
-			}
-		}
-		if genCmdIn.IdpIssuerURL == "" {
-			fmt.Fprintf(os.Stderr, "No IDP Issuer URL provided\n")
-			return
-		}
+	flags.AddFlags(cmd)
 
-		idpConfig := issuerTypes.IdpConfig{
-			ClientId:     genCmdIn.IdpClientID,
-			ClientSecret: genCmdIn.IdpClientSecret,
-			IssuerUrl:    genCmdIn.IdpIssuerURL,
-		}
+	return cmd
+}
 
-		metadataId, err := metadataService.GenerateMetadata(
-			cmd.Context(), cache.VaultId, cache.KeyID, cache.IssuerId, &idpConfig,
-		)
+func NewGenerateFlags() *GenerateFlags {
+	return &GenerateFlags{}
+}
+
+func (f *GenerateFlags) AddFlags(cmd *cobra.Command) {
+	cmd.Flags().StringVarP(&f.IdpClientID, "idp-client-id", "c", "", "IDP Client ID")
+	cmd.Flags().StringVarP(&f.IdpClientSecret, "idp-client-secret", "s", "", "IDP Client Secret")
+	cmd.Flags().StringVarP(&f.IdpIssuerURL, "idp-issuer-url", "u", "", "IDP Issuer URL")
+}
+
+func (cmd *GenerateCommand) Run(ctx context.Context, flags *GenerateFlags) error {
+	err := cmd.cache.ValidateForMetadata()
+	if err != nil {
+		return fmt.Errorf("error validating local configuration: %v", err)
+	}
+
+	// if the idp client id is not set, prompt the user for it interactively
+	if flags.IdpClientID == "" {
+		fmt.Fprintf(os.Stdout, "IDP Client ID: ")
+
+		_, err := fmt.Scanln(&flags.IdpClientID)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error generating metadata: %v\n", err)
-			return
+			return fmt.Errorf("error reading IDP Client ID: %v", err)
 		}
+	}
 
-		fmt.Fprintf(os.Stdout, "Generated metadata with ID: %s\n", metadataId)
+	if flags.IdpClientID == "" {
+		return fmt.Errorf("no IDP Client ID provided")
+	}
 
-		// Update the cache with the new metadata ID
-		cache.MetadataId = metadataId
-		err = cliCache.SaveCache(cache)
+	// if the idp client secret is not set, prompt the user for it interactively
+	if flags.IdpClientSecret == "" {
+		fmt.Fprintf(os.Stdout, "IDP Client Secret: ")
+
+		_, err := fmt.Scanln(&flags.IdpClientSecret)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error saving local configuration: %v\n", err)
-			return
+			return fmt.Errorf("error reading IDP Client Secret: %v", err)
 		}
-	},
+	}
+
+	if flags.IdpClientSecret == "" {
+		return fmt.Errorf("no IDP Client Secret provided")
+	}
+
+	// if the idp issuer url is not set, prompt the user for it interactively
+	if flags.IdpIssuerURL == "" {
+		fmt.Fprintf(os.Stdout, "IDP Issuer URL: ")
+
+		_, err := fmt.Scanln(&flags.IdpIssuerURL)
+		if err != nil {
+			return fmt.Errorf("error reading IDP Issuer URL: %v", err)
+		}
+	}
+
+	if flags.IdpIssuerURL == "" {
+		return fmt.Errorf("no IDP Issuer URL provided")
+	}
+
+	idpConfig := issuerTypes.IdpConfig{
+		ClientId:     flags.IdpClientID,
+		ClientSecret: flags.IdpClientSecret,
+		IssuerUrl:    flags.IdpIssuerURL,
+	}
+
+	metadataId, err := cmd.metadataService.GenerateMetadata(
+		ctx,
+		cmd.cache.VaultId,
+		cmd.cache.KeyID,
+		cmd.cache.IssuerId,
+		&idpConfig,
+	)
+	if err != nil {
+		return fmt.Errorf("error generating metadata: %v", err)
+	}
+
+	fmt.Fprintf(os.Stdout, "Generated metadata with ID: %s\n", metadataId)
+
+	// Update the cache with the new metadata ID
+	cmd.cache.MetadataId = metadataId
+
+	err = clicache.SaveCache(cmd.cache)
+	if err != nil {
+		return fmt.Errorf("error saving local configuration: %v", err)
+	}
+
+	return nil
 }
