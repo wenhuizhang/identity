@@ -2,7 +2,7 @@
 
 You can find sample code and examples in the `samples` directory.
 These samples are designed to help you understand how to use the Identity platform effectively.
-The samples are composed of a `Curency Exchange A2A Agent` leveraging a `Currency Exchange MCP Server` and an `OASF Agent Definition`.
+The samples are composed of a `Currency Exchange A2A Agent` leveraging a `Currency Exchange MCP Server` and an `OASF Agent Definition`.
 
 You can create and verify the following type of badges:
 
