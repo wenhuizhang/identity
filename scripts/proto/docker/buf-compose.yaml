@@ -5,7 +5,7 @@
 services:
   buf-go:
     build:
-      context: ../../
-      dockerfile: scripts/docker/Dockerfile.buf
+      context: ../../..
+      dockerfile: scripts/proto/docker/Dockerfile.buf
     volumes:
-      - ../../:/identity/code
+      - ../../../:/identity/code

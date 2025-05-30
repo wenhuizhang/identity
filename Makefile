@@ -4,7 +4,7 @@
 .PHONY: do_generate_proto do_generate_node_sdk do_start_node
 
 do_generate_proto:
-	cd scripts && ./buf-generate.sh
+	cd scripts/proto && ./generate.sh
 	@echo "Generated proto files"
 
 do_generate_node_sdk:

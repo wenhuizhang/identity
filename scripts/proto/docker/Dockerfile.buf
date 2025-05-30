@@ -31,7 +31,7 @@ RUN go get k8s.io/apimachinery
 
 # Custom tools
 WORKDIR /identity/proto-enum-generator
-COPY scripts/proto-enum-generator .
+COPY scripts/proto/proto-enum-generator .
 RUN go mod download
 RUN cd /identity/proto-enum-generator/cmd/go-enum-to-proto && go install .
 RUN cd /identity/proto-enum-generator/cmd/go-enum-patch && go install .
@@ -41,10 +41,10 @@ WORKDIR /identity
 ENV PATH="$PATH:/identity/bin"
 ENV Identity_ROOT="/identity"
 
-COPY scripts/docker/run.sh .
-COPY scripts/docker/protoc.sh .
+COPY scripts/proto/docker/run.sh .
+COPY scripts/proto/docker/protoc.sh .
 COPY . ./local/github.com/agntcy/identity
-COPY scripts/docker/protos ./third_party/protos
+COPY scripts/proto/docker/protos ./third_party/protos
 
 RUN chmod +x run.sh && \
     mv run.sh /usr/local/bin
