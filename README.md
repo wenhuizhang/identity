@@ -149,6 +149,9 @@ Create a second application for the MCP Server metadata using the Okta, similar 
        -s "$OKTA_OAUTH2_CLIENT_SECRET" -u "$OKTA_OAUTH2_ISSUER"
    ```
 
+> [!NOTE]
+> When successful, this command will print the metadata ID, which you will need in the next step to view published badges that are linked to this metadata.
+
 ### Step 8: Issue and Publish a Badge for the MCP Server
 
 1. Issue a badge for the MCP Server:
@@ -164,8 +167,26 @@ Create a second application for the MCP Server metadata using the Okta, similar 
    ```
 
 > [!NOTE]
-> You can now access the `VCs as a Well-Known` at [`http://localhost:4000/v1alpha1/vc/{client_id}/.well-known/vcs.json`](http://localhost:4000/v1alpha1/vc/{client_id}/.well-known/vcs.json),
-> where `{client_id}` is the client ID you provided during onboarding.
+> You can now access the `VCs as a Well-Known` at [`http://localhost:4000/v1alpha1/vc/{metadata_id}/.well-known/vcs.json`](http://localhost:4000/v1alpha1/vc/{client_id}/.well-known/vcs.json),
+> where `{metadata_id}` is the metadata ID you generated in the previous step.
+
+### (Optional) Step 9: Verify a Published Badge
+
+You can use the `Issuer CLI` to verify a published badge any published badge, not just those that you issued yourself.
+This allows others to verify the Agent and MCP badges you publish.
+
+1. Download the badge that you created in the previous step:
+
+   ```bash
+   # Download the published badges linked to the metadata, replace {metadata_id} with the actual metadata ID
+   curl -o vcs.json http://localhost:4000/v1alpha1/vc/{metadata_id}/.well-known/vcs.json
+   ```
+
+2. Verify the badges using the `Issuer CLI`:
+
+   ```bash
+   identity verify -f vcs.json
+   ```
 
 ## Development
 
