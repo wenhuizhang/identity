@@ -4,44 +4,65 @@
 package issuer
 
 import (
+	"context"
 	"fmt"
 	"os"
 
-	cliCache "github.com/agntcy/identity/cmd/issuer/cache"
+	clicache "github.com/agntcy/identity/cmd/issuer/cache"
+	issuersrv "github.com/agntcy/identity/internal/issuer/issuer"
 	"github.com/spf13/cobra"
 )
 
-var issuerListCmd = &cobra.Command{
-	Use:   "list",
-	Short: "List your existing issuer configurations",
-	Long:  "List your existing issuer configurations",
-	Run: func(cmd *cobra.Command, args []string) {
+type ListCommand struct {
+	cache         *clicache.Cache
+	issuerService issuersrv.IssuerService
+}
 
-		// load the cache to get the vault id
-		cache, err := cliCache.LoadCache()
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error loading local configuration: %v\n", err)
-			return
-		}
+func NewCmdList(
+	cache *clicache.Cache,
+	issuerService issuersrv.IssuerService,
+) *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "list",
+		Short: "List your existing issuer configurations",
+		Long:  "List your existing issuer configurations",
+		Run: func(cmd *cobra.Command, args []string) {
+			c := ListCommand{
+				cache:         cache,
+				issuerService: issuerService,
+			}
 
-		err = cache.ValidateForIssuer()
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error validating local configuration: %v\n", err)
-			return
-		}
+			err := c.Run(cmd.Context())
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "%v\n", err)
+				os.Exit(1)
+			}
+		},
+	}
 
-		issuers, err := issuerService.GetAllIssuers(cache.VaultId, cache.KeyID)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error listing issuers: %v\n", err)
-			return
-		}
-		if len(issuers) == 0 {
-			fmt.Fprintf(os.Stdout, "No issuers found.\n")
-			return
-		}
-		fmt.Fprintf(os.Stdout, "Existing issuers:\n")
-		for _, issuer := range issuers {
-			fmt.Fprintf(os.Stdout, "- %s, %s\n", issuer.ID, issuer.CommonName)
-		}
-	},
+	return cmd
+}
+
+func (cmd *ListCommand) Run(ctx context.Context) error {
+	err := cmd.cache.ValidateForIssuer()
+	if err != nil {
+		return fmt.Errorf("error validating local configuration: %w", err)
+	}
+
+	issuers, err := cmd.issuerService.GetAllIssuers(cmd.cache.VaultId, cmd.cache.KeyID)
+	if err != nil {
+		return fmt.Errorf("error listing issuers: %w", err)
+	}
+
+	if len(issuers) == 0 {
+		return fmt.Errorf("no issuers found")
+	}
+
+	fmt.Fprintf(os.Stdout, "Existing issuers:\n")
+
+	for _, issuer := range issuers {
+		fmt.Fprintf(os.Stdout, "- %s, %s\n", issuer.ID, issuer.CommonName)
+	}
+
+	return nil
 }

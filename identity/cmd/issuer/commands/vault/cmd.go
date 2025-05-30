@@ -4,74 +4,31 @@
 package vault
 
 import (
+	clicache "github.com/agntcy/identity/cmd/issuer/cache"
+	"github.com/agntcy/identity/cmd/issuer/commands/vault/connect"
 	"github.com/agntcy/identity/cmd/issuer/commands/vault/key"
-	"github.com/agntcy/identity/internal/issuer/vault"
-	"github.com/agntcy/identity/internal/issuer/vault/data/filesystem"
+	vaultsrv "github.com/agntcy/identity/internal/issuer/vault"
 	"github.com/spf13/cobra"
 )
 
-type ShowCmdInput struct {
-	VaultID string
-}
-
-type ForgetCmdInput struct {
-	VaultID string
-}
-
-type LoadCmdInput struct {
-	VaultID string
-}
-
-type FileCmdInput struct {
-	FilePath  string
-	VaultName string
-}
-
-type HashicorpCmdInput struct {
-	Address   string
-	Token     string
-	Namespace string
-	VaultName string
-}
-
-var (
-	// setup the vault service
-	vaultFilesystemRepository = filesystem.NewVaultFilesystemRepository()
-	vaultService              = vault.NewVaultService(vaultFilesystemRepository)
-
-	// setup the vault command flags
-	showCmdIn      = &ShowCmdInput{}
-	forgetCmdIn    = &ForgetCmdInput{}
-	loadCmdIn      = &LoadCmdInput{}
-	fileCmdIn      = &FileCmdInput{}
-	hashicorpCmdIn = &HashicorpCmdInput{}
-)
-
-var VaultCmd = &cobra.Command{
-	Use:   "vault",
-	Short: "Manage your vaults and generate cryptographic keys",
-	Long: `
+func NewCmd(
+	cache *clicache.Cache,
+	vaultService vaultsrv.VaultService,
+) *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "vault",
+		Short: "Manage your vaults and generate cryptographic keys",
+		Long: `
 The vault command is used to configure and manage your vaults.
 `,
-}
+	}
 
-func init() {
-	// Add the vault types to the vault connect command
-	vaultConnectCmd.AddCommand(FileCmd)
-	vaultConnectCmd.AddCommand(HashicorpCmd)
+	cmd.AddCommand(connect.NewCmd(vaultService))
+	cmd.AddCommand(NewCmdList(vaultService))
+	cmd.AddCommand(NewCmdShow(vaultService))
+	cmd.AddCommand(NewCmdForget(vaultService))
+	cmd.AddCommand(NewCmdLoad(vaultService))
+	cmd.AddCommand(key.NewCmd(cache, vaultService))
 
-	VaultCmd.AddCommand(vaultConnectCmd)
-
-	VaultCmd.AddCommand(vaultListCmd)
-
-	vaultShowCmd.Flags().StringVarP(&showCmdIn.VaultID, "vault-id", "v", "", "The ID of the vault to show")
-	VaultCmd.AddCommand(vaultShowCmd)
-
-	vaultForgetCmd.Flags().StringVarP(&forgetCmdIn.VaultID, "vault-id", "v", "", "The ID of the vault to forget")
-	VaultCmd.AddCommand(vaultForgetCmd)
-
-	vaultLoadCmd.Flags().StringVarP(&loadCmdIn.VaultID, "vault-id", "v", "", "The ID of the vault to load")
-	VaultCmd.AddCommand(vaultLoadCmd)
-
-	VaultCmd.AddCommand(key.KeyCmd)
+	return cmd
 }

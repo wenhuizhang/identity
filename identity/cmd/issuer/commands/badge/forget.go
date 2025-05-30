@@ -4,60 +4,97 @@
 package badge
 
 import (
+	"context"
 	"fmt"
 	"os"
 
 	cliCache "github.com/agntcy/identity/cmd/issuer/cache"
+	badgesrv "github.com/agntcy/identity/internal/issuer/badge"
+	"github.com/agntcy/identity/internal/pkg/cmdutil"
 	"github.com/spf13/cobra"
 )
 
-var badgeForgetCmd = &cobra.Command{
-	Use:   "forget",
-	Short: "Forget the chosen badge",
-	Run: func(cmd *cobra.Command, args []string) {
+type ForgetFlags struct {
+	BadgeID string
+}
 
-		// load the cache to get the vault, issuer and metadata ids
-		cache, err := cliCache.LoadCache()
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error loading local configuration: %v\n", err)
-			return
-		}
-		err = cache.ValidateForBadge()
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error validating local configuration: %v\n", err)
-			return
-		}
+type ForgetCommand struct {
+	cache        *cliCache.Cache
+	badgeService badgesrv.BadgeService
+}
 
-		// if the badge id is not set, prompt the user for it interactively
-		if frgtCmdIn.BadgeID == "" {
-			fmt.Fprintf(os.Stderr, "Badge ID to forget:\n")
-			_, err := fmt.Scanln(&frgtCmdIn.BadgeID)
-			if err != nil {
-				fmt.Fprintf(os.Stderr, "Error reading badge ID: %v\n", err)
-				return
+func NewCmdForget(
+	cache *cliCache.Cache,
+	badgeService badgesrv.BadgeService,
+) *cobra.Command {
+	flags := NewForgetFlags()
+
+	cmd := &cobra.Command{
+		Use:   "forget",
+		Short: "Forget the chosen badge",
+		Run: func(cmd *cobra.Command, args []string) {
+			c := ForgetCommand{
+				cache:        cache,
+				badgeService: badgeService,
 			}
-		}
-		if frgtCmdIn.BadgeID == "" {
-			fmt.Fprintf(os.Stderr, "No badge ID provided.\n")
-			return
-		}
 
-		err = badgeService.ForgetBadge(cache.VaultId, cache.KeyID, cache.IssuerId, cache.MetadataId, frgtCmdIn.BadgeID)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error forgetting badge: %v\n", err)
-			return
-		}
-
-		// If the badge was the current badge in the cache, clear the cache of badge id
-		if cache.BadgeId == frgtCmdIn.BadgeID {
-			cache.BadgeId = ""
-			err = cliCache.SaveCache(cache)
+			err := c.Run(cmd.Context(), flags)
 			if err != nil {
-				fmt.Fprintf(os.Stderr, "Error saving local configuration: %v\n", err)
-				return
+				fmt.Fprintf(os.Stderr, "%v\n", err)
+				os.Exit(1)
 			}
-		}
+		},
+	}
 
-		fmt.Fprintf(os.Stdout, "Forgot badge with ID: %s\n", frgtCmdIn.BadgeID)
-	},
+	flags.AddFlags(cmd)
+
+	return cmd
+}
+
+func NewForgetFlags() *ForgetFlags {
+	return &ForgetFlags{}
+}
+
+func (f *ForgetFlags) AddFlags(cmd *cobra.Command) {
+	cmd.Flags().StringVarP(&f.BadgeID, "badge-id", "b", "", "The ID of the badge to forget")
+}
+
+func (cmd *ForgetCommand) Run(ctx context.Context, flags *ForgetFlags) error {
+	err := cmd.cache.ValidateForBadge()
+	if err != nil {
+		return fmt.Errorf("error validating local configuration: %w", err)
+	}
+
+	// if the badge id is not set, prompt the user for it interactively
+	if flags.BadgeID == "" {
+		err := cmdutil.ScanRequired("Badge ID to forget", &flags.BadgeID)
+		if err != nil {
+			return fmt.Errorf("error reading badge ID: %w", err)
+		}
+	}
+
+	err = cmd.badgeService.ForgetBadge(
+		cmd.cache.VaultId,
+		cmd.cache.KeyID,
+		cmd.cache.IssuerId,
+		cmd.cache.MetadataId,
+		flags.BadgeID,
+	)
+	if err != nil {
+		return fmt.Errorf("error forgetting badge: %w", err)
+	}
+
+	// If the badge was the current badge in the cache, clear the cache of badge id
+	if cmd.cache.BadgeId == flags.BadgeID {
+		cmd.cache.BadgeId = ""
+
+		err = cliCache.SaveCache(cmd.cache)
+		if err != nil {
+			return fmt.Errorf("error saving local configuration: %w", err)
+		}
+	}
+
+	fmt.Fprintf(os.Stdout, "Forgot badge with ID: %s\n", flags.BadgeID)
+
+	return nil
 }

@@ -4,55 +4,93 @@
 package badge
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"os"
 
-	cliCache "github.com/agntcy/identity/cmd/issuer/cache"
+	clicache "github.com/agntcy/identity/cmd/issuer/cache"
+	badgesrv "github.com/agntcy/identity/internal/issuer/badge"
+	"github.com/agntcy/identity/internal/pkg/cmdutil"
 	"github.com/spf13/cobra"
 )
 
-var badgeShowCmd = &cobra.Command{
-	Use:   "show",
-	Short: "Show details of the chosen badge",
-	Run: func(cmd *cobra.Command, args []string) {
+type ShowFlags struct {
+	BadgeID string
+}
 
-		// load the cache to get the vault, issuer and metadata ids
-		cache, err := cliCache.LoadCache()
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error loading local configuration: %v\n", err)
-			return
-		}
-		err = cache.ValidateForBadge()
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error validating local configuration: %v\n", err)
-			return
-		}
+type ShowCommand struct {
+	cache        *clicache.Cache
+	badgeService badgesrv.BadgeService
+}
 
-		// if the badge id is not set, prompt the user for it interactively
-		if showCmdIn.BadgeID == "" {
-			fmt.Fprintf(os.Stderr, "Badge ID to show:\n")
-			_, err := fmt.Scanln(&showCmdIn.BadgeID)
-			if err != nil {
-				fmt.Fprintf(os.Stderr, "Error reading badge ID: %v\n", err)
-				return
+func NewCmdShow(
+	cache *clicache.Cache,
+	badgeService badgesrv.BadgeService,
+) *cobra.Command {
+	flags := NewShowFlags()
+
+	cmd := &cobra.Command{
+		Use:   "show",
+		Short: "Show details of the chosen badge",
+		Run: func(cmd *cobra.Command, args []string) {
+			c := ShowCommand{
+				cache:        cache,
+				badgeService: badgeService,
 			}
-		}
-		if showCmdIn.BadgeID == "" {
-			fmt.Fprintf(os.Stderr, "No badge ID provided.\n")
-			return
-		}
 
-		badge, err := badgeService.GetBadge(cache.VaultId, cache.KeyID, cache.IssuerId, cache.MetadataId, showCmdIn.BadgeID)
+			err := c.Run(cmd.Context(), flags)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "%v\n", err)
+				os.Exit(1)
+			}
+		},
+	}
+
+	flags.AddFlags(cmd)
+
+	return cmd
+}
+
+func NewShowFlags() *ShowFlags {
+	return &ShowFlags{}
+}
+
+func (f *ShowFlags) AddFlags(cmd *cobra.Command) {
+	cmd.Flags().StringVarP(&f.BadgeID, "badge-id", "b", "", "The ID of the badge to show")
+}
+
+func (cmd *ShowCommand) Run(ctx context.Context, flags *ShowFlags) error {
+	err := cmd.cache.ValidateForBadge()
+	if err != nil {
+		return fmt.Errorf("error validating local configuration: %w", err)
+	}
+
+	// if the badge id is not set, prompt the user for it interactively
+	if flags.BadgeID == "" {
+		err := cmdutil.ScanRequired("Badge ID to show", &flags.BadgeID)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error getting badge: %v\n", err)
-			return
+			return fmt.Errorf("error reading badge ID: %w", err)
 		}
-		badgeJSON, err := json.MarshalIndent(badge, "", "  ")
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error marshaling badge to JSON: %v\n", err)
-			return
-		}
-		fmt.Fprintf(os.Stdout, "%s\n", string(badgeJSON))
-	},
+	}
+
+	badge, err := cmd.badgeService.GetBadge(
+		cmd.cache.VaultId,
+		cmd.cache.KeyID,
+		cmd.cache.IssuerId,
+		cmd.cache.MetadataId,
+		flags.BadgeID,
+	)
+	if err != nil {
+		return fmt.Errorf("error getting badge: %w", err)
+	}
+
+	badgeJSON, err := json.MarshalIndent(badge, "", "  ")
+	if err != nil {
+		return fmt.Errorf("error marshaling badge to JSON: %w", err)
+	}
+
+	fmt.Fprintf(os.Stdout, "%s\n", string(badgeJSON))
+
+	return nil
 }

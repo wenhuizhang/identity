@@ -4,63 +4,100 @@
 package badge
 
 import (
+	"context"
 	"fmt"
 	"os"
 
-	cliCache "github.com/agntcy/identity/cmd/issuer/cache"
+	clicache "github.com/agntcy/identity/cmd/issuer/cache"
+	badgesrv "github.com/agntcy/identity/internal/issuer/badge"
+	"github.com/agntcy/identity/internal/pkg/cmdutil"
 	"github.com/spf13/cobra"
 )
 
-var badgeLoadCmd = &cobra.Command{
-	Use:   "load",
-	Short: "Load a badge configuration",
-	Run: func(cmd *cobra.Command, args []string) {
+type LoadFlags struct {
+	BadgeID string
+}
 
-		// load the cache to get the vault, issuer and metadata ids
-		cache, err := cliCache.LoadCache()
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error loading local configuration: %v\n", err)
-			return
-		}
-		err = cache.ValidateForBadge()
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error validating local configuration: %v\n", err)
-			return
-		}
+type LoadCommand struct {
+	cache        *clicache.Cache
+	badgeService badgesrv.BadgeService
+}
 
-		// if the badge id is not set, prompt the user for it interactively
-		if loadCmdIn.BadgeID == "" {
-			fmt.Fprintf(os.Stderr, "Badge ID to load:\n")
-			_, err := fmt.Scanln(&loadCmdIn.BadgeID)
-			if err != nil {
-				fmt.Fprintf(os.Stderr, "Error reading badge ID: %v\n", err)
-				return
+func NewCmdLoad(
+	cache *clicache.Cache,
+	badgeService badgesrv.BadgeService,
+) *cobra.Command {
+	flags := NewLoadFlags()
+
+	cmd := &cobra.Command{
+		Use:   "load",
+		Short: "Load a badge configuration",
+		Run: func(cmd *cobra.Command, args []string) {
+			c := LoadCommand{
+				cache:        cache,
+				badgeService: badgeService,
 			}
-		}
-		if loadCmdIn.BadgeID == "" {
-			fmt.Fprintf(os.Stderr, "No badge ID provided.\n")
-			return
-		}
 
-		// check the badge id is valid
-		badge, err := badgeService.GetBadge(cache.VaultId, cache.KeyID, cache.IssuerId, cache.MetadataId, loadCmdIn.BadgeID)
+			err := c.Run(cmd.Context(), flags)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "%v\n", err)
+				os.Exit(1)
+			}
+		},
+	}
+
+	flags.AddFlags(cmd)
+
+	return cmd
+}
+
+func NewLoadFlags() *LoadFlags {
+	return &LoadFlags{}
+}
+
+func (f *LoadFlags) AddFlags(cmd *cobra.Command) {
+	cmd.Flags().StringVarP(&f.BadgeID, "badge-id", "b", "", "The ID of the badge to load")
+}
+
+func (cmd *LoadCommand) Run(ctx context.Context, flags *LoadFlags) error {
+	err := cmd.cache.ValidateForBadge()
+	if err != nil {
+		return fmt.Errorf("error validating local configuration: %w", err)
+	}
+
+	// if the badge id is not set, prompt the user for it interactively
+	if flags.BadgeID == "" {
+		err := cmdutil.ScanRequired("Badge ID to load", &flags.BadgeID)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error getting badge: %v\n", err)
-			return
+			return fmt.Errorf("error reading badge ID: %w", err)
 		}
-		if badge == nil {
-			fmt.Fprintf(os.Stderr, "Badge with ID %s not found\n", loadCmdIn.BadgeID)
-			return
-		}
+	}
 
-		// save the metadata id to the cache
-		cache.BadgeId = loadCmdIn.BadgeID
-		err = cliCache.SaveCache(cache)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error saving local configuration: %v\n", err)
-			return
-		}
-		fmt.Fprintf(os.Stdout, "Loaded badge with ID: %s\n", loadCmdIn.BadgeID)
+	// check the badge id is valid
+	badge, err := cmd.badgeService.GetBadge(
+		cmd.cache.VaultId,
+		cmd.cache.KeyID,
+		cmd.cache.IssuerId,
+		cmd.cache.MetadataId,
+		flags.BadgeID,
+	)
+	if err != nil {
+		return fmt.Errorf("error getting badge: %w", err)
+	}
 
-	},
+	if badge == nil {
+		return fmt.Errorf("badge with ID %s not found", flags.BadgeID)
+	}
+
+	// save the metadata id to the cache
+	cmd.cache.BadgeId = flags.BadgeID
+
+	err = clicache.SaveCache(cmd.cache)
+	if err != nil {
+		return fmt.Errorf("error saving local configuration: %w", err)
+	}
+
+	fmt.Fprintf(os.Stdout, "Loaded badge with ID: %s\n", flags.BadgeID)
+
+	return nil
 }

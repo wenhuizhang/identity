@@ -8,105 +8,76 @@ import (
 	"fmt"
 	"os"
 
-	cliCache "github.com/agntcy/identity/cmd/issuer/cache"
-	"github.com/agntcy/identity/internal/core/keystore"
-	vaulttypes "github.com/agntcy/identity/internal/issuer/vault/types"
+	clicache "github.com/agntcy/identity/cmd/issuer/cache"
+	vaultsrv "github.com/agntcy/identity/internal/issuer/vault"
 	"github.com/agntcy/identity/internal/pkg/joseutil"
 	"github.com/google/uuid"
 	"github.com/spf13/cobra"
 )
 
-var keyGenerateCmd = &cobra.Command{
-	Use:   "generate",
-	Short: "Generate a new cryptographic key for the vault",
-	Run: func(cmd *cobra.Command, args []string) {
+type GenerateCommand struct {
+	cache        *clicache.Cache
+	vaultService vaultsrv.VaultService
+}
 
-		// load the cache to get the vault and issuer id
-		cache, err := cliCache.LoadCache()
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error loading local configuration: %v\n", err)
-			return
-		}
-		err = cache.ValidateForKey()
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error validating local configuration: %v\n", err)
-			return
-		}
-
-		vault, err := vaultService.GetVault(cache.VaultId)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error getting vault: %v\n", err)
-			return
-		}
-
-		var service keystore.KeyService
-
-		switch vault.Type {
-		case vaulttypes.VaultTypeFile:
-			fileVault, ok := vault.Config.(*vaulttypes.VaultFile)
-			if !ok {
-				fmt.Fprintf(os.Stderr, "Error: vault config is not of type VaultFile\n")
-				return
+func NewCmdGenerate(
+	cache *clicache.Cache,
+	vaultService vaultsrv.VaultService,
+) *cobra.Command {
+	return &cobra.Command{
+		Use:   "generate",
+		Short: "Generate a new cryptographic key for the vault",
+		Run: func(cmd *cobra.Command, args []string) {
+			c := GenerateCommand{
+				cache:        cache,
+				vaultService: vaultService,
 			}
-			fileConfig := keystore.FileStorageConfig{
-				FilePath: fileVault.FilePath,
-			}
-			service, err = keystore.NewKeyService(keystore.FileStorage, fileConfig)
+
+			err := c.Run(cmd.Context())
 			if err != nil {
-				fmt.Fprintf(os.Stderr, "Error creating key service: %v\n", err)
-				return
+				fmt.Fprintf(os.Stderr, "%v\n", err)
+				os.Exit(1)
 			}
+		},
+	}
+}
 
-		case vaulttypes.VaultTypeHashicorp:
-			hashicorpVault, ok := vault.Config.(*vaulttypes.VaultHashicorp)
-			if !ok {
-				fmt.Fprintf(os.Stderr, "Error: vault config is not of type VaultHashicorp\n")
-				return
-			}
-			hashicorpConfig := keystore.VaultStorageConfig{
-				Address:   hashicorpVault.Address,
-				Token:     hashicorpVault.Token,
-				Namespace: hashicorpVault.Namespace,
-			}
-			service, err = keystore.NewKeyService(keystore.VaultStorage, hashicorpConfig)
-			if err != nil {
-				fmt.Fprintf(os.Stderr, "Error creating key service: %v\n", err)
-				return
-			}
+func (cmd *GenerateCommand) Run(ctx context.Context) error {
+	err := cmd.cache.ValidateForKey()
+	if err != nil {
+		return fmt.Errorf("error validating local configuration: %w", err)
+	}
 
-		default:
-			fmt.Fprintf(os.Stderr, "Unsupported vault type: %s\n", vault.Type)
-			return
-		}
+	vault, err := cmd.vaultService.GetVault(cmd.cache.VaultId)
+	if err != nil {
+		return fmt.Errorf("error getting vault: %w", err)
+	}
 
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error creating key service: %v\n", err)
-			return
-		}
+	service, err := newKeyService(vault)
+	if err != nil {
+		return fmt.Errorf("error creating key service: %w", err)
+	}
 
-		keyId := uuid.NewString()
+	keyId := uuid.NewString()
 
-		priv, err := joseutil.GenerateJWK("RS256", "sig", keyId)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error generating JWK: %v\n", err)
-			return
-		}
+	priv, err := joseutil.GenerateJWK("RS256", "sig", keyId)
+	if err != nil {
+		return fmt.Errorf("error generating JWK: %w", err)
+	}
 
-		ctx := context.Background()
-		err = service.SaveKey(ctx, priv.KID, priv)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error saving key: %v\n", err)
-			return
-		}
+	err = service.SaveKey(ctx, priv.KID, priv)
+	if err != nil {
+		return fmt.Errorf("error saving key: %w", err)
+	}
 
-		cmd.Printf("Successfully generated key with ID: %s\n", keyId)
+	fmt.Fprintf(os.Stdout, "Successfully generated key with ID: %s\n", keyId)
 
-		cache.KeyID = keyId
-		err = cliCache.SaveCache(cache)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error saving local configuration: %v\n", err)
-			return
-		}
+	cmd.cache.KeyID = keyId
 
-	},
+	err = clicache.SaveCache(cmd.cache)
+	if err != nil {
+		return fmt.Errorf("error saving local configuration: %w", err)
+	}
+
+	return nil
 }
