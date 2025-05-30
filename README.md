@@ -84,7 +84,7 @@ make start_node
    to deploy the `Currency Exchange A2A Agent` leveraging the `Currency Exchange MCP Server`:
 
    ```bash
-   docker-compose up -d
+   docker compose up -d
    ```
 
 3. [Optional] Test the samples using the provided [test clients](./samples/README.md#testing-the-samples).
