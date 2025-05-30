@@ -99,7 +99,6 @@ identity vault list
 identity vault key list
 ```
 
-
 **Show details of an issuer**:
 
 ```bash
