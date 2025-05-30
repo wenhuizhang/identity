@@ -143,7 +143,12 @@ func main() {
 	verificationService := core.NewVerificationService(oidcParser)
 	nodeIssuerService := node.NewIssuerService(issuerRepository, verificationService)
 	idGenerator := node.NewIDGenerator(oidcParser, issuerRepository)
-	nodeIdService := node.NewIdService(verificationService, idRepository, issuerRepository, idGenerator)
+	nodeIdService := node.NewIdService(
+		verificationService,
+		idRepository,
+		issuerRepository,
+		idGenerator,
+	)
 	nodeVcService := node.NewVerifiableCredentialService(
 		verificationService,
 		idRepository,

@@ -57,7 +57,8 @@ func NewForgetFlags() *ForgetFlags {
 }
 
 func (f *ForgetFlags) AddFlags(cmd *cobra.Command) {
-	cmd.Flags().StringVarP(&f.MetadataID, "metadata-id", "m", "", "The ID of the metadata to forget")
+	cmd.Flags().
+		StringVarP(&f.MetadataID, "metadata-id", "m", "", "The ID of the metadata to forget")
 }
 
 func (cmd *ForgetCommand) Run(ctx context.Context, flags *ForgetFlags) error {

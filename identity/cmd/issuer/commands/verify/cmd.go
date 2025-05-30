@@ -59,7 +59,8 @@ func NewVerifyFlags() *VerifyFlags {
 
 func (f *VerifyFlags) AddFlags(cmd *cobra.Command) {
 	cmd.Flags().StringVarP(&f.BadgeFilePath, "file", "f", "", "Path to the badge file")
-	cmd.Flags().StringVarP(&f.IdentityNodeURL, "identity-node-address", "i", "", "Identity node address")
+	cmd.Flags().
+		StringVarP(&f.IdentityNodeURL, "identity-node-address", "i", "", "Identity node address")
 }
 
 func (cmd *VerifyCommand) Run(ctx context.Context, flags *VerifyFlags) error {
@@ -73,7 +74,11 @@ func (cmd *VerifyCommand) Run(ctx context.Context, flags *VerifyFlags) error {
 
 	// if the identity node address is not set, prompt the user for it interactively
 	if flags.IdentityNodeURL == "" {
-		err := cmdutil.ScanWithDefault("Identity node address", defaultNodeAddress, &flags.IdentityNodeURL)
+		err := cmdutil.ScanWithDefault(
+			"Identity node address",
+			defaultNodeAddress,
+			&flags.IdentityNodeURL,
+		)
 		if err != nil {
 			return fmt.Errorf("error reading identity node address: %w", err)
 		}

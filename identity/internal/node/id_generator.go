@@ -19,6 +19,12 @@ import (
 	"github.com/agntcy/identity/pkg/log"
 )
 
+// All IDP schemes supported by the ID generator.
+const (
+	oktaIdp = "OKTA"
+	duoIdp  = "DUO"
+)
+
 type IDGenerator interface {
 	GenerateFromProof(
 		ctx context.Context,
@@ -73,11 +79,15 @@ func (g *idGenerator) GenerateFromProof(
 
 		switch jwt.Provider {
 		case oidc.OktaProviderName:
-			scheme = "OKTA"
+			scheme = oktaIdp
 		case oidc.DuoProviderName:
-			scheme = "DUO"
+			scheme = duoIdp
 		default:
-			return "", nil, errutil.ErrInfo(errtypes.ERROR_REASON_UNKNOWN_IDP, "unknown JWT provider name", nil)
+			return "", nil, errutil.ErrInfo(
+				errtypes.ERROR_REASON_UNKNOWN_IDP,
+				"unknown JWT provider name",
+				nil,
+			)
 		}
 
 		return fmt.Sprintf("%s-%s", scheme, jwt.Claims.Subject), issuer, nil
@@ -90,7 +100,10 @@ func (g *idGenerator) GenerateFromProof(
 	)
 }
 
-func (g *idGenerator) getIssuer(ctx context.Context, commonName string) (*issuertypes.Issuer, error) {
+func (g *idGenerator) getIssuer(
+	ctx context.Context,
+	commonName string,
+) (*issuertypes.Issuer, error) {
 	issuer, err := g.issuerRepository.GetIssuer(ctx, commonName)
 	if err != nil {
 		if errors.Is(err, errcore.ErrResourceNotFound) {

@@ -120,7 +120,9 @@ func (r *issuerFilesystemRepository) GetAllIssuers(vaultId, keyId string) ([]*ty
 	return issuers, nil
 }
 
-func (r *issuerFilesystemRepository) GetIssuer(vaultId, keyId, issuerId string) (*types.Issuer, error) {
+func (r *issuerFilesystemRepository) GetIssuer(
+	vaultId, keyId, issuerId string,
+) (*types.Issuer, error) {
 	// Get the issuer file path
 	issuerFilePath, err := GetIssuerFilePath(vaultId, keyId, issuerId)
 	if err != nil {

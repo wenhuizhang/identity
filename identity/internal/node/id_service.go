@@ -96,7 +96,11 @@ func (s *idService) Generate(
 
 	_, err = s.idRepository.CreateID(ctx, resolverMetadata)
 	if err != nil {
-		return nil, errutil.ErrInfo(errtypes.ERROR_REASON_INTERNAL, "unable to store the resolver metadata", err)
+		return nil, errutil.ErrInfo(
+			errtypes.ERROR_REASON_INTERNAL,
+			"unable to store the resolver metadata",
+			err,
+		)
 	}
 
 	return resolverMetadata, nil

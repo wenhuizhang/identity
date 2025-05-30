@@ -96,7 +96,10 @@ func (cmd *HashicorpCommand) Run(ctx context.Context, flags *HashicorpFlags) err
 
 	// if the vault token is not set, prompt the user for it interactively
 	if flags.Token == "" {
-		err := cmdutil.ScanRequired("Token to authenticate with the HashiCorp Vault instance", &flags.Token)
+		err := cmdutil.ScanRequired(
+			"Token to authenticate with the HashiCorp Vault instance",
+			&flags.Token,
+		)
 		if err != nil {
 			return fmt.Errorf("error reading vault token: %w", err)
 		}
@@ -104,7 +107,10 @@ func (cmd *HashicorpCommand) Run(ctx context.Context, flags *HashicorpFlags) err
 
 	// if the vault namespace is not set, prompt the user for it interactively
 	if flags.Namespace == "" {
-		err := cmdutil.ScanOptional("Namespace to use in the HashiCorp Vault instance", &flags.Namespace)
+		err := cmdutil.ScanOptional(
+			"Namespace to use in the HashiCorp Vault instance",
+			&flags.Namespace,
+		)
 		if err != nil {
 			return fmt.Errorf("error reading vault namespace: %w", err)
 		}

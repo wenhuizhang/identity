@@ -65,10 +65,13 @@ func (s *Service) ToCoreType() *types.Service {
 
 func newResolverMetadataModel(src *types.ResolverMetadata) *ResolverMetadata {
 	return &ResolverMetadata{
-		ID:                 src.ID,
-		VerificationMethod: converters.ConvertSliceCallback(src.VerificationMethod, newVerificationMethodModel),
-		Service:            converters.ConvertSliceCallback(src.Service, newServiceModel),
-		AssertionMethod:    src.AssertionMethod,
+		ID: src.ID,
+		VerificationMethod: converters.ConvertSliceCallback(
+			src.VerificationMethod,
+			newVerificationMethodModel,
+		),
+		Service:         converters.ConvertSliceCallback(src.Service, newServiceModel),
+		AssertionMethod: src.AssertionMethod,
 	}
 }
 

@@ -79,7 +79,10 @@ func (cmd *IssueMcpCommand) Run(ctx context.Context, flags *IssueMcpFlags) error
 
 	// if the mcp server url is not set, prompt the user for it interactively
 	if flags.McpServerUrl == "" {
-		err := cmdutil.ScanRequired("URL of the MCP server you want to sign in the badge", &flags.McpServerUrl)
+		err := cmdutil.ScanRequired(
+			"URL of the MCP server you want to sign in the badge",
+			&flags.McpServerUrl,
+		)
 		if err != nil {
 			return fmt.Errorf("error reading mcp server URL: %w", err)
 		}
@@ -87,7 +90,10 @@ func (cmd *IssueMcpCommand) Run(ctx context.Context, flags *IssueMcpFlags) error
 
 	// if the mcp server name is not set, prompt the user for it interactively
 	if flags.McpServerName == "" {
-		err := cmdutil.ScanRequired("Name of the MCP server you want to sign in the badge", &flags.McpServerName)
+		err := cmdutil.ScanRequired(
+			"Name of the MCP server you want to sign in the badge",
+			&flags.McpServerName,
+		)
 		if err != nil {
 			return fmt.Errorf("error reading mcp server name: %w", err)
 		}

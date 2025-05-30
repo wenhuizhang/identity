@@ -29,7 +29,10 @@ func (r *FakeIdRepository) CreateID(
 	return metadata, nil
 }
 
-func (r *FakeIdRepository) ResolveID(ctx context.Context, id string) (*idtypes.ResolverMetadata, error) {
+func (r *FakeIdRepository) ResolveID(
+	ctx context.Context,
+	id string,
+) (*idtypes.ResolverMetadata, error) {
 	if md, ok := r.store[id]; ok {
 		return md, nil
 	}

@@ -40,7 +40,9 @@ type BadgeService interface {
 		badge *internalIssuerTypes.Badge,
 	) (*internalIssuerTypes.Badge, error)
 	GetAllBadges(vaultId, keyId, issuerId, metadataId string) ([]*internalIssuerTypes.Badge, error)
-	GetBadge(vaultId, keyId, issuerId, metadataId, badgeId string) (*internalIssuerTypes.Badge, error)
+	GetBadge(
+		vaultId, keyId, issuerId, metadataId, badgeId string,
+	) (*internalIssuerTypes.Badge, error)
 	ForgetBadge(vaultId, keyId, issuerId, metadataId, badgeId string) error
 }
 
@@ -176,7 +178,9 @@ func (s *badgeService) PublishBadge(
 	return badge, nil
 }
 
-func (s *badgeService) GetAllBadges(vaultId, keyId, issuerId, metadataId string) ([]*internalIssuerTypes.Badge, error) {
+func (s *badgeService) GetAllBadges(
+	vaultId, keyId, issuerId, metadataId string,
+) ([]*internalIssuerTypes.Badge, error) {
 	badges, err := s.badgeRepository.GetAllBadges(vaultId, keyId, issuerId, metadataId)
 	if err != nil {
 		return nil, err

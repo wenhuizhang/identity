@@ -19,7 +19,10 @@ import (
 )
 
 // setupVaultService creates a new VaultKeyService with optional unique base path
-func setupVaultService(t *testing.T, uniquePath bool) (keystore.KeyService, context.Context, []string) {
+func setupVaultService(
+	t *testing.T,
+	uniquePath bool,
+) (keystore.KeyService, context.Context, []string) {
 	t.Helper()
 
 	vaultAddr := os.Getenv("VAULT_ADDR")
@@ -52,7 +55,13 @@ func setupVaultService(t *testing.T, uniquePath bool) (keystore.KeyService, cont
 }
 
 // createTestKeys creates multiple test keys and returns their IDs
-func createTestKeys(t *testing.T, service keystore.KeyService, ctx context.Context, count int, prefix string) []string {
+func createTestKeys(
+	t *testing.T,
+	service keystore.KeyService,
+	ctx context.Context,
+	count int,
+	prefix string,
+) []string {
 	t.Helper()
 
 	var keyIDs []string

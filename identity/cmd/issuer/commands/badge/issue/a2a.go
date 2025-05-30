@@ -83,7 +83,10 @@ func (cmd *IssueA2ACommand) Run(ctx context.Context, flags *IssueA2AFlags) error
 
 	// if the mcp server url is not set, prompt the user for it interactively
 	if flags.A2AWellKnown == "" {
-		err := cmdutil.ScanRequired("Well-known URL of the A2A agent you want to sign in the badge", &flags.A2AWellKnown)
+		err := cmdutil.ScanRequired(
+			"Well-known URL of the A2A agent you want to sign in the badge",
+			&flags.A2AWellKnown,
+		)
 		if err != nil {
 			return fmt.Errorf("error reading A2A well-known URL: %w", err)
 		}

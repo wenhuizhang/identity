@@ -74,7 +74,8 @@ func NewRegisterFlags() *RegisterFlags {
 }
 
 func (f *RegisterFlags) AddFlags(cmd *cobra.Command) {
-	cmd.Flags().StringVarP(&f.IdentityNodeURL, "identity-node-address", "i", "", "Identity node address")
+	cmd.Flags().
+		StringVarP(&f.IdentityNodeURL, "identity-node-address", "i", "", "Identity node address")
 	cmd.Flags().StringVarP(&f.ClientID, "idp-client-id", "c", "", "IdP client ID")
 	cmd.Flags().StringVarP(&f.ClientSecret, "idp-client-secret", "s", "", "IdP client secret")
 	cmd.Flags().StringVarP(&f.IssuerURL, "idp-issuer-url", "u", "", "IdP issuer URL")
@@ -160,7 +161,11 @@ func (cmd *RegisterCommand) Run(ctx context.Context, flags *RegisterFlags) error
 func (cmd *RegisterCommand) validateFlags(flags *RegisterFlags) error {
 	// if the identity node address is not set, prompt the user for it interactively
 	if flags.IdentityNodeURL == "" {
-		err := cmdutil.ScanWithDefault("Identity node address", defaultNodeAddress, &flags.IdentityNodeURL)
+		err := cmdutil.ScanWithDefault(
+			"Identity node address",
+			defaultNodeAddress,
+			&flags.IdentityNodeURL,
+		)
 		if err != nil {
 			return fmt.Errorf("error reading identity node address: %w", err)
 		}
@@ -200,7 +205,11 @@ func (cmd *RegisterCommand) validateFlags(flags *RegisterFlags) error {
 
 	// if the sub-organization is not set, prompt the user for it interactively
 	if flags.SubOrganization == "" {
-		err := cmdutil.ScanWithDefault("Sub-organization name", flags.Organization, &flags.SubOrganization)
+		err := cmdutil.ScanWithDefault(
+			"Sub-organization name",
+			flags.Organization,
+			&flags.SubOrganization,
+		)
 		if err != nil {
 			return fmt.Errorf("error reading sub-organization name: %w", err)
 		}

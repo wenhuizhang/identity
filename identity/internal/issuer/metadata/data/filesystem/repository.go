@@ -147,7 +147,9 @@ func (r *metadataFilesystemRepository) GetMetadata(
 	return &metadata, nil
 }
 
-func (r *metadataFilesystemRepository) RemoveMetadata(vaultId, keyId, issuerId, metadataId string) error {
+func (r *metadataFilesystemRepository) RemoveMetadata(
+	vaultId, keyId, issuerId, metadataId string,
+) error {
 	// Get the metadata directory
 	metadataIdDir, err := GetMetadataIdDirectory(vaultId, keyId, issuerId, metadataId)
 	if err != nil {

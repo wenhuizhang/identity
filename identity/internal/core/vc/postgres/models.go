@@ -66,22 +66,28 @@ func (c *CredentialSchema) ToCoreType() *types.CredentialSchema {
 	}
 }
 
-func newVerifiableCredentialModel(src *types.VerifiableCredential, resolverMetadataID string) *VerifiableCredential {
+func newVerifiableCredentialModel(
+	src *types.VerifiableCredential,
+	resolverMetadataID string,
+) *VerifiableCredential {
 	sub, err := json.Marshal(src.CredentialSubject)
 	if err != nil {
 		log.Warn(err)
 	}
 
 	return &VerifiableCredential{
-		ID:                 src.ID,
-		CreatedAt:          time.Now().UTC(),
-		Context:            src.Context,
-		Type:               src.Type,
-		Issuer:             src.Issuer,
-		CredentialSubject:  sub,
-		IssuanceDate:       src.IssuanceDate,
-		ExpirationDate:     src.ExpirationDate,
-		CredentialSchema:   converters.ConvertSliceCallback(src.CredentialSchema, newCredentialSchemaModel),
+		ID:                src.ID,
+		CreatedAt:         time.Now().UTC(),
+		Context:           src.Context,
+		Type:              src.Type,
+		Issuer:            src.Issuer,
+		CredentialSubject: sub,
+		IssuanceDate:      src.IssuanceDate,
+		ExpirationDate:    src.ExpirationDate,
+		CredentialSchema: converters.ConvertSliceCallback(
+			src.CredentialSchema,
+			newCredentialSchemaModel,
+		),
 		Proof:              src.Proof,
 		ResolverMetadataID: resolverMetadataID,
 	}

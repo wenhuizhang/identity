@@ -23,7 +23,12 @@ func NewBadgeFilesystemRepository() data.BadgeRepository {
 
 // getBadgeDirectory returns the path to the badges directory for a metadata
 func getBadgesDirectory(vaultId, keyId, issuerId, metadataId string) (string, error) {
-	metadataIdDir, err := metadataFilesystemRepository.GetMetadataIdDirectory(vaultId, keyId, issuerId, metadataId)
+	metadataIdDir, err := metadataFilesystemRepository.GetMetadataIdDirectory(
+		vaultId,
+		keyId,
+		issuerId,
+		metadataId,
+	)
 	if err != nil {
 		return "", err
 	}
@@ -147,7 +152,9 @@ func (r *badgeFilesystemRepository) GetBadge(
 	return &badge, nil
 }
 
-func (r *badgeFilesystemRepository) RemoveBadge(vaultId, keyId, issuerId, metadataId, badgeId string) error {
+func (r *badgeFilesystemRepository) RemoveBadge(
+	vaultId, keyId, issuerId, metadataId, badgeId string,
+) error {
 	// Get the badge directory
 	badgeIdDir, err := GetBadgeIdDirectory(vaultId, keyId, issuerId, metadataId, badgeId)
 	if err != nil {

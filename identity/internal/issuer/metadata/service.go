@@ -95,7 +95,9 @@ func (s *metadataService) GenerateMetadata(
 	return metadataId, nil
 }
 
-func (s *metadataService) GetAllMetadata(vaultId, keyId, issuerId string) ([]*types.Metadata, error) {
+func (s *metadataService) GetAllMetadata(
+	vaultId, keyId, issuerId string,
+) ([]*types.Metadata, error) {
 	metadata, err := s.metadataRepository.GetAllMetadata(vaultId, keyId, issuerId)
 	if err != nil {
 		return nil, err
@@ -104,7 +106,9 @@ func (s *metadataService) GetAllMetadata(vaultId, keyId, issuerId string) ([]*ty
 	return metadata, nil
 }
 
-func (s *metadataService) GetMetadata(vaultId, keyId, issuerId, metadataId string) (*types.Metadata, error) {
+func (s *metadataService) GetMetadata(
+	vaultId, keyId, issuerId, metadataId string,
+) (*types.Metadata, error) {
 	metadata, err := s.metadataRepository.GetMetadata(vaultId, keyId, issuerId, metadataId)
 	if err != nil {
 		return nil, err
