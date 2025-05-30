@@ -14,17 +14,77 @@ repos:
     rev: v1.0.0-rc.1
     hooks:
       - id: go-mod-tidy
+        files: |
+          (?x)(
+            ^internal/|
+            ^pkg/|
+            ^cmd/
+          )
       - id: go-fmt
+        files: |
+          (?x)(
+            ^internal/|
+            ^pkg/|
+            ^cmd/
+          )
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0
     hooks:
       - id: check-added-large-files # Prevent giant files from being committed
+        files: |
+          (?x)(
+            ^internal/|
+            ^pkg/|
+            ^cmd/
+          )
       - id: detect-private-key      # Checks for the existence of private keys
+        files: |
+          (?x)(
+            ^internal/|
+            ^pkg/|
+            ^cmd/
+          )
       - id: check-case-conflict     # Check for files with names that would conflict on a case-insensitive filesystem
+        files: |
+          (?x)(
+            ^internal/|
+            ^pkg/|
+            ^cmd/
+          )
       - id: check-merge-conflict    # Check for files that contain merge conflict strings
+        files: |
+          (?x)(
+            ^internal/|
+            ^pkg/|
+            ^cmd/
+          )
       - id: check-symlinks          # Checks for symlinks which do not point to anything
+        files: |
+          (?x)(
+            ^internal/|
+            ^pkg/|
+            ^cmd/
+          )
       - id: end-of-file-fixer       # Makes sure files end in a newline and only a newline
+        files: |
+          (?x)(
+            ^internal/|
+            ^pkg/|
+            ^cmd/
+          )
       - id: mixed-line-ending       # Replaces or checks mixed line ending
+        files: |
+          (?x)(
+            ^internal/|
+            ^pkg/|
+            ^cmd/
+          )
       - id: trailing-whitespace     # Trims trailing whitespace
+        files: |
+          (?x)(
+            ^internal/|
+            ^pkg/|
+            ^cmd/
+          )
         args: [--markdown-linebreak-ext=md]
