@@ -66,6 +66,6 @@ jobs:
     needs: [prepare-release]
     with:
       workdir: ./cmd/issuer
-      config: ../../../.github/configs/issuer-cli-goreleaser.yml
+      config: ../../.github/configs/issuer-cli-goreleaser.yml
     secrets:
       github-token: ${{ secrets.GITHUB_TOKEN }}
