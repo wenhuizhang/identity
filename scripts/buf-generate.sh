@@ -6,7 +6,7 @@
 reset_generated_pb_go() {
   (
     cd ..
-    pb_files=$(git status --porcelain | grep identity/api/server | sed s/^...// | tr '\n' ' ')
+    pb_files=$(git status --porcelain | grep api/server | sed s/^...// | tr '\n' ' ')
 
     for f in $pb_files; do
       echo "Resetting $f"
@@ -22,7 +22,7 @@ cd docker &&
   docker compose -f buf-compose.yaml run --rm -w /identity/code/api-spec buf-go run.sh
 docker rmi docker-buf-go
 
-if [ -d "../../identity/api/server" ]; then
-  cd ../../identity/api/server &&
+if [ -d "../../api/server" ]; then
+  cd ../../api/server &&
     grep -rl gnostic . | xargs sed -i '' 's|github.com/google/gnostic/openapiv3|github.com/google/gnostic-models/openapiv3|g'
 fi
