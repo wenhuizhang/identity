@@ -36,7 +36,7 @@ identity [command] [subcommand] [flags]
 
 ### Common Workflows
 
-#### Step 1: Create a vault to store cryptographic keys
+#### Step 1: Create a vault and generate cryptographic keys
 
 ```bash
 # Configure a vault to store cryptographic keys
@@ -77,9 +77,6 @@ identity badge issue a2a -u http://localhost:9091/.well-known/agent.json
 
 # MCP Servers - (https://github.com/modelcontextprotocol/servers))
 identity badge issue mcp -u http://localhost:9090
-
-#Generic Files
-identity badge issue file -f /path/to/badge_content.json
 ```
 
 #### Step 5: Publish the badge
@@ -95,6 +92,13 @@ identity badge publish
 ```bash
 identity vault list
 ```
+
+**List existing keys**:
+
+```bash
+identity vault key list
+```
+
 
 **Show details of an issuer**:
 
@@ -114,10 +118,10 @@ identity metadata load -m [metadata-id]
 identity config
 ```
 
-**Verify a badge from a file**:
+**Verify a list of badges from a file**:
 
 ```bash
-identity verify -f /path/to/badge.json
+identity verify -f /path/to/badges.json
 ```
 
 ## Documentation
@@ -136,12 +140,11 @@ identity --help
 
 ## Development
 
-### Building and Running the Issuer client locally
+### Building and running the Issuer client locally
 
 To build the `CLI` from source:
 
 ```bash
-cd identity
 go build -o identity cmd/issuer/main.go
 ```
 
@@ -153,12 +156,11 @@ mv identity /usr/local/bin/
 
 This will allow you to run the CLI from anywhere in your terminal with the command `identity`.
 
-### Run without Building
+### Run without building
 
 You can also run the CLI directly without building and installing it.
 This is useful for testing or development purposes:
 
 ```bash
-cd identity
 go run cmd/issuer/main.go
 ```
