@@ -14,27 +14,17 @@ repos:
     rev: v1.0.0-rc.1
     hooks:
       - id: go-mod-tidy
-        files: ^identity/
       - id: go-fmt
-        files: ^identity/
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0
     hooks:
       - id: check-added-large-files # Prevent giant files from being committed
-        files: ^identity/
       - id: detect-private-key      # Checks for the existence of private keys
-        files: ^identity/
       - id: check-case-conflict     # Check for files with names that would conflict on a case-insensitive filesystem
-        files: ^identity/
       - id: check-merge-conflict    # Check for files that contain merge conflict strings
-        files: ^identity/
       - id: check-symlinks          # Checks for symlinks which do not point to anything
-        files: ^identity/
       - id: end-of-file-fixer       # Makes sure files end in a newline and only a newline
-        files: ^identity/
       - id: mixed-line-ending       # Replaces or checks mixed line ending
-        files: ^identity/
       - id: trailing-whitespace     # Trims trailing whitespace
         args: [--markdown-linebreak-ext=md]
-        files: ^identity/
