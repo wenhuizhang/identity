@@ -2,7 +2,7 @@ FROM golang:1.24.1-alpine AS builder
 
 # Build the package
 WORKDIR /build
-COPY ./identity .
+COPY . .
 RUN go mod download
 RUN cd ./cmd/node && go build -o ../../identity-node
 
