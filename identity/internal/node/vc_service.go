@@ -28,7 +28,7 @@ type VerifiableCredentialService interface {
 	) error
 
 	// Find the vcs by resolver metadata ID
-	GetWellKnown(
+	GetVcs(
 		ctx context.Context,
 		resolverMetadataID string,
 	) ([]*vctypes.EnvelopedCredential, error)
@@ -133,16 +133,22 @@ func (s *verifiableCredentialService) Publish(
 	return nil
 }
 
-func (s *verifiableCredentialService) GetWellKnown(
+func (s *verifiableCredentialService) GetVcs(
 	ctx context.Context,
 	resolverMetadataID string,
 ) ([]*vctypes.EnvelopedCredential, error) {
-	log.Debug("Retrieving well-known verifiable credentials for resolver metadata ID: ", resolverMetadataID)
+	log.Debug(
+		"Retrieving well-known verifiable credentials for resolver metadata ID: ",
+		resolverMetadataID,
+	)
 
 	vcs, err := s.vcRepository.GetByResolverMetadata(ctx, resolverMetadataID)
 	if err != nil {
 		if errors.Is(err, errcore.ErrResourceNotFound) {
-			log.Debug("No well-known verifiable credentials found for resolver metadata ID ", resolverMetadataID)
+			log.Debug(
+				"No well-known verifiable credentials found for resolver metadata ID ",
+				resolverMetadataID,
+			)
 
 			return []*vctypes.EnvelopedCredential{}, nil
 		}
@@ -154,7 +160,10 @@ func (s *verifiableCredentialService) GetWellKnown(
 		)
 	}
 
-	log.Debug("Found well-known verifiable credentials for resolver metadata ID ", resolverMetadataID)
+	log.Debug(
+		"Found well-known verifiable credentials for resolver metadata ID ",
+		resolverMetadataID,
+	)
 
 	var envelopedCredentials []*vctypes.EnvelopedCredential
 
@@ -181,7 +190,12 @@ func (s *verifiableCredentialService) GetWellKnown(
 				Value:        cred.Proof.ProofValue,
 			})
 		default:
-			log.Debug("Skipping credential with unsupported proof type: ", cred.Proof.Type, " for ID: ", cred.ID)
+			log.Debug(
+				"Skipping credential with unsupported proof type: ",
+				cred.Proof.Type,
+				" for ID: ",
+				cred.ID,
+			)
 		}
 	}
 

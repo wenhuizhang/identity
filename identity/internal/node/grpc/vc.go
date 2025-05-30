@@ -61,7 +61,7 @@ func (s *vcService) GetWellKnown(
 	ctx context.Context,
 	req *nodeapi.GetVcWellKnownRequest,
 ) (*nodeapi.GetVcWellKnownResponse, error) {
-	vcs, err := s.vcSrv.GetWellKnown(
+	vcs, err := s.vcSrv.GetVcs(
 		ctx,
 		req.Id,
 	)

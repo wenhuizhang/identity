@@ -184,7 +184,7 @@ func TestGetWellKnown_Should_Return_Items(t *testing.T) {
 		Proof:             &vctypes.Proof{Type: "NOPE", ProofValue: "PROOF"},
 	}, resolverMetadatID)
 
-	actual, err := sut.GetWellKnown(t.Context(), resolverMetadatID)
+	actual, err := sut.GetVcs(t.Context(), resolverMetadatID)
 
 	assert.NoError(t, err)
 	assert.Len(t, actual, 1)
@@ -192,7 +192,9 @@ func TestGetWellKnown_Should_Return_Items(t *testing.T) {
 	assert.Equal(t, validVC.Proof.ProofValue, actual[0].Value)
 }
 
-func signVCWithJose(vc *vctypes.VerifiableCredential) (*vctypes.EnvelopedCredential, *idtypes.Jwk, error) {
+func signVCWithJose(
+	vc *vctypes.VerifiableCredential,
+) (*vctypes.EnvelopedCredential, *idtypes.Jwk, error) {
 	pk, err := rsa.GenerateKey(rand.Reader, 2048)
 	if err != nil {
 		return nil, nil, err

@@ -75,7 +75,8 @@ func validateRSAPubKey(j *types.Jwk) error {
 
 func validateRSAPrivKey(j *types.Jwk) error {
 	// Check required fields
-	if j.N == "" || j.E == "" || j.D == "" || j.P == "" || j.Q == "" || j.DP == "" || j.DQ == "" || j.QI == "" {
+	if j.N == "" || j.E == "" || j.D == "" || j.P == "" || j.Q == "" || j.DP == "" || j.DQ == "" ||
+		j.QI == "" {
 		return errors.New("missing one or more required RSA private key fields")
 	}
 	// Validate base64url encoding
@@ -83,7 +84,10 @@ func validateRSAPrivKey(j *types.Jwk) error {
 		name  string
 		value string
 	}{
-		{"n", j.N}, {"e", j.E}, {"d", j.D}, {"p", j.P}, {"q", j.Q}, {"dp", j.DP}, {"dq", j.DQ}, {"qi", j.QI},
+		{
+			"n",
+			j.N,
+		}, {"e", j.E}, {"d", j.D}, {"p", j.P}, {"q", j.Q}, {"dp", j.DP}, {"dq", j.DQ}, {"qi", j.QI},
 	}
 	for _, f := range fields {
 		if _, err := base64.RawURLEncoding.DecodeString(f.value); err != nil {

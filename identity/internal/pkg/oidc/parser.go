@@ -135,7 +135,10 @@ func (p *parser) getWellKnownURL(issuer string) string {
 	return issuer + "/.well-known/openid-configuration"
 }
 
-func (p *parser) getProviderMetadata(ctx context.Context, issuer string) (*providerMetadata, error) {
+func (p *parser) getProviderMetadata(
+	ctx context.Context,
+	issuer string,
+) (*providerMetadata, error) {
 	// Get the raw data from the issuer
 	var metadata providerMetadata
 

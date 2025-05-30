@@ -13,7 +13,10 @@ import (
 	"github.com/agntcy/identity/pkg/log"
 )
 
-func (p *parser) detectProviderName(ctx context.Context, provider *providerMetadata) (ProviderName, error) {
+func (p *parser) detectProviderName(
+	ctx context.Context,
+	provider *providerMetadata,
+) (ProviderName, error) {
 	resp, err := httputil.Get(ctx, provider.JWKSURL, nil)
 	if err != nil {
 		return UnknownProviderName, err

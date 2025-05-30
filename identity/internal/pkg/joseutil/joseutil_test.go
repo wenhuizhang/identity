@@ -33,7 +33,12 @@ func TestGenerateAndValidateKeys(t *testing.T) {
 
 			// Public key with private fields should fail
 			err = joseutil.ValidatePubKey(jwk)
-			assert.Error(t, err, "ValidatePubKey should fail if private fields are present for %s", alg)
+			assert.Error(
+				t,
+				err,
+				"ValidatePubKey should fail if private fields are present for %s",
+				alg,
+			)
 		})
 	}
 }
