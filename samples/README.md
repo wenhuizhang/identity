@@ -38,7 +38,7 @@ ollama run llama3.2
 
 ### Running the Samples
 
-With Ollama and the Llama 3.2 model running, you can now run the samples. 
+With Ollama and the Llama 3.2 model running, you can now run the samples.
 
 1. Clone the `identity` repository:
 
