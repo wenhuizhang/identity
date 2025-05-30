@@ -23,8 +23,8 @@
 - 🌐 Explore our full [Documentation](https://spec.identity.agntcy.org) to understand our platform's capabilities
 - 📚 Dive into our [API Specs](https://spec.identity.agntcy.org/protodocs/agntcy/identity/core/v1alpha1/id.proto) for detailed API documentation
 - 📦 Install our sample agents and MCP servers [Samples](samples/README.md)
-- 🛠️ Use the [Issuer CLI](identity/cmd/issuer/README.md) to manage issuers and credentials
-- 🏗️ Deploy the [Node Backend](identity/cmd/node/README.md) to handle identity management
+- 🛠️ Use the [Issuer CLI](cmd/issuer/README.md) to manage issuers and credentials
+- 🏗️ Deploy the [Node Backend](cmd/node/README.md) to handle identity management
 - 🔐 Start issuing and verifying credentials with our [Quick Start](https://docs.agntcy.org/pages/identity-howto.html#quick-start)
 
 ## Quick Start
