@@ -56,6 +56,7 @@ make stop_node
 ## Running the Node Backend locally
 
 To run the `Node Backend` locally without Docker, you need to have the following installed:
+
 - [Golang](https://go.dev/doc/install) 1.24 or later
 - [Postgres](https://www.postgresql.org/download/) running locally or accessible via a connection string
 
