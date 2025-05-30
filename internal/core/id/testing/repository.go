@@ -24,6 +24,7 @@ func NewFakeIdRepository() idcore.IdRepository {
 func (r *FakeIdRepository) CreateID(
 	ctx context.Context,
 	metadata *idtypes.ResolverMetadata,
+	commonName string,
 ) (*idtypes.ResolverMetadata, error) {
 	r.store[metadata.ID] = metadata
 	return metadata, nil

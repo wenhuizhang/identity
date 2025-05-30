@@ -13,6 +13,7 @@ type IdRepository interface {
 	CreateID(
 		ctx context.Context,
 		metadata *types.ResolverMetadata,
+		commonName string,
 	) (*types.ResolverMetadata, error)
 	ResolveID(ctx context.Context, id string) (*types.ResolverMetadata, error)
 }

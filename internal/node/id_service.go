@@ -94,7 +94,7 @@ func (s *idService) Generate(
 
 	log.Debug("Storing the ResolverMetadata")
 
-	_, err = s.idRepository.CreateID(ctx, resolverMetadata)
+	_, err = s.idRepository.CreateID(ctx, resolverMetadata, issuer.CommonName)
 	if err != nil {
 		return nil, errutil.ErrInfo(
 			errtypes.ERROR_REASON_INTERNAL,

@@ -146,7 +146,7 @@ func TestResolveID_Should_Return_Resolver_Metadata(t *testing.T) {
 	md := &idtypes.ResolverMetadata{
 		ID: "SOME_ID",
 	}
-	_, _ = idRepo.CreateID(context.Background(), md)
+	_, _ = idRepo.CreateID(context.Background(), md, "Some Common Name")
 
 	_, err := sut.Resolve(context.Background(), md.ID)
 

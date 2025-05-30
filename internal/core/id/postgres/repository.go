@@ -29,8 +29,9 @@ func NewIdRepository(dbContext db.Context) idcore.IdRepository {
 func (r *idPostgresRepository) CreateID(
 	ctx context.Context,
 	metadata *idtypes.ResolverMetadata,
+	commonName string,
 ) (*idtypes.ResolverMetadata, error) {
-	model := newResolverMetadataModel(metadata)
+	model := newResolverMetadataModel(metadata, commonName)
 
 	result := r.dbContext.Client().Create(model)
 	if result.Error != nil {
