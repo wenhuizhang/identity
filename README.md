@@ -171,8 +171,8 @@ Create a second application for the MCP Server metadata using the Okta, similar 
 
 For more detailed development instructions please refer to the following sections:
 
-- [Node Backend](identity/cmd/node/README.md)
-- [Issuer CLI](identity/cmd/issuer/README.md)
+- [Node Backend](cmd/node/README.md)
+- [Issuer CLI](cmd/issuer/README.md)
 - [Samples](samples/README.md)
 - [Api Spec](api-spec/README.md)
 

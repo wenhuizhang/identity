@@ -2,7 +2,7 @@
 # Copyright 2025 AGNTCY Contributors (https://github.com/agntcy)
 # SPDX-License-Identifier: Apache-2.0
 
-NODE_ENV=./identity/cmd/node/.env
+NODE_ENV=./cmd/node/.env
 IDENTITY_DEPLOYMENTS_DIR=./deployments/docker-compose/identity
 
 # This script sets up the environment for the Identity Node service.

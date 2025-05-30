@@ -65,7 +65,7 @@ jobs:
     uses: ./.github/workflows/reusable-go.yml
     needs: [prepare-release]
     with:
-      workdir: ./identity/cmd/issuer
-      config: ../../../.github/configs/issuer-cli-goreleaser.yml
+      workdir: ./cmd/issuer
+      config: ../../.github/configs/issuer-cli-goreleaser.yml
     secrets:
       github-token: ${{ secrets.GITHUB_TOKEN }}
