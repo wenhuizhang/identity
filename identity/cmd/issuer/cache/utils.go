@@ -5,7 +5,6 @@ package cache
 
 import "fmt"
 
-//nolint:lll // Allow long lines for CLI
 func (c *Cache) ValidateVaultId() error {
 	if c == nil || c.VaultId == "" {
 		return fmt.Errorf(
@@ -16,7 +15,6 @@ func (c *Cache) ValidateVaultId() error {
 	return nil
 }
 
-//nolint:lll // Allow long lines for CLI
 func (c *Cache) ValidateKeyId() error {
 	if c.KeyID == "" {
 		return fmt.Errorf(
@@ -27,7 +25,6 @@ func (c *Cache) ValidateKeyId() error {
 	return nil
 }
 
-//nolint:lll // Allow long lines for CLI
 func (c *Cache) ValidateIssuerId() error {
 	if c.IssuerId == "" {
 		return fmt.Errorf(
@@ -38,7 +35,6 @@ func (c *Cache) ValidateIssuerId() error {
 	return nil
 }
 
-//nolint:lll // Allow long lines for CLI
 func (c *Cache) ValidateMetadataId() error {
 	if c.MetadataId == "" {
 		return fmt.Errorf(
