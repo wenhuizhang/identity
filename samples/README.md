@@ -45,7 +45,7 @@ To run the samples, follow these steps:
    to start the Docker containers:
 
    ```bash
-   docker-compose up -d
+   docker compose up -d
    ```
 
 ## Testing the Samples
