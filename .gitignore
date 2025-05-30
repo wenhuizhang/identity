@@ -64,3 +64,5 @@ test_vc.json
 
 # Other
 cmd/issuer/guides
+badge.json
+vcs.json

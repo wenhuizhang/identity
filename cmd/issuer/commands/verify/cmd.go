@@ -95,30 +95,52 @@ func (cmd *VerifyCommand) Run(ctx context.Context, flags *VerifyFlags) error {
 		return fmt.Errorf("error reading file: %w", err)
 	}
 
-	// Unmarshal the badge data
-	var vc vctypes.EnvelopedCredential
-	if err := json.Unmarshal(vcData, &vc); err != nil {
-		return fmt.Errorf("error unmarshaling badge data: %w", err)
+	// create a temporary struct to hold the badge data (envelopeType as string and value as string)
+	type tempVC struct {
+		EnvelopeType string `json:"envelopeType"`
+		Value        string `json:"value"`
 	}
 
-	verifiedVC, err := cmd.verifyService.VerifyCredential(ctx, &vc, flags.IdentityNodeURL)
-	if err != nil {
-		return err
+	var vcs struct {
+		VerifiableCredentials []tempVC `json:"vcs"`
 	}
 
-	fmt.Fprintf(os.Stdout, "\nBadge verified successfully!\n\n")
-	fmt.Fprintf(os.Stdout, "Badge ID: %s\n", verifiedVC.ID)
-	fmt.Fprintf(os.Stdout, "Badge Type: %s\n", verifiedVC.Type)
-	fmt.Fprintf(os.Stdout, "Badge Issuer: %s\n", verifiedVC.Issuer)
-	fmt.Fprintf(os.Stdout, "Badge Issuance Date: %s\n", verifiedVC.IssuanceDate)
-
-	// Create a more readable output of credential subject
-	credentialSubjectBytes, err := json.MarshalIndent(verifiedVC.CredentialSubject, "", "  ")
-	if err != nil {
-		return fmt.Errorf("error formatting credential subject: %w", err)
+	// Unmarshal the badge data into the temporary struct
+	if err := json.Unmarshal(vcData, &vcs); err != nil {
+		return fmt.Errorf("error unmarshalling badge data: %w", err)
 	}
 
-	fmt.Fprintf(os.Stdout, "Badge Credential Subject: %v\n\n", string(credentialSubjectBytes))
+	for _, vc := range vcs.VerifiableCredentials {
+		// Convert the envelope type to a valid type
+		if vc.EnvelopeType != "CREDENTIAL_ENVELOPE_TYPE_JOSE" {
+			return fmt.Errorf("invalid envelope type: %s, expected CREDENTIAL_ENVELOPE_TYPE_JOSE", vc.EnvelopeType)
+		}
+
+		// Convert the temporary struct to a VerifiableCredential
+		convertedVC := &vctypes.EnvelopedCredential{
+			EnvelopeType: vctypes.CREDENTIAL_ENVELOPE_TYPE_JOSE,
+			Value:        vc.Value,
+		}
+
+		verifiedVC, err := cmd.verifyService.VerifyCredential(ctx, convertedVC, flags.IdentityNodeURL)
+		if err != nil {
+			return err
+		}
+
+		fmt.Fprintf(os.Stdout, "\nBadge verified successfully!\n\n")
+		fmt.Fprintf(os.Stdout, "Badge ID: %s\n", verifiedVC.ID)
+		fmt.Fprintf(os.Stdout, "Badge Type: %s\n", verifiedVC.Type)
+		fmt.Fprintf(os.Stdout, "Badge Issuer: %s\n", verifiedVC.Issuer)
+		fmt.Fprintf(os.Stdout, "Badge Issuance Date: %s\n", verifiedVC.IssuanceDate)
+
+		// Create a more readable output of credential subject
+		credentialSubjectBytes, err := json.MarshalIndent(verifiedVC.CredentialSubject, "", "  ")
+		if err != nil {
+			return fmt.Errorf("error formatting credential subject: %w", err)
+		}
+
+		fmt.Fprintf(os.Stdout, "Badge Credential Subject: %v\n\n", string(credentialSubjectBytes))
+	}
 
 	return nil
 }
