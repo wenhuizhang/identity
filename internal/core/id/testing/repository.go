@@ -9,6 +9,7 @@ import (
 	errcore "github.com/agntcy/identity/internal/core/errors"
 	idcore "github.com/agntcy/identity/internal/core/id"
 	idtypes "github.com/agntcy/identity/internal/core/id/types"
+	issuertypes "github.com/agntcy/identity/internal/core/issuer/types"
 )
 
 type FakeIdRepository struct {
@@ -24,7 +25,7 @@ func NewFakeIdRepository() idcore.IdRepository {
 func (r *FakeIdRepository) CreateID(
 	ctx context.Context,
 	metadata *idtypes.ResolverMetadata,
-	commonName string,
+	issuer *issuertypes.Issuer,
 ) (*idtypes.ResolverMetadata, error) {
 	r.store[metadata.ID] = metadata
 	return metadata, nil

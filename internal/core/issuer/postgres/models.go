@@ -14,7 +14,7 @@ type Issuer struct {
 	Organization     string                 `gorm:"not null;type:varchar(256);"`
 	SubOrganization  string                 `gorm:"not null;type:varchar(256);"`
 	PublicKey        *idtypes.Jwk           `gorm:"embedded;embeddedPrefix:public_key_"`
-	ResolverMetadata []*id.ResolverMetadata `gorm:"foreignKey:CommonName"`
+	ResolverMetadata []*id.ResolverMetadata `gorm:"foreignKey:IssuerCommonName"`
 }
 
 func (i *Issuer) ToCoreType() *types.Issuer {
