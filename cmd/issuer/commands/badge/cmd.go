@@ -8,6 +8,7 @@ import (
 	badgesrv "github.com/agntcy/identity/internal/issuer/badge"
 	"github.com/agntcy/identity/internal/issuer/badge/a2a"
 	"github.com/agntcy/identity/internal/issuer/badge/mcp"
+	issuersrv "github.com/agntcy/identity/internal/issuer/issuer"
 	"github.com/agntcy/identity/internal/issuer/vault"
 	"github.com/spf13/cobra"
 )
@@ -15,6 +16,7 @@ import (
 func NewCmd(
 	cache *clicache.Cache,
 	badgeService badgesrv.BadgeService,
+	issuerService issuersrv.IssuerService,
 	vaultSrv vault.VaultService,
 	a2aClient a2a.DiscoveryClient,
 	mcpClient mcp.DiscoveryClient,
@@ -28,7 +30,7 @@ The badge command is used to issue and publish badges for your Agent and MCP Ser
 	}
 
 	cmd.AddCommand(NewCmdIssue(cache, badgeService, vaultSrv, a2aClient, mcpClient))
-	cmd.AddCommand(NewCmdPublish(cache, badgeService))
+	cmd.AddCommand(NewCmdPublish(cache, badgeService, issuerService))
 	cmd.AddCommand(NewCmdList(cache, badgeService))
 	cmd.AddCommand(NewCmdShow(cache, badgeService))
 	cmd.AddCommand(NewCmdLoad(cache, badgeService))

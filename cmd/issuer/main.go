@@ -91,6 +91,7 @@ The Identity CLI tool is a command line interface for generating, publishing and
 	rootCmd.AddCommand(badgecmd.NewCmd(
 		cache,
 		badgeService,
+		issuerService,
 		vaultService,
 		a2aClient,
 		mcpClient,
