@@ -66,3 +66,4 @@ test_vc.json
 cmd/issuer/guides
 badge.json
 vcs.json
+identity
