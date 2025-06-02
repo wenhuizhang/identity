@@ -1,69 +1,85 @@
 # Identity Samples
 
-You can find sample code and examples in the `samples` directory.
 These samples are designed to help you understand how to use the Identity platform effectively.
 The samples are composed of a `Currency Exchange A2A Agent` leveraging a `Currency Exchange MCP Server` and an `OASF Agent Definition`.
 
 You can create and verify the following type of badges:
 
-- A2A Agent Badge based on the [`Currency Exchange A2A Agent`](agent/a2a)
+- A2A Agent Badge based on the [Currency Exchange A2A Agent](agent/a2a)
 - OASF Agent Badge based on a [OASF Agent Definition Example](agent/oasf)
-- MCP Server Badge based on the [`Currency Exchange MCP Server`](mcp)
+- MCP Server Badge based on the [Currency Exchange MCP Server](mcp)
 
 > [!NOTE]
 > These samples are based on the following [A2A Agent Example](https://github.com/google/A2A/blob/main/samples/python/agents/langgraph).
-> The `OASF Agent Definitions` could be found in the [Agent Directory](https://hub.agntcy.org/explore).
+> The `OASF Agent Definitions` can be found in the [Agent Directory](https://hub.agntcy.org/explore).
 
 ## Prerequisites
 
 To run the samples, you need to have the following prerequisites installed:
 
 - [Docker](https://docs.docker.com/engine/install/)
-- Ollama
-- Python 3.12 or later
+- [Ollama](https://ollama.com/download)
+- [Python 3.12 or later](https://www.python.org/downloads/)
 
-To install Ollama:
+## Quick Start
 
-- First [Install Ollama](https://ollama.com/download)
-- Then run the following command to install and run the Llama 3.2 model:
+To quickly get started with the samples, follow these steps:
+
+### Running Ollama
+
+The agents in the samples rely on a local instance of the [Llama 3.2 LLM](https://ollama.com/library/llama3.2) to power the agent's capabilities.
+With Ollama installed, you can load and run the model using the following command:
 
 ```bash
+# Note: This will download the Llama 3.2 model if it is not already available locally.
+# The quantized Llama 3.2 model is approximately 2GB in size, so ensure you have enough disk space.
 ollama run llama3.2
 ```
 
-## Running the Samples
+### Running the Samples
 
-To run the samples, follow these steps:
+With Ollama and the Llama 3.2 model running, you can now run the samples.
 
-1. Clone the repository:
+1. Clone the `identity` repository:
 
    ```bash
    git clone https://github.com/agntcy/identity.git
    ```
 
-2. Navigate to the `samples` directory and run the following command
-   to start the Docker containers:
+2. Navigate to the `samples` directory and run the following command to start the Docker containers:
 
    ```bash
+   # From the root of the repository navigate to the samples directory
+   cd samples
+
+   # Start the Docker containers
    docker compose up -d
    ```
 
-## Testing the Samples
+### Testing the Samples
 
-### A2A Agent
+Once the Docker containers are up and running, you can test the samples by running the provided test clients.
 
-To test the A2A Agent sample, navigate to the `samples/agent/a2a/currency_exchange`
-directory and run the following command:
+#### A2A Agent
+
+To test the A2A Agent sample, navigate to the `samples/agent/a2a/currency_exchange` directory and run the following command:
 
 ```bash
+# From the root of the repository navigate to the A2A Agent sample directory
+cd samples/agent/a2a/currency_exchange
+
+# Run the test client
 python test_client.py
 ```
 
-### MCP Server
+#### MCP Server
 
-To test the MCP Server sample, navigate to the `samples/mcp/currency_exchange`
-directory and run the following command:
+To test the MCP Server sample, navigate to the `samples/mcp/currency_exchange` directory and run the following command:
 
 ```bash
+# From the root of the repository navigate to the MCP Server sample directory
+cd samples/mcp/currency_exchange
+
+# Run the test client
 python test_client.py
 ```
