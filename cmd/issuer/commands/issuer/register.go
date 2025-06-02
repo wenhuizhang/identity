@@ -148,7 +148,8 @@ func (cmd *RegisterCommand) Run(ctx context.Context, flags *RegisterFlags) error
 	)
 	fmt.Fprintf(
 		os.Stdout,
-		"\nYou can now access the Issuer's Well-Known Public Key at: http://localhost:4000/v1alpha1/issuer/%s/.well-known/jwks.json\n",
+		"\nYou can now access the Issuer's Well-Known Public Key at: "+
+			"http://localhost:4000/v1alpha1/issuer/%s/.well-known/jwks.json\n",
 		commonName,
 	)
 
