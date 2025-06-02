@@ -157,9 +157,7 @@ With Ollama installed, you can download and run the model (which is approximatel
 2. From the root of the repository, navigate to the `samples` directory and run the following command to deploy the `Currency Exchange A2A Agent` leveraging the `Currency Exchange MCP Server`:
 
    ```bash
-   cd samples
-
-   docker compose up -d
+   cd samples && docker compose up -d
    ```
 
 3. [Optional] Test the samples using the provided [test clients](./samples/README.md#testing-the-samples).
