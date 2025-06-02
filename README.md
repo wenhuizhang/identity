@@ -16,6 +16,8 @@
 
 ---
 
+**Generate, publish and verify identities within the Internet of Agents.**
+
 ## 📚 Table of Contents
 
 - 🚀 Architecting [Agentic Trust](#-architecting-agentic-trust)
