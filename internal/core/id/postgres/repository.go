@@ -10,6 +10,7 @@ import (
 	errcore "github.com/agntcy/identity/internal/core/errors"
 	idcore "github.com/agntcy/identity/internal/core/id"
 	idtypes "github.com/agntcy/identity/internal/core/id/types"
+	issuertypes "github.com/agntcy/identity/internal/core/issuer/types"
 	"github.com/agntcy/identity/internal/pkg/errutil"
 	"github.com/agntcy/identity/pkg/db"
 	"gorm.io/gorm"
@@ -29,8 +30,9 @@ func NewIdRepository(dbContext db.Context) idcore.IdRepository {
 func (r *idPostgresRepository) CreateID(
 	ctx context.Context,
 	metadata *idtypes.ResolverMetadata,
+	issuer *issuertypes.Issuer,
 ) (*idtypes.ResolverMetadata, error) {
-	model := newResolverMetadataModel(metadata)
+	model := newResolverMetadataModel(metadata, issuer)
 
 	result := r.dbContext.Client().Create(model)
 	if result.Error != nil {

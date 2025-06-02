@@ -70,7 +70,7 @@ func TestPublishVC(t *testing.T) {
 			},
 		},
 	}
-	_, _ = idRepo.CreateID(context.Background(), resolverMD)
+	_, _ = idRepo.CreateID(context.Background(), resolverMD, issuer)
 
 	err = sut.Publish(context.Background(), envelope, &vctypes.Proof{Type: "JWT"})
 
@@ -159,7 +159,7 @@ func TestPublishVC_Should_Return_Issuer_Not_Registered(t *testing.T) {
 			},
 		},
 	}
-	_, _ = idRepo.CreateID(context.Background(), resolverMD)
+	_, _ = idRepo.CreateID(context.Background(), resolverMD, issuer)
 
 	err = sut.Publish(context.Background(), envelope, &vctypes.Proof{Type: "JWT"})
 

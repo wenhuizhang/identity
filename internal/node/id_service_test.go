@@ -141,12 +141,17 @@ func TestGenerateID_Should_Return_Unregistred_Issuer_Error(t *testing.T) {
 func TestResolveID_Should_Return_Resolver_Metadata(t *testing.T) {
 	t.Parallel()
 
+	issuer := &issuertypes.Issuer{
+		CommonName:   coretesting.ValidProofIssuer,
+		Organization: "Some Org",
+	}
+
 	idRepo := idtesting.NewFakeIdRepository()
 	sut := node.NewIdService(nil, idRepo, nil, nil)
 	md := &idtypes.ResolverMetadata{
 		ID: "SOME_ID",
 	}
-	_, _ = idRepo.CreateID(context.Background(), md)
+	_, _ = idRepo.CreateID(context.Background(), md, issuer)
 
 	_, err := sut.Resolve(context.Background(), md.ID)
 

@@ -5,6 +5,7 @@ package postgres
 
 import (
 	"github.com/agntcy/identity/internal/core/id/types"
+	issuertypes "github.com/agntcy/identity/internal/core/issuer/types"
 	vc "github.com/agntcy/identity/internal/core/vc/postgres"
 	"github.com/agntcy/identity/internal/pkg/converters"
 	"github.com/google/uuid"
@@ -17,6 +18,7 @@ type ResolverMetadata struct {
 	Service            []*Service                 `gorm:"foreignKey:ResolverMetadataID"`
 	VC                 []*vc.VerifiableCredential `gorm:"foreignKey:ResolverMetadataID"`
 	AssertionMethod    pq.StringArray             `gorm:"type:text[]"`
+	Controller         string
 }
 
 func (md *ResolverMetadata) ToCoreType() *types.ResolverMetadata {
@@ -63,7 +65,10 @@ func (s *Service) ToCoreType() *types.Service {
 	}
 }
 
-func newResolverMetadataModel(src *types.ResolverMetadata) *ResolverMetadata {
+func newResolverMetadataModel(
+	src *types.ResolverMetadata,
+	issuer *issuertypes.Issuer,
+) *ResolverMetadata {
 	return &ResolverMetadata{
 		ID: src.ID,
 		VerificationMethod: converters.ConvertSliceCallback(
@@ -72,6 +77,7 @@ func newResolverMetadataModel(src *types.ResolverMetadata) *ResolverMetadata {
 		),
 		Service:         converters.ConvertSliceCallback(src.Service, newServiceModel),
 		AssertionMethod: src.AssertionMethod,
+		Controller:      issuer.CommonName,
 	}
 }
 

@@ -7,12 +7,14 @@ import (
 	"context"
 
 	"github.com/agntcy/identity/internal/core/id/types"
+	issuertypes "github.com/agntcy/identity/internal/core/issuer/types"
 )
 
 type IdRepository interface {
 	CreateID(
 		ctx context.Context,
 		metadata *types.ResolverMetadata,
+		issuer *issuertypes.Issuer,
 	) (*types.ResolverMetadata, error)
 	ResolveID(ctx context.Context, id string) (*types.ResolverMetadata, error)
 }
