@@ -81,6 +81,12 @@ If you have `Golang` set up locally, you could also use the `go install command`
 go install github.com/agntcy/identity/cmd/issuer@latest
 ```
 
+You can verify the installation by running the command below to see the [different commands available](#-core-commands-to-use-the-cli):
+
+```bash
+identity -h
+```
+
 ### Step 2: Start the Node Backend with Docker
 
 > [!NOTE]
