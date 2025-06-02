@@ -47,7 +47,7 @@ do_verify_okta_cli() {
     echo "Okta CLI is not installed. Please install it."
     echo "You can install it using the following guid: https://github.com/okta/okta-cli/blob/master/README.md"
 
-    exit 1
+    return 1
   fi
 }
 
@@ -134,6 +134,14 @@ do_setup_okta() {
 # If the configuration file exists, it proceeds to create the Okta application.
 # #######################################
 do_create_okta_app() {
+  # Check if the Okta CLI is installed
+  do_verify_okta_cli
+
+  if [ $? -ne 0 ]; then
+    echo "Okta CLI is not installed. Please install it before proceeding."
+    return 1
+  fi
+
   echo "Creating Okta application..."
 
   # Verify if the Okta configuration file exists
@@ -142,6 +150,13 @@ do_create_okta_app() {
 
     # If the configuration file does not exist, run Okta registration
     do_run_okta_register
+
+    # Check if the registration was successful
+    if [ $? -ne 0 ]; then
+      echo "Okta registration failed. Please proceed with Okta manual registration and login."
+
+      return 1
+    fi
   fi
 
     # Set up Okta if the configuration file exists
@@ -150,9 +165,6 @@ do_create_okta_app() {
     # Create the Okta application
     do_run_okta_create_app
 }
-
-# Check if the Okta CLI is installed
-do_verify_okta_cli
 
 # Create the Okta application
 do_create_okta_app
