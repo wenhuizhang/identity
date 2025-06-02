@@ -14,6 +14,7 @@ import (
 	mdcmd "github.com/agntcy/identity/cmd/issuer/commands/metadata"
 	vaultcmd "github.com/agntcy/identity/cmd/issuer/commands/vault"
 	verifycmd "github.com/agntcy/identity/cmd/issuer/commands/verify"
+	versioncmd "github.com/agntcy/identity/cmd/issuer/commands/version"
 	"github.com/agntcy/identity/internal/issuer/badge"
 	"github.com/agntcy/identity/internal/issuer/badge/a2a"
 	badgefs "github.com/agntcy/identity/internal/issuer/badge/data/filesystem"
@@ -103,6 +104,7 @@ The Identity CLI tool is a command line interface for generating, publishing and
 		metadataService,
 		badgeService,
 	))
+	rootCmd.AddCommand(versioncmd.NewCmd())
 
 	err = rootCmd.Execute()
 	if err != nil {

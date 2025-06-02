@@ -1,6 +1,8 @@
 # Copyright 2025 Copyright AGNTCY Contributors (https://github.com/agntcy)
 # SPDX-License-Identifier: Apache-2.0
 
+version: 2
+
 builds:
   # You can have multiple builds defined as a yaml list
   - #
@@ -31,3 +33,8 @@ builds:
     goarch:
       - amd64
       - arm64
+
+    ldflags:
+      - "-X github.com/agntcy/identity/cmd/issuer/commands/version.Version={{.Version}}"
+      - "-X github.com/agntcy/identity/cmd/issuer/commands/version.BuildDate={{.Date}}"
+      - "-X github.com/agntcy/identity/cmd/issuer/commands/version.GitCommit={{.Commit}}"
