@@ -45,11 +45,6 @@ func (s *issuerService) RegisterIssuer(
 	vaultId, keyId string,
 	issuer *types.Issuer,
 ) (string, error) {
-	// Check connection to identity node
-	// Check connection to idp
-	// Check if idp is already created locally
-	// Check if idp is already registered on the identity node
-	// Register idp on the identity node
 	token, err := s.auth.Token(
 		ctx,
 		issuer.IdpConfig.IssuerUrl,

@@ -87,10 +87,10 @@ go install github.com/agntcy/identity/cmd/issuer@latest
 > [!NOTE]
 > To run the `Node Backend` locally, you need to have [Docker](https://docs.docker.com/get-docker/) installed.
 
-1. Clone the repository:
+1. Clone the repository and navigate to the `identity` directory:
 
    ```bash
-   git clone https://github.com/agntcy/identity.git
+   git clone https://github.com/agntcy/identity.git && cd identity
    ```
 
 2. Start the Node Backend with Docker:
