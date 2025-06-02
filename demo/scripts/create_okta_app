@@ -30,7 +30,7 @@ do_run_okta_create_app() {
   "$OKTA_BINARY" apps create --app-name="$APP_NAME_PREFIX-$(date +%s)" --config-file="$temp_file"
 
   # Load output variables to environment variables
-  source "$temp_file"
+  . "$temp_file"
 
   # Print the configuration file content
   cat "$temp_file"
@@ -135,9 +135,7 @@ do_setup_okta() {
 # #######################################
 do_create_okta_app() {
   # Check if the Okta CLI is installed
-  do_verify_okta_cli
-
-  if [ $? -ne 0 ]; then
+  if ! do_verify_okta_cli; then
     echo "Okta CLI is not installed. Please install it before proceeding."
     return 1
   fi
@@ -149,10 +147,7 @@ do_create_okta_app() {
     echo "No Okta configuration file found. Running Okta registration..."
 
     # If the configuration file does not exist, run Okta registration
-    do_run_okta_register
-
-    # Check if the registration was successful
-    if [ $? -ne 0 ]; then
+    if ! do_run_okta_register; then
       echo "Okta registration failed. Please proceed with Okta manual registration and login."
 
       return 1
