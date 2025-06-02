@@ -186,17 +186,18 @@ With Ollama installed, you can load and run the model using the following comman
 For this demo we will use Okta as an IdP to create an application for the Issuer.
 The quickly create a trial account and application, we have provided a script to automate the process via the Okta CLI.
 
+> [!IMPORTANT]
+> If you already have an Okta account, you can use the `okta login` command to log in to your existing organization.
+> 
+> If registering a new Okta developer account fails, proceed with manual trial signup and then use the `okta login` command,
+> as instructed by the Okta CLI.
+
 1. Run the following command from the root repository to create a new Okta application:
 
    ```bash
    . ./demo/scripts/create_okta_app
    ```
-
-   > If you already have an Okta account, you can use the `okta login` command to log in to your existing organization.
-   > 
-   > If registering a new Okta developer account fails, proceed with manual trial signup and then use the `okta login` command,
-   > as instructed by the Okta CLI.
-
+   
 2. In the interactive prompt, choose the following options:
 
    `> 4: Service (Machine-to-Machine)`, `> 5: Other`
