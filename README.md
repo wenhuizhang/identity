@@ -82,12 +82,6 @@ If you have `Golang` set up locally, you could also use the `go install command`
 go install github.com/agntcy/identity/cmd/issuer@latest
 ```
 
-You can verify the installation by running the command below to see the [different commands available](#-core-commands-to-use-the-cli):
-
-```bash
-identity -h
-```
-
 ### Step 2: Start the Node Backend with Docker
 
 > [!NOTE]
@@ -96,7 +90,6 @@ identity -h
 1. Clone the repository:
 
    ```bash
-   # Clone the repository
    git clone https://github.com/agntcy/identity.git
    ```
 
@@ -112,19 +105,13 @@ identity -h
    make start_node
    ```
 
-### Step 3: Use the CLI to create a local Vault and generate keys
+### Step 3: Verify the Installation
 
-1. Create a local vault to store generated cryptographic keys:
+You can verify the installation by running the command below to see the [different commands available](#-core-commands-to-use-the-cli):
 
-   ```bash
-   identity vault connect file -f ~/.identity/vault.json -v "My Vault"
-   ```
-
-2. Generate a new key pair and store it in the vault:
-
-   ```bash
-   identity vault key generate
-   ```
+```bash
+identity -h
+```
 
 ## 📜 Core commands to use the CLI
 
@@ -159,29 +146,39 @@ To run this demo setup locally, you need to have the following installed:
 ### Step 1: Run the Samples with Ollama and Docker
 
 The agents in the samples rely on a local instance of the Llama 3.2 LLM to power the agent's capabilities.
-With Ollama installed, you can load and run the model using the following command:
+With Ollama installed, you can download and run the model (which is approximately 2GB, so ensure you have enough disk space) using the following command:
 
 1. Run the Llama 3.2 model:
 
    ```bash
-   # Note: This will download the Llama 3.2 model if it is not already available locally.
-   # The Llama 3.2 model is approximately 2GB, so ensure you have enough disk space.
    ollama run llama3.2
    ```
 
-2. Navigate to the `samples` directory and run the following command to deploy the `Currency Exchange A2A Agent` leveraging the `Currency Exchange MCP Server`:
+2. From the root of the repository, navigate to the `samples` directory and run the following command to deploy the `Currency Exchange A2A Agent` leveraging the `Currency Exchange MCP Server`:
 
    ```bash
-   # From the root of the repository, navigate to the samples directory
    cd samples
 
-   # Start the Docker containers for the samples
    docker compose up -d
    ```
 
 3. [Optional] Test the samples using the provided [test clients](./samples/README.md#testing-the-samples).
 
-### Step 2: Register as an Issuer
+### Step 2: Use the CLI to create a local Vault and generate keys
+
+1. Create a local vault to store generated cryptographic keys:
+
+   ```bash
+   identity vault connect file -f ~/.identity/vault.json -v "My Vault"
+   ```
+
+2. Generate a new key pair and store it in the vault:
+
+   ```bash
+   identity vault key generate
+   ```
+
+### Step 3: Register as an Issuer
 
 For this demo we will use Okta as an IdP to create an application for the Issuer.
 The quickly create a trial account and application, we have provided a script to automate the process via the Okta CLI.
@@ -213,7 +210,7 @@ The quickly create a trial account and application, we have provided a script to
 > You can now access the `Issuer's Well-Known Public Key` at [`http://localhost:4000/v1alpha1/issuer/{common_name}/.well-known/jwks.json`](http://localhost:4000/v1alpha1/issuer/{common_name}/.well-known/jwks.json),
 > where `{common_name}` is the common name you provided during registration.
 
-### Step 3: Generate metadata for an MCP Server
+### Step 4: Generate metadata for an MCP Server
 
 Create a second application for the MCP Server metadata using the Okta, similar to the previous step:
 
@@ -237,7 +234,7 @@ Create a second application for the MCP Server metadata using the Okta, similar 
 > [!NOTE]
 > When successful, this command will print the metadata ID, which you will need in the next step to view published badges that are linked to this metadata.
 
-### Step 4: Issue and Publish a Badge for the MCP Server
+### Step 5: Issue and Publish a Badge for the MCP Server
 
 1. Issue a badge for the MCP Server:
 
@@ -255,15 +252,14 @@ Create a second application for the MCP Server metadata using the Okta, similar 
 > You can now access the `VCs as a Well-Known` at [`http://localhost:4000/v1alpha1/vc/{metadata_id}/.well-known/vcs.json`](http://localhost:4000/v1alpha1/vc/{client_id}/.well-known/vcs.json),
 > where `{metadata_id}` is the metadata ID you generated in the previous step.
 
-### (Optional) Step 5: Verify a Published Badge
+### (Optional) Step 6: Verify a Published Badge
 
 You can use the `Issuer CLI` to verify a published badge any published badge, not just those that you issued yourself.
 This allows others to verify the Agent and MCP badges you publish.
 
-1. Download the badge that you created in the previous step:
+1. Download the badge that you created in the previous step, replacing {metadata_id} with the metadata ID from step 4:
 
    ```bash
-   # Download the published badges, replace {metadata_id} with the actual metadata ID
    curl -o vcs.json http://localhost:4000/v1alpha1/vc/{metadata_id}/.well-known/vcs.json
    ```
 
