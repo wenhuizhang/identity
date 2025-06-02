@@ -10,7 +10,7 @@ You can create and verify the following type of badges:
 - MCP Server Badge based on the [Currency Exchange MCP Server](mcp)
 
 > [!NOTE]
-> These samples are based on the following [A2A Agent Example](https://github.com/google/A2A/blob/main/samples/python/agents/langgraph).
+> These samples are based on the following [A2A Agent Example](https://github.com/google-a2a/a2a-samples/tree/main/samples/python/agents/langgraph).
 > The `OASF Agent Definitions` can be found in the [Agent Directory](https://hub.agntcy.org/explore).
 
 ## Prerequisites
