@@ -52,3 +52,27 @@ make stop_node
 >
 > This will deploy a local persistent `Postgres` database and a local `Node` backend.
 > The `Postgres` database will be available at `0.0.0.0:5432`and the `Node` will be available at`0.0.0.0:4000`.
+
+## Running the Node Backend locally
+
+To run the `Node Backend` locally without Docker, you need to have the following installed:
+
+- [Golang](https://go.dev/doc/install) 1.24 or later
+- [Postgres](https://www.postgresql.org/download/) running locally or accessible via a connection string
+
+The `Node Backend` uses a .env file to configure the connection to the Postgres database and other settings.
+First, copy the `.env.example` file to `.env` and update the database values and any other settings as needed:
+
+```bash
+cp cmd/node/.env.example cmd/node/.env
+```
+
+Next, to run the `Node Backend` locally, navigate to the `cmd/node` directory and run the following command:
+
+```bash
+# From the root of the repository navigate to the cmd/node directory
+cd cmd/node
+
+# Run the Node backend using Go
+go run .
+```
