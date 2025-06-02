@@ -183,6 +183,11 @@ The quickly create a trial account and application, we have provided a script to
    . ./demo/scripts/create_okta_app
    ```
 
+   > [!NOTE]
+   > If you already have an Okta account, you can use the `okta login` to login to your existing organization.
+   > If the registration of a new Okta dev account fails, please proceed to manual trial signup, followed by the `okta login` command,
+   > as instructed by the `Okta CLI`.
+
 2. In the interactive prompt, choose the following options:
 
    `> 4: Service (Machine-to-Machine)`, `> 5: Other`
