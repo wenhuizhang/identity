@@ -89,9 +89,6 @@ go install github.com/agntcy/identity/cmd/issuer@latest
    ```bash
    # Clone the repository
    git clone https://github.com/agntcy/identity.git
-
-   # Navigate to the identity directory
-   cd identity
    ```
 
 2. Start the Node Backend with Docker:
