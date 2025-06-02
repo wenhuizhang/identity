@@ -139,7 +139,7 @@ identity --help
 
 ## Development
 
-### Building and running the Issuer client locally
+### Building and running the Issuer CLI locally
 
 To build the `CLI` from source:
 
