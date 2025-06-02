@@ -68,6 +68,9 @@ To test the A2A Agent sample, navigate to the `samples/agent/a2a/currency_exchan
 # From the root of the repository navigate to the A2A Agent sample directory
 cd samples/agent/a2a/currency_exchange
 
+# Install the required dependencies
+pip install .
+
 # Run the test client
 python test_client.py
 ```
@@ -79,6 +82,9 @@ To test the MCP Server sample, navigate to the `samples/mcp/currency_exchange` d
 ```bash
 # From the root of the repository navigate to the MCP Server sample directory
 cd samples/mcp/currency_exchange
+
+# Install the required dependencies
+pip install .
 
 # Run the test client
 python test_client.py
