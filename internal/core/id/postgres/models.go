@@ -18,7 +18,7 @@ type ResolverMetadata struct {
 	Service            []*Service                 `gorm:"foreignKey:ResolverMetadataID"`
 	VC                 []*vc.VerifiableCredential `gorm:"foreignKey:ResolverMetadataID"`
 	AssertionMethod    pq.StringArray             `gorm:"type:text[]"`
-	IssuerCommonName   string
+	Controller         string
 }
 
 func (md *ResolverMetadata) ToCoreType() *types.ResolverMetadata {
@@ -75,9 +75,9 @@ func newResolverMetadataModel(
 			src.VerificationMethod,
 			newVerificationMethodModel,
 		),
-		Service:          converters.ConvertSliceCallback(src.Service, newServiceModel),
-		AssertionMethod:  src.AssertionMethod,
-		IssuerCommonName: issuer.CommonName,
+		Service:         converters.ConvertSliceCallback(src.Service, newServiceModel),
+		AssertionMethod: src.AssertionMethod,
+		Controller:      issuer.CommonName,
 	}
 }
 
