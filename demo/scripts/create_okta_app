@@ -7,7 +7,7 @@ OKTA_CONFIG_FILE="$HOME/.okta/okta.yaml"
 OKTA_BINARY="okta"
 CURL_BINARY="curl"
 OKTA_APP_CONFIG_FILE_NAME=".env"
-APP_NAME="SampleOktaApp"
+APP_NAME_PREFIX="SampleOktaApp"
 
 #######################################
 # Run Okta registration using the Okta CLI.
@@ -27,7 +27,7 @@ do_run_okta_create_app() {
   temp_file="$temp_dir/$OKTA_APP_CONFIG_FILE_NAME"
 
   # Create the application
-  "$OKTA_BINARY" apps create --app-name="$APP_NAME" --config-file="$temp_file"
+  "$OKTA_BINARY" apps create --app-name="$APP_NAME_PREFIX-$(date +%s)" --config-file="$temp_file"
 
   # Load output variables to environment variables
   source "$temp_file"
