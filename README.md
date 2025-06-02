@@ -48,9 +48,8 @@ This applies equally to:
 - Model Context Protocol (MCP) Servers
 - MASs (Multi-Agent Systems)
 
->[!TIP]
->This repository includes an AI Agent and MCP Server to showcase the AGNTCY Identity components in action!
->
+> [!TIP]
+> This repository includes an AI Agent and MCP Server to showcase the AGNTCY Identity components in action!
 
 ## 🌟 Features & Main Components
 
@@ -183,7 +182,7 @@ The quickly create a trial account and application, we have provided a script to
 
 > [!IMPORTANT]
 > If you already have an Okta account, you can use the `okta login` command to log in to your existing organization.
-> 
+>
 > If registering a new Okta developer account fails, proceed with manual trial signup and then use the `okta login` command,
 > as instructed by the Okta CLI.
 
@@ -192,7 +191,7 @@ The quickly create a trial account and application, we have provided a script to
    ```bash
    . ./demo/scripts/create_okta_app
    ```
-   
+
 2. In the interactive prompt, choose the following options:
 
    `> 4: Service (Machine-to-Machine)`, `> 5: Other`
