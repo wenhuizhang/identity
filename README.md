@@ -16,26 +16,53 @@
 
 ---
 
-**Explore comprehensive guides and best practices for implementing and managing identity for agents.**
+## 📚 Table of Contents
 
-## Getting Started
+- 🚀 Architecting [Agentic Trust](#-architecting-agentic-trust)
+- 🌟 [Features & Main Components](#-features--main-components)
+- ⚡️ [Get Started](#%EF%B8%8F-get-started-in-5-minutes) in 5 Minutes
+- 📜 See the core commands of the [CLI](#-core-commands-to-use-the-cli)
+- 🧪 [Run the Demo](#-run-the-demo)
 
-- 🌐 Explore our full [Documentation](https://spec.identity.agntcy.org) to understand our platform's capabilities
-- 📚 Dive into our [API Specs](https://spec.identity.agntcy.org/protodocs/agntcy/identity/core/v1alpha1/id.proto) for detailed API documentation
-- 📦 Install our sample agents and MCP servers [Samples](samples/README.md)
-- 🛠️ Use the [Issuer CLI](cmd/issuer/README.md) to manage issuers and credentials
-- 🏗️ Deploy the [Node Backend](cmd/node/README.md) to handle identity management
-- 🔐 Start issuing and verifying credentials with our [Quick Start](https://docs.agntcy.org/pages/identity-howto.html#quick-start)
+You can also:
 
-## Quick Start
+- 📦 Check-out and the [Sample Agents and MCP servers](samples/README.md)
+- 📘 Explore our full [Documentation](https://spec.identity.agntcy.org) to understand our platform's capabilities
+- 📝 Dive into our [API Specs](https://spec.identity.agntcy.org/protodocs/agntcy/identity/core/v1alpha1/id.proto) for detailed API documentation
 
-### Prerequisites
+## 🚀 Architecting Agentic Trust
 
-To run the `Node Backend` the `Issuer CLI`, and the `Samples` locally, you need to have the following installed:
+- **Core Principle**: Trust is foundational for the Internet of Agents.
+- **Identity as the Root**: AGNTCY Identity ensures Agents and Tools (MCP Servers) are verifiably authentic.
+- **Flexible & Interoperable**: BYOID (Bring Your Own ID), integrates with existing Identity Providers (IdPs).
 
-- [Docker](https://docs.docker.com/get-docker/)
-- [Ollama](https://ollama.com/download)
-- [Okta CLI](https://cli.okta.com/manual/#installation)
+Secure and reliable communication between software agents is a cornerstone of the Internet of Agents (IoA) vision.
+Without proper identity management, malicious or unverified agents can infiltrate Multi-Agent Systems (MASs), leading to misinformation, fraud, or security breaches.
+To mitigate these risks, the AGNTCY provides a standardized and consistent framework for authenticating agents and validating associated metadata.
+This applies equally to:
+
+- Agents
+- Model Context Protocol (MCP) Servers
+- MASs (Multi-Agent Systems)
+
+>[!TIP]
+>This repository includes an AI Agent and MCP Server to showcase the AGNTCY Identity components in action!
+>
+
+## 🌟 Features & Main Components
+
+### Features
+
+- **Identity creation**: Generate unique, verifiable identities for agents and MCP servers.
+- **Existing identity onboarding**: Integrate identities from external IdPs.
+- **Badges creation & verification**: Authenticate agents and MCP servers and validate metadata.
+
+### Main Components
+
+- **Issuer CLI**: Manage identities, vaults and credentials via command-line interface.
+- **Node Backend**: Backend server for identity management and metadata.
+
+## ⚡️ Get Started in 5 Minutes
 
 ### Step 1: Install the Issuer CLI
 
@@ -52,44 +79,34 @@ If you have `Golang` set up locally, you could also use the `go install command`
 go install github.com/agntcy/identity/cmd/issuer@latest
 ```
 
-### Step 2: Clone the Repository
+### Step 2: Start the Node Backend with Docker
 
-```bash
-git clone https://github.com/agntcy/identity.git
-```
+> [!NOTE]
+> To run the `Node Backend` locally, you need to have [Docker](https://docs.docker.com/get-docker/) installed.
 
-### Step 3: Start the Node Backend with Docker
-
-Run the following command from the root of the repository:
-
-```bash
-./deployments/scripts/identity/launch_node.sh
-```
-
-Or use `make` if available locally:
-
-```bash
-make start_node
-```
-
-### Step 4: Run the Samples with Docker
-
-1. Run the Llama 3.2 model:
+1. Clone the repository:
 
    ```bash
-   ollama run llama3.2
+   # Clone the repository
+   git clone https://github.com/agntcy/identity.git
+
+   # Navigate to the identity directory
+   cd identity
    ```
 
-2. Navigate to the `samples` directory and run the following command
-   to deploy the `Currency Exchange A2A Agent` leveraging the `Currency Exchange MCP Server`:
+2. Start the Node Backend with Docker:
 
    ```bash
-   docker compose up -d
+   ./deployments/scripts/identity/launch_node.sh
    ```
 
-3. [Optional] Test the samples using the provided [test clients](./samples/README.md#testing-the-samples).
+   Or use `make` if available locally:
 
-### Step 5: Create a local Vault and generate keys
+   ```bash
+   make start_node
+   ```
+
+### Step 3: Use the CLI to create a local Vault and generate keys
 
 1. Create a local vault to store generated cryptographic keys:
 
@@ -103,9 +120,65 @@ make start_node
    identity vault key generate
    ```
 
-### Step 6: Register as an Issuer
+## 📜 Core commands to use the CLI
 
-For this quick start we will use Okta as an IdP to create an application for the Issuer:
+Here are the core commands you can use with the CLI
+
+- **vault**: Manage cryptographic vaults and keys
+- **issuer**: Register and manage issuer configurations
+- **metadata**: Generate and manage metadata for identities
+- **badge**: Issue and publish badges for identities
+- **verify**: Verify identity badges
+- **config**: Display the current configuration context
+
+## 🧪 Run the demo
+
+This demo scenario will allow you to see how to use the AGNTCY Identity components can be used in a real environment.
+You will be able to perform the following:
+
+- Register as an Issuer
+- Generate metadata for an MCP Server
+- Issue and publish a badge for the MCP Server
+- Verify the published badge
+
+### Prerequisites
+
+First, follow the steps in the [Get Started in 5 minutes](#%EF%B8%8F-get-started-in-5-minutes) section above to install the `Issuer CLI` and run the `Node Backend`, and generate a local vault and keys.
+
+To run this demo setup locally, you need to have the following installed:
+
+- [Ollama](https://ollama.com/download)
+- [Okta CLI](https://cli.okta.com/manual/#installation)
+
+### Step 1: Run the Samples with Ollama and Docker
+
+The agents in the samples rely on a local instance of the Llama 3.2 LLM to power the agent's capabilities.
+With Ollama installed, you can load and run the model using the following command:
+
+1. Run the Llama 3.2 model:
+
+   ```bash
+   # Note: This will download the Llama 3.2 model if it is not already available locally.
+   # The Llama 3.2 model is approximately 2GB, so ensure you have enough disk space.
+   ollama run llama3.2
+   ```
+
+2. Navigate to the `samples` directory and run the following command to deploy the `Currency Exchange A2A Agent` leveraging the `Currency Exchange MCP Server`:
+
+   ```bash
+   # From the root of the repository, navigate to the samples directory
+   cd samples
+
+   # Start the Docker containers for the samples
+   docker compose up -d
+   ```
+
+3. [Optional] Test the samples using the provided [test clients](./samples/README.md#testing-the-samples).
+
+### Step 2: Register as an Issuer
+
+For this demo we will use Okta as an IdP to create an application for the Issuer.
+The quickly create a trial account and application, we have provided a script to automate the process via the Okta CLI.
 
 1. Run the following command from the root repository to create a new Okta application:
 
@@ -128,7 +201,7 @@ For this quick start we will use Okta as an IdP to create an application for the
 > You can now access the `Issuer's Well-Known Public Key` at [`http://localhost:4000/v1alpha1/issuer/{common_name}/.well-known/jwks.json`](http://localhost:4000/v1alpha1/issuer/{common_name}/.well-known/jwks.json),
 > where `{common_name}` is the common name you provided during registration.
 
-### Step 7: Generate metadata for an MCP Server
+### Step 3: Generate metadata for an MCP Server
 
 Create a second application for the MCP Server metadata using the Okta, similar to the previous step:
 
@@ -152,7 +225,7 @@ Create a second application for the MCP Server metadata using the Okta, similar 
 > [!NOTE]
 > When successful, this command will print the metadata ID, which you will need in the next step to view published badges that are linked to this metadata.
 
-### Step 8: Issue and Publish a Badge for the MCP Server
+### Step 4: Issue and Publish a Badge for the MCP Server
 
 1. Issue a badge for the MCP Server:
 
@@ -170,7 +243,7 @@ Create a second application for the MCP Server metadata using the Okta, similar 
 > You can now access the `VCs as a Well-Known` at [`http://localhost:4000/v1alpha1/vc/{metadata_id}/.well-known/vcs.json`](http://localhost:4000/v1alpha1/vc/{client_id}/.well-known/vcs.json),
 > where `{metadata_id}` is the metadata ID you generated in the previous step.
 
-### (Optional) Step 9: Verify a Published Badge
+### (Optional) Step 5: Verify a Published Badge
 
 You can use the `Issuer CLI` to verify a published badge any published badge, not just those that you issued yourself.
 This allows others to verify the Agent and MCP badges you publish.
@@ -178,7 +251,7 @@ This allows others to verify the Agent and MCP badges you publish.
 1. Download the badge that you created in the previous step:
 
    ```bash
-   # Download the published badges linked to the metadata, replace {metadata_id} with the actual metadata ID
+   # Download the published badges, replace {metadata_id} with the actual metadata ID
    curl -o vcs.json http://localhost:4000/v1alpha1/vc/{metadata_id}/.well-known/vcs.json
    ```
 
