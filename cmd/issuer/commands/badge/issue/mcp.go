@@ -131,7 +131,7 @@ func (cmd *IssueMcpCommand) Run(ctx context.Context, flags *IssueMcpFlags) error
 		cmd.cache.IssuerId,
 		cmd.cache.MetadataId,
 		&vctypes.CredentialContent{
-			Type:    vctypes.CREDENTIAL_CONTENT_TYPE_AGENT_BADGE,
+			Type:    vctypes.CREDENTIAL_CONTENT_TYPE_MCP_BADGE,
 			Content: claims.ToMap(),
 		},
 		prvKey,
