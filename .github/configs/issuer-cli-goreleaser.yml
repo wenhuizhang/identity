@@ -1,8 +1,10 @@
 # Copyright 2025 Copyright AGNTCY Contributors (https://github.com/agntcy)
 # SPDX-License-Identifier: Apache-2.0
 
+---
 version: 2
 
+project_name: identity
 builds:
   # You can have multiple builds defined as a yaml list
   - #
@@ -38,3 +40,6 @@ builds:
       - "-X github.com/agntcy/identity/cmd/issuer/commands/version.Version={{.Version}}"
       - "-X github.com/agntcy/identity/cmd/issuer/commands/version.BuildDate={{.Date}}"
       - "-X github.com/agntcy/identity/cmd/issuer/commands/version.GitCommit={{.Commit}}"
+
+archives:
+  - name_template: '{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}'
