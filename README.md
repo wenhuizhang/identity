@@ -309,6 +309,7 @@ For more detailed development instructions please refer to the following section
 - [Issuer CLI](cmd/issuer/README.md)
 - [Samples](samples/README.md)
 - [Api Spec](api/spec/README.md)
+- [Node Client SDK](api/client/README.md)
 
 ## Roadmap
 

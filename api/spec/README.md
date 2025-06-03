@@ -12,7 +12,7 @@ To generate the API specs, you need to have the following installed:
 
 ## Development
 
-To generate the API specs, run the following command from the root of the repository:
+To generate the API specs, first make sure that Docker is running locally and then run the following command from the root of the repository:
 
 ```bash
 make generate_proto
