@@ -34,6 +34,7 @@ The badge command is used to issue and publish badges for your Agent and MCP Ser
 	cmd.AddCommand(NewCmdList(cache, badgeService))
 	cmd.AddCommand(NewCmdShow(cache, badgeService))
 	cmd.AddCommand(NewCmdLoad(cache, badgeService))
+	cmd.AddCommand(NewCmdForget(cache, badgeService))
 
 	return cmd
 }

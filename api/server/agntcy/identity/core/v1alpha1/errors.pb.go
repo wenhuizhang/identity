@@ -33,38 +33,29 @@ const (
 	ErrorReason_ERROR_REASON_UNSPECIFIED ErrorReason = 0
 	// An internal error, this happens in case of unexpected condition or failure within the service
 	ErrorReason_ERROR_REASON_INTERNAL ErrorReason = 1
-	// The Agent ID is invalid or not found
-	ErrorReason_ERROR_REASON_INVALID_ID ErrorReason = 2
 	// The credential envelope type is invalid. For valid values refer to
 	// the enum CredentialEnvelopeType.
-	ErrorReason_ERROR_REASON_INVALID_CREDENTIAL_ENVELOPE_TYPE ErrorReason = 3
+	ErrorReason_ERROR_REASON_INVALID_CREDENTIAL_ENVELOPE_TYPE ErrorReason = 2
 	// The credential envelope value format does not correspond to the format
 	// specified in envelope_type.
-	ErrorReason_ERROR_REASON_INVALID_CREDENTIAL_ENVELOPE_VALUE_FORMAT ErrorReason = 4
-	// The credential content type is invalid. For valid values refer to
-	// the enum CredentialContentType.
-	ErrorReason_ERROR_REASON_INVALID_CREDENTIAL_CONTENT_TYPE ErrorReason = 5
-	// The credential content format is not a valid JSON-LD.
-	ErrorReason_ERROR_REASON_INVALID_CREDENTIAL_CONTENT_FORMAT ErrorReason = 6
+	ErrorReason_ERROR_REASON_INVALID_CREDENTIAL_ENVELOPE_VALUE_FORMAT ErrorReason = 3
 	// The issuer contains one or more invalid fields.
-	ErrorReason_ERROR_REASON_INVALID_ISSUER ErrorReason = 7
+	ErrorReason_ERROR_REASON_INVALID_ISSUER ErrorReason = 4
 	// The issuer is not registered in the Node.
-	ErrorReason_ERROR_REASON_ISSUER_NOT_REGISTERED ErrorReason = 8
+	ErrorReason_ERROR_REASON_ISSUER_NOT_REGISTERED ErrorReason = 5
 	// The Verifiable Credential is invalid, this can be related to either
 	// invalid format or unable to verify the Data Integrity proof.
-	ErrorReason_ERROR_REASON_INVALID_VERIFIABLE_CREDENTIAL ErrorReason = 9
-	// Unable to find an VCs for an ID.
-	ErrorReason_ERROR_REASON_ID_VCS_NOT_FOUND ErrorReason = 10
+	ErrorReason_ERROR_REASON_INVALID_VERIFIABLE_CREDENTIAL ErrorReason = 6
 	// An issuer is required to have an external IdP
-	ErrorReason_ERROR_REASON_IDP_REQUIRED ErrorReason = 11
+	ErrorReason_ERROR_REASON_IDP_REQUIRED ErrorReason = 7
 	// The proof is invalid
-	ErrorReason_ERROR_REASON_INVALID_PROOF ErrorReason = 12
+	ErrorReason_ERROR_REASON_INVALID_PROOF ErrorReason = 8
 	// The proof type is not supported
-	ErrorReason_ERROR_REASON_UNSUPPORTED_PROOF ErrorReason = 13
+	ErrorReason_ERROR_REASON_UNSUPPORTED_PROOF ErrorReason = 9
 	// Unable to resolve an ID to a ResolverMetadata
-	ErrorReason_ERROR_REASON_RESOLVER_METADATA_NOT_FOUND ErrorReason = 14
+	ErrorReason_ERROR_REASON_RESOLVER_METADATA_NOT_FOUND ErrorReason = 10
 	// Unknown Identity Provider
-	ErrorReason_ERROR_REASON_UNKNOWN_IDP ErrorReason = 15
+	ErrorReason_ERROR_REASON_UNKNOWN_IDP ErrorReason = 11
 )
 
 // Enum value maps for ErrorReason.
@@ -72,38 +63,30 @@ var (
 	ErrorReason_name = map[int32]string{
 		0:  "ERROR_REASON_UNSPECIFIED",
 		1:  "ERROR_REASON_INTERNAL",
-		2:  "ERROR_REASON_INVALID_ID",
-		3:  "ERROR_REASON_INVALID_CREDENTIAL_ENVELOPE_TYPE",
-		4:  "ERROR_REASON_INVALID_CREDENTIAL_ENVELOPE_VALUE_FORMAT",
-		5:  "ERROR_REASON_INVALID_CREDENTIAL_CONTENT_TYPE",
-		6:  "ERROR_REASON_INVALID_CREDENTIAL_CONTENT_FORMAT",
-		7:  "ERROR_REASON_INVALID_ISSUER",
-		8:  "ERROR_REASON_ISSUER_NOT_REGISTERED",
-		9:  "ERROR_REASON_INVALID_VERIFIABLE_CREDENTIAL",
-		10: "ERROR_REASON_ID_VCS_NOT_FOUND",
-		11: "ERROR_REASON_IDP_REQUIRED",
-		12: "ERROR_REASON_INVALID_PROOF",
-		13: "ERROR_REASON_UNSUPPORTED_PROOF",
-		14: "ERROR_REASON_RESOLVER_METADATA_NOT_FOUND",
-		15: "ERROR_REASON_UNKNOWN_IDP",
+		2:  "ERROR_REASON_INVALID_CREDENTIAL_ENVELOPE_TYPE",
+		3:  "ERROR_REASON_INVALID_CREDENTIAL_ENVELOPE_VALUE_FORMAT",
+		4:  "ERROR_REASON_INVALID_ISSUER",
+		5:  "ERROR_REASON_ISSUER_NOT_REGISTERED",
+		6:  "ERROR_REASON_INVALID_VERIFIABLE_CREDENTIAL",
+		7:  "ERROR_REASON_IDP_REQUIRED",
+		8:  "ERROR_REASON_INVALID_PROOF",
+		9:  "ERROR_REASON_UNSUPPORTED_PROOF",
+		10: "ERROR_REASON_RESOLVER_METADATA_NOT_FOUND",
+		11: "ERROR_REASON_UNKNOWN_IDP",
 	}
 	ErrorReason_value = map[string]int32{
 		"ERROR_REASON_UNSPECIFIED":                              0,
 		"ERROR_REASON_INTERNAL":                                 1,
-		"ERROR_REASON_INVALID_ID":                               2,
-		"ERROR_REASON_INVALID_CREDENTIAL_ENVELOPE_TYPE":         3,
-		"ERROR_REASON_INVALID_CREDENTIAL_ENVELOPE_VALUE_FORMAT": 4,
-		"ERROR_REASON_INVALID_CREDENTIAL_CONTENT_TYPE":          5,
-		"ERROR_REASON_INVALID_CREDENTIAL_CONTENT_FORMAT":        6,
-		"ERROR_REASON_INVALID_ISSUER":                           7,
-		"ERROR_REASON_ISSUER_NOT_REGISTERED":                    8,
-		"ERROR_REASON_INVALID_VERIFIABLE_CREDENTIAL":            9,
-		"ERROR_REASON_ID_VCS_NOT_FOUND":                         10,
-		"ERROR_REASON_IDP_REQUIRED":                             11,
-		"ERROR_REASON_INVALID_PROOF":                            12,
-		"ERROR_REASON_UNSUPPORTED_PROOF":                        13,
-		"ERROR_REASON_RESOLVER_METADATA_NOT_FOUND":              14,
-		"ERROR_REASON_UNKNOWN_IDP":                              15,
+		"ERROR_REASON_INVALID_CREDENTIAL_ENVELOPE_TYPE":         2,
+		"ERROR_REASON_INVALID_CREDENTIAL_ENVELOPE_VALUE_FORMAT": 3,
+		"ERROR_REASON_INVALID_ISSUER":                           4,
+		"ERROR_REASON_ISSUER_NOT_REGISTERED":                    5,
+		"ERROR_REASON_INVALID_VERIFIABLE_CREDENTIAL":            6,
+		"ERROR_REASON_IDP_REQUIRED":                             7,
+		"ERROR_REASON_INVALID_PROOF":                            8,
+		"ERROR_REASON_UNSUPPORTED_PROOF":                        9,
+		"ERROR_REASON_RESOLVER_METADATA_NOT_FOUND":              10,
+		"ERROR_REASON_UNKNOWN_IDP":                              11,
 	}
 )
 
@@ -202,25 +185,21 @@ const file_agntcy_identity_core_v1alpha1_errors_proto_rawDesc = "" +
 	"\amessage\x18\x02 \x01(\tH\x01R\amessage\x88\x01\x01B\t\n" +
 	"\a_reasonB\n" +
 	"\n" +
-	"\b_message*\x82\x05\n" +
+	"\b_message*\xdc\x03\n" +
 	"\vErrorReason\x12\x1c\n" +
 	"\x18ERROR_REASON_UNSPECIFIED\x10\x00\x12\x19\n" +
-	"\x15ERROR_REASON_INTERNAL\x10\x01\x12\x1b\n" +
-	"\x17ERROR_REASON_INVALID_ID\x10\x02\x121\n" +
-	"-ERROR_REASON_INVALID_CREDENTIAL_ENVELOPE_TYPE\x10\x03\x129\n" +
-	"5ERROR_REASON_INVALID_CREDENTIAL_ENVELOPE_VALUE_FORMAT\x10\x04\x120\n" +
-	",ERROR_REASON_INVALID_CREDENTIAL_CONTENT_TYPE\x10\x05\x122\n" +
-	".ERROR_REASON_INVALID_CREDENTIAL_CONTENT_FORMAT\x10\x06\x12\x1f\n" +
-	"\x1bERROR_REASON_INVALID_ISSUER\x10\a\x12&\n" +
-	"\"ERROR_REASON_ISSUER_NOT_REGISTERED\x10\b\x12.\n" +
-	"*ERROR_REASON_INVALID_VERIFIABLE_CREDENTIAL\x10\t\x12!\n" +
-	"\x1dERROR_REASON_ID_VCS_NOT_FOUND\x10\n" +
-	"\x12\x1d\n" +
-	"\x19ERROR_REASON_IDP_REQUIRED\x10\v\x12\x1e\n" +
-	"\x1aERROR_REASON_INVALID_PROOF\x10\f\x12\"\n" +
-	"\x1eERROR_REASON_UNSUPPORTED_PROOF\x10\r\x12,\n" +
-	"(ERROR_REASON_RESOLVER_METADATA_NOT_FOUND\x10\x0e\x12\x1c\n" +
-	"\x18ERROR_REASON_UNKNOWN_IDP\x10\x0fBZZXgithub.com/agntcy/identity/api/server/agntcy/identity/core/v1alpha1;identity_core_sdk_gob\x06proto3"
+	"\x15ERROR_REASON_INTERNAL\x10\x01\x121\n" +
+	"-ERROR_REASON_INVALID_CREDENTIAL_ENVELOPE_TYPE\x10\x02\x129\n" +
+	"5ERROR_REASON_INVALID_CREDENTIAL_ENVELOPE_VALUE_FORMAT\x10\x03\x12\x1f\n" +
+	"\x1bERROR_REASON_INVALID_ISSUER\x10\x04\x12&\n" +
+	"\"ERROR_REASON_ISSUER_NOT_REGISTERED\x10\x05\x12.\n" +
+	"*ERROR_REASON_INVALID_VERIFIABLE_CREDENTIAL\x10\x06\x12\x1d\n" +
+	"\x19ERROR_REASON_IDP_REQUIRED\x10\a\x12\x1e\n" +
+	"\x1aERROR_REASON_INVALID_PROOF\x10\b\x12\"\n" +
+	"\x1eERROR_REASON_UNSUPPORTED_PROOF\x10\t\x12,\n" +
+	"(ERROR_REASON_RESOLVER_METADATA_NOT_FOUND\x10\n" +
+	"\x12\x1c\n" +
+	"\x18ERROR_REASON_UNKNOWN_IDP\x10\vBZZXgithub.com/agntcy/identity/api/server/agntcy/identity/core/v1alpha1;identity_core_sdk_gob\x06proto3"
 
 var (
 	file_agntcy_identity_core_v1alpha1_errors_proto_rawDescOnce sync.Once
