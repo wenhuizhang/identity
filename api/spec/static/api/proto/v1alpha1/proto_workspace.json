@@ -74,6 +74,11 @@
               "name": "ERROR_REASON_UNKNOWN_IDP",
               "number": "11",
               "description": "Unknown Identity Provider"
+            },
+            {
+              "name": "ERROR_REASON_ID_ALREADY_REGISTERED",
+              "number": "12",
+              "description": "The ID and Resolver Metadata are already registered in the system"
             }
           ]
         }

@@ -53,4 +53,6 @@ enum ErrorReason {
   ERROR_REASON_RESOLVER_METADATA_NOT_FOUND = 10;
   // Unknown Identity Provider
   ERROR_REASON_UNKNOWN_IDP = 11;
+  // The ID and Resolver Metadata are already registered in the system
+  ERROR_REASON_ID_ALREADY_REGISTERED = 12;
 }
