@@ -34,7 +34,6 @@ check_sudo() {
 # Install the CLI
 ######################################################################
 do_install() {
-  echo $LATEST_BINARY_URI
   # Download the latest binary
   if $CURL_IS_AVAILABLE > /dev/null; then
     $SUDO_CURL_COMMAND
