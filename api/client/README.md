@@ -42,13 +42,13 @@ func main() {
 
     // Resolving an ID into a Resolver Metadata
     res, err := c.id.ResolveID(&idsdk.ResolveIDParams{
-		Body: &apimodels.V1alpha1ResolveRequest{
-			ID: "<VALID_ID>",
-		},
-	})
-	if err != nil {
-		log.Fatalf("%v", err)
-	}
+        Body: &apimodels.V1alpha1ResolveRequest{
+            ID: "<VALID_ID>",
+        },
+    })
+    if err != nil {
+        log.Fatalf("%v", err)
+    }
 
     log.Printf("Status Code: %d", res.Code())
     log.Printf("Resolver Metadata: %v", res.Payload.ResolverMetadata)
