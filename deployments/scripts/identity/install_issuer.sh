@@ -53,6 +53,5 @@ do_install() {
 # Check if the user can sudo
 check_can_sudo
 
-
 # Install
 do_install
