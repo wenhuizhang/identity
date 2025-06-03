@@ -23,9 +23,6 @@ const (
 	// An internal error, this happens in case of unexpected condition or failure within the service
 	ERROR_REASON_INTERNAL
 
-	// The Agent ID is invalid or not found
-	ERROR_REASON_INVALID_ID
-
 	// The credential envelope type is invalid. For valid values refer to
 	// the enum CredentialEnvelopeType.
 	ERROR_REASON_INVALID_CREDENTIAL_ENVELOPE_TYPE
@@ -33,13 +30,6 @@ const (
 	// The credential envelope value format does not correspond to the format
 	// specified in envelope_type.
 	ERROR_REASON_INVALID_CREDENTIAL_ENVELOPE_VALUE_FORMAT
-
-	// The credential content type is invalid. For valid values refer to
-	// the enum CredentialContentType.
-	ERROR_REASON_INVALID_CREDENTIAL_CONTENT_TYPE
-
-	// The credential content format is not a valid JSON-LD.
-	ERROR_REASON_INVALID_CREDENTIAL_CONTENT_FORMAT
 
 	// The issuer contains one or more invalid fields.
 	ERROR_REASON_INVALID_ISSUER
@@ -50,9 +40,6 @@ const (
 	// The Verifiable Credential is invalid, this can be related to either
 	// invalid format or unable to verify the Data Integrity proof.
 	ERROR_REASON_INVALID_VERIFIABLE_CREDENTIAL
-
-	// Unable to find an VCs for an ID.
-	ERROR_REASON_ID_VCS_NOT_FOUND
 
 	// An issuer is required to have an external IdP
 	ERROR_REASON_IDP_REQUIRED
