@@ -66,6 +66,12 @@ This applies equally to:
 
 ## ⚡️ Get Started in 5 Minutes
 
+### Prerequisites
+
+To run these steps successfully, you need to have the following installed:
+
+- [Docker Desktop](https://docs.docker.com/get-docker/), or have both: [Docker Engine v27 or higher](https://docs.docker.com/engine/install/) and [Docker Compose v2.35 or higher](https://docs.docker.com/compose/install/)
+
 ### Step 1: Install the Issuer CLI
 
 Download the `Issuer CLI` binary corresponding to your platform from the [latest releases](https://github.com/agntcy/identity/releases).
@@ -82,9 +88,6 @@ go install github.com/agntcy/identity/cmd/issuer@latest
 ```
 
 ### Step 2: Start the Node Backend with Docker
-
-> [!NOTE]
-> To run the `Node Backend` locally, you need to have [Docker](https://docs.docker.com/get-docker/) installed.
 
 1. Clone the repository and navigate to the `identity` directory:
 
@@ -139,7 +142,8 @@ First, follow the steps in the [Get Started in 5 minutes](#%EF%B8%8F-get-started
 
 To run this demo setup locally, you need to have the following installed:
 
-- [Ollama](https://ollama.com/download)
+- [Docker Desktop](https://docs.docker.com/get-docker/), or have both: [Docker Engine v27 or higher](https://docs.docker.com/engine/install/) and [Docker Compose v2.35 or higher](https://docs.docker.com/compose/install/)
+- [Ollama CLI](https://ollama.com/download)
 - [Okta CLI](https://cli.okta.com/manual/#installation)
 
 ### Step 1: Run the Samples with Ollama and Docker
