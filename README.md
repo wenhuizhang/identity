@@ -84,7 +84,7 @@ sh -c "$(curl -sSL https://raw.githubusercontent.com/agntcy/identity/refs/heads/
 
 or using `wget`:
 
-````bash
+```bash
 sh -c "$(wget -qO- https://raw.githubusercontent.com/agntcy/identity/refs/heads/main/deployments/scripts/identity/install_issuer.sh)"
 ```
 
@@ -99,7 +99,7 @@ If you have `Golang` set up locally, you could also use the `go install command`
 
 ```bash
 go install github.com/agntcy/identity/cmd/issuer@latest
-````
+```
 
 ### Step 2: Start the Node Backend with Docker
 
