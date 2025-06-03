@@ -99,7 +99,8 @@ func TestGenerateID_Should_Return_Invalid_Issuer_Error(t *testing.T) {
 		oidctesting.NewFakeParser(jwt, nil),
 		issuerRepo,
 	)
-	sut := node.NewIdService(verficationSrv, nil, issuerRepo, idGen)
+	idRepo := idtesting.NewFakeIdRepository()
+	sut := node.NewIdService(verficationSrv, idRepo, issuerRepo, idGen)
 	issuer := &issuertypes.Issuer{
 		CommonName:   coretesting.ValidProofIssuer,
 		Organization: "Some Org",
@@ -136,6 +137,36 @@ func TestGenerateID_Should_Return_Unregistred_Issuer_Error(t *testing.T) {
 	_, err := sut.Generate(context.Background(), issuer, &vctypes.Proof{Type: "JWT"})
 
 	assertErrorInfoReason(t, err, errtypes.ERROR_REASON_ISSUER_NOT_REGISTERED)
+}
+
+func TestGenerateID_Should_Return_ID_Already_Exists_Error(t *testing.T) {
+	t.Parallel()
+
+	idRepo := idtesting.NewFakeIdRepository()
+	issuerRepo := issuertesting.NewFakeIssuerRepository()
+	claims := &oidc.Claims{
+		Issuer:  "http://" + coretesting.ValidProofIssuer,
+		Subject: "test",
+	}
+	jwt := &oidc.ParsedJWT{
+		Provider: oidc.DuoProviderName,
+		Claims:   claims,
+	}
+	idGen := node.NewIDGenerator(
+		oidctesting.NewFakeParser(jwt, nil),
+		issuerRepo,
+	)
+	sut := node.NewIdService(nil, idRepo, nil, idGen)
+	issuer := &issuertypes.Issuer{
+		CommonName:   coretesting.ValidProofIssuer,
+		Organization: "Some Org",
+	}
+	_, _ = issuerRepo.CreateIssuer(context.Background(), issuer)
+	_, _ = idRepo.CreateID(context.Background(), &idtypes.ResolverMetadata{ID: "DUO-" + claims.Subject}, issuer)
+
+	_, err := sut.Generate(context.Background(), nil, &vctypes.Proof{Type: "JWT"})
+
+	assertErrorInfoReason(t, err, errtypes.ERROR_REASON_ID_ALREADY_REGISTERED)
 }
 
 func TestResolveID_Should_Return_Resolver_Metadata(t *testing.T) {

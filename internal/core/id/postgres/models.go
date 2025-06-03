@@ -7,7 +7,7 @@ import (
 	"github.com/agntcy/identity/internal/core/id/types"
 	issuertypes "github.com/agntcy/identity/internal/core/issuer/types"
 	vc "github.com/agntcy/identity/internal/core/vc/postgres"
-	"github.com/agntcy/identity/internal/pkg/converters"
+	"github.com/agntcy/identity/internal/pkg/convertutil"
 	"github.com/google/uuid"
 	"github.com/lib/pq"
 )
@@ -24,13 +24,13 @@ type ResolverMetadata struct {
 func (md *ResolverMetadata) ToCoreType() *types.ResolverMetadata {
 	return &types.ResolverMetadata{
 		ID: md.ID,
-		VerificationMethod: converters.ConvertSliceCallback(
+		VerificationMethod: convertutil.ConvertSlice(
 			md.VerificationMethod,
 			func(vm *VerificationMethod) *types.VerificationMethod {
 				return vm.ToCoreType()
 			},
 		),
-		Service: converters.ConvertSliceCallback(
+		Service: convertutil.ConvertSlice(
 			md.Service,
 			func(s *Service) *types.Service {
 				return s.ToCoreType()
@@ -71,11 +71,11 @@ func newResolverMetadataModel(
 ) *ResolverMetadata {
 	return &ResolverMetadata{
 		ID: src.ID,
-		VerificationMethod: converters.ConvertSliceCallback(
+		VerificationMethod: convertutil.ConvertSlice(
 			src.VerificationMethod,
 			newVerificationMethodModel,
 		),
-		Service:         converters.ConvertSliceCallback(src.Service, newServiceModel),
+		Service:         convertutil.ConvertSlice(src.Service, newServiceModel),
 		AssertionMethod: src.AssertionMethod,
 		Controller:      issuer.CommonName,
 	}

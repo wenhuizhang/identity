@@ -64,6 +64,11 @@ func (s *idService) Generate(
 		return nil, err
 	}
 
+	err = s.checkUniqueID(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+
 	log.Debug("ID generated ", id)
 
 	err = s.verifyIssuer(issuer, storedIss)
@@ -114,6 +119,27 @@ func (s *idService) verifyIssuer(
 		return errutil.ErrInfo(
 			errtypes.ERROR_REASON_INVALID_ISSUER,
 			"failed to verify issuer common name",
+			nil,
+		)
+	}
+
+	return nil
+}
+
+func (s *idService) checkUniqueID(ctx context.Context, id string) error {
+	md, err := s.idRepository.ResolveID(ctx, id)
+	if err != nil && !errors.Is(err, errcore.ErrResourceNotFound) {
+		return errutil.ErrInfo(
+			errtypes.ERROR_REASON_INTERNAL,
+			"unable to verify the uniquness of the ID",
+			err,
+		)
+	}
+
+	if !errors.Is(err, errcore.ErrResourceNotFound) || md != nil {
+		return errutil.ErrInfo(
+			errtypes.ERROR_REASON_ID_ALREADY_REGISTERED,
+			"id already exists",
 			nil,
 		)
 	}

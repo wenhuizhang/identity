@@ -1,7 +1,7 @@
 // Copyright 2025 AGNTCY Contributors (https://github.com/agntcy)
 // SPDX-License-Identifier: Apache-2.0
 
-package converters
+package convertutil
 
 import (
 	"encoding/json"
@@ -23,16 +23,7 @@ func Convert[D any](src any) *D {
 	return &dst
 }
 
-func ConvertSlice[S, D any](list []*S) []*D {
-	var responseList = make([]*D, 0)
-	for _, obj := range list {
-		responseList = append(responseList, Convert[D](obj))
-	}
-
-	return responseList
-}
-
-func ConvertSliceCallback[T any, S any](list []T, convert func(T) *S) []*S {
+func ConvertSlice[T any, S any](list []T, convert func(T) *S) []*S {
 	var responseList = make([]*S, 0)
 	for _, obj := range list {
 		responseList = append(responseList, convert(obj))

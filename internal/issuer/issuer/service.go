@@ -6,11 +6,9 @@ package issuer
 import (
 	"context"
 
-	issuertypes "github.com/agntcy/identity/internal/core/issuer/types"
 	vctypes "github.com/agntcy/identity/internal/core/vc/types"
 	"github.com/agntcy/identity/internal/issuer/issuer/data"
 	"github.com/agntcy/identity/internal/issuer/issuer/types"
-	"github.com/agntcy/identity/internal/pkg/converters"
 	"github.com/agntcy/identity/internal/pkg/nodeapi"
 	"github.com/agntcy/identity/internal/pkg/oidc"
 )
@@ -65,7 +63,7 @@ func (s *issuerService) RegisterIssuer(
 		return "", err
 	}
 
-	err = client.RegisterIssuer(ctx, converters.Convert[issuertypes.Issuer](issuer.Issuer), &proof)
+	err = client.RegisterIssuer(ctx, &issuer.Issuer, &proof)
 	if err != nil {
 		return "", err
 	}

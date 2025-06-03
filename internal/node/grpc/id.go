@@ -6,13 +6,10 @@ package grpc
 import (
 	"context"
 
-	coreapi "github.com/agntcy/identity/api/server/agntcy/identity/core/v1alpha1"
 	nodeapi "github.com/agntcy/identity/api/server/agntcy/identity/node/v1alpha1"
 	errtypes "github.com/agntcy/identity/internal/core/errors/types"
-	issuertypes "github.com/agntcy/identity/internal/core/issuer/types"
-	vctypes "github.com/agntcy/identity/internal/core/vc/types"
 	"github.com/agntcy/identity/internal/node"
-	converters "github.com/agntcy/identity/internal/pkg/converters"
+	"github.com/agntcy/identity/internal/node/grpc/converters"
 	"github.com/agntcy/identity/internal/pkg/grpcutil"
 )
 
@@ -33,8 +30,8 @@ func (s *idService) Generate(
 ) (*nodeapi.GenerateResponse, error) {
 	md, err := s.idSrv.Generate(
 		ctx,
-		converters.Convert[issuertypes.Issuer](req.Issuer),
-		converters.Convert[vctypes.Proof](req.Proof),
+		converters.ToIssuer(req.Issuer),
+		converters.ToProof(req.Proof),
 	)
 	if err != nil {
 		if errtypes.IsErrorInfo(err, errtypes.ERROR_REASON_INTERNAL) {
@@ -45,7 +42,7 @@ func (s *idService) Generate(
 	}
 
 	return &nodeapi.GenerateResponse{
-		ResolverMetadata: converters.Convert[coreapi.ResolverMetadata](md),
+		ResolverMetadata: converters.FromResolverMetadata(md),
 	}, nil
 }
 
@@ -64,6 +61,6 @@ func (s *idService) Resolve(
 	}
 
 	return &nodeapi.ResolveResponse{
-		ResolverMetadata: converters.Convert[coreapi.ResolverMetadata](md),
+		ResolverMetadata: converters.FromResolverMetadata(md),
 	}, nil
 }
