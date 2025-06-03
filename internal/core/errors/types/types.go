@@ -55,6 +55,9 @@ const (
 
 	// Unknown Identity Provider
 	ERROR_REASON_UNKNOWN_IDP
+
+	// The ID and Resolver Metadata are already registered in the system
+	ERROR_REASON_ID_ALREADY_REGISTERED
 )
 
 // Describes the cause of the error with structured details.

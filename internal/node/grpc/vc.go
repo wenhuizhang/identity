@@ -10,9 +10,8 @@ import (
 	coreapi "github.com/agntcy/identity/api/server/agntcy/identity/core/v1alpha1"
 	nodeapi "github.com/agntcy/identity/api/server/agntcy/identity/node/v1alpha1"
 	errtypes "github.com/agntcy/identity/internal/core/errors/types"
-	vctypes "github.com/agntcy/identity/internal/core/vc/types"
 	"github.com/agntcy/identity/internal/node"
-	"github.com/agntcy/identity/internal/pkg/converters"
+	"github.com/agntcy/identity/internal/node/grpc/converters"
 	"github.com/agntcy/identity/internal/pkg/grpcutil"
 	"github.com/agntcy/identity/internal/pkg/ptrutil"
 	"google.golang.org/protobuf/types/known/emptypb"
@@ -35,8 +34,8 @@ func (s *vcService) Publish(
 ) (*emptypb.Empty, error) {
 	err := s.vcSrv.Publish(
 		ctx,
-		converters.Convert[vctypes.EnvelopedCredential](req.Vc),
-		converters.Convert[vctypes.Proof](req.Proof),
+		converters.ToEnvelopedCredential(req.Vc),
+		converters.ToProof(req.Proof),
 	)
 	if err != nil {
 		if errtypes.IsErrorInfo(err, errtypes.ERROR_REASON_INTERNAL) {

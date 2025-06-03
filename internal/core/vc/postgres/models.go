@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/agntcy/identity/internal/core/vc/types"
-	"github.com/agntcy/identity/internal/pkg/converters"
+	"github.com/agntcy/identity/internal/pkg/convertutil"
 	"github.com/agntcy/identity/pkg/log"
 	"github.com/lib/pq"
 )
@@ -43,7 +43,7 @@ func (vm *VerifiableCredential) ToCoreType() *types.VerifiableCredential {
 		ID:                vm.ID,
 		IssuanceDate:      vm.IssuanceDate,
 		ExpirationDate:    vm.ExpirationDate,
-		CredentialSchema: converters.ConvertSliceCallback(
+		CredentialSchema: convertutil.ConvertSlice(
 			vm.CredentialSchema,
 			func(c *CredentialSchema) *types.CredentialSchema {
 				return c.ToCoreType()
@@ -84,7 +84,7 @@ func newVerifiableCredentialModel(
 		CredentialSubject: sub,
 		IssuanceDate:      src.IssuanceDate,
 		ExpirationDate:    src.ExpirationDate,
-		CredentialSchema: converters.ConvertSliceCallback(
+		CredentialSchema: convertutil.ConvertSlice(
 			src.CredentialSchema,
 			newCredentialSchemaModel,
 		),

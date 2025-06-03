@@ -6,12 +6,9 @@ package grpc
 import (
 	"context"
 
-	coreapi "github.com/agntcy/identity/api/server/agntcy/identity/core/v1alpha1"
 	nodeapi "github.com/agntcy/identity/api/server/agntcy/identity/node/v1alpha1"
-	issuertypes "github.com/agntcy/identity/internal/core/issuer/types"
-	vctypes "github.com/agntcy/identity/internal/core/vc/types"
 	"github.com/agntcy/identity/internal/node"
-	converters "github.com/agntcy/identity/internal/pkg/converters"
+	"github.com/agntcy/identity/internal/node/grpc/converters"
 	grpcutil "github.com/agntcy/identity/internal/pkg/grpcutil"
 	"github.com/agntcy/identity/pkg/log"
 )
@@ -36,8 +33,8 @@ func (i *issuerService) Register(
 	// Convert entities and call the node service
 	uri, err := i.nodeIssuerService.Register(
 		ctx,
-		converters.Convert[issuertypes.Issuer](req.Issuer),
-		converters.Convert[vctypes.Proof](req.Proof),
+		converters.ToIssuer(req.Issuer),
+		converters.ToProof(req.Proof),
 	)
 	if err != nil {
 		return nil, grpcutil.BadRequestError(err)
@@ -64,6 +61,6 @@ func (i *issuerService) GetWellKnown(
 	}
 
 	return &nodeapi.GetIssuerWellKnownResponse{
-		Jwks: converters.Convert[coreapi.Jwks](jwks),
+		Jwks: converters.FromJwks(jwks),
 	}, nil
 }

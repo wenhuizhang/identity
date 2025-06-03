@@ -15,7 +15,7 @@ import (
 	idtypes "github.com/agntcy/identity/internal/core/id/types"
 	issuertypes "github.com/agntcy/identity/internal/core/issuer/types"
 	vctypes "github.com/agntcy/identity/internal/core/vc/types"
-	"github.com/agntcy/identity/internal/pkg/converters"
+	"github.com/agntcy/identity/internal/pkg/convertutil"
 	httptransport "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
 )
@@ -85,7 +85,7 @@ func (c *nodeClient) RegisterIssuer(
 				CommonName:      issuer.CommonName,
 				Organization:    issuer.Organization,
 				SubOrganization: issuer.SubOrganization,
-				PublicKey: converters.Convert[apimodels.V1alpha1Jwk](
+				PublicKey: convertutil.Convert[apimodels.V1alpha1Jwk](
 					issuer.PublicKey.PublicKey(),
 				),
 			},
@@ -113,7 +113,7 @@ func (c *nodeClient) GenerateID(
 				CommonName:      issuer.CommonName,
 				Organization:    issuer.Organization,
 				SubOrganization: issuer.SubOrganization,
-				PublicKey: converters.Convert[apimodels.V1alpha1Jwk](
+				PublicKey: convertutil.Convert[apimodels.V1alpha1Jwk](
 					issuer.PublicKey.PublicKey(),
 				),
 			},
@@ -135,16 +135,16 @@ func (c *nodeClient) GenerateID(
 
 	return &idtypes.ResolverMetadata{
 		ID: md.ID,
-		VerificationMethod: converters.ConvertSliceCallback(
+		VerificationMethod: convertutil.ConvertSlice(
 			md.VerificationMethod,
 			func(vm *apimodels.V1alpha1VerificationMethod) *idtypes.VerificationMethod {
 				return &idtypes.VerificationMethod{
 					ID:           vm.ID,
-					PublicKeyJwk: converters.Convert[idtypes.Jwk](vm.PublicKeyJwk),
+					PublicKeyJwk: convertutil.Convert[idtypes.Jwk](vm.PublicKeyJwk),
 				}
 			},
 		),
-		Service: converters.ConvertSliceCallback(
+		Service: convertutil.ConvertSlice(
 			md.Service,
 			func(s *apimodels.V1alpha1Service) *idtypes.Service {
 				return &idtypes.Service{
@@ -206,16 +206,16 @@ func (c *nodeClient) ResolveMetadataByID(
 
 	return &idtypes.ResolverMetadata{
 		ID: md.ID,
-		VerificationMethod: converters.ConvertSliceCallback(
+		VerificationMethod: convertutil.ConvertSlice(
 			md.VerificationMethod,
 			func(vm *apimodels.V1alpha1VerificationMethod) *idtypes.VerificationMethod {
 				return &idtypes.VerificationMethod{
 					ID:           vm.ID,
-					PublicKeyJwk: converters.Convert[idtypes.Jwk](vm.PublicKeyJwk),
+					PublicKeyJwk: convertutil.Convert[idtypes.Jwk](vm.PublicKeyJwk),
 				}
 			},
 		),
-		Service: converters.ConvertSliceCallback(
+		Service: convertutil.ConvertSlice(
 			md.Service,
 			func(s *apimodels.V1alpha1Service) *idtypes.Service {
 				return &idtypes.Service{
