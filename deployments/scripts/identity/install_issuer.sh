@@ -23,9 +23,9 @@ WGET_IS_AVAILABLE="command -v wget"
 
 # Check if the user can sudo
 ########################################################################
-check_sudo() {
-  if [ "$(id -u)" != "0" ]; then
-    echo "This script must be run as root or with sudo."
+check_can_sudo() {
+  if ! sudo -v > /dev/null; then
+    echo "The user cannot sudo and will not be able to install the CLI."
 
     exit 1
   fi
@@ -51,7 +51,8 @@ do_install() {
 ######################################################################
 
 # Check if the user can sudo
-check_sudo
+check_can_sudo
+
 
 # Install
 do_install

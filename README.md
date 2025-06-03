@@ -76,8 +76,16 @@ To run these steps successfully, you need to have the following installed:
 
 Use the following command to install the `Issuer CLI`:
 
+using `curl`:
+
 ```bash
-curl -sSL https://raw.githubusercontent.com/agntcy/identity/refs/heads/main/deployments/scripts/identity/install_issuer.sh | sudo sh
+sh -c "$(curl -sSL https://raw.githubusercontent.com/agntcy/identity/refs/heads/main/deployments/scripts/identity/install_issuer.sh)"
+```
+
+or using `wget`:
+
+````bash
+sh -c "$(wget -qO- https://raw.githubusercontent.com/agntcy/identity/refs/heads/main/deployments/scripts/identity/install_issuer.sh)"
 ```
 
 > [!NOTE]
@@ -91,7 +99,7 @@ If you have `Golang` set up locally, you could also use the `go install command`
 
 ```bash
 go install github.com/agntcy/identity/cmd/issuer@latest
-```
+````
 
 ### Step 2: Start the Node Backend with Docker
 
