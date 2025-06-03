@@ -16,7 +16,18 @@
 
 ---
 
-**Generate, publish and verify identities within the Internet of Agents.**
+AGNTCY Identity provides a secure and verifiable method to uniquely identify agents through open and decentralized techniques. Each agent is assigned a universally unique identifier, backed by verifiable credentials (VCs). AGNTCY Identity enables to bring your own identity using conventions like IDs assigned by Identity Providers (e.g., Okta) or Agent Cards (e.g., Google’s A2A), or be assigned an ID following standards (e.g., W3C DIDs). This component ensures that every agent in the AGNTCY ecosystem has a verifiable, universally unique identity, enabling secure authentication, trusted communication, and interoperability across diverse multi-agent systems, regardless of the identity assignment method.
+
+![Agent Badge](img/agent-badge.png)
+
+- The ID is linked to a ResolverMetadata object for secure and automated verification.
+- The ID can be linked to one or more Agent Badges. Why? Multiple badges can provide nuanced, task-specific access to different systems without over-privileging the agent. Agent Badges contain Verifiable Credentials (VCs), which include:
+  - The Agent's ID
+  - Schema definition (e.g., OASF)
+  - Metadata for authentication and other security needs.
+
+> [!NOTE]
+> This same structure applies to MCP Servers and MASs, ensuring consistency across all identity-bearing entities in the IoA.
 
 ## 📚 Table of Contents
 
