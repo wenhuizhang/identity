@@ -119,7 +119,7 @@ if [ -n "${packages_comma_separated}" ]; then
     done
   done
 
-  cp -r "${Identity_ROOT}/local/output/." "${Identity_ROOT}/code/api-spec/proto/agntcy/identity/core/v1alpha1"
+  cp -r "${Identity_ROOT}/local/output/." "${Identity_ROOT}/code/api/spec/proto/agntcy/identity/core/v1alpha1"
 fi
 
 echo ""
@@ -133,7 +133,7 @@ echo ""
 
 rm -rvf "${Identity_ROOT}/code/identity/api/server" 2>&1 || true
 
-cd "${Identity_ROOT}/code/api-spec"
+cd "${Identity_ROOT}/code/api/spec"
 
 # Format
 /usr/local/bin/buf format -w
@@ -142,10 +142,10 @@ cd "${Identity_ROOT}/code/api-spec"
 /usr/local/bin/buf generate --debug -v
 
 # Openapi
-/usr/local/bin/buf generate --template buf.gen.openapi.yaml --output ../api-spec/static/api/openapi/node/v1alpha1 --path proto/$PROTO_NODE_FILE_PATH
+/usr/local/bin/buf generate --template buf.gen.openapi.yaml --output ../spec/static/api/openapi/node/v1alpha1 --path proto/$PROTO_NODE_FILE_PATH
 
 # Proto
-/usr/local/bin/buf generate --template buf.gen.doc.yaml --output ../api-spec/static/api/proto/v1alpha1
+/usr/local/bin/buf generate --template buf.gen.doc.yaml --output ../spec/static/api/proto/v1alpha1
 
 # Json Schema
-/usr/local/bin/buf generate --template buf.gen.jsonschema.yaml --output ../api-spec/static/api/jsonschema/core/v1alpha1 --path proto/$PROTO_CORE_FILE_PATH
+/usr/local/bin/buf generate --template buf.gen.jsonschema.yaml --output ../spec/static/api/jsonschema/core/v1alpha1 --path proto/$PROTO_CORE_FILE_PATH
