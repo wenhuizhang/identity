@@ -34,7 +34,7 @@ func New(options ...VerifiableCredentialOption) (*types.VerifiableCredential, er
 
 func WithIssuer(issuer *issuertypes.Issuer) VerifiableCredentialOption {
 	return func(vc *types.VerifiableCredential) error {
-		vc.Issuer = issuer.Organization
+		vc.Issuer = issuer.CommonName
 		return nil
 	}
 }

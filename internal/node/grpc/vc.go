@@ -14,6 +14,7 @@ import (
 	"github.com/agntcy/identity/internal/node"
 	"github.com/agntcy/identity/internal/pkg/converters"
 	"github.com/agntcy/identity/internal/pkg/grpcutil"
+	"github.com/agntcy/identity/internal/pkg/ptrutil"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
@@ -77,7 +78,10 @@ func (s *vcService) GetWellKnown(
 		Vcs: make([]*coreapi.EnvelopedCredential, 0, len(vcs)),
 	}
 	for _, vc := range vcs {
-		response.Vcs = append(response.Vcs, converters.Convert[coreapi.EnvelopedCredential](vc))
+		response.Vcs = append(response.Vcs, &coreapi.EnvelopedCredential{
+			EnvelopeType: ptrutil.Ptr(coreapi.CredentialEnvelopeType(vc.EnvelopeType)),
+			Value:        &vc.Value,
+		})
 	}
 
 	return response, nil
