@@ -19,6 +19,12 @@ on:
       github-token:
         description: "Github token"
         required: false
+      GPG_PRIVATE_KEY:
+        description: "GPG private key for signing"
+        required: true
+      GPG_PASSPHRASE:
+        description: "GPG passphrase for signing"
+        required: true
 
 jobs:
   build-and-release:
@@ -33,7 +39,20 @@ jobs:
 
       - name: Set up Go
         uses: actions/setup-go@d35c59abb061a4a6fb18e82ac0862c26744d6ab5 # v5.5.0
+      
+      - name: Restart GPG Agent
+        run: |
+          gpgconf --kill gpg-agent
+          gpgconf --launch gpg-agent
 
+      - name: Import GPG Key
+        run: |
+          mkdir -p /tmp/gpg
+          echo "${{ secrets.GPG_PRIVATE_KEY }}" > /tmp/gpg/private-key.asc
+          gpg --batch --yes --pinentry-mode loopback --import /tmp/gpg/private-key.asc
+        env:
+          GPG_TTY: /dev/tty
+      
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@9c156ee8a17a598857849441385a2041ef570552 # v6.3.0
         with:
@@ -42,3 +61,5 @@ jobs:
           args: release --clean --config ${{ inputs.config }}
         env:
           GITHUB_TOKEN: ${{ secrets.github-token }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+

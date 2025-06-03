@@ -43,3 +43,26 @@ builds:
 
 archives:
   - name_template: '{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}'
+
+binary_signs:
+  - id: issuer-cli-sign
+    signature: ${artifact}_{{ .Os }}_{{ .Arch }}_sig"
+    cmd: gpg
+    args:
+      - "--batch"
+      - "--yes"
+      - "--pinentry-mode"
+      - "loopback"
+      - "--passphrase"
+      - "{{ .Env.GPG_PASSPHRASE }}"
+      - "--detach-sign"
+      - "--armor"
+      - "--output"
+      - "${signature}"
+      - "${artifact}"
+    artifacts: binary
+    ids:
+      - issuer-cli
+    env:
+      - GPG_TTY=/dev/tty
+    output: true
