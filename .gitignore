@@ -67,3 +67,4 @@ cmd/issuer/guides
 badge.json
 vcs.json
 identity
+!identity/
