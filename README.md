@@ -77,7 +77,7 @@ To run these steps successfully, you need to have the following installed:
 Use the following command to install the `Issuer CLI`:
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/agntcy/identity/refs/heads/main/scripts/install/install.sh | sudo sh
+curl -sSL https://raw.githubusercontent.com/agntcy/identity/refs/heads/main/deployments/scripts/identity/install_issuer.sh | sudo sh
 ```
 
 > [!NOTE]
