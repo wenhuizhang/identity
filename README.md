@@ -182,7 +182,7 @@ With Ollama installed, you can download and run the model (which is approximatel
 ### Step 3: Register as an Issuer
 
 For this demo we will use Okta as an IdP to create an application for the Issuer.
-The quickly create a trial account and application, we have provided a script to automate the process via the Okta CLI.
+To quickly create a trial account and application, we have provided a script to automate the process via the Okta CLI.
 
 > [!IMPORTANT]
 > If you already have an Okta account, you can use the `okta login` command to log in to your existing organization.
@@ -213,7 +213,7 @@ The quickly create a trial account and application, we have provided a script to
 
 ### Step 4: Generate metadata for an MCP Server
 
-Create a second application for the MCP Server metadata using the Okta, similar to the previous step:
+Create a second application for the MCP Server metadata using the Okta CLI, similar to the previous step:
 
 1. Run the following command from the root repository to create a new Okta application:
 
