@@ -22,7 +22,7 @@ This will generate the `Protobuf` definitions, the `OpenAPI` specs and the `gRPC
 
 > [!NOTE]
 > The `Go` code will be generated in the `identity/api` directory.
-> The `Proto` definitions are generated in the `api-spec/proto` directory.
+> The `Proto` definitions are generated in the `api/spec/proto` directory.
 > The `Proto Messages and Enums` are generated from the `Go` types from the `core` package.
-> The `Protobuf Services` are generated from the `api-spec/proto` directory.
-> The Proto Documentation, the OpenAPI Client and the JSON Schema will be generated in the `api-spec/static` directory.
+> The `Protobuf Services` are generated from the `api/spec/proto` directory.
+> The Proto Documentation, the OpenAPI Client and the JSON Schema will be generated in the `api/spec/static` directory.

@@ -8,7 +8,7 @@
 ROOT_DIR="/identity"
 OUT_DIR="$ROOT_DIR/out"
 SDK_DIR="/api/client"
-SPEC_DIR="$OUT_DIR/api-spec"
+SPEC_DIR="$OUT_DIR/api/spec"
 SWAGGER_DIR="generated"
 PLATFORM_V1ALPHA1_PROTO_PATH="proto/agntcy/identity/node/v1alpha1"
 PLATFORM_V1ALPHA1_GENERATED_PATH="$ROOT_DIR/generated/openapi/agntcy/identity/node/v1alpha1"

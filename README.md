@@ -291,7 +291,7 @@ For more detailed development instructions please refer to the following section
 - [Node Backend](cmd/node/README.md)
 - [Issuer CLI](cmd/issuer/README.md)
 - [Samples](samples/README.md)
-- [Api Spec](api-spec/README.md)
+- [Api Spec](api/spec/README.md)
 
 ## Roadmap
 
