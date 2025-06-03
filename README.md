@@ -74,9 +74,15 @@ To run these steps successfully, you need to have the following installed:
 
 ### Step 1: Install the Issuer CLI
 
-Download the `Issuer CLI` binary corresponding to your platform from the [latest releases](https://github.com/agntcy/identity/releases).
+Use the following command to install the `Issuer CLI`:
+
+```bash
+curl -sSL https://raw.githubusercontent.com/agntcy/identity/refs/heads/main/scripts/install/install.sh | sudo sh
+```
 
 > [!NOTE]
+> You can also download the `Issuer CLI` binary corresponding to your platform from the [latest releases](https://github.com/agntcy/identity/releases).
+>
 > On some platforms you might need to add execution permissions and/or approve the binary in `System Security Settings`.
 >
 > For easier use, consider moving the binary to your `$PATH` or to the `/usr/local/bin` folder.
@@ -182,7 +188,7 @@ With Ollama installed, you can download and run the model (which is approximatel
 ### Step 3: Register as an Issuer
 
 For this demo we will use Okta as an IdP to create an application for the Issuer.
-To quickly create a trial account and application, we have provided a script to automate the process via the Okta CLI.
+To quickly create a trial account and application, we have provided a script to automate the process using the Okta CLI.
 
 > [!IMPORTANT]
 > If you already have an Okta account, you can use the `okta login` command to log in to your existing organization.
@@ -213,7 +219,7 @@ To quickly create a trial account and application, we have provided a script to 
 
 ### Step 4: Generate metadata for an MCP Server
 
-Create a second application for the MCP Server metadata using the Okta CLI, similar to the previous step:
+Create a second application for the MCP Server metadata using Okta, similar to the previous step:
 
 1. Run the following command from the root repository to create a new Okta application:
 
