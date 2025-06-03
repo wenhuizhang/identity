@@ -9,7 +9,6 @@ import (
 	"fmt"
 	"os"
 
-	v1alphaclient "github.com/agntcy/identity/api/client/models"
 	vctypes "github.com/agntcy/identity/internal/core/vc/types"
 	verifysrv "github.com/agntcy/identity/internal/issuer/verify"
 	"github.com/agntcy/identity/internal/pkg/cmdutil"
@@ -85,50 +84,23 @@ func (cmd *VerifyCommand) Run(ctx context.Context, flags *VerifyFlags) error {
 		}
 	}
 
-	// Check if the badge file exists
-	if _, err := os.Stat(flags.BadgeFilePath); os.IsNotExist(err) {
-		return fmt.Errorf("file does not exist: %s", flags.BadgeFilePath)
-	}
-
-	// Read the badge file
-	vcData, err := os.ReadFile(flags.BadgeFilePath)
+	it, err := readBadgesFromFile(flags.BadgeFilePath)
 	if err != nil {
-		return fmt.Errorf("error reading file: %w", err)
-	}
-
-	// Unmarshal the badge data into the expected structure
-	var vcs v1alphaclient.V1alpha1GetVcWellKnownResponse
-	if err := json.Unmarshal(vcData, &vcs); err != nil {
-		return fmt.Errorf("error unmarshalling badge data: %w", err)
-	}
-
-	if len(vcs.Vcs) == 0 {
-		return fmt.Errorf("no verifiable credentials found in the file: %s", flags.BadgeFilePath)
+		return fmt.Errorf("error unmarshalling badge data")
 	}
 
 	// for each Verifiable Credential in the response, verify it
-	for _, vc := range vcs.Vcs {
-		var envelopedCredential vctypes.EnvelopedCredential
-		envelopedCredential.Value = vc.Value
-
-		// Set the envelope type based on the provided type
-		switch *vc.EnvelopeType {
-		case v1alphaclient.V1alpha1CredentialEnvelopeTypeCREDENTIALENVELOPETYPEJOSE:
-			envelopedCredential.EnvelopeType = vctypes.CREDENTIAL_ENVELOPE_TYPE_JOSE
-		case v1alphaclient.V1alpha1CredentialEnvelopeTypeCREDENTIALENVELOPETYPEEMBEDDEDPROOF:
-			fmt.Fprintf(os.Stdout, "Embedded proof envelope type is not supported yet, skipping: %s\n", *vc.EnvelopeType)
-			continue
-		default:
-			fmt.Fprintf(os.Stdout, "Skipping unsupported envelope type: %s\n", *vc.EnvelopeType)
+	for envelopedCredential, err := range it {
+		if err != nil {
+			fmt.Fprintf(os.Stdout, "%s\n", err)
 			continue
 		}
 
-		verifiedVC, err := cmd.verifyService.VerifyCredential(ctx, &envelopedCredential, flags.IdentityNodeURL)
+		verifiedVC, err := cmd.verifyService.VerifyCredential(ctx, envelopedCredential, flags.IdentityNodeURL)
 		if err != nil {
 			return err
 		}
 
-		// Print verification results
 		if err := printVerifiedBadgeInfo(verifiedVC); err != nil {
 			return fmt.Errorf("error printing badge info: %w", err)
 		}

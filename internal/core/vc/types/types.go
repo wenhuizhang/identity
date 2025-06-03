@@ -26,6 +26,23 @@ const (
 	CREDENTIAL_ENVELOPE_TYPE_JOSE
 )
 
+func (t *CredentialEnvelopeType) UnmarshalText(text []byte) error {
+	switch string(text) {
+	case CREDENTIAL_ENVELOPE_TYPE_EMBEDDED_PROOF.String():
+		*t = CREDENTIAL_ENVELOPE_TYPE_EMBEDDED_PROOF
+	case CREDENTIAL_ENVELOPE_TYPE_JOSE.String():
+		*t = CREDENTIAL_ENVELOPE_TYPE_JOSE
+	default:
+		*t = CREDENTIAL_ENVELOPE_TYPE_UNSPECIFIED
+	}
+
+	return nil
+}
+
+func (t CredentialEnvelopeType) MarshalText() ([]byte, error) {
+	return []byte(t.String()), nil
+}
+
 // The content of the Credential.
 // Multiple content types can be supported: AgentBadge, etc.
 type CredentialContentType int
@@ -60,7 +77,7 @@ func (t CredentialContentType) String() string {
 // EnvelopedCredential represents a Credential enveloped in a specific format.
 type EnvelopedCredential struct {
 	// EnvelopeType specifies the type of the envelope used to store the credential.
-	EnvelopeType CredentialEnvelopeType `json:"envelope_type,omitempty"`
+	EnvelopeType CredentialEnvelopeType `json:"envelopeType,omitempty" protobuf:"bytes,1,opt,name=envelope_type"`
 
 	// Value is the enveloped credential in the specified format.
 	Value string `json:"value,omitempty"`
@@ -69,7 +86,7 @@ type EnvelopedCredential struct {
 // CredentialContent represents the content of a Verifiable Credential.
 type CredentialContent struct {
 	// Type specifies the type of the content of the credential.
-	Type CredentialContentType `json:"content_type,omitempty" protobuf:"bytes,1,opt,name=content_type"`
+	Type CredentialContentType `json:"contentType,omitempty" protobuf:"bytes,1,opt,name=content_type"`
 
 	// The content representation in JSON-LD format.
 	Content map[string]any `json:"content,omitempty" protobuf:"google.protobuf.Struct,2,opt,name=content"`
@@ -96,13 +113,13 @@ const (
 // parameters required to verify that proof, and the proof value itself.
 type Proof struct {
 	// The type of the proof
-	Type string `json:"type"`
+	Type string `json:"type" protobuf:"bytes,1,opt,name=type"`
 
 	// The proof purpose
-	ProofPurpose string `json:"proof_purpose"`
+	ProofPurpose string `json:"proofPurpose" protobuf:"bytes,2,opt,name=proof_purpose"`
 
 	// The proof value
-	ProofValue string `json:"proof_value"`
+	ProofValue string `json:"proofValue" protobuf:"bytes,3,opt,name=proof_value"`
 }
 
 func (p *Proof) IsJWT() bool {
@@ -123,19 +140,19 @@ type VerifiableCredential struct {
 	Issuer string `json:"issuer" protobuf:"bytes,3,opt,name=issuer"`
 
 	// https://www.w3.org/TR/vc-data-model/#credential-subject
-	CredentialSubject map[string]any `json:"credential_subject" protobuf:"google.protobuf.Struct,4,opt,name=content"`
+	CredentialSubject map[string]any `json:"credentiaSubject" protobuf:"google.protobuf.Struct,4,opt,name=content"`
 
 	// https://www.w3.org/TR/vc-data-model/#identifiers
 	ID string `json:"id,omitempty" protobuf:"bytes,5,opt,name=id"`
 
 	// https://www.w3.org/TR/vc-data-model/#issuance-date
-	IssuanceDate string `json:"issuance_date" protobuf:"bytes,6,opt,name=issuance_date"`
+	IssuanceDate string `json:"issuanceDate" protobuf:"bytes,6,opt,name=issuance_date"`
 
 	// https://www.w3.org/TR/vc-data-model/#expiration
-	ExpirationDate string `json:"expiration_date,omitempty" protobuf:"bytes,7,opt,name=expiration_date"`
+	ExpirationDate string `json:"expirationDate,omitempty" protobuf:"bytes,7,opt,name=expiration_date"`
 
 	// https://www.w3.org/TR/vc-data-model-2.0/#data-schemas
-	CredentialSchema []*CredentialSchema `json:"credential_schema,omitempty" protobuf:"bytes,8,opt,name=credential_schema"`
+	CredentialSchema []*CredentialSchema `json:"credentialSchema,omitempty" protobuf:"bytes,8,opt,name=credential_schema"`
 
 	// https://w3id.org/security#proof
 	Proof *Proof `json:"proof,omitempty" protobuf:"bytes,9,opt,name=proof"`
@@ -146,16 +163,16 @@ type VerifiableCredential struct {
 // [here]: https://www.w3.org/TR/vc-data-model/
 type VerifiablePresentation struct {
 	// https://www.w3.org/TR/vc-data-model/#contexts
-	Context []string `json:"context"`
+	Context []string `json:"context" protobuf:"bytes,1,opt,name=context"`
 
 	// https://www.w3.org/TR/vc-data-model/#dfn-type
-	Type []string `json:"type"`
+	Type []string `json:"type" protobuf:"bytes,2,opt,name=type"`
 
 	// https://www.w3.org/2018/credentials#verifiableCredential
-	VerifiableCredential []VerifiableCredential `json:"verifiable_credential,omitempty"`
+	VerifiableCredential []VerifiableCredential `json:"verifiableCredential,omitempty" protobuf:"bytes,3,opt,name=verifiable_credential"` //nolint:lll // Allow long lines
 
 	// https://w3id.org/security#proof
-	Proof *Proof `json:"proof,omitempty"`
+	Proof *Proof `json:"proof,omitempty" protobuf:"bytes,4,opt,name=proof"`
 }
 
 // BadgeClaims represents the content of a Badge VC defined [here]

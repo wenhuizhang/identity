@@ -1,6 +1,8 @@
 // Copyright 2025 AGNTCY Contributors (https://github.com/agntcy)
 // SPDX-License-Identifier: Apache-2.0
 
+//go:generate stringer -type=ErrorReason
+
 //nolint:errname // Ignore error name for types/proto
 package types
 
@@ -84,7 +86,7 @@ type ErrorInfo struct {
 }
 
 func (err ErrorInfo) Error() string {
-	return fmt.Sprintf("%s (reason: %d)", err.Message, err.Reason)
+	return fmt.Sprintf("%s (reason: %s)", err.Message, err.Reason.String())
 }
 
 func IsErrorInfo(err error, reason ErrorReason) bool {

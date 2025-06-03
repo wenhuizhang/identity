@@ -41,7 +41,6 @@ func newStatusWithDetails(c codes.Code, err error) error {
 
 	if errors.As(err, &errInfo) {
 		st, _ = st.WithDetails(&coreapi.ErrorInfo{
-			//nolint:gosec // disable G115
 			Reason: ptrutil.Ptr(coreapi.ErrorReason(errInfo.Reason)),
 		})
 
