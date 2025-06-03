@@ -12,7 +12,7 @@ The SDK requires a minimum version of `Go 1.24`.
 
 To get started working with the SDK setup your GO projects and add the SDK dependencies with `go get`. The following example demonstrates how you can use the SDK to resolve an [ID](https://spec.identity.agntcy.org/docs/id/definitions) into a Resolver Metadata.
 
-###### Initialize Project
+### Project Initialization
 
 ```sh
 mkdir ~/id_example
@@ -21,13 +21,13 @@ go mod init id_example
 touch main.go
 ```
 
-###### Add SDK Dependency
+### Add SDK Dependency
 
 ```sh
 go get github.com/agntcy/identity/api/client
 ```
 
-###### Write Code
+### Code Example
 
 ```go
 package main
@@ -46,7 +46,7 @@ func main() {
     client := idsdk.New(httptransport.New("<NODE_HOST>", "", nil), strfmt.Default)
 
     // Resolving an ID into a Resolver Metadata
-    res, err := c.id.ResolveID(&idsdk.ResolveIDParams{
+    res, err := client.ResolveID(&idsdk.ResolveIDParams{
         Body: &apimodels.V1alpha1ResolveRequest{
             ID: "<VALID_ID>",
         },
@@ -60,7 +60,7 @@ func main() {
 }
 ```
 
-###### Run Code
+### Run Code
 
 ```sh
 go mod tidy
