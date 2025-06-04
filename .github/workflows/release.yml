@@ -69,3 +69,5 @@ jobs:
       config: ../../.github/configs/issuer-cli-goreleaser.yml
     secrets:
       github-token: ${{ secrets.GITHUB_TOKEN }}
+      gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+      gpg-passphrase: ${{ secrets.GPG_PASSPHRASE }}
