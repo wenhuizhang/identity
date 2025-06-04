@@ -9,7 +9,7 @@ set -e
 BINARY_ARCH=$(uname -m)
 BINARY_OS=$(uname -s | tr '[:upper:]' '[:lower:]')
 BINARY_NAME="identity"
-LATEST_BINARY_URI="https://github.com/agntcy/identity/releases/latest/download/${BINARY_NAME}_${BINARY_OS}_${BINARY_ARCH}.tar.gz"
+LATEST_BINARY_URI="https://github.com/agntcy/identity/releases/latest/download/${BINARY_NAME}_${BINARY_OS}_${BINARY_ARCH}"
 
 INSTALL_LOCATION="/usr/local/bin"
 SUDO="sudo"

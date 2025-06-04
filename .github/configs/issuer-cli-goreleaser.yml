@@ -43,6 +43,7 @@ builds:
 
 archives:
   - name_template: '{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}'
+    format: binary
 
 binary_signs:
   - id: issuer-cli-sign
