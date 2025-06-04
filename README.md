@@ -20,7 +20,12 @@
 **AGNTCY Identity** enables to bring your own identity using conventions like IDs assigned by Identity Providers (e.g., Okta) or Agent Cards (e.g., Google’s A2A), or be assigned an ID following standards (e.g., W3C DIDs).
 This component ensures that every agent in the **AGNTCY** ecosystem has a verifiable, universally unique identity, enabling secure authentication, trusted communication, and interoperability across diverse multi-agent systems, regardless of the identity assignment method.
 
-![Agent Badge](img/agent-badge.png)
+<p align="center">
+   <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="img/agent-badge-dark.png" width="100%">
+   <img alt="" src="img/agent-badge-light.png" width="100%">
+   </picture>
+</p>
 
 - The ID is linked to a ResolverMetadata object for secure and automated verification.
 - The ID can be linked to one or more Agent Badges. Why? Multiple badges can provide nuanced, task-specific access to different systems without over-privileging the agent. Agent Badges contain Verifiable Credentials (VCs), which include:
