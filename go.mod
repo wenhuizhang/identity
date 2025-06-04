@@ -18,7 +18,7 @@ require (
 )
 
 require (
-	github.com/agntcy/identity/api/client v0.0.1
+	github.com/agntcy/identity/api/client v0.0.0-20250604191627-48b6b8911127
 	github.com/coocood/freecache v1.2.4
 	github.com/eko/gocache/store/freecache/v4 v4.2.2
 	github.com/go-openapi/runtime v0.28.0
@@ -116,5 +116,3 @@ require (
 	golang.org/x/sys v0.33.0 // indirect
 	golang.org/x/text v0.25.0 // indirect
 )
-
-replace github.com/agntcy/identity/api/client v0.0.1 => ./api/client
