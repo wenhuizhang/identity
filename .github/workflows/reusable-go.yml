@@ -19,10 +19,10 @@ on:
       github-token:
         description: "Github token"
         required: false
-      GPG_PRIVATE_KEY:
+      gpg-private-key:
         description: "GPG private key for signing"
         required: true
-      GPG_PASSPHRASE:
+      gpg-passphrase:
         description: "GPG passphrase for signing"
         required: true
 
@@ -48,7 +48,7 @@ jobs:
       - name: Import GPG Key
         run: |
           mkdir -p /tmp/gpg
-          echo "${{ secrets.GPG_PRIVATE_KEY }}" > /tmp/gpg/private-key.asc
+          echo "${{ secrets.gpg-private-key }}" > /tmp/gpg/private-key.asc
           gpg --batch --yes --pinentry-mode loopback --import /tmp/gpg/private-key.asc
         env:
           GPG_TTY: /dev/tty
@@ -61,4 +61,4 @@ jobs:
           args: release --clean --config ${{ inputs.config }}
         env:
           GITHUB_TOKEN: ${{ secrets.github-token }}
-          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+          GPG_PASSPHRASE: ${{ secrets.gpg-passphrase }}
