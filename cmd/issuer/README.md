@@ -14,7 +14,9 @@ To run or build the `CLI` locally, you need to have the following installed:
 To install the latest version of the `CLI`, you can use the following command:
 
 ```bash
-go install github.com/agntcy/identity/cmd/issuer@latest
+go install github.com/agntcy/identity/cmd/issuer@latest && \
+  mv $(go env GOPATH)/bin/issuer $(go env GOPATH)/bin/identity
+
 ```
 
 ## Usage
