@@ -23,6 +23,9 @@ WGET_IS_AVAILABLE="command -v wget"
 # Check if the user can sudo
 ########################################################################
 check_can_sudo() {
+  echo "Sudo permissions are required to install the CLI to ${INSTALL_LOCATION}."
+  echo "Checking if the user can sudo..."
+
   if ! sudo -v > /dev/null; then
     echo "The user cannot sudo and will not be able to install the CLI."
 
@@ -33,6 +36,8 @@ check_can_sudo() {
 # Install the CLI
 ######################################################################
 do_install() {
+  echo "Installing the CLI to ${INSTALL_LOCATION}..."
+
   # Download the latest binary
   if $CURL_IS_AVAILABLE > /dev/null; then
     $SUDO_CURL_COMMAND
@@ -44,8 +49,14 @@ do_install() {
     exit 1
   fi
 
+  echo "Downloaded the latest binary to ${INSTALL_LOCATION}/${BINARY_NAME}."
+  echo "Setting permissions and ownership for ${INSTALL_LOCATION}/${BINARY_NAME}..."
+
   # Set permissions & ownership
   $SUDO_CHMOD_COMMAND
+
+  echo "Permissions and ownership set for ${INSTALL_LOCATION}/${BINARY_NAME}."
+  echo "Installation complete. You can now use the CLI by running '${BINARY_NAME}' from your terminal."
 }
 ######################################################################
 
