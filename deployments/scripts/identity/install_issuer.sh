@@ -7,6 +7,11 @@ set -e
 # Global vars
 ######################################################################
 BINARY_ARCH=$(uname -m)
+if [ "$BINARY_ARCH" = "x86_64" ]; then
+  BINARY_ARCH="amd64"
+elif [ "$BINARY_ARCH" = "aarch64" ]; then
+  BINARY_ARCH="arm64"
+fi
 BINARY_OS=$(uname -s | tr '[:upper:]' '[:lower:]')
 BINARY_NAME="identity"
 LATEST_BINARY_URI="https://github.com/agntcy/identity/releases/latest/download/${BINARY_NAME}_${BINARY_OS}_${BINARY_ARCH}"
