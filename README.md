@@ -121,7 +121,7 @@ If you have `Golang` set up locally, you could also use the `go install command`
 
 ```bash
 go install github.com/agntcy/identity/cmd/issuer@latest && \
-  mv $(go env GOPATH)/bin/issuer $(go env GOPATH)/bin/identity
+  ln -s $(go env GOPATH)/bin/issuer $(go env GOPATH)/bin/identity
 ```
 
 ### Step 2: Start the Node Backend with Docker

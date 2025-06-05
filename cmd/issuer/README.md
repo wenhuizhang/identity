@@ -15,7 +15,7 @@ To install the latest version of the `CLI`, you can use the following command:
 
 ```bash
 go install github.com/agntcy/identity/cmd/issuer@latest && \
-  mv $(go env GOPATH)/bin/issuer $(go env GOPATH)/bin/identity
+  ln -s $(go env GOPATH)/bin/issuer $(go env GOPATH)/bin/identity
 
 ```
 
