@@ -19,9 +19,9 @@ func Verify(
 	credential *vctypes.EnvelopedCredential,
 ) (*vctypes.VerifiableCredential, error) {
 	// we assume the VC is not encrypted with JWE
-	keys, err := json.Marshal(jwks)
-	if err != nil {
-		return nil, errutil.ErrInfo(errtypes.ERROR_REASON_INTERNAL, "unable to parse jwks", err)
+	keys := jwks.Raw()
+	if keys == nil {
+		return nil, errutil.ErrInfo(errtypes.ERROR_REASON_INTERNAL, "unable to parse jwks", nil)
 	}
 
 	set, err := jwk.Parse(keys)

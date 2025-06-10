@@ -8,7 +8,6 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/agntcy/identity/internal/core"
 	errcore "github.com/agntcy/identity/internal/core/errors"
 	errtypes "github.com/agntcy/identity/internal/core/errors/types"
 	idcore "github.com/agntcy/identity/internal/core/id"
@@ -34,23 +33,20 @@ type IdService interface {
 }
 
 type idService struct {
-	verificationService core.VerificationService
-	idRepository        idcore.IdRepository
-	issuerRepository    issuercore.Repository
-	idGenerator         IDGenerator
+	idRepository     idcore.IdRepository
+	issuerRepository issuercore.Repository
+	idGenerator      IDGenerator
 }
 
 func NewIdService(
-	verificationService core.VerificationService,
 	idRepository idcore.IdRepository,
 	issuerRepository issuercore.Repository,
 	idGenerator IDGenerator,
 ) IdService {
 	return &idService{
-		verificationService: verificationService,
-		idRepository:        idRepository,
-		issuerRepository:    issuerRepository,
-		idGenerator:         idGenerator,
+		idRepository:     idRepository,
+		issuerRepository: issuerRepository,
+		idGenerator:      idGenerator,
 	}
 }
 

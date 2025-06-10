@@ -8,7 +8,6 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/agntcy/identity/internal/core"
 	errcore "github.com/agntcy/identity/internal/core/errors"
 	errtypes "github.com/agntcy/identity/internal/core/errors/types"
 	idcore "github.com/agntcy/identity/internal/core/id"
@@ -35,26 +34,23 @@ type VerifiableCredentialService interface {
 }
 
 type verifiableCredentialService struct {
-	verificationService core.VerificationService
-	idRepository        idcore.IdRepository
-	issuerRepository    issuercore.Repository
-	vcRepository        vccore.Repository
-	idGenerator         IDGenerator
+	idRepository     idcore.IdRepository
+	issuerRepository issuercore.Repository
+	vcRepository     vccore.Repository
+	idGenerator      IDGenerator
 }
 
 func NewVerifiableCredentialService(
-	verificationService core.VerificationService,
 	idRepository idcore.IdRepository,
 	issuerRepository issuercore.Repository,
 	vcRepository vccore.Repository,
 	idGenerator IDGenerator,
 ) VerifiableCredentialService {
 	return &verifiableCredentialService{
-		verificationService: verificationService,
-		idRepository:        idRepository,
-		issuerRepository:    issuerRepository,
-		vcRepository:        vcRepository,
-		idGenerator:         idGenerator,
+		idRepository:     idRepository,
+		issuerRepository: issuerRepository,
+		vcRepository:     vcRepository,
+		idGenerator:      idGenerator,
 	}
 }
 

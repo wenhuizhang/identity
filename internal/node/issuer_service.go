@@ -7,12 +7,12 @@ import (
 	"context"
 	"errors"
 
-	"github.com/agntcy/identity/internal/core"
 	errcore "github.com/agntcy/identity/internal/core/errors"
 	errtypes "github.com/agntcy/identity/internal/core/errors/types"
 	idtypes "github.com/agntcy/identity/internal/core/id/types"
 	issuercore "github.com/agntcy/identity/internal/core/issuer"
 	issuertypes "github.com/agntcy/identity/internal/core/issuer/types"
+	"github.com/agntcy/identity/internal/core/issuer/verification"
 	vctypes "github.com/agntcy/identity/internal/core/vc/types"
 	"github.com/agntcy/identity/internal/pkg/errutil"
 	"github.com/agntcy/identity/internal/pkg/joseutil"
@@ -32,13 +32,13 @@ type IssuerService interface {
 // The issuerService struct implements the IssuerService interface
 type issuerService struct {
 	issuerRepository   issuercore.Repository
-	verficationService core.VerificationService
+	verficationService verification.Service
 }
 
 // NewIssuerService creates a new instance of the IssuerService
 func NewIssuerService(
 	issuerRepository issuercore.Repository,
-	verficationService core.VerificationService,
+	verficationService verification.Service,
 ) IssuerService {
 	return &issuerService{
 		issuerRepository,
@@ -76,21 +76,10 @@ func (i *issuerService) Register(
 
 	// Verify the issuer's common name
 	// Validate the proof exists
-	if proof == nil {
-		// In case of external IdPs, the proof is nil
-		// This service should return an actionable URI
-		// to the caller to finalize the registration
-		// This is currently not supported
-		return nil, errutil.ErrInfo(
-			errtypes.ERROR_REASON_IDP_REQUIRED,
-			"issuer without external IdP is not implemented",
-			nil,
-		)
-	}
-
-	verificationErr := i.verficationService.VerifyCommonName(
+	// If the proof is self signed, the issuer will not be verified
+	verified, verificationErr := i.verficationService.Verify(
 		ctx,
-		&issuer.CommonName,
+		issuer,
 		proof,
 	)
 
@@ -114,6 +103,9 @@ func (i *issuerService) Register(
 			nil,
 		)
 	}
+
+	// Set the verified status of the issuer
+	issuer.Verified = verified
 
 	// Save the issuer in the database
 	_, repositoryErr := i.issuerRepository.CreateIssuer(

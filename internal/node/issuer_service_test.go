@@ -13,7 +13,7 @@ import (
 	idtypes "github.com/agntcy/identity/internal/core/id/types"
 	issuertesting "github.com/agntcy/identity/internal/core/issuer/testing"
 	issuertypes "github.com/agntcy/identity/internal/core/issuer/types"
-	coretesting "github.com/agntcy/identity/internal/core/testing"
+	verificationtesting "github.com/agntcy/identity/internal/core/issuer/verification/testing"
 	vctypes "github.com/agntcy/identity/internal/core/vc/types"
 	"github.com/agntcy/identity/internal/node"
 	"github.com/lestrrat-go/jwx/v3/jwa"
@@ -24,13 +24,13 @@ import (
 func TestRegisterIssuer_Should_Not_Register_Same_Issuer_Twice(t *testing.T) {
 	t.Parallel()
 
-	verficationSrv := coretesting.NewFakeTruthyVerificationService()
+	verficationSrv := verificationtesting.NewFakeVerifiedVerificationService()
 	issuerRepo := issuertesting.NewFakeIssuerRepository()
 	sut := node.NewIssuerService(issuerRepo, verficationSrv)
 	pubKey, _ := generatePubKey()
 
 	issuer := &issuertypes.Issuer{
-		CommonName:   coretesting.ValidProofIssuer,
+		CommonName:   verificationtesting.ValidProofIssuer,
 		Organization: "Some Org",
 		PublicKey:    pubKey,
 	}
