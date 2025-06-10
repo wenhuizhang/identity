@@ -29,6 +29,7 @@ func (c *Claims) GetCommonName() string {
 	if c == nil {
 		return ""
 	}
+
 	return c.Issuer
 }
 
@@ -126,10 +127,10 @@ func (p *parser) ParseAndVerifyJwt(
 
 func (p *parser) VerifyJwt(
 	ctx context.Context,
-	jwt *ParsedJWT,
+	parsedJwt *ParsedJWT,
 	jwksString *string,
 ) error {
-	if jwt == nil {
+	if parsedJwt == nil {
 		return errutil.Err(
 			nil,
 			"the jwt provided is nil or was parsed incorrectly",
@@ -139,13 +140,12 @@ func (p *parser) VerifyJwt(
 	var err error
 	var jwks jwk.Set
 
-	if jwt.Provider != SelfProviderName {
+	if parsedJwt.Provider != SelfProviderName {
 		// Get the JWKS from the issuer
-		jwks, err = p.getJwks(ctx, jwt.providerMetadata)
+		jwks, err = p.getJwks(ctx, parsedJwt.providerMetadata)
 		if err != nil {
 			return errutil.Err(err, "failed to get JWKS from issuer")
 		}
-
 	} else {
 		log.Debug("Using issuer's self generated JWKS")
 
@@ -157,7 +157,7 @@ func (p *parser) VerifyJwt(
 	}
 
 	// Verify the JWT signature
-	_, err = jws.Verify([]byte(*jwt.jwtString), jws.WithKeySet(jwks))
+	_, err = jws.Verify([]byte(*parsedJwt.jwtString), jws.WithKeySet(jwks))
 	if err != nil {
 		return err
 	}

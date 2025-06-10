@@ -34,7 +34,7 @@ func (p *fakeParser) ParseAndVerifyJwt(
 
 func (p *fakeParser) VerifyJwt(
 	ctx context.Context,
-	jwt *oidc.ParsedJWT,
+	parsedJwt *oidc.ParsedJWT,
 	jwksString *string,
 ) error {
 	return nil

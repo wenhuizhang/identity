@@ -169,6 +169,7 @@ func (j *Jwks) String() *string {
 	}
 
 	stringJwks := strings.TrimSpace(string(rawJwks))
+
 	return &stringJwks
 }
 

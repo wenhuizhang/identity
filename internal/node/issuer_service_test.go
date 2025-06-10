@@ -41,11 +41,11 @@ func TestRegisterIssuer_Should_Not_Register_Same_Issuer_Twice(t *testing.T) {
 	}
 
 	// Register once
-	_, err := sut.Register(context.Background(), issuer, proof)
+	err := sut.Register(context.Background(), issuer, proof)
 	assert.NoError(t, err)
 
 	// Attempt to register the same issuer again
-	_, err = sut.Register(context.Background(), issuer, proof)
+	err = sut.Register(context.Background(), issuer, proof)
 	assert.Error(t, err)
 }
 
@@ -69,7 +69,7 @@ func TestRegisterIssuer_Should_Register_Verified_Issuer(t *testing.T) {
 	}
 
 	// Register once
-	_, err := sut.Register(context.Background(), issuer, proof)
+	err := sut.Register(context.Background(), issuer, proof)
 	assert.NoError(t, err)
 
 	// Verify the issuer is registered
@@ -102,7 +102,7 @@ func TestRegisterIssuer_Should_Register_Unverified_Issuer(t *testing.T) {
 	}
 
 	// Register once
-	_, err := sut.Register(context.Background(), issuer, proof)
+	err := sut.Register(context.Background(), issuer, proof)
 	assert.NoError(t, err)
 
 	// Verify the issuer is registered
