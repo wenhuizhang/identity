@@ -19,6 +19,10 @@ type Issuer struct {
 	// Could be a FQDN or a FQDA
 	CommonName string `json:"commonName,omitempty" protobuf:"bytes,3,opt,name=common_name"`
 
+	// This will be set to true when issuer provides a valid proof of ownership
+	// of the common name on registration
+	Verified bool `json:"verified,omitempty" protobuf:"varint,6,opt,name=verified"`
+
 	// This field is optional
 	// The keys of the issuer in JWK format
 	// The public key is used to verify the signature of the different claims
