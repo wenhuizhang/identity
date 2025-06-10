@@ -78,10 +78,18 @@ func (v *service) verifyProof(
 
 	// Check the proof type
 	if proof.IsJWT() {
-		// Verify the JWT proof
-		jwt, err := v.oidcParser.ParseJwt(ctx, &proof.ProofValue, issuer.PublicKey.Jwks().String())
+		// Parse JWT to extract the common name and issuer information
+		jwt, err := v.oidcParser.ParseAndVerifyJwt(
+			ctx,
+			&proof.ProofValue,
+			issuer.PublicKey.Jwks().String(),
+		)
 		if err != nil {
-			return false, err
+			return false, errutil.ErrInfo(
+				errtypes.ERROR_REASON_INVALID_PROOF,
+				"failed to parse and verify JWT",
+				err,
+			)
 		}
 
 		// Verify common name is the same as the issuer's hostname

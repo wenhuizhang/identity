@@ -14,7 +14,6 @@ import (
 	issuertypes "github.com/agntcy/identity/internal/core/issuer/types"
 	vctypes "github.com/agntcy/identity/internal/core/vc/types"
 	"github.com/agntcy/identity/internal/pkg/errutil"
-	"github.com/agntcy/identity/internal/pkg/httputil"
 	"github.com/agntcy/identity/internal/pkg/oidc"
 	"github.com/agntcy/identity/pkg/log"
 )
@@ -61,18 +60,23 @@ func (g *idGenerator) GenerateFromProof(
 	log.Debug("Verifying the proof ", proof.ProofValue)
 
 	if proof.IsJWT() {
-		claims, err := g.oidcParser.GetClaims(ctx, &proof.ProofValue)
-		if err != nil {
-			return "", nil, errutil.ErrInfo(errtypes.ERROR_REASON_INVALID_PROOF, err.Error(), err)
+		// Parse JWT to extract the common name and issuer information
+		jwt := g.oidcParser.ParseJwt(ctx, &proof.ProofValue)
+		if jwt == nil {
+			return "", nil, errutil.ErrInfo(
+				errtypes.ERROR_REASON_INVALID_PROOF,
+				"failed to parse JWT",
+				nil,
+			)
 		}
 
-		issuer, err := g.getIssuer(ctx, httputil.Hostname(claims.Issuer))
+		issuer, err := g.getIssuer(ctx, jwt.CommonName)
 		if err != nil {
 			return "", nil, err
 		}
 
-		// Parse JWT
-		jwt, err := g.oidcParser.ParseJwt(ctx, &proof.ProofValue, issuer.PublicKey.Jwks().String())
+		// Verify the JWT signature
+		err = g.oidcParser.VerifyJwt(ctx, jwt, issuer.PublicKey.Jwks().String())
 		if err != nil {
 			return "", nil, errutil.ErrInfo(errtypes.ERROR_REASON_INVALID_PROOF, err.Error(), err)
 		}
