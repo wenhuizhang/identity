@@ -54,7 +54,7 @@ func (i *issuerService) Register(
 	proof *vctypes.Proof,
 ) (*string, error) {
 	// Validate the issuer
-	if issuer == nil || issuer.CommonName == "" {
+	if issuer == nil || issuer.ValidateCommonName() != nil {
 		return nil, errutil.ErrInfo(
 			errtypes.ERROR_REASON_INVALID_ISSUER,
 			"issuer is empty or has invalid common name",
