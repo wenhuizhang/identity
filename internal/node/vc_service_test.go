@@ -89,7 +89,7 @@ func TestPublishVC_Should_Return_Invalid_Credential_Format_Error(t *testing.T) {
 	assertErrorInfoReason(t, err, errtypes.ERROR_REASON_INVALID_CREDENTIAL_ENVELOPE_VALUE_FORMAT)
 }
 
-func TestPublishVC_Should_Return_Idp_Required_Error(t *testing.T) {
+func TestPublishVC_Should_Return_Invalid_Proof_Error_If_Empty(t *testing.T) {
 	t.Parallel()
 
 	idGen := node.NewIDGenerator(oidctesting.NewFakeParser(nil, nil), nil)
@@ -100,7 +100,7 @@ func TestPublishVC_Should_Return_Idp_Required_Error(t *testing.T) {
 
 	err := sut.Publish(context.Background(), invalidEnvelope, nil)
 
-	assertErrorInfoReason(t, err, errtypes.ERROR_REASON_IDP_REQUIRED)
+	assertErrorInfoReason(t, err, errtypes.ERROR_REASON_INVALID_PROOF)
 }
 
 func TestPublishVC_Should_Return_Invalid_Proof_Error(t *testing.T) {

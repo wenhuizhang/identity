@@ -36,5 +36,9 @@ func (p *fakeParser) GetClaims(
 	ctx context.Context,
 	jwtString *string,
 ) (*oidc.Claims, error) {
+	if p.result == nil {
+		return nil, p.err
+	}
+
 	return p.result.Claims, p.err
 }

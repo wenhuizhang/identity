@@ -49,6 +49,72 @@ func TestRegisterIssuer_Should_Not_Register_Same_Issuer_Twice(t *testing.T) {
 	assert.Error(t, err)
 }
 
+func TestRegisterIssuer_Should_Register_Verified_Issuer(t *testing.T) {
+	t.Parallel()
+
+	verficationSrv := verificationtesting.NewFakeVerifiedVerificationService()
+	issuerRepo := issuertesting.NewFakeIssuerRepository()
+	sut := node.NewIssuerService(issuerRepo, verficationSrv)
+	pubKey, _ := generatePubKey()
+
+	issuer := &issuertypes.Issuer{
+		CommonName:   verificationtesting.ValidProofIssuer,
+		Organization: "Some Org",
+		PublicKey:    pubKey,
+	}
+
+	proof := &vctypes.Proof{
+		Type:       "JWT",
+		ProofValue: "",
+	}
+
+	// Register once
+	_, err := sut.Register(context.Background(), issuer, proof)
+	assert.NoError(t, err)
+
+	// Verify the issuer is registered
+	registeredIssuer, err := issuerRepo.GetIssuer(
+		context.Background(),
+		verificationtesting.ValidProofIssuer,
+	)
+	assert.NoError(t, err)
+	assert.NotNil(t, registeredIssuer)
+	assert.Equal(t, registeredIssuer.Verified, true)
+}
+
+func TestRegisterIssuer_Should_Register_Unverified_Issuer(t *testing.T) {
+	t.Parallel()
+
+	verficationSrv := verificationtesting.NewFakeUnverifiedVerificationServiceStub()
+	issuerRepo := issuertesting.NewFakeIssuerRepository()
+	sut := node.NewIssuerService(issuerRepo, verficationSrv)
+	pubKey, _ := generatePubKey()
+
+	issuer := &issuertypes.Issuer{
+		CommonName:   verificationtesting.ValidProofIssuer,
+		Organization: "Some Org",
+		PublicKey:    pubKey,
+	}
+
+	proof := &vctypes.Proof{
+		Type:       "JWT",
+		ProofValue: "",
+	}
+
+	// Register once
+	_, err := sut.Register(context.Background(), issuer, proof)
+	assert.NoError(t, err)
+
+	// Verify the issuer is registered
+	registeredIssuer, err := issuerRepo.GetIssuer(
+		context.Background(),
+		verificationtesting.ValidProofIssuer,
+	)
+	assert.NoError(t, err)
+	assert.NotNil(t, registeredIssuer)
+	assert.Equal(t, registeredIssuer.Verified, false)
+}
+
 func generatePubKey() (*idtypes.Jwk, error) {
 	pk, err := rsa.GenerateKey(rand.Reader, 2048)
 	if err != nil {

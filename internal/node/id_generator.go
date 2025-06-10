@@ -94,6 +94,16 @@ func (g *idGenerator) GenerateFromProof(
 			)
 		}
 
+		// If the issuer is verified
+		// we require a valid proof from the IdP
+		if issuer.Verified && scheme == self {
+			return "", nil, errutil.ErrInfo(
+				errtypes.ERROR_REASON_IDP_REQUIRED,
+				"the issuer is not verified",
+				nil,
+			)
+		}
+
 		return fmt.Sprintf("%s%s", scheme, jwt.Claims.Subject), issuer, nil
 	}
 

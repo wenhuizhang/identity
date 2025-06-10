@@ -50,7 +50,7 @@ func TestGenerateID_Should_Not_Return_Errors(t *testing.T) {
 	assert.Equal(t, "DUO-test", md.ID)
 }
 
-func TestGenerateID_Should_Return_Idp_Required_Error(t *testing.T) {
+func TestGenerateID_Should_Return_Invalid_Proof_If_Empty(t *testing.T) {
 	t.Parallel()
 
 	oidcParser := oidctesting.NewFakeParser(&oidc.ParsedJWT{}, nil)
@@ -63,7 +63,7 @@ func TestGenerateID_Should_Return_Idp_Required_Error(t *testing.T) {
 
 	_, err := sut.Generate(context.Background(), issuer, nil)
 
-	assertErrorInfoReason(t, err, errtypes.ERROR_REASON_IDP_REQUIRED)
+	assertErrorInfoReason(t, err, errtypes.ERROR_REASON_INVALID_PROOF)
 }
 
 func TestGenerateID_Should_Return_Invalid_Proof_Error(t *testing.T) {
