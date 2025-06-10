@@ -53,7 +53,7 @@ RegisterIssuerOK describes a response with status code 200, with default header 
 A successful response.
 */
 type RegisterIssuerOK struct {
-	Payload *models.V1alpha1RegisterIssuerResponse
+	Payload models.V1alpha1RegisterIssuerResponse
 }
 
 // IsSuccess returns true when this register issuer o k response has a 2xx status code
@@ -96,16 +96,14 @@ func (o *RegisterIssuerOK) String() string {
 	return fmt.Sprintf("[POST /v1alpha1/issuer/register][%d] registerIssuerOK %s", 200, payload)
 }
 
-func (o *RegisterIssuerOK) GetPayload() *models.V1alpha1RegisterIssuerResponse {
+func (o *RegisterIssuerOK) GetPayload() models.V1alpha1RegisterIssuerResponse {
 	return o.Payload
 }
 
 func (o *RegisterIssuerOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(models.V1alpha1RegisterIssuerResponse)
-
 	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && err != io.EOF {
 		return err
 	}
 
