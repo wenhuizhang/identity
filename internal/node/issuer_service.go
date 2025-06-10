@@ -22,7 +22,7 @@ import (
 type IssuerService interface {
 	// Register a new Issuer
 	// In case of external IdPs provide a proof of ownership
-	Register(ctx context.Context, issuer *issuertypes.Issuer, proof *vctypes.Proof) (*string, error)
+	Register(ctx context.Context, issuer *issuertypes.Issuer, proof *vctypes.Proof) error
 
 	// Find the issuer by common name
 	// Return the public keys of the Issuer
@@ -52,10 +52,10 @@ func (i *issuerService) Register(
 	ctx context.Context,
 	issuer *issuertypes.Issuer,
 	proof *vctypes.Proof,
-) (*string, error) {
+) error {
 	// Validate the issuer
 	if issuer == nil || issuer.ValidateCommonName() != nil {
-		return nil, errutil.ErrInfo(
+		return errutil.ErrInfo(
 			errtypes.ERROR_REASON_INVALID_ISSUER,
 			"issuer is empty or has invalid common name",
 			nil,
@@ -67,7 +67,7 @@ func (i *issuerService) Register(
 		issuer.PublicKey,
 	)
 	if validationErr != nil {
-		return nil, errutil.ErrInfo(
+		return errutil.ErrInfo(
 			errtypes.ERROR_REASON_INVALID_ISSUER,
 			"issuer has invalid public key",
 			nil,
@@ -84,7 +84,7 @@ func (i *issuerService) Register(
 	)
 
 	if verificationErr != nil {
-		return nil, errutil.ErrInfo(
+		return errutil.ErrInfo(
 			errtypes.ERROR_REASON_INVALID_ISSUER,
 			"failed to verify common name",
 			verificationErr,
@@ -97,7 +97,7 @@ func (i *issuerService) Register(
 		issuer.CommonName,
 	)
 	if existingIssuer != nil {
-		return nil, errutil.ErrInfo(
+		return errutil.ErrInfo(
 			errtypes.ERROR_REASON_INVALID_ISSUER,
 			"issuer already exists",
 			nil,
@@ -113,15 +113,14 @@ func (i *issuerService) Register(
 		issuer,
 	)
 	if repositoryErr != nil {
-		return nil, errutil.ErrInfo(
+		return errutil.ErrInfo(
 			errtypes.ERROR_REASON_INTERNAL,
 			"unexpected error",
 			repositoryErr,
 		)
 	}
 
-	//nolint:nilnil // Ignore linting for nil return, means no action uri
-	return nil, nil
+	return nil
 }
 
 // GetJwks returns the public keys of the Issuers
