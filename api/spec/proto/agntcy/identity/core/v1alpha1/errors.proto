@@ -43,7 +43,7 @@ enum ErrorReason {
   // The Verifiable Credential is invalid, this can be related to either
   // invalid format or unable to verify the Data Integrity proof.
   ERROR_REASON_INVALID_VERIFIABLE_CREDENTIAL = 6;
-  // An issuer is required to have an external IdP
+  // The Identity Provider (IdP) is required for the operation, but it is not provided.
   ERROR_REASON_IDP_REQUIRED = 7;
   // The proof is invalid
   ERROR_REASON_INVALID_PROOF = 8;

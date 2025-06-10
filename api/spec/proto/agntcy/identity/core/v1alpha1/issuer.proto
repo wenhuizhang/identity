@@ -24,6 +24,10 @@ message Issuer {
   // Could be a FQDN or a FQDA
   optional string common_name = 3;
 
+  // This will be set to true when issuer provides a valid proof of ownership
+  // of the common name on registration
+  optional bool verified = 6;
+
   // This field is optional
   // The keys of the issuer in JWK format
   // The public key is used to verify the signature of the different claims

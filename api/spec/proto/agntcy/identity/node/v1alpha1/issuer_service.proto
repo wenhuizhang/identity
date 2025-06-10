@@ -55,8 +55,7 @@ message RegisterIssuerRequest {
 }
 
 // Returns a registration response for the issuer
-message RegisterIssuerResponse {
-}
+message RegisterIssuerResponse {}
 
 // Request to get the well-known JWKS document of an issuer
 message GetIssuerWellKnownRequest {

@@ -33,6 +33,9 @@ type Issuer struct {
 	// The common name of the issuer
 	// Could be a FQDN or a FQDA
 	CommonName *string `protobuf:"bytes,3,opt,name=common_name,json=commonName,proto3,oneof" json:"common_name,omitempty"`
+	// This will be set to true when issuer provides a valid proof of ownership
+	// of the common name on registration
+	Verified *bool `protobuf:"varint,6,opt,name=verified,proto3,oneof" json:"verified,omitempty"`
 	// This field is optional
 	// The keys of the issuer in JWK format
 	// The public key is used to verify the signature of the different claims
@@ -95,6 +98,13 @@ func (x *Issuer) GetCommonName() string {
 	return ""
 }
 
+func (x *Issuer) GetVerified() bool {
+	if x != nil && x.Verified != nil {
+		return *x.Verified
+	}
+	return false
+}
+
 func (x *Issuer) GetPublicKey() *Jwk {
 	if x != nil {
 		return x.PublicKey
@@ -113,19 +123,21 @@ var File_agntcy_identity_core_v1alpha1_issuer_proto protoreflect.FileDescriptor
 
 const file_agntcy_identity_core_v1alpha1_issuer_proto_rawDesc = "" +
 	"\n" +
-	"*agntcy/identity/core/v1alpha1/issuer.proto\x12\x1dagntcy.identity.core.v1alpha1\x1a&agntcy/identity/core/v1alpha1/id.proto\"\xee\x02\n" +
+	"*agntcy/identity/core/v1alpha1/issuer.proto\x12\x1dagntcy.identity.core.v1alpha1\x1a&agntcy/identity/core/v1alpha1/id.proto\"\x9c\x03\n" +
 	"\x06Issuer\x12'\n" +
 	"\forganization\x18\x01 \x01(\tH\x00R\forganization\x88\x01\x01\x12.\n" +
 	"\x10sub_organization\x18\x02 \x01(\tH\x01R\x0fsubOrganization\x88\x01\x01\x12$\n" +
 	"\vcommon_name\x18\x03 \x01(\tH\x02R\n" +
-	"commonName\x88\x01\x01\x12F\n" +
+	"commonName\x88\x01\x01\x12\x1f\n" +
+	"\bverified\x18\x06 \x01(\bH\x03R\bverified\x88\x01\x01\x12F\n" +
 	"\n" +
-	"public_key\x18\x04 \x01(\v2\".agntcy.identity.core.v1alpha1.JwkH\x03R\tpublicKey\x88\x01\x01\x12H\n" +
-	"\vprivate_key\x18\x05 \x01(\v2\".agntcy.identity.core.v1alpha1.JwkH\x04R\n" +
+	"public_key\x18\x04 \x01(\v2\".agntcy.identity.core.v1alpha1.JwkH\x04R\tpublicKey\x88\x01\x01\x12H\n" +
+	"\vprivate_key\x18\x05 \x01(\v2\".agntcy.identity.core.v1alpha1.JwkH\x05R\n" +
 	"privateKey\x88\x01\x01B\x0f\n" +
 	"\r_organizationB\x13\n" +
 	"\x11_sub_organizationB\x0e\n" +
-	"\f_common_nameB\r\n" +
+	"\f_common_nameB\v\n" +
+	"\t_verifiedB\r\n" +
 	"\v_public_keyB\x0e\n" +
 	"\f_private_keyBZZXgithub.com/agntcy/identity/api/server/agntcy/identity/core/v1alpha1;identity_core_sdk_gob\x06proto3"
 
