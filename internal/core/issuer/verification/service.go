@@ -11,7 +11,6 @@ import (
 	issuertypes "github.com/agntcy/identity/internal/core/issuer/types"
 	vctypes "github.com/agntcy/identity/internal/core/vc/types"
 	"github.com/agntcy/identity/internal/pkg/errutil"
-	"github.com/agntcy/identity/internal/pkg/httputil"
 	"github.com/agntcy/identity/internal/pkg/oidc"
 	"github.com/agntcy/identity/pkg/log"
 )
@@ -52,15 +51,16 @@ func (v *service) Verify(
 
 	log.Debug("Verifying common name:", issuer.CommonName)
 
-	// Verify the proof and get the subject and issuer
-	err := v.verifyProof(ctx, issuer, proof)
+	// Verify the proof
+	// If the proof is self provided, the issuer will be unverified
+	verified, err := v.verifyProof(ctx, issuer, proof)
 	if err != nil {
 		return false, err
 	}
 
 	log.Debug("Common name verified successfully")
 
-	return true, nil
+	return verified, nil
 }
 
 // VerifyProof verifies the proof for the issuer by checking the proof type
@@ -68,10 +68,10 @@ func (v *service) verifyProof(
 	ctx context.Context,
 	issuer *issuertypes.Issuer,
 	proof *vctypes.Proof,
-) error {
+) (bool, error) {
 	// Validate the proof
 	if proof == nil {
-		return errutil.Err(nil, "proof is empty")
+		return false, errutil.Err(nil, "proof is empty")
 	}
 
 	log.Debug("Verifying proof of type: ", proof.Type)
@@ -81,16 +81,16 @@ func (v *service) verifyProof(
 		// Verify the JWT proof
 		jwt, err := v.oidcParser.ParseJwt(ctx, &proof.ProofValue, issuer.PublicKey.Jwks().String())
 		if err != nil {
-			return err
+			return false, err
 		}
 
 		// Verify common name is the same as the issuer's hostname
-		if httputil.Hostname(jwt.Claims.Issuer) != issuer.CommonName {
-			return errutil.Err(nil, "common name does not match issuer")
+		if jwt.CommonName != issuer.CommonName {
+			return false, errutil.Err(nil, "common name does not match issuer")
 		}
 
-		return nil
+		return jwt.Verified, nil
 	}
 
-	return errutil.Err(nil, fmt.Sprintf("unsupported proof type '%s'", proof.Type))
+	return false, errutil.Err(nil, fmt.Sprintf("unsupported proof type '%s'", proof.Type))
 }

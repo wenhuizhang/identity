@@ -35,8 +35,10 @@ const (
 )
 
 type ParsedJWT struct {
-	Claims   *Claims
-	Provider ProviderName
+	Claims     *Claims
+	Provider   ProviderName
+	CommonName string
+	Verified   bool
 }
 
 type providerMetadata struct {
@@ -97,11 +99,13 @@ func (p *parser) ParseJwt(
 		return nil, errutil.Err(err, "failed to get issuer and subject from JWT")
 	}
 
+	log.Debug("Validating JWT for issuer:", claims.Issuer, " and subject:", claims.Subject)
+
 	var providerName ProviderName
 	var jwks jwk.Set
 
-	provider, err := p.getProviderMetadata(ctx, claims.Issuer)
 	// If the metadata was retrieved successfully, we can proceed to get the JWKS
+	provider, err := p.getProviderMetadata(ctx, claims.Issuer)
 	if err == nil {
 		// Get the JWKS from the issuer
 		jwks, err = p.getJwks(ctx, provider)
@@ -114,6 +118,8 @@ func (p *parser) ParseJwt(
 			return nil, err
 		}
 	} else {
+		log.Debug("Using issuer's self generated JWKS")
+
 		// We will use issuer's self generated JWKS
 		jwks, err = p.parseJwks(jwksString)
 		if err != nil {
@@ -128,9 +134,17 @@ func (p *parser) ParseJwt(
 		return nil, err
 	}
 
+	// Get common name from the JWT claims
+	commonName := claims.Issuer
+	if providerName != SelfProviderName {
+		commonName = httputil.Hostname(claims.Issuer)
+	}
+
 	return &ParsedJWT{
-		Claims:   claims,
-		Provider: providerName,
+		Claims:     claims,
+		Provider:   providerName,
+		CommonName: commonName,
+		Verified:   providerName != SelfProviderName,
 	}, nil
 }
 

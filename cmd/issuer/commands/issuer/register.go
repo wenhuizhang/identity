@@ -111,7 +111,7 @@ func (cmd *RegisterCommand) Run(ctx context.Context, flags *RegisterFlags) error
 		}
 
 		// extract the root url from the issuer URL as the common name
-		commonName := httputil.Hostname(flags.IssuerURL)
+		commonName = httputil.Hostname(flags.IssuerURL)
 		if commonName == "" {
 			return fmt.Errorf("error extracting common name from issuer URL: %w", err)
 		}
@@ -187,7 +187,8 @@ func (cmd *RegisterCommand) validateFlags(flags *RegisterFlags) error {
 	}
 
 	// if the common name is not set, prompt the user for it interactively
-	if flags.CommonName == "" {
+	if flags.CommonName == "" &&
+		(flags.ClientID == "" && flags.ClientSecret == "" && flags.IssuerURL == "") {
 		err := cmdutil.ScanOptional(
 			"Common name (e.g., url, email, etc.), leave empty to use IdP",
 			&flags.CommonName,

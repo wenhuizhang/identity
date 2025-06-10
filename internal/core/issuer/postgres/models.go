@@ -11,6 +11,7 @@ import (
 
 type Issuer struct {
 	CommonName       string                 `gorm:"primaryKey"`
+	Verified         bool                   `gorm:"not null;type:boolean;default:false"`
 	Organization     string                 `gorm:"not null;type:varchar(256);"`
 	SubOrganization  string                 `gorm:"not null;type:varchar(256);"`
 	PublicKey        *idtypes.Jwk           `gorm:"embedded;embeddedPrefix:public_key_"`
@@ -19,9 +20,10 @@ type Issuer struct {
 
 func (i *Issuer) ToCoreType() *types.Issuer {
 	return &types.Issuer{
+		CommonName:      i.CommonName,
+		Verified:        i.Verified,
 		Organization:    i.Organization,
 		SubOrganization: i.SubOrganization,
-		CommonName:      i.CommonName,
 		PublicKey:       i.PublicKey,
 	}
 }
@@ -29,6 +31,7 @@ func (i *Issuer) ToCoreType() *types.Issuer {
 func newIssuerModel(src *types.Issuer) *Issuer {
 	return &Issuer{
 		CommonName:      src.CommonName,
+		Verified:        src.Verified,
 		Organization:    src.Organization,
 		SubOrganization: src.SubOrganization,
 		PublicKey:       src.PublicKey,
