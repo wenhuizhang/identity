@@ -25,6 +25,13 @@ type Claims struct {
 	Subject string `json:"sub"`
 }
 
+func (c *Claims) GetCommonName() string {
+	if c == nil {
+		return ""
+	}
+	return c.Issuer
+}
+
 type ProviderName int
 
 const (
