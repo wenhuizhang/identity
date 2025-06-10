@@ -74,7 +74,7 @@ func (v *service) verifyProof(
 		return errutil.Err(nil, "proof is empty")
 	}
 
-	log.Debug("Verifying proof of type", proof.Type)
+	log.Debug("Verifying proof of type: ", proof.Type)
 
 	// Check the proof type
 	if proof.IsJWT() {
@@ -88,6 +88,8 @@ func (v *service) verifyProof(
 		if httputil.Hostname(jwt.Claims.Issuer) != issuer.CommonName {
 			return errutil.Err(nil, "common name does not match issuer")
 		}
+
+		return nil
 	}
 
 	return errutil.Err(nil, fmt.Sprintf("unsupported proof type '%s'", proof.Type))
