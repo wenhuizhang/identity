@@ -74,7 +74,7 @@ func (v *service) verifyProof(
 		return false, errutil.Err(nil, "proof is empty")
 	}
 
-	log.Debug("Verifying proof of type: ", proof.Type)
+	log.Debug("Verifying proof: ", proof.ProofValue, " of type: ", proof.Type)
 
 	// Check the proof type
 	if proof.IsJWT() {
