@@ -11,6 +11,7 @@ import (
 	"github.com/spf13/cobra"
 
 	clicache "github.com/agntcy/identity/cmd/issuer/cache"
+	isvc "github.com/agntcy/identity/internal/issuer/issuer"
 	mdsrv "github.com/agntcy/identity/internal/issuer/metadata"
 	issuerTypes "github.com/agntcy/identity/internal/issuer/types"
 	"github.com/agntcy/identity/internal/pkg/cmdutil"
@@ -25,11 +26,13 @@ type GenerateFlags struct {
 type GenerateCommand struct {
 	cache           *clicache.Cache
 	metadataService mdsrv.MetadataService
+	issuerService   isvc.IssuerService
 }
 
 func NewCmdGenerate(
 	cache *clicache.Cache,
 	metadataService mdsrv.MetadataService,
+	issuerService isvc.IssuerService,
 ) *cobra.Command {
 	flags := NewGenerateFlags()
 
@@ -40,6 +43,7 @@ func NewCmdGenerate(
 			c := GenerateCommand{
 				cache:           cache,
 				metadataService: metadataService,
+				issuerService:   issuerService,
 			}
 
 			err := c.Run(cmd.Context(), flags)
@@ -71,34 +75,49 @@ func (cmd *GenerateCommand) Run(ctx context.Context, flags *GenerateFlags) error
 		return fmt.Errorf("error validating local configuration: %w", err)
 	}
 
-	// if the idp client id is not set, prompt the user for it interactively
-	if flags.IdpClientID == "" {
-		err := cmdutil.ScanRequired("IDP Client ID", &flags.IdpClientID)
-		if err != nil {
-			return fmt.Errorf("error reading IDP Client ID: %w", err)
-		}
+	// get the issuer service
+	issuer, err := cmd.issuerService.GetIssuer(
+		cmd.cache.VaultId,
+		cmd.cache.KeyID,
+		cmd.cache.IssuerId,
+	)
+	if err != nil {
+		return fmt.Errorf("error loading issuer: %w", err)
 	}
 
-	// if the idp client secret is not set, prompt the user for it interactively
-	if flags.IdpClientSecret == "" {
-		err := cmdutil.ScanRequired("IDP Client Secret", &flags.IdpClientSecret)
-		if err != nil {
-			return fmt.Errorf("error reading IDP Client Secret: %w", err)
-		}
-	}
+	var idpConfig *issuerTypes.IdpConfig
 
-	// if the idp issuer url is not set, prompt the user for it interactively
-	if flags.IdpIssuerURL == "" {
-		err := cmdutil.ScanRequired("IDP Issuer URL", &flags.IdpIssuerURL)
-		if err != nil {
-			return fmt.Errorf("error reading IDP Issuer URL: %w", err)
+	// if issuer is verified, require IdP proof
+	if issuer.Verified {
+		// if the idp client id is not set, prompt the user for it interactively
+		if flags.IdpClientID == "" {
+			err := cmdutil.ScanRequired("IDP Client ID", &flags.IdpClientID)
+			if err != nil {
+				return fmt.Errorf("error reading IDP Client ID: %w", err)
+			}
 		}
-	}
 
-	idpConfig := issuerTypes.IdpConfig{
-		ClientId:     flags.IdpClientID,
-		ClientSecret: flags.IdpClientSecret,
-		IssuerUrl:    flags.IdpIssuerURL,
+		// if the idp client secret is not set, prompt the user for it interactively
+		if flags.IdpClientSecret == "" {
+			err := cmdutil.ScanRequired("IDP Client Secret", &flags.IdpClientSecret)
+			if err != nil {
+				return fmt.Errorf("error reading IDP Client Secret: %w", err)
+			}
+		}
+
+		// if the idp issuer url is not set, prompt the user for it interactively
+		if flags.IdpIssuerURL == "" {
+			err := cmdutil.ScanRequired("IDP Issuer URL", &flags.IdpIssuerURL)
+			if err != nil {
+				return fmt.Errorf("error reading IDP Issuer URL: %w", err)
+			}
+		}
+
+		idpConfig = &issuerTypes.IdpConfig{
+			ClientId:     flags.IdpClientID,
+			ClientSecret: flags.IdpClientSecret,
+			IssuerUrl:    flags.IdpIssuerURL,
+		}
 	}
 
 	metadataId, err := cmd.metadataService.GenerateMetadata(
@@ -106,7 +125,7 @@ func (cmd *GenerateCommand) Run(ctx context.Context, flags *GenerateFlags) error
 		cmd.cache.VaultId,
 		cmd.cache.KeyID,
 		cmd.cache.IssuerId,
-		&idpConfig,
+		idpConfig,
 	)
 	if err != nil {
 		return fmt.Errorf("error generating metadata: %w", err)

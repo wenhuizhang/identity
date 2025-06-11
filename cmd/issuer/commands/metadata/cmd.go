@@ -5,6 +5,7 @@ package metadata
 
 import (
 	clicache "github.com/agntcy/identity/cmd/issuer/cache"
+	isvc "github.com/agntcy/identity/internal/issuer/issuer"
 	mdsrv "github.com/agntcy/identity/internal/issuer/metadata"
 	"github.com/spf13/cobra"
 )
@@ -12,6 +13,7 @@ import (
 func NewCmd(
 	cache *clicache.Cache,
 	metadataService mdsrv.MetadataService,
+	issuerService isvc.IssuerService,
 ) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "metadata",
@@ -21,7 +23,7 @@ The metadata command is used to generate important metadata for your Agent and M
 `,
 	}
 
-	cmd.AddCommand(NewCmdGenerate(cache, metadataService))
+	cmd.AddCommand(NewCmdGenerate(cache, metadataService, issuerService))
 	cmd.AddCommand(NewCmdList(cache, metadataService))
 	cmd.AddCommand(NewCmdShow(cache, metadataService))
 	cmd.AddCommand(NewCmdForget(cache, metadataService))

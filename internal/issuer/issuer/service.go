@@ -5,15 +5,12 @@ package issuer
 
 import (
 	"context"
-	"fmt"
 
 	vctypes "github.com/agntcy/identity/internal/core/vc/types"
+	"github.com/agntcy/identity/internal/issuer/auth"
 	"github.com/agntcy/identity/internal/issuer/issuer/data"
 	"github.com/agntcy/identity/internal/issuer/issuer/types"
-	"github.com/agntcy/identity/internal/issuer/vault"
-	"github.com/agntcy/identity/internal/pkg/jwtutil"
 	"github.com/agntcy/identity/internal/pkg/nodeapi"
-	"github.com/agntcy/identity/internal/pkg/oidc"
 )
 
 type IssuerService interface {
@@ -25,22 +22,19 @@ type IssuerService interface {
 
 type issuerService struct {
 	issuerRepository data.IssuerRepository
-	auth             oidc.Authenticator
 	nodeClientPrv    nodeapi.ClientProvider
-	vaultSrv         vault.VaultService
+	authClient       auth.Client
 }
 
 func NewIssuerService(
 	issuerRepository data.IssuerRepository,
-	auth oidc.Authenticator,
 	nodeClientPrv nodeapi.ClientProvider,
-	vaultSrv vault.VaultService,
+	authClient auth.Client,
 ) IssuerService {
 	return &issuerService{
 		issuerRepository: issuerRepository,
-		auth:             auth,
 		nodeClientPrv:    nodeClientPrv,
-		vaultSrv:         vaultSrv,
+		authClient:       authClient,
 	}
 }
 
@@ -49,34 +43,12 @@ func (s *issuerService) RegisterIssuer(
 	vaultId, keyId string,
 	issuer *types.Issuer,
 ) (string, error) {
-	var token string
-	var err error
-
-	if issuer.IdpConfig == nil {
-		prvKey, keyErr := s.vaultSrv.RetrievePrivKey(
-			ctx,
-			vaultId,
-			keyId,
-		)
-		if keyErr != nil {
-			return "", fmt.Errorf("error retrieving public key: %w", err)
-		}
-
-		// If no IdpConfig is provided, we generate a JWT token using the issuer's private key.
-		token, err = jwtutil.Jwt(
-			issuer.CommonName,
-			issuer.ID,
-			prvKey,
-		)
-	} else {
-		token, err = s.auth.Token(
-			ctx,
-			issuer.IdpConfig.IssuerUrl,
-			issuer.IdpConfig.ClientId,
-			issuer.IdpConfig.ClientSecret,
-		)
-	}
-
+	token, err := s.authClient.Token(
+		ctx,
+		vaultId,
+		keyId,
+		issuer.ID,
+		issuer.IdpConfig)
 	if err != nil {
 		return "", err
 	}
