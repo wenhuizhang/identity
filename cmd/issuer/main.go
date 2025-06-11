@@ -85,14 +85,12 @@ The Identity CLI tool is a command line interface for generating, publishing and
 	)
 	issuerService := issuer.NewIssuerService(
 		issuerRepository,
-		oidcAuth,
 		nodeClientPrv,
 		authClient,
 	)
 	metadataService := metadata.NewMetadataService(
 		mdRepository,
 		issuerRepository,
-		oidcAuth,
 		nodeClientPrv,
 		authClient,
 	)

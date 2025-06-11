@@ -71,9 +71,9 @@ func (s *client) Token(
 	} else {
 		auth, err = s.auth.Token(
 			ctx,
-			issuer.IdpConfig.IssuerUrl,
-			issuer.IdpConfig.ClientId,
-			issuer.IdpConfig.ClientSecret,
+			idpConfig.IssuerUrl,
+			idpConfig.ClientId,
+			idpConfig.ClientSecret,
 		)
 	}
 
