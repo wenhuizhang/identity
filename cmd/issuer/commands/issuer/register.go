@@ -102,7 +102,7 @@ func (cmd *RegisterCommand) Run(ctx context.Context, flags *RegisterFlags) error
 	id := uuid.NewString()
 	var idpConfig *idptypes.IdpConfig
 
-	// If the common name is not set, use the IdP client ID as the common name
+	// If the common name is not set, use the IdP configuration
 	if flags.CommonName == "" {
 		idpConfig = &idptypes.IdpConfig{
 			ClientId:     flags.ClientID,
@@ -199,7 +199,7 @@ func (cmd *RegisterCommand) validateFlags(flags *RegisterFlags) error {
 		}
 	}
 
-	// if self provided common name is set, ask for IdP client ID, secret, and issuer URL
+	// if self provided common name is not set, ask for IdP client ID, secret, and issuer URL
 	if flags.CommonName == "" {
 		// if the client ID is not set, prompt the user for it interactively
 		if flags.ClientID == "" {
