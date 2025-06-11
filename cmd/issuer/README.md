@@ -50,17 +50,39 @@ identity vault key generate
 
 #### Step 2: Register as an issuer
 
-```bash
-identity issuer register -o "My Organization" \
-    -c "client-id" -s "client-secret" -u "https://idp.example.com"
-```
+1. Using an Identity Provider (IdP):
+
+   ```bash
+   identity issuer register -o "My Organization" \
+       -c "client-id" -s "client-secret" -u "https://idp.example.com"
+   ```
+
+2. Without an Identity Provider (IdP):
+
+   ```bash
+   identity issuer register -o "My Organization" \
+        -k "common-name"
+   ```
+
+> [!NOTE]
+> This will create a new issuer configuration in the specified vault.
+> Without an Identity Provider (IdP), the provided common name will not be verified
+> and the issuer will be registered as a self-signed issuer.
 
 #### Step 3: Generate metadata
 
-```bash
-identity metadata generate \
-    -c "client-id" -s "client-secret" -u "https://idp.example.com"
-```
+1. Using an Identity Provider (IdP):
+
+   ```bash
+   identity metadata generate \
+       -c "client-id" -s "client-secret" -u "https://idp.example.com"
+   ```
+
+2. Without an Identity Provider (IdP):
+
+   ```bash
+   identity metadata generate
+   ```
 
 #### Step 4: Issue a badge
 
