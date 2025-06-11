@@ -77,7 +77,7 @@ linters:
     - wsl
   settings:
     nestif:
-      max-complexity: 10
+      min-complexity: 10
     cyclop:
       max-complexity: 16
     goconst:
