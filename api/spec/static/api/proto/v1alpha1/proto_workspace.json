@@ -1666,7 +1666,7 @@
           "name": "RegisterIssuerResponse",
           "longName": "RegisterIssuerResponse",
           "fullName": "agntcy.identity.node.v1alpha1.RegisterIssuerResponse",
-          "description": "Returns a registration response for the issuer",
+          "description": "Returns a registration response for the issuer\n\nEmpty response",
           "hasExtensions": false,
           "hasFields": false,
           "hasOneofs": false,
