@@ -7,13 +7,13 @@ import (
 	"context"
 	"encoding/json"
 
+	"github.com/agntcy/identity/internal/issuer/auth"
 	"github.com/agntcy/identity/internal/issuer/badge/data"
 	issdata "github.com/agntcy/identity/internal/issuer/issuer/data"
 	mddata "github.com/agntcy/identity/internal/issuer/metadata/data"
 	"github.com/agntcy/identity/internal/pkg/errutil"
 	"github.com/agntcy/identity/internal/pkg/joseutil"
 	"github.com/agntcy/identity/internal/pkg/nodeapi"
-	"github.com/agntcy/identity/internal/pkg/oidc"
 	"github.com/google/uuid"
 
 	idtypes "github.com/agntcy/identity/internal/core/id/types"
@@ -50,7 +50,7 @@ type badgeService struct {
 	badgeRepository    data.BadgeRepository
 	metadataRepository mddata.MetadataRepository
 	issuerRepository   issdata.IssuerRepository
-	auth               oidc.Authenticator
+	authClient         auth.Client
 	nodeClientPrv      nodeapi.ClientProvider
 }
 
@@ -58,14 +58,14 @@ func NewBadgeService(
 	badgeRepository data.BadgeRepository,
 	metadataRepository mddata.MetadataRepository,
 	issuerRepository issdata.IssuerRepository,
-	auth oidc.Authenticator,
+	authClient auth.Client,
 	nodeClientPrv nodeapi.ClientProvider,
 ) BadgeService {
 	return &badgeService{
 		badgeRepository:    badgeRepository,
 		metadataRepository: metadataRepository,
 		issuerRepository:   issuerRepository,
-		auth:               auth,
+		authClient:         authClient,
 		nodeClientPrv:      nodeClientPrv,
 	}
 }
@@ -150,11 +150,13 @@ func (s *badgeService) PublishBadge(
 		return nil, errutil.Err(err, "unable to fetch the metadata")
 	}
 
-	token, err := s.auth.Token(
+	token, err := s.authClient.Token(
 		ctx,
-		md.IdpConfig.IssuerUrl,
-		md.IdpConfig.ClientId,
-		md.IdpConfig.ClientSecret,
+		vaultId,
+		keyId,
+		issuer,
+		md.IdpConfig,
+		&metadataId,
 	)
 	if err != nil {
 		return nil, err

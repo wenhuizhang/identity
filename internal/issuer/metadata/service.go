@@ -63,6 +63,7 @@ func (s *metadataService) GenerateMetadata(
 		keyId,
 		issuer,
 		idpConfig,
+		nil,
 	)
 	if err != nil {
 		return "", err

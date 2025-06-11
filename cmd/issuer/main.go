@@ -70,18 +70,17 @@ The Identity CLI tool is a command line interface for generating, publishing and
 	oidcAuth := oidc.NewAuthenticator()
 
 	// Initialize services
+	vaultService := vault.NewVaultService(vaultRepository)
+	authClient := auth.NewClient(
+		oidcAuth,
+		vaultService,
+	)
 	badgeService := badge.NewBadgeService(
 		badgeFilesystemRepository,
 		mdRepository,
 		issuerRepository,
-		oidcAuth,
+		authClient,
 		nodeClientPrv,
-	)
-	vaultService := vault.NewVaultService(vaultRepository)
-	authClient := auth.NewClient(
-		issuerRepository,
-		oidcAuth,
-		vaultService,
 	)
 	issuerService := issuer.NewIssuerService(
 		issuerRepository,

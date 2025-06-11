@@ -48,7 +48,7 @@ func (s *issuerService) RegisterIssuer(
 		vaultId,
 		keyId,
 		issuer,
-		issuer.IdpConfig)
+		issuer.IdpConfig, &issuer.ID)
 	if err != nil {
 		return "", err
 	}

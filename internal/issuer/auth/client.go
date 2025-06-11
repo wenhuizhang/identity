@@ -6,39 +6,43 @@ package auth
 import (
 	"context"
 	"fmt"
+	"strings"
 
-	issuerData "github.com/agntcy/identity/internal/issuer/issuer/data"
 	"github.com/agntcy/identity/internal/issuer/issuer/types"
 	idptypes "github.com/agntcy/identity/internal/issuer/types"
 	"github.com/agntcy/identity/internal/issuer/vault"
+	"github.com/agntcy/identity/internal/node"
 	"github.com/agntcy/identity/internal/pkg/jwtutil"
 	"github.com/agntcy/identity/internal/pkg/oidc"
+	"github.com/google/uuid"
 )
 
 type Client interface {
+	// Token generates a JWT token for the issuer.
+	// If idpConfig is nil, it uses the issuer's private key to generate the JWT.
+	// If id is provided, it will be used as the subject of the JWT.
+	// Otherwise, one will be generated.
 	Token(
 		ctx context.Context,
 		vaultId, keyId string,
 		issuer *types.Issuer,
 		idpConfig *idptypes.IdpConfig,
+		id *string,
 	) (string, error)
 }
 
 type client struct {
-	issuerRepository issuerData.IssuerRepository
-	auth             oidc.Authenticator
-	vaultSrv         vault.VaultService
+	auth     oidc.Authenticator
+	vaultSrv vault.VaultService
 }
 
 func NewClient(
-	issuerRepository issuerData.IssuerRepository,
 	auth oidc.Authenticator,
 	vaultSrv vault.VaultService,
 ) Client {
 	return &client{
-		issuerRepository: issuerRepository,
-		auth:             auth,
-		vaultSrv:         vaultSrv,
+		auth:     auth,
+		vaultSrv: vaultSrv,
 	}
 }
 
@@ -47,6 +51,7 @@ func (s *client) Token(
 	vaultId, keyId string,
 	issuer *types.Issuer,
 	idpConfig *idptypes.IdpConfig,
+	id *string,
 ) (string, error) {
 	var auth string
 	var err error
@@ -61,10 +66,19 @@ func (s *client) Token(
 			return "", fmt.Errorf("error retrieving public key: %w", err)
 		}
 
+		// If id is nil, we generate a new UUID for the subject.
+		var sub string
+		if id == nil {
+			sub = uuid.NewString()
+		} else {
+			// Remove self scheme prefix if it exists.
+			sub = strings.TrimPrefix(*id, node.SelfScheme)
+		}
+
 		// If no IdpConfig is provided, we generate a JWT auth using the issuer's private key.
 		auth, err = jwtutil.Jwt(
 			issuer.CommonName,
-			issuer.ID,
+			sub,
 			prvKey,
 		)
 	} else {

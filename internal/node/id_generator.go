@@ -21,9 +21,9 @@ import (
 // All IDP schemes supported by the ID generator.
 // The ID generator creates IDs based on the proof and issuer information.
 const (
-	oktaIdp = "OKTA-"
-	duoIdp  = "DUO-"
-	self    = "agntcy:"
+	OktaScheme = "OKTA-"
+	DuoScheme  = "DUO-"
+	SelfScheme = "AGNTCY-"
 )
 
 type IDGenerator interface {
@@ -85,11 +85,11 @@ func (g *idGenerator) GenerateFromProof(
 
 		switch jwt.Provider {
 		case oidc.OktaProviderName:
-			scheme = oktaIdp
+			scheme = OktaScheme
 		case oidc.DuoProviderName:
-			scheme = duoIdp
+			scheme = DuoScheme
 		case oidc.SelfProviderName:
-			scheme = self
+			scheme = SelfScheme
 		default:
 			return "", nil, errutil.ErrInfo(
 				errtypes.ERROR_REASON_UNKNOWN_IDP,
@@ -103,7 +103,7 @@ func (g *idGenerator) GenerateFromProof(
 
 		// If the issuer is verified
 		// we require a valid proof from the IdP
-		if issuer.Verified && scheme == self {
+		if issuer.Verified && scheme == SelfScheme {
 			return "", nil, errutil.ErrInfo(
 				errtypes.ERROR_REASON_IDP_REQUIRED,
 				"the issuer is verified so the proof must be from an IdP",

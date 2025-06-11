@@ -8,7 +8,7 @@ import (
 	"testing"
 
 	"github.com/agntcy/identity/internal/issuer/auth"
-	issuertesting "github.com/agntcy/identity/internal/issuer/issuer/data/testing"
+	"github.com/agntcy/identity/internal/issuer/issuer/types"
 	idptypes "github.com/agntcy/identity/internal/issuer/types"
 	vaulttesting "github.com/agntcy/identity/internal/issuer/vault/testing"
 	"github.com/agntcy/identity/internal/pkg/oidc"
@@ -19,7 +19,6 @@ func TestToken_Should_Issue_A_Self_Issued_Token(t *testing.T) {
 	t.Parallel()
 
 	authClient := auth.NewClient(
-		issuertesting.NewFakeIssuerRepository(),
 		oidc.NewAuthenticator(),
 		vaulttesting.NewFakeVaultService(),
 	)
@@ -28,7 +27,8 @@ func TestToken_Should_Issue_A_Self_Issued_Token(t *testing.T) {
 		context.Background(),
 		"vaultId",
 		"keyId",
-		"issuerId",
+		&types.Issuer{},
+		nil,
 		nil,
 	)
 
@@ -40,7 +40,6 @@ func TestToken_Should_Issue_A_JWT_Signed_Token(t *testing.T) {
 	t.Parallel()
 
 	authClient := auth.NewClient(
-		issuertesting.NewFakeIssuerRepository(),
 		oidc.NewAuthenticator(),
 		vaulttesting.NewFakeVaultService(),
 	)
@@ -49,12 +48,13 @@ func TestToken_Should_Issue_A_JWT_Signed_Token(t *testing.T) {
 		context.Background(),
 		"vaultId",
 		"keyId",
-		"issuerId",
+		&types.Issuer{},
 		&idptypes.IdpConfig{
 			ClientId:     "client-id",
 			ClientSecret: "client-secret",
 			IssuerUrl:    "https://example.com",
 		},
+		nil,
 	)
 
 	assert.Error(t, err, "Expected an error when issuing a JWT signed token without a private key")
