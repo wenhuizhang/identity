@@ -8,6 +8,7 @@ import (
 	"fmt"
 
 	issuerData "github.com/agntcy/identity/internal/issuer/issuer/data"
+	"github.com/agntcy/identity/internal/issuer/issuer/types"
 	idptypes "github.com/agntcy/identity/internal/issuer/types"
 	"github.com/agntcy/identity/internal/issuer/vault"
 	"github.com/agntcy/identity/internal/pkg/jwtutil"
@@ -17,7 +18,8 @@ import (
 type Client interface {
 	Token(
 		ctx context.Context,
-		vaultId, keyId, issuerId string,
+		vaultId, keyId string,
+		issuer *types.Issuer,
 		idpConfig *idptypes.IdpConfig,
 	) (string, error)
 }
@@ -42,15 +44,12 @@ func NewClient(
 
 func (s *client) Token(
 	ctx context.Context,
-	vaultId, keyId, issuerId string,
+	vaultId, keyId string,
+	issuer *types.Issuer,
 	idpConfig *idptypes.IdpConfig,
 ) (string, error) {
-	issuer, err := s.issuerRepository.GetIssuer(vaultId, keyId, issuerId)
-	if err != nil {
-		return "", err
-	}
-
 	var auth string
+	var err error
 
 	if idpConfig == nil {
 		prvKey, keyErr := s.vaultSrv.RetrievePrivKey(

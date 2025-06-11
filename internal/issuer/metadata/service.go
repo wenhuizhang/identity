@@ -61,7 +61,7 @@ func (s *metadataService) GenerateMetadata(
 		ctx,
 		vaultId,
 		keyId,
-		issuerId,
+		issuer,
 		idpConfig,
 	)
 	if err != nil {
