@@ -32,6 +32,8 @@ func TestGenerateID_Should_Not_Return_Errors(t *testing.T) {
 			Issuer:  "http://" + verificationtesting.ValidProofIssuer,
 			Subject: "test",
 		},
+		Verified:   true,
+		CommonName: verificationtesting.ValidProofIssuer,
 	}
 	idGen := node.NewIDGenerator(
 		oidctesting.NewFakeParser(jwt, nil),
@@ -48,6 +50,68 @@ func TestGenerateID_Should_Not_Return_Errors(t *testing.T) {
 
 	assert.NoError(t, err)
 	assert.Equal(t, "DUO-test", md.ID)
+}
+
+func TestGenerateID_Should_Not_Return_Error_With_Self_Provider(t *testing.T) {
+	t.Parallel()
+
+	idRepo := idtesting.NewFakeIdRepository()
+	issuerRepo := issuertesting.NewFakeIssuerRepository()
+	jwt := &oidc.ParsedJWT{
+		Provider: oidc.SelfProviderName,
+		Claims: &oidc.Claims{
+			Issuer:  verificationtesting.ValidProofIssuer,
+			Subject: "test",
+		},
+		Verified:   false,
+		CommonName: verificationtesting.ValidProofIssuer,
+	}
+	idGen := node.NewIDGenerator(
+		oidctesting.NewFakeParser(jwt, nil),
+		issuerRepo,
+	)
+	sut := node.NewIdService(idRepo, issuerRepo, idGen)
+	issuer := &issuertypes.Issuer{
+		CommonName:   verificationtesting.ValidProofIssuer,
+		Organization: "Some Org",
+	}
+	_, _ = issuerRepo.CreateIssuer(context.Background(), issuer)
+
+	md, err := sut.Generate(context.Background(), issuer, &vctypes.Proof{Type: "JWT"})
+
+	assert.NoError(t, err)
+	assert.Equal(t, "agntcy:test", md.ID)
+}
+
+func TestGenerateID_Should_Return_Error_With_Idp_And_Self_Proof(t *testing.T) {
+	t.Parallel()
+
+	idRepo := idtesting.NewFakeIdRepository()
+	issuerRepo := issuertesting.NewFakeIssuerRepository()
+	jwt := &oidc.ParsedJWT{
+		Provider: oidc.SelfProviderName,
+		Claims: &oidc.Claims{
+			Issuer:  verificationtesting.ValidProofIssuer,
+			Subject: "test",
+		},
+		Verified:   false,
+		CommonName: verificationtesting.ValidProofIssuer,
+	}
+	idGen := node.NewIDGenerator(
+		oidctesting.NewFakeParser(jwt, nil),
+		issuerRepo,
+	)
+	sut := node.NewIdService(idRepo, issuerRepo, idGen)
+	issuer := &issuertypes.Issuer{
+		CommonName:   verificationtesting.ValidProofIssuer,
+		Organization: "Some Org",
+		Verified:     true,
+	}
+	_, _ = issuerRepo.CreateIssuer(context.Background(), issuer)
+
+	_, err := sut.Generate(context.Background(), issuer, &vctypes.Proof{Type: "JWT"})
+
+	assertErrorInfoReason(t, err, errtypes.ERROR_REASON_IDP_REQUIRED)
 }
 
 func TestGenerateID_Should_Return_Invalid_Proof_If_Empty(t *testing.T) {
@@ -91,6 +155,8 @@ func TestGenerateID_Should_Return_Invalid_Issuer_Error(t *testing.T) {
 			Issuer:  "http://" + verificationtesting.ValidProofIssuer,
 			Subject: "test",
 		},
+		CommonName: verificationtesting.ValidProofIssuer,
+		Verified:   true,
 	}
 	idGen := node.NewIDGenerator(
 		oidctesting.NewFakeParser(jwt, nil),
@@ -145,8 +211,10 @@ func TestGenerateID_Should_Return_ID_Already_Exists_Error(t *testing.T) {
 		Subject: "test",
 	}
 	jwt := &oidc.ParsedJWT{
-		Provider: oidc.DuoProviderName,
-		Claims:   claims,
+		Provider:   oidc.DuoProviderName,
+		Claims:     claims,
+		CommonName: verificationtesting.ValidProofIssuer,
+		Verified:   true,
 	}
 	idGen := node.NewIDGenerator(
 		oidctesting.NewFakeParser(jwt, nil),

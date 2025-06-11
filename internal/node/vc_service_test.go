@@ -42,6 +42,8 @@ func TestPublishVC(t *testing.T) {
 			Issuer:  "http://" + verificationtesting.ValidProofIssuer,
 			Subject: verificationtesting.ValidProofSub,
 		},
+		Verified:   true,
+		CommonName: verificationtesting.ValidProofIssuer,
 	}
 	idGen := node.NewIDGenerator(
 		oidctesting.NewFakeParser(jwt, nil),

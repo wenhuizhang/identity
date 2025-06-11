@@ -57,8 +57,9 @@ type providerMetadata struct {
 	JWKSURL  string `json:"jwks_uri"`
 }
 
-const defaultCacheSize = 10 * 1024 * 1024 // 10MB
-const defaultCacheExpiration = 24         // 24 hours
+const defaultCacheSize = 10 * 1024 * 1024     // 10MB
+const defaultCacheExpiration = 24             // 24 hours
+const defaultAcceptableSkew = 5 * time.Second // 5 seconds
 
 type CachedJwks struct {
 	Jwks string
@@ -213,7 +214,12 @@ func (p *parser) GetClaims(
 	jwtString *string,
 ) (*Claims, error) {
 	// Parse the JWT string
-	jwtToken, err := jwt.Parse([]byte(*jwtString), jwt.WithVerify(false), jwt.WithValidate(true))
+	jwtToken, err := jwt.Parse(
+		[]byte(*jwtString),
+		jwt.WithVerify(false),
+		jwt.WithValidate(true),
+		jwt.WithAcceptableSkew(defaultAcceptableSkew),
+	)
 	if err != nil {
 		return nil, errutil.Err(err, "failed to parse JWT")
 	}
