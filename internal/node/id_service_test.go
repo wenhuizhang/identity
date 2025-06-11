@@ -80,7 +80,7 @@ func TestGenerateID_Should_Not_Return_Error_With_Self_Provider(t *testing.T) {
 	md, err := sut.Generate(context.Background(), issuer, &vctypes.Proof{Type: "JWT"})
 
 	assert.NoError(t, err)
-	assert.Equal(t, "agntcy:test", md.ID)
+	assert.Equal(t, node.SelfScheme+"test", md.ID)
 }
 
 func TestGenerateID_Should_Return_Error_With_Idp_And_Self_Proof(t *testing.T) {
