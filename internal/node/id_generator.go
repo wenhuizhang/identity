@@ -98,6 +98,9 @@ func (g *idGenerator) GenerateFromProof(
 			)
 		}
 
+		log.Debug("Issuer is verified: ", issuer.Verified)
+		log.Debug("JWT scheme: ", scheme)
+
 		// If the issuer is verified
 		// we require a valid proof from the IdP
 		if issuer.Verified && scheme == self {

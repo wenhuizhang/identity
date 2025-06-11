@@ -129,6 +129,7 @@ func (cmd *RegisterCommand) Run(ctx context.Context, flags *RegisterFlags) error
 		SubOrganization: flags.SubOrganization,
 		CommonName:      commonName,
 		PublicKey:       pubKey,
+		Verified:        flags.CommonName == "",
 	}
 
 	issuer := issuertypes.Issuer{

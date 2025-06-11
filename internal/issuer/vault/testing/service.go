@@ -15,6 +15,8 @@ import (
 	"github.com/lestrrat-go/jwx/v3/jwk"
 )
 
+const keySize = 2048
+
 type FakeVaultService interface {
 	ConnectVault(vault *types.Vault) (string, error)
 	GetAllVaults() ([]*types.Vault, error)
@@ -74,7 +76,7 @@ func (s *fakeVaultService) RetrievePrivKey(
 }
 
 func generatePrivKey() (*idtypes.Jwk, error) {
-	pk, err := rsa.GenerateKey(rand.Reader, 2048)
+	pk, err := rsa.GenerateKey(rand.Reader, keySize)
 	if err != nil {
 		return nil, err
 	}
