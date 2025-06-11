@@ -103,7 +103,7 @@ func (g *idGenerator) GenerateFromProof(
 		if issuer.Verified && scheme == self {
 			return "", nil, errutil.ErrInfo(
 				errtypes.ERROR_REASON_IDP_REQUIRED,
-				"the issuer is not verified",
+				"the issuer is verified so the proof must be from an IdP",
 				nil,
 			)
 		}
