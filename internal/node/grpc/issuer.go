@@ -31,7 +31,7 @@ func (i *issuerService) Register(
 	log.Debug("RegisterIssuer: ", req.Issuer.CommonName)
 
 	// Convert entities and call the node service
-	uri, err := i.nodeIssuerService.Register(
+	err := i.nodeIssuerService.Register(
 		ctx,
 		converters.ToIssuer(req.Issuer),
 		converters.ToProof(req.Proof),
@@ -41,9 +41,7 @@ func (i *issuerService) Register(
 	}
 
 	// Return the action uri
-	return &nodeapi.RegisterIssuerResponse{
-		Uri: uri,
-	}, nil
+	return &nodeapi.RegisterIssuerResponse{}, nil
 }
 
 // Returns the well-known document content for an issuer in

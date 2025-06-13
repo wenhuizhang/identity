@@ -84,12 +84,9 @@ func (x *RegisterIssuerRequest) GetProof() *v1alpha1.Proof {
 	return nil
 }
 
-// Returns the action to take to complete the registration
+// Returns a registration response for the issuer
 type RegisterIssuerResponse struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// Optional: a uri indicating an action to take to complete the registration
-	// Depending on the issuer type, this could be a validation URL
-	Uri           *string `protobuf:"bytes,1,opt,name=uri,proto3,oneof" json:"uri,omitempty"`
+	state         protoimpl.MessageState `protogen:"open.v1"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -122,13 +119,6 @@ func (x *RegisterIssuerResponse) ProtoReflect() protoreflect.Message {
 // Deprecated: Use RegisterIssuerResponse.ProtoReflect.Descriptor instead.
 func (*RegisterIssuerResponse) Descriptor() ([]byte, []int) {
 	return file_agntcy_identity_node_v1alpha1_issuer_service_proto_rawDescGZIP(), []int{1}
-}
-
-func (x *RegisterIssuerResponse) GetUri() string {
-	if x != nil && x.Uri != nil {
-		return *x.Uri
-	}
-	return ""
 }
 
 // Request to get the well-known JWKS document of an issuer
@@ -231,10 +221,8 @@ const file_agntcy_identity_node_v1alpha1_issuer_service_proto_rawDesc = "" +
 	"\x15RegisterIssuerRequest\x12=\n" +
 	"\x06issuer\x18\x01 \x01(\v2%.agntcy.identity.core.v1alpha1.IssuerR\x06issuer\x12?\n" +
 	"\x05proof\x18\x02 \x01(\v2$.agntcy.identity.core.v1alpha1.ProofH\x00R\x05proof\x88\x01\x01B\b\n" +
-	"\x06_proof\"7\n" +
-	"\x16RegisterIssuerResponse\x12\x15\n" +
-	"\x03uri\x18\x01 \x01(\tH\x00R\x03uri\x88\x01\x01B\x06\n" +
-	"\x04_uri\"<\n" +
+	"\x06_proof\"\x18\n" +
+	"\x16RegisterIssuerResponse\"<\n" +
 	"\x19GetIssuerWellKnownRequest\x12\x1f\n" +
 	"\vcommon_name\x18\x01 \x01(\tR\n" +
 	"commonName\"U\n" +
@@ -288,7 +276,6 @@ func file_agntcy_identity_node_v1alpha1_issuer_service_proto_init() {
 		return
 	}
 	file_agntcy_identity_node_v1alpha1_issuer_service_proto_msgTypes[0].OneofWrappers = []any{}
-	file_agntcy_identity_node_v1alpha1_issuer_service_proto_msgTypes[1].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{

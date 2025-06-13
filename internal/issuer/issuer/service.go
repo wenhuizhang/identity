@@ -7,10 +7,10 @@ import (
 	"context"
 
 	vctypes "github.com/agntcy/identity/internal/core/vc/types"
+	"github.com/agntcy/identity/internal/issuer/auth"
 	"github.com/agntcy/identity/internal/issuer/issuer/data"
 	"github.com/agntcy/identity/internal/issuer/issuer/types"
 	"github.com/agntcy/identity/internal/pkg/nodeapi"
-	"github.com/agntcy/identity/internal/pkg/oidc"
 )
 
 type IssuerService interface {
@@ -22,19 +22,19 @@ type IssuerService interface {
 
 type issuerService struct {
 	issuerRepository data.IssuerRepository
-	auth             oidc.Authenticator
 	nodeClientPrv    nodeapi.ClientProvider
+	authClient       auth.Client
 }
 
 func NewIssuerService(
 	issuerRepository data.IssuerRepository,
-	auth oidc.Authenticator,
 	nodeClientPrv nodeapi.ClientProvider,
+	authClient auth.Client,
 ) IssuerService {
 	return &issuerService{
 		issuerRepository: issuerRepository,
-		auth:             auth,
 		nodeClientPrv:    nodeClientPrv,
+		authClient:       authClient,
 	}
 }
 
@@ -43,12 +43,12 @@ func (s *issuerService) RegisterIssuer(
 	vaultId, keyId string,
 	issuer *types.Issuer,
 ) (string, error) {
-	token, err := s.auth.Token(
+	token, err := s.authClient.Token(
 		ctx,
-		issuer.IdpConfig.IssuerUrl,
-		issuer.IdpConfig.ClientId,
-		issuer.IdpConfig.ClientSecret,
-	)
+		vaultId,
+		keyId,
+		issuer,
+		issuer.IdpConfig, &issuer.ID)
 	if err != nil {
 		return "", err
 	}

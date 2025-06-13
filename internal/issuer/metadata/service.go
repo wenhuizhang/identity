@@ -7,12 +7,12 @@ import (
 	"context"
 
 	vctypes "github.com/agntcy/identity/internal/core/vc/types"
+	"github.com/agntcy/identity/internal/issuer/auth"
 	issuerData "github.com/agntcy/identity/internal/issuer/issuer/data"
 	"github.com/agntcy/identity/internal/issuer/metadata/data"
 	"github.com/agntcy/identity/internal/issuer/metadata/types"
 	idptypes "github.com/agntcy/identity/internal/issuer/types"
 	"github.com/agntcy/identity/internal/pkg/nodeapi"
-	"github.com/agntcy/identity/internal/pkg/oidc"
 )
 
 type MetadataService interface {
@@ -29,21 +29,21 @@ type MetadataService interface {
 type metadataService struct {
 	metadataRepository data.MetadataRepository
 	issuerRepository   issuerData.IssuerRepository
-	auth               oidc.Authenticator
 	nodeClientPrv      nodeapi.ClientProvider
+	authClient         auth.Client
 }
 
 func NewMetadataService(
 	metadataRepository data.MetadataRepository,
 	issuerRepository issuerData.IssuerRepository,
-	auth oidc.Authenticator,
 	nodeClientPrv nodeapi.ClientProvider,
+	authClient auth.Client,
 ) MetadataService {
 	return &metadataService{
 		metadataRepository: metadataRepository,
 		issuerRepository:   issuerRepository,
-		auth:               auth,
 		nodeClientPrv:      nodeClientPrv,
+		authClient:         authClient,
 	}
 }
 
@@ -57,11 +57,13 @@ func (s *metadataService) GenerateMetadata(
 		return "", err
 	}
 
-	token, err := s.auth.Token(
+	token, err := s.authClient.Token(
 		ctx,
-		idpConfig.IssuerUrl,
-		idpConfig.ClientId,
-		idpConfig.ClientSecret,
+		vaultId,
+		keyId,
+		issuer,
+		idpConfig,
+		nil,
 	)
 	if err != nil {
 		return "", err

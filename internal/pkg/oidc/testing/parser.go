@@ -24,6 +24,25 @@ func NewFakeParser(
 	}
 }
 
-func (p *fakeParser) ParseJwt(ctx context.Context, jwtString *string) (*oidc.ParsedJWT, error) {
-	return p.result, p.err
+func (p *fakeParser) ParseAndVerifyJwt(
+	ctx context.Context,
+	jwtString *string,
+	jwksString *string,
+) (*oidc.ParsedJWT, error) {
+	return p.ParseJwt(ctx, jwtString), p.err
+}
+
+func (p *fakeParser) VerifyJwt(
+	ctx context.Context,
+	parsedJwt *oidc.ParsedJWT,
+	jwksString *string,
+) error {
+	return nil
+}
+
+func (p *fakeParser) ParseJwt(
+	ctx context.Context,
+	jwtString *string,
+) *oidc.ParsedJWT {
+	return p.result
 }

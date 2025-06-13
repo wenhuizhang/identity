@@ -17,7 +17,7 @@ import (
 	idtypes "github.com/agntcy/identity/internal/core/id/types"
 	issuertesting "github.com/agntcy/identity/internal/core/issuer/testing"
 	issuertypes "github.com/agntcy/identity/internal/core/issuer/types"
-	coretesting "github.com/agntcy/identity/internal/core/testing"
+	verificationtesting "github.com/agntcy/identity/internal/core/issuer/verification/testing"
 	vctesting "github.com/agntcy/identity/internal/core/vc/testing"
 	vctypes "github.com/agntcy/identity/internal/core/vc/types"
 	"github.com/agntcy/identity/internal/node"
@@ -33,24 +33,25 @@ import (
 func TestPublishVC(t *testing.T) {
 	t.Parallel()
 
-	verficationSrv := coretesting.NewFakeTruthyVerificationService()
 	idRepo := idtesting.NewFakeIdRepository()
 	issuerRepo := issuertesting.NewFakeIssuerRepository()
 	vcRepo := vctesting.NewFakeVCRepository()
 	jwt := &oidc.ParsedJWT{
 		Provider: oidc.DuoProviderName,
 		Claims: &oidc.Claims{
-			Issuer:  "http://" + coretesting.ValidProofIssuer,
-			Subject: coretesting.ValidProofSub,
+			Issuer:  "http://" + verificationtesting.ValidProofIssuer,
+			Subject: verificationtesting.ValidProofSub,
 		},
+		Verified:   true,
+		CommonName: verificationtesting.ValidProofIssuer,
 	}
 	idGen := node.NewIDGenerator(
 		oidctesting.NewFakeParser(jwt, nil),
 		issuerRepo,
 	)
-	sut := node.NewVerifiableCredentialService(verficationSrv, idRepo, issuerRepo, vcRepo, idGen)
+	sut := node.NewVerifiableCredentialService(idRepo, issuerRepo, vcRepo, idGen)
 	issuer := &issuertypes.Issuer{
-		CommonName:   coretesting.ValidProofIssuer,
+		CommonName:   verificationtesting.ValidProofIssuer,
 		Organization: "Some Org",
 	}
 	_, _ = issuerRepo.CreateIssuer(context.Background(), issuer)
@@ -62,7 +63,7 @@ func TestPublishVC(t *testing.T) {
 	assert.NoError(t, err)
 
 	resolverMD := &idtypes.ResolverMetadata{
-		ID: fmt.Sprintf("DUO-%s", coretesting.ValidProofSub),
+		ID: fmt.Sprintf("DUO-%s", verificationtesting.ValidProofSub),
 		VerificationMethod: []*idtypes.VerificationMethod{
 			{
 				ID:           pubKey.KID,
@@ -80,7 +81,7 @@ func TestPublishVC(t *testing.T) {
 func TestPublishVC_Should_Return_Invalid_Credential_Format_Error(t *testing.T) {
 	t.Parallel()
 
-	sut := node.NewVerifiableCredentialService(nil, nil, nil, nil, nil)
+	sut := node.NewVerifiableCredentialService(nil, nil, nil, nil)
 	invalidEnvelope := &vctypes.EnvelopedCredential{
 		Value: "",
 	}
@@ -90,26 +91,25 @@ func TestPublishVC_Should_Return_Invalid_Credential_Format_Error(t *testing.T) {
 	assertErrorInfoReason(t, err, errtypes.ERROR_REASON_INVALID_CREDENTIAL_ENVELOPE_VALUE_FORMAT)
 }
 
-func TestPublishVC_Should_Return_Idp_Required_Error(t *testing.T) {
+func TestPublishVC_Should_Return_Invalid_Proof_Error_If_Empty(t *testing.T) {
 	t.Parallel()
 
 	idGen := node.NewIDGenerator(oidctesting.NewFakeParser(nil, nil), nil)
-	sut := node.NewVerifiableCredentialService(nil, nil, nil, nil, idGen)
+	sut := node.NewVerifiableCredentialService(nil, nil, nil, idGen)
 	invalidEnvelope := &vctypes.EnvelopedCredential{
 		Value: "something",
 	}
 
 	err := sut.Publish(context.Background(), invalidEnvelope, nil)
 
-	assertErrorInfoReason(t, err, errtypes.ERROR_REASON_IDP_REQUIRED)
+	assertErrorInfoReason(t, err, errtypes.ERROR_REASON_INVALID_PROOF)
 }
 
 func TestPublishVC_Should_Return_Invalid_Proof_Error(t *testing.T) {
 	t.Parallel()
 
-	verficationSrv := coretesting.NewFalsyProofVerificationServiceStub()
 	idGen := node.NewIDGenerator(oidctesting.NewFakeParser(nil, errors.New("")), nil)
-	sut := node.NewVerifiableCredentialService(verficationSrv, nil, nil, nil, idGen)
+	sut := node.NewVerifiableCredentialService(nil, nil, nil, idGen)
 	invalidEnvelope := &vctypes.EnvelopedCredential{
 		Value: "something",
 	}
@@ -122,14 +122,13 @@ func TestPublishVC_Should_Return_Invalid_Proof_Error(t *testing.T) {
 func TestPublishVC_Should_Return_Issuer_Not_Registered(t *testing.T) {
 	t.Parallel()
 
-	verficationSrv := coretesting.NewFakeTruthyVerificationService()
 	idRepo := idtesting.NewFakeIdRepository()
 	issuerRepo := issuertesting.NewFakeIssuerRepository()
 	vcRepo := vctesting.NewFakeVCRepository()
 	jwt := &oidc.ParsedJWT{
 		Provider: oidc.DuoProviderName,
 		Claims: &oidc.Claims{
-			Subject: coretesting.ValidProofSub,
+			Subject: verificationtesting.ValidProofSub,
 			Issuer:  "INVALID",
 		},
 	}
@@ -137,9 +136,9 @@ func TestPublishVC_Should_Return_Issuer_Not_Registered(t *testing.T) {
 		oidctesting.NewFakeParser(jwt, nil),
 		issuerRepo,
 	)
-	sut := node.NewVerifiableCredentialService(verficationSrv, idRepo, issuerRepo, vcRepo, idGen)
+	sut := node.NewVerifiableCredentialService(idRepo, issuerRepo, vcRepo, idGen)
 	issuer := &issuertypes.Issuer{
-		CommonName:   coretesting.ValidProofIssuer,
+		CommonName:   verificationtesting.ValidProofIssuer,
 		Organization: "Some Org",
 	}
 	_, _ = issuerRepo.CreateIssuer(context.Background(), issuer)
@@ -151,7 +150,7 @@ func TestPublishVC_Should_Return_Issuer_Not_Registered(t *testing.T) {
 	assert.NoError(t, err)
 
 	resolverMD := &idtypes.ResolverMetadata{
-		ID: fmt.Sprintf("DUO-%s", coretesting.ValidProofSub),
+		ID: fmt.Sprintf("DUO-%s", verificationtesting.ValidProofSub),
 		VerificationMethod: []*idtypes.VerificationMethod{
 			{
 				ID:           pubKey.KID,
@@ -170,7 +169,7 @@ func TestGetWellKnown_Should_Return_Items(t *testing.T) {
 	t.Parallel()
 
 	vcRepo := vctesting.NewFakeVCRepository()
-	sut := node.NewVerifiableCredentialService(nil, nil, nil, vcRepo, nil)
+	sut := node.NewVerifiableCredentialService(nil, nil, vcRepo, nil)
 	resolverMetadatID := "my-id"
 
 	validVC, _ := vcRepo.Create(t.Context(), &vctypes.VerifiableCredential{

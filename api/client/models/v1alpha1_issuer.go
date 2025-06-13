@@ -36,6 +36,10 @@ type V1alpha1Issuer struct {
 
 	// The sub organization of the issuer
 	SubOrganization string `json:"subOrganization,omitempty"`
+
+	// This will be set to true when issuer provides a valid proof of ownership
+	// of the common name on registration
+	Verified bool `json:"verified,omitempty"`
 }
 
 // Validate validates this v1alpha1 issuer

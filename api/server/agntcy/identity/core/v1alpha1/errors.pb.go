@@ -46,7 +46,7 @@ const (
 	// The Verifiable Credential is invalid, this can be related to either
 	// invalid format or unable to verify the Data Integrity proof.
 	ErrorReason_ERROR_REASON_INVALID_VERIFIABLE_CREDENTIAL ErrorReason = 6
-	// An issuer is required to have an external IdP
+	// The Identity Provider (IdP) is required for the operation, but it is not provided.
 	ErrorReason_ERROR_REASON_IDP_REQUIRED ErrorReason = 7
 	// The proof is invalid
 	ErrorReason_ERROR_REASON_INVALID_PROOF ErrorReason = 8

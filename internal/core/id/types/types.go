@@ -3,7 +3,10 @@
 
 package types
 
-import "strings"
+import (
+	"encoding/json"
+	"strings"
+)
 
 // VerificationMethod expresses verification methods, such as cryptographic
 // public keys, which can be used to authenticate or authorize interactions
@@ -146,4 +149,33 @@ func (j *Jwk) PublicKey() *Jwk {
 type Jwks struct {
 	// Keys represents the list of JSON Web Keys.
 	Keys []*Jwk `json:"keys"`
+}
+
+// Converts the Jwks to a JSON byte slice.
+func (j *Jwks) Raw() []byte {
+	rawJwks, err := json.Marshal(j)
+	if err != nil {
+		return nil
+	}
+
+	return rawJwks
+}
+
+// Convert a raw Jwks to string
+func (j *Jwks) String() *string {
+	rawJwks := j.Raw()
+	if rawJwks == nil {
+		return nil
+	}
+
+	stringJwks := strings.TrimSpace(string(rawJwks))
+
+	return &stringJwks
+}
+
+// Converts a single Jwk to a Jwks object
+func (j *Jwk) Jwks() *Jwks {
+	return &Jwks{
+		Keys: []*Jwk{j},
+	}
 }

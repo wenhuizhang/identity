@@ -7,12 +7,12 @@ import (
 	"context"
 	"errors"
 
-	"github.com/agntcy/identity/internal/core"
 	errcore "github.com/agntcy/identity/internal/core/errors"
 	errtypes "github.com/agntcy/identity/internal/core/errors/types"
 	idtypes "github.com/agntcy/identity/internal/core/id/types"
 	issuercore "github.com/agntcy/identity/internal/core/issuer"
 	issuertypes "github.com/agntcy/identity/internal/core/issuer/types"
+	"github.com/agntcy/identity/internal/core/issuer/verification"
 	vctypes "github.com/agntcy/identity/internal/core/vc/types"
 	"github.com/agntcy/identity/internal/pkg/errutil"
 	"github.com/agntcy/identity/internal/pkg/joseutil"
@@ -22,7 +22,7 @@ import (
 type IssuerService interface {
 	// Register a new Issuer
 	// In case of external IdPs provide a proof of ownership
-	Register(ctx context.Context, issuer *issuertypes.Issuer, proof *vctypes.Proof) (*string, error)
+	Register(ctx context.Context, issuer *issuertypes.Issuer, proof *vctypes.Proof) error
 
 	// Find the issuer by common name
 	// Return the public keys of the Issuer
@@ -32,13 +32,13 @@ type IssuerService interface {
 // The issuerService struct implements the IssuerService interface
 type issuerService struct {
 	issuerRepository   issuercore.Repository
-	verficationService core.VerificationService
+	verficationService verification.Service
 }
 
 // NewIssuerService creates a new instance of the IssuerService
 func NewIssuerService(
 	issuerRepository issuercore.Repository,
-	verficationService core.VerificationService,
+	verficationService verification.Service,
 ) IssuerService {
 	return &issuerService{
 		issuerRepository,
@@ -52,10 +52,10 @@ func (i *issuerService) Register(
 	ctx context.Context,
 	issuer *issuertypes.Issuer,
 	proof *vctypes.Proof,
-) (*string, error) {
+) error {
 	// Validate the issuer
-	if issuer == nil || issuer.CommonName == "" {
-		return nil, errutil.ErrInfo(
+	if issuer == nil || issuer.ValidateCommonName() != nil {
+		return errutil.ErrInfo(
 			errtypes.ERROR_REASON_INVALID_ISSUER,
 			"issuer is empty or has invalid common name",
 			nil,
@@ -67,7 +67,7 @@ func (i *issuerService) Register(
 		issuer.PublicKey,
 	)
 	if validationErr != nil {
-		return nil, errutil.ErrInfo(
+		return errutil.ErrInfo(
 			errtypes.ERROR_REASON_INVALID_ISSUER,
 			"issuer has invalid public key",
 			nil,
@@ -76,26 +76,15 @@ func (i *issuerService) Register(
 
 	// Verify the issuer's common name
 	// Validate the proof exists
-	if proof == nil {
-		// In case of external IdPs, the proof is nil
-		// This service should return an actionable URI
-		// to the caller to finalize the registration
-		// This is currently not supported
-		return nil, errutil.ErrInfo(
-			errtypes.ERROR_REASON_IDP_REQUIRED,
-			"issuer without external IdP is not implemented",
-			nil,
-		)
-	}
-
-	verificationErr := i.verficationService.VerifyCommonName(
+	// If the proof is self signed, the issuer will not be verified
+	verified, verificationErr := i.verficationService.Verify(
 		ctx,
-		&issuer.CommonName,
+		issuer,
 		proof,
 	)
 
 	if verificationErr != nil {
-		return nil, errutil.ErrInfo(
+		return errutil.ErrInfo(
 			errtypes.ERROR_REASON_INVALID_ISSUER,
 			"failed to verify common name",
 			verificationErr,
@@ -108,12 +97,15 @@ func (i *issuerService) Register(
 		issuer.CommonName,
 	)
 	if existingIssuer != nil {
-		return nil, errutil.ErrInfo(
+		return errutil.ErrInfo(
 			errtypes.ERROR_REASON_INVALID_ISSUER,
 			"issuer already exists",
 			nil,
 		)
 	}
+
+	// Set the verified status of the issuer
+	issuer.Verified = verified
 
 	// Save the issuer in the database
 	_, repositoryErr := i.issuerRepository.CreateIssuer(
@@ -121,15 +113,14 @@ func (i *issuerService) Register(
 		issuer,
 	)
 	if repositoryErr != nil {
-		return nil, errutil.ErrInfo(
+		return errutil.ErrInfo(
 			errtypes.ERROR_REASON_INTERNAL,
 			"unexpected error",
 			repositoryErr,
 		)
 	}
 
-	//nolint:nilnil // Ignore linting for nil return, means no action uri
-	return nil, nil
+	return nil
 }
 
 // GetJwks returns the public keys of the Issuers

@@ -12,9 +12,9 @@ import (
 	"time"
 
 	identityapi "github.com/agntcy/identity/api/server"
-	"github.com/agntcy/identity/internal/core"
 	idpg "github.com/agntcy/identity/internal/core/id/postgres"
 	issuerpg "github.com/agntcy/identity/internal/core/issuer/postgres"
+	"github.com/agntcy/identity/internal/core/issuer/verification"
 	vcpg "github.com/agntcy/identity/internal/core/vc/postgres"
 	issuergrpc "github.com/agntcy/identity/internal/issuer/grpc"
 	"github.com/agntcy/identity/internal/node"
@@ -140,17 +140,15 @@ func main() {
 	vcRepository := vcpg.NewRepository(dbContext)
 
 	// Create internal services
-	verificationService := core.NewVerificationService(oidcParser)
+	verificationService := verification.NewService(oidcParser)
 	nodeIssuerService := node.NewIssuerService(issuerRepository, verificationService)
 	idGenerator := node.NewIDGenerator(oidcParser, issuerRepository)
 	nodeIdService := node.NewIdService(
-		verificationService,
 		idRepository,
 		issuerRepository,
 		idGenerator,
 	)
 	nodeVcService := node.NewVerifiableCredentialService(
-		verificationService,
 		idRepository,
 		issuerRepository,
 		vcRepository,

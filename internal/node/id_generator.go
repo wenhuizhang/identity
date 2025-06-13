@@ -7,7 +7,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"net/url"
 
 	errcore "github.com/agntcy/identity/internal/core/errors"
 	errtypes "github.com/agntcy/identity/internal/core/errors/types"
@@ -20,9 +19,11 @@ import (
 )
 
 // All IDP schemes supported by the ID generator.
+// The ID generator creates IDs based on the proof and issuer information.
 const (
-	oktaIdp = "OKTA"
-	duoIdp  = "DUO"
+	OktaScheme = "OKTA-"
+	DuoScheme  = "DUO-"
+	SelfScheme = "AGNTCY-"
 )
 
 type IDGenerator interface {
@@ -50,8 +51,8 @@ func (g *idGenerator) GenerateFromProof(
 ) (string, *issuertypes.Issuer, error) {
 	if proof == nil {
 		return "", nil, errutil.ErrInfo(
-			errtypes.ERROR_REASON_IDP_REQUIRED,
-			"issuer without external IdP is not implemented",
+			errtypes.ERROR_REASON_INVALID_PROOF,
+			"a proof is required to generate an ID",
 			nil,
 		)
 	}
@@ -59,29 +60,36 @@ func (g *idGenerator) GenerateFromProof(
 	log.Debug("Verifying the proof ", proof.ProofValue)
 
 	if proof.IsJWT() {
-		jwt, err := g.oidcParser.ParseJwt(ctx, &proof.ProofValue)
-		if err != nil {
-			return "", nil, errutil.ErrInfo(errtypes.ERROR_REASON_INVALID_PROOF, err.Error(), err)
+		// Parse JWT to extract the common name and issuer information
+		jwt := g.oidcParser.ParseJwt(ctx, &proof.ProofValue)
+		if jwt == nil {
+			return "", nil, errutil.ErrInfo(
+				errtypes.ERROR_REASON_INVALID_PROOF,
+				"failed to parse JWT",
+				nil,
+			)
 		}
 
-		// Extract the hostname from the issuer
-		u, err := url.Parse(jwt.Claims.Issuer)
-		if err != nil {
-			return "", nil, errutil.ErrInfo(errtypes.ERROR_REASON_INVALID_PROOF, err.Error(), err)
-		}
-
-		issuer, err := g.getIssuer(ctx, u.Hostname())
+		issuer, err := g.getIssuer(ctx, jwt.CommonName)
 		if err != nil {
 			return "", nil, err
+		}
+
+		// Verify the JWT signature
+		err = g.oidcParser.VerifyJwt(ctx, jwt, issuer.PublicKey.Jwks().String())
+		if err != nil {
+			return "", nil, errutil.ErrInfo(errtypes.ERROR_REASON_INVALID_PROOF, err.Error(), err)
 		}
 
 		var scheme string
 
 		switch jwt.Provider {
 		case oidc.OktaProviderName:
-			scheme = oktaIdp
+			scheme = OktaScheme
 		case oidc.DuoProviderName:
-			scheme = duoIdp
+			scheme = DuoScheme
+		case oidc.SelfProviderName:
+			scheme = SelfScheme
 		default:
 			return "", nil, errutil.ErrInfo(
 				errtypes.ERROR_REASON_UNKNOWN_IDP,
@@ -90,7 +98,20 @@ func (g *idGenerator) GenerateFromProof(
 			)
 		}
 
-		return fmt.Sprintf("%s-%s", scheme, jwt.Claims.Subject), issuer, nil
+		log.Debug("Issuer is verified: ", issuer.Verified)
+		log.Debug("JWT scheme: ", scheme)
+
+		// If the issuer is verified
+		// we require a valid proof from the IdP
+		if issuer.Verified && scheme == SelfScheme {
+			return "", nil, errutil.ErrInfo(
+				errtypes.ERROR_REASON_IDP_REQUIRED,
+				"the issuer is verified so the proof must be from an IdP",
+				nil,
+			)
+		}
+
+		return fmt.Sprintf("%s%s", scheme, jwt.Claims.Subject), issuer, nil
 	}
 
 	return "", nil, errutil.ErrInfo(

@@ -6,7 +6,6 @@ package issuer
 import (
 	"context"
 	"fmt"
-	"net/url"
 	"os"
 
 	clicache "github.com/agntcy/identity/cmd/issuer/cache"
@@ -16,6 +15,8 @@ import (
 	idptypes "github.com/agntcy/identity/internal/issuer/types"
 	"github.com/agntcy/identity/internal/issuer/vault"
 	"github.com/agntcy/identity/internal/pkg/cmdutil"
+	"github.com/agntcy/identity/internal/pkg/httputil"
+	"github.com/google/uuid"
 	"github.com/spf13/cobra"
 )
 
@@ -28,6 +29,7 @@ type RegisterFlags struct {
 	ClientID        string
 	ClientSecret    string
 	IssuerURL       string
+	CommonName      string // Self provided common name (e.g., url, email, etc.)
 	Organization    string
 	SubOrganization string
 }
@@ -76,6 +78,8 @@ func NewRegisterFlags() *RegisterFlags {
 func (f *RegisterFlags) AddFlags(cmd *cobra.Command) {
 	cmd.Flags().
 		StringVarP(&f.IdentityNodeURL, "identity-node-address", "i", "", "Identity node address")
+	cmd.Flags().
+		StringVarP(&f.CommonName, "common-name", "n", "", "Self provided common name (e.g., url, email, etc.)")
 	cmd.Flags().StringVarP(&f.ClientID, "idp-client-id", "c", "", "IdP client ID")
 	cmd.Flags().StringVarP(&f.ClientSecret, "idp-client-secret", "s", "", "IdP client secret")
 	cmd.Flags().StringVarP(&f.IssuerURL, "idp-issuer-url", "u", "", "IdP issuer URL")
@@ -94,21 +98,25 @@ func (cmd *RegisterCommand) Run(ctx context.Context, flags *RegisterFlags) error
 		return err
 	}
 
-	idpConfig := idptypes.IdpConfig{
-		ClientId:     flags.ClientID,
-		ClientSecret: flags.ClientSecret,
-		IssuerUrl:    flags.IssuerURL,
-	}
+	commonName := flags.CommonName
+	id := uuid.NewString()
+	var idpConfig *idptypes.IdpConfig
 
-	// extract the root url from the issuer URL as the common name
-	issuerUrl, err := url.Parse(idpConfig.IssuerUrl)
-	if err != nil {
-		return fmt.Errorf("error parsing issuer URL: %w", err)
-	}
+	// If the common name is not set, use the IdP configuration
+	if flags.CommonName == "" {
+		idpConfig = &idptypes.IdpConfig{
+			ClientId:     flags.ClientID,
+			ClientSecret: flags.ClientSecret,
+			IssuerUrl:    flags.IssuerURL,
+		}
 
-	commonName := issuerUrl.Hostname()
-	if commonName == "" {
-		return fmt.Errorf("error extracting common name from issuer URL: %w", err)
+		// extract the root url from the issuer URL as the common name
+		commonName = httputil.Hostname(flags.IssuerURL)
+		if commonName == "" {
+			return fmt.Errorf("error extracting common name from issuer URL: %w", err)
+		}
+
+		id = flags.ClientID
 	}
 
 	pubKey, err := cmd.vaultSrv.RetrievePubKey(ctx, cmd.cache.VaultId, cmd.cache.KeyID)
@@ -121,13 +129,14 @@ func (cmd *RegisterCommand) Run(ctx context.Context, flags *RegisterFlags) error
 		SubOrganization: flags.SubOrganization,
 		CommonName:      commonName,
 		PublicKey:       pubKey,
+		Verified:        flags.CommonName == "",
 	}
 
 	issuer := issuertypes.Issuer{
 		Issuer:          coreIssuer,
-		ID:              idpConfig.ClientId,
+		ID:              id,
 		IdentityNodeURL: flags.IdentityNodeURL,
-		IdpConfig:       &idpConfig,
+		IdpConfig:       idpConfig,
 	}
 
 	issuerId, err := cmd.issuerService.RegisterIssuer(
@@ -178,27 +187,42 @@ func (cmd *RegisterCommand) validateFlags(flags *RegisterFlags) error {
 		}
 	}
 
-	// if the client ID is not set, prompt the user for it interactively
-	if flags.ClientID == "" {
-		err := cmdutil.ScanRequired("IdP client ID", &flags.ClientID)
+	// if the common name is not set, prompt the user for it interactively
+	if flags.CommonName == "" &&
+		(flags.ClientID == "" && flags.ClientSecret == "" && flags.IssuerURL == "") {
+		err := cmdutil.ScanOptional(
+			"Common name (e.g., url, email, etc.), leave empty to use IdP",
+			&flags.CommonName,
+		)
 		if err != nil {
-			return fmt.Errorf("error reading IdP client ID: %w", err)
+			return fmt.Errorf("error reading common name: %w", err)
 		}
 	}
 
-	// if the client secret is not set, prompt the user for it interactively
-	if flags.ClientSecret == "" {
-		err := cmdutil.ScanRequired("IdP client secret", &flags.ClientSecret)
-		if err != nil {
-			return fmt.Errorf("error reading IdP client secret: %w", err)
+	// if self provided common name is not set, ask for IdP client ID, secret, and issuer URL
+	if flags.CommonName == "" {
+		// if the client ID is not set, prompt the user for it interactively
+		if flags.ClientID == "" {
+			err := cmdutil.ScanRequired("IdP client ID", &flags.ClientID)
+			if err != nil {
+				return fmt.Errorf("error reading IdP client ID: %w", err)
+			}
 		}
-	}
 
-	// if the issuer URL is not set, prompt the user for it interactively
-	if flags.IssuerURL == "" {
-		err := cmdutil.ScanRequired("IdP issuer URL", &flags.IssuerURL)
-		if err != nil {
-			return fmt.Errorf("error reading IdP issuer URL: %w", err)
+		// if the client secret is not set, prompt the user for it interactively
+		if flags.ClientSecret == "" {
+			err := cmdutil.ScanRequired("IdP client secret", &flags.ClientSecret)
+			if err != nil {
+				return fmt.Errorf("error reading IdP client secret: %w", err)
+			}
+		}
+
+		// if the issuer URL is not set, prompt the user for it interactively
+		if flags.IssuerURL == "" {
+			err := cmdutil.ScanRequired("IdP issuer URL", &flags.IssuerURL)
+			if err != nil {
+				return fmt.Errorf("error reading IdP issuer URL: %w", err)
+			}
 		}
 	}
 
