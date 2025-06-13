@@ -49,16 +49,12 @@ func (v *service) Verify(
 		)
 	}
 
-	log.Debug("Verifying common name:", issuer.CommonName)
-
 	// Verify the proof
 	// If the proof is self provided, the issuer will be unverified
 	verified, err := v.verifyProof(ctx, issuer, proof)
 	if err != nil {
 		return false, err
 	}
-
-	log.Debug("Common name verified successfully")
 
 	return verified, nil
 }
@@ -92,10 +88,14 @@ func (v *service) verifyProof(
 			)
 		}
 
+		log.Debug("Verifying common name:", issuer.CommonName)
+
 		// Verify common name is the same as the issuer's hostname
 		if jwt.CommonName != issuer.CommonName {
 			return false, errutil.Err(nil, "common name does not match issuer")
 		}
+
+		log.Debug("Common name verified successfully")
 
 		return jwt.Verified, nil
 	}

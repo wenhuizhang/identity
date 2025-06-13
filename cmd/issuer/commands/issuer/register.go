@@ -79,7 +79,7 @@ func (f *RegisterFlags) AddFlags(cmd *cobra.Command) {
 	cmd.Flags().
 		StringVarP(&f.IdentityNodeURL, "identity-node-address", "i", "", "Identity node address")
 	cmd.Flags().
-		StringVarP(&f.ClientID, "common-name", "k", "", "Self provided common name (e.g., url, email, etc.)")
+		StringVarP(&f.CommonName, "common-name", "n", "", "Self provided common name (e.g., url, email, etc.)")
 	cmd.Flags().StringVarP(&f.ClientID, "idp-client-id", "c", "", "IdP client ID")
 	cmd.Flags().StringVarP(&f.ClientSecret, "idp-client-secret", "s", "", "IdP client secret")
 	cmd.Flags().StringVarP(&f.IssuerURL, "idp-issuer-url", "u", "", "IdP issuer URL")
