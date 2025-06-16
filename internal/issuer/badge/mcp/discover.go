@@ -90,10 +90,20 @@ func (d *discoveryClient) Discover(
 			jsonParams = []byte{}
 		}
 
+		var parameters map[string]any
+
+		err = json.Unmarshal(jsonParams, &parameters)
+		if err != nil {
+			return nil, errutil.Err(
+				err,
+				"failed to parse MCP tools",
+			)
+		}
+
 		availableTools = append(availableTools, &mcptypes.McpTool{
 			Name:        tool.Name,
 			Description: tool.Description,
-			Parameters:  string(jsonParams),
+			Parameters:  parameters,
 		})
 	}
 

@@ -30,7 +30,7 @@ type McpTool struct {
 
 	// Parameters of the tool.
 	// This is a JSON object that describes the parameters
-	Parameters string `json:"parameters,omitempty"`
+	Parameters map[string]any `json:"parameters,omitempty"`
 
 	// Oauth2 Protected Resource metadata.
 	// This will correspond to a resource on the server.
