@@ -90,27 +90,21 @@ func (cmd *GenerateCommand) Run(ctx context.Context, flags *GenerateFlags) error
 	// if issuer is verified, require IdP proof
 	if issuer.Verified {
 		// if the idp client id is not set, prompt the user for it interactively
-		if flags.IdpClientID == "" {
-			err := cmdutil.ScanRequired("IDP Client ID", &flags.IdpClientID)
-			if err != nil {
-				return fmt.Errorf("error reading IDP Client ID: %w", err)
-			}
+		err := cmdutil.ScanRequiredIfNotSet("IDP Client ID", &flags.IdpClientID)
+		if err != nil {
+			return fmt.Errorf("error reading IDP Client ID: %w", err)
 		}
 
 		// if the idp client secret is not set, prompt the user for it interactively
-		if flags.IdpClientSecret == "" {
-			err := cmdutil.ScanRequired("IDP Client Secret", &flags.IdpClientSecret)
-			if err != nil {
-				return fmt.Errorf("error reading IDP Client Secret: %w", err)
-			}
+		err = cmdutil.ScanRequiredIfNotSet("IDP Client Secret", &flags.IdpClientSecret)
+		if err != nil {
+			return fmt.Errorf("error reading IDP Client Secret: %w", err)
 		}
 
 		// if the idp issuer url is not set, prompt the user for it interactively
-		if flags.IdpIssuerURL == "" {
-			err := cmdutil.ScanRequired("IDP Issuer URL", &flags.IdpIssuerURL)
-			if err != nil {
-				return fmt.Errorf("error reading IDP Issuer URL: %w", err)
-			}
+		err = cmdutil.ScanRequiredIfNotSet("IDP Issuer URL", &flags.IdpIssuerURL)
+		if err != nil {
+			return fmt.Errorf("error reading IDP Issuer URL: %w", err)
 		}
 
 		idpConfig = &issuerTypes.IdpConfig{

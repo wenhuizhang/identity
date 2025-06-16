@@ -67,11 +67,9 @@ func (cmd *ShowCommand) Run(ctx context.Context, flags *ShowFlags) error {
 	}
 
 	// if the badge id is not set, prompt the user for it interactively
-	if flags.BadgeID == "" {
-		err := cmdutil.ScanRequired("Badge ID to show", &flags.BadgeID)
-		if err != nil {
-			return fmt.Errorf("error reading badge ID: %w", err)
-		}
+	err = cmdutil.ScanRequiredIfNotSet("Badge ID to show", &flags.BadgeID)
+	if err != nil {
+		return fmt.Errorf("error reading badge ID: %w", err)
 	}
 
 	badge, err := cmd.badgeService.GetBadge(

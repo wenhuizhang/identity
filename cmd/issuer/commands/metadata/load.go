@@ -67,11 +67,9 @@ func (cmd *LoadCommand) Run(ctx context.Context, flags *LoadFlags) error {
 	}
 
 	// if the metadata id is not set, prompt the user for it interactively
-	if flags.MetadataID == "" {
-		err := cmdutil.ScanRequired("Metadata ID", &flags.MetadataID)
-		if err != nil {
-			return fmt.Errorf("error reading metadata ID: %w", err)
-		}
+	err = cmdutil.ScanRequiredIfNotSet("Metadata ID", &flags.MetadataID)
+	if err != nil {
+		return fmt.Errorf("error reading metadata ID: %w", err)
 	}
 
 	// check the metadata id is valid

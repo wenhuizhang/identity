@@ -56,14 +56,12 @@ func (f *ForgetFlags) AddFlags(cmd *cobra.Command) {
 
 func (cmd *ForgetCommand) Run(ctx context.Context, flags *ForgetFlags) error {
 	// if the vault id is not set, prompt the user for it interactively
-	if flags.VaultID == "" {
-		err := cmdutil.ScanRequired("Vault ID to forget", &flags.VaultID)
-		if err != nil {
-			return fmt.Errorf("error reading vault ID: %w", err)
-		}
+	err := cmdutil.ScanRequiredIfNotSet("Vault ID to forget", &flags.VaultID)
+	if err != nil {
+		return fmt.Errorf("error reading vault ID: %w", err)
 	}
 
-	err := cmd.vaultService.ForgetVault(flags.VaultID)
+	err = cmd.vaultService.ForgetVault(flags.VaultID)
 	if err != nil {
 		return fmt.Errorf("error forgetting vault: %w", err)
 	}

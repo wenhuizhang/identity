@@ -66,11 +66,9 @@ func (cmd *ForgetCommand) Run(ctx context.Context, flags *ForgetFlags) error {
 	}
 
 	// if the badge id is not set, prompt the user for it interactively
-	if flags.BadgeID == "" {
-		err := cmdutil.ScanRequired("Badge ID to forget", &flags.BadgeID)
-		if err != nil {
-			return fmt.Errorf("error reading badge ID: %w", err)
-		}
+	err = cmdutil.ScanRequiredIfNotSet("Badge ID to forget", &flags.BadgeID)
+	if err != nil {
+		return fmt.Errorf("error reading badge ID: %w", err)
 	}
 
 	err = cmd.badgeService.ForgetBadge(

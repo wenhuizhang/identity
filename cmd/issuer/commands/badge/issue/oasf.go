@@ -77,14 +77,12 @@ func (cmd *IssueOasfCommand) Run(ctx context.Context, flags *IssueOasfFlags) err
 	}
 
 	// if the file path is not set, prompt the user for it interactively
-	if flags.OasfPath == "" {
-		err := cmdutil.ScanRequired(
-			"Full file path to the OASF you want to sign in the badge",
-			&flags.OasfPath,
-		)
-		if err != nil {
-			return fmt.Errorf("error reading OASF path: %w", err)
-		}
+	err = cmdutil.ScanRequiredIfNotSet(
+		"Full file path to the OASF you want to sign in the badge",
+		&flags.OasfPath,
+	)
+	if err != nil {
+		return fmt.Errorf("error reading OASF path: %w", err)
 	}
 
 	badgeContentData, err := os.ReadFile(flags.OasfPath)

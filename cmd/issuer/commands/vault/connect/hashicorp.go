@@ -87,41 +87,33 @@ func (f *HashicorpFlags) AddFlags(cmd *cobra.Command) {
 
 func (cmd *HashicorpCommand) Run(ctx context.Context, flags *HashicorpFlags) error {
 	// if the vault address is not set, prompt the user for it interactively
-	if flags.Address == "" {
-		err := cmdutil.ScanRequired("Address of the HashiCorp Vault instance", &flags.Address)
-		if err != nil {
-			return fmt.Errorf("error reading vault address: %w", err)
-		}
+	err := cmdutil.ScanRequiredIfNotSet("Address of the HashiCorp Vault instance", &flags.Address)
+	if err != nil {
+		return fmt.Errorf("error reading vault address: %w", err)
 	}
 
 	// if the vault token is not set, prompt the user for it interactively
-	if flags.Token == "" {
-		err := cmdutil.ScanRequired(
-			"Token to authenticate with the HashiCorp Vault instance",
-			&flags.Token,
-		)
-		if err != nil {
-			return fmt.Errorf("error reading vault token: %w", err)
-		}
+	err = cmdutil.ScanRequiredIfNotSet(
+		"Token to authenticate with the HashiCorp Vault instance",
+		&flags.Token,
+	)
+	if err != nil {
+		return fmt.Errorf("error reading vault token: %w", err)
 	}
 
 	// if the vault namespace is not set, prompt the user for it interactively
-	if flags.Namespace == "" {
-		err := cmdutil.ScanOptional(
-			"Namespace to use in the HashiCorp Vault instance",
-			&flags.Namespace,
-		)
-		if err != nil {
-			return fmt.Errorf("error reading vault namespace: %w", err)
-		}
+	err = cmdutil.ScanOptionalIfNotSet(
+		"Namespace to use in the HashiCorp Vault instance",
+		&flags.Namespace,
+	)
+	if err != nil {
+		return fmt.Errorf("error reading vault namespace: %w", err)
 	}
 
 	// if the vault name is not set, prompt the user for it interactively
-	if flags.VaultName == "" {
-		err := cmdutil.ScanRequired("Name of the vault", &flags.VaultName)
-		if err != nil {
-			return fmt.Errorf("error reading vault name: %w", err)
-		}
+	err = cmdutil.ScanRequiredIfNotSet("Name of the vault", &flags.VaultName)
+	if err != nil {
+		return fmt.Errorf("error reading vault name: %w", err)
 	}
 
 	hashicorpConfig := vaulttypes.VaultHashicorp{

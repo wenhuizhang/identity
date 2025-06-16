@@ -66,11 +66,9 @@ func (cmd *ForgetCommand) Run(ctx context.Context, flags *ForgetFlags) error {
 	}
 
 	// if the issuer id is not set, prompt the user for it interactively
-	if flags.IssuerID == "" {
-		err := cmdutil.ScanRequired("Issuer ID to forget", &flags.IssuerID)
-		if err != nil {
-			return fmt.Errorf("error reading issuer ID: %w", err)
-		}
+	err = cmdutil.ScanRequiredIfNotSet("Issuer ID to forget", &flags.IssuerID)
+	if err != nil {
+		return fmt.Errorf("error reading issuer ID: %w", err)
 	}
 
 	err = cmd.issuerService.ForgetIssuer(

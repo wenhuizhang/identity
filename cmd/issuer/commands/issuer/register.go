@@ -176,20 +176,17 @@ func (cmd *RegisterCommand) Run(ctx context.Context, flags *RegisterFlags) error
 
 func (cmd *RegisterCommand) validateFlags(flags *RegisterFlags) error {
 	// if the identity node address is not set, prompt the user for it interactively
-	if flags.IdentityNodeURL == "" {
-		err := cmdutil.ScanWithDefault(
-			"Identity node address",
-			defaultNodeAddress,
-			&flags.IdentityNodeURL,
-		)
-		if err != nil {
-			return fmt.Errorf("error reading identity node address: %w", err)
-		}
+	err := cmdutil.ScanWithDefaultIfNotSet(
+		"Identity node address",
+		defaultNodeAddress,
+		&flags.IdentityNodeURL,
+	)
+	if err != nil {
+		return fmt.Errorf("error reading identity node address: %w", err)
 	}
 
 	// if the common name is not set, prompt the user for it interactively
-	if flags.CommonName == "" &&
-		(flags.ClientID == "" && flags.ClientSecret == "" && flags.IssuerURL == "") {
+	if flags.CommonName == "" && cmd.noIdpFlagsSet(flags) {
 		err := cmdutil.ScanOptional(
 			"Common name (e.g., url, email, etc.), leave empty to use IdP",
 			&flags.CommonName,
@@ -201,49 +198,52 @@ func (cmd *RegisterCommand) validateFlags(flags *RegisterFlags) error {
 
 	// if self provided common name is not set, ask for IdP client ID, secret, and issuer URL
 	if flags.CommonName == "" {
-		// if the client ID is not set, prompt the user for it interactively
-		if flags.ClientID == "" {
-			err := cmdutil.ScanRequired("IdP client ID", &flags.ClientID)
-			if err != nil {
-				return fmt.Errorf("error reading IdP client ID: %w", err)
-			}
-		}
-
-		// if the client secret is not set, prompt the user for it interactively
-		if flags.ClientSecret == "" {
-			err := cmdutil.ScanRequired("IdP client secret", &flags.ClientSecret)
-			if err != nil {
-				return fmt.Errorf("error reading IdP client secret: %w", err)
-			}
-		}
-
-		// if the issuer URL is not set, prompt the user for it interactively
-		if flags.IssuerURL == "" {
-			err := cmdutil.ScanRequired("IdP issuer URL", &flags.IssuerURL)
-			if err != nil {
-				return fmt.Errorf("error reading IdP issuer URL: %w", err)
-			}
+		err := cmd.scanIdpFlags(flags)
+		if err != nil {
+			return err
 		}
 	}
 
 	// if the organization is not set, prompt the user for it interactively
-	if flags.Organization == "" {
-		err := cmdutil.ScanRequired("Organization name", &flags.Organization)
-		if err != nil {
-			return fmt.Errorf("error reading organization name: %w", err)
-		}
+	err = cmdutil.ScanRequiredIfNotSet("Organization name", &flags.Organization)
+	if err != nil {
+		return fmt.Errorf("error reading organization name: %w", err)
 	}
 
 	// if the sub-organization is not set, prompt the user for it interactively
-	if flags.SubOrganization == "" {
-		err := cmdutil.ScanWithDefault(
-			"Sub-organization name",
-			flags.Organization,
-			&flags.SubOrganization,
-		)
-		if err != nil {
-			return fmt.Errorf("error reading sub-organization name: %w", err)
-		}
+	err = cmdutil.ScanWithDefaultIfNotSet(
+		"Sub-organization name",
+		flags.Organization,
+		&flags.SubOrganization,
+	)
+	if err != nil {
+		return fmt.Errorf("error reading sub-organization name: %w", err)
+	}
+
+	return nil
+}
+
+func (cmd *RegisterCommand) noIdpFlagsSet(flags *RegisterFlags) bool {
+	return flags.ClientID == "" && flags.ClientSecret == "" && flags.IssuerURL == ""
+}
+
+func (cmd *RegisterCommand) scanIdpFlags(flags *RegisterFlags) error {
+	// if the client ID is not set, prompt the user for it interactively
+	err := cmdutil.ScanRequiredIfNotSet("IdP client ID", &flags.ClientID)
+	if err != nil {
+		return fmt.Errorf("error reading IdP client ID: %w", err)
+	}
+
+	// if the client secret is not set, prompt the user for it interactively
+	err = cmdutil.ScanRequiredIfNotSet("IdP client secret", &flags.ClientSecret)
+	if err != nil {
+		return fmt.Errorf("error reading IdP client secret: %w", err)
+	}
+
+	// if the issuer URL is not set, prompt the user for it interactively
+	err = cmdutil.ScanRequiredIfNotSet("IdP issuer URL", &flags.IssuerURL)
+	if err != nil {
+		return fmt.Errorf("error reading IdP issuer URL: %w", err)
 	}
 
 	return nil

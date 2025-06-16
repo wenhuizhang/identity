@@ -71,16 +71,14 @@ func (cmd *PublishCommand) Run(ctx context.Context, flags *PublishFlags) error {
 
 	// if the badge id is not set, prompt the user for it interactively
 	// if there is a badge id in the cache, use it as the default when prompting
-	if flags.BadgeID == "" {
-		if cmd.cache.BadgeId != "" {
-			err = cmdutil.ScanWithDefault("Badge ID to publish", cmd.cache.BadgeId, &flags.BadgeID)
-		} else {
-			err = cmdutil.ScanRequired("Badge ID to publish", &flags.BadgeID)
-		}
+	if cmd.cache.BadgeId != "" {
+		err = cmdutil.ScanWithDefaultIfNotSet("Badge ID to publish", cmd.cache.BadgeId, &flags.BadgeID)
+	} else {
+		err = cmdutil.ScanRequiredIfNotSet("Badge ID to publish", &flags.BadgeID)
+	}
 
-		if err != nil {
-			return fmt.Errorf("error reading badge ID: %w", err)
-		}
+	if err != nil {
+		return fmt.Errorf("error reading badge ID: %w", err)
 	}
 
 	badge, err := cmd.badgeService.GetBadge(

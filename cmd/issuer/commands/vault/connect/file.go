@@ -60,19 +60,15 @@ func (f *FileFlags) AddFlags(cmd *cobra.Command) {
 
 func (cmd *FileCommand) Run(ctx context.Context, flags *FileFlags) error {
 	// if the file path is not set, prompt the user for it interactively
-	if flags.FilePath == "" {
-		err := cmdutil.ScanRequired("File path to store the vault", &flags.FilePath)
-		if err != nil {
-			return fmt.Errorf("error reading file path: %w", err)
-		}
+	err := cmdutil.ScanRequiredIfNotSet("File path to store the vault", &flags.FilePath)
+	if err != nil {
+		return fmt.Errorf("error reading file path: %w", err)
 	}
 
 	// if the vault name is not set, prompt the user for it interactively
-	if flags.VaultName == "" {
-		err := cmdutil.ScanRequired("Vault name", &flags.VaultName)
-		if err != nil {
-			return fmt.Errorf("error reading vault name: %w", err)
-		}
+	err = cmdutil.ScanRequiredIfNotSet("Vault name", &flags.VaultName)
+	if err != nil {
+		return fmt.Errorf("error reading vault name: %w", err)
 	}
 
 	fileConfig := vaulttypes.VaultFile{

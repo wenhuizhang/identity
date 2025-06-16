@@ -66,11 +66,9 @@ func (cmd *LoadCommand) Run(ctx context.Context, flags *LoadFlags) error {
 	}
 
 	// if the badge id is not set, prompt the user for it interactively
-	if flags.BadgeID == "" {
-		err := cmdutil.ScanRequired("Badge ID to load", &flags.BadgeID)
-		if err != nil {
-			return fmt.Errorf("error reading badge ID: %w", err)
-		}
+	err = cmdutil.ScanRequiredIfNotSet("Badge ID to load", &flags.BadgeID)
+	if err != nil {
+		return fmt.Errorf("error reading badge ID: %w", err)
 	}
 
 	// check the badge id is valid
