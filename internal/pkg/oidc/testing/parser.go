@@ -29,7 +29,7 @@ func (p *fakeParser) ParseAndVerifyJwt(
 	jwtString *string,
 	jwksString *string,
 ) (*oidc.ParsedJWT, error) {
-	return p.ParseJwt(ctx, jwtString), p.err
+	return p.ParseJwt(ctx, jwtString)
 }
 
 func (p *fakeParser) VerifyJwt(
@@ -43,6 +43,6 @@ func (p *fakeParser) VerifyJwt(
 func (p *fakeParser) ParseJwt(
 	ctx context.Context,
 	jwtString *string,
-) *oidc.ParsedJWT {
-	return p.result
+) (*oidc.ParsedJWT, error) {
+	return p.result, p.err
 }

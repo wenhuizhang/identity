@@ -75,7 +75,7 @@ type Parser interface {
 
 	// Get the parsed JWT including the issuer, the subject claims
 	// the common name and the provider metadata
-	ParseJwt(ctx context.Context, jwtString *string) *ParsedJWT
+	ParseJwt(ctx context.Context, jwtString *string) (*ParsedJWT, error)
 
 	// Combines the ParseJwt and VerifyJwt methods
 	// It will parse the JWT and then verify its signature using the JWKS
@@ -110,15 +110,13 @@ func (p *parser) ParseAndVerifyJwt(
 	jwksString *string,
 ) (*ParsedJWT, error) {
 	// Parse the JWT
-	parsedJwt := p.ParseJwt(ctx, jwtString)
-
-	// If the JWT could not be parsed, return an Error
-	if parsedJwt == nil {
-		return nil, errutil.Err(nil, "failed to parse JWT")
+	parsedJwt, err := p.ParseJwt(ctx, jwtString)
+	if err != nil {
+		return nil, errutil.Err(err, "failed to parse JWT")
 	}
 
 	// Verify the JWT
-	err := p.VerifyJwt(ctx, parsedJwt, jwksString)
+	err = p.VerifyJwt(ctx, parsedJwt, jwksString)
 	if err != nil {
 		return nil, errutil.Err(err, "failed to verify JWT")
 	}
@@ -169,15 +167,15 @@ func (p *parser) VerifyJwt(
 func (p *parser) ParseJwt(
 	ctx context.Context,
 	jwtString *string,
-) *ParsedJWT {
+) (*ParsedJWT, error) {
 	// Check if the JWT string is empty
 	if jwtString == nil || *jwtString == "" {
-		return nil
+		return nil, errutil.Err(nil, "JWT string is empty")
 	}
 
 	claims, err := p.GetClaims(ctx, jwtString)
 	if err != nil {
-		return nil
+		return nil, err
 	}
 
 	log.Debug("Validating JWT for issuer:", claims.Issuer, " and subject:", claims.Subject)
@@ -189,7 +187,7 @@ func (p *parser) ParseJwt(
 	if err == nil {
 		providerName, err = p.detectProviderName(ctx, providerMetadata)
 		if err != nil {
-			return nil
+			return nil, err
 		}
 	}
 
@@ -206,7 +204,7 @@ func (p *parser) ParseJwt(
 		Verified:         providerName != SelfProviderName,
 		providerMetadata: providerMetadata,
 		jwtString:        jwtString,
-	}
+	}, nil
 }
 
 func (p *parser) GetClaims(

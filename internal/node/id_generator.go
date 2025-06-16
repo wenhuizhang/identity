@@ -61,12 +61,12 @@ func (g *idGenerator) GenerateFromProof(
 
 	if proof.IsJWT() {
 		// Parse JWT to extract the common name and issuer information
-		jwt := g.oidcParser.ParseJwt(ctx, &proof.ProofValue)
-		if jwt == nil {
+		jwt, err := g.oidcParser.ParseJwt(ctx, &proof.ProofValue)
+		if err != nil {
 			return "", nil, errutil.ErrInfo(
 				errtypes.ERROR_REASON_INVALID_PROOF,
-				"failed to parse JWT",
-				nil,
+				err.Error(),
+				err,
 			)
 		}
 
