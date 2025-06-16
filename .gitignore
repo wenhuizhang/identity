@@ -62,6 +62,12 @@ test_vc.json
 # Worflows
 *.swm
 
+#custom deployment helm
+values-*.yaml
+
+# Helm dependency charts
+charts/charts/*.tgz
+
 # Other
 cmd/issuer/guides
 badge.json

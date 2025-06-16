@@ -1,0 +1,36 @@
+# Copyright 2025 Copyright AGNTCY Contributors (https://github.com/agntcy)
+# SPDX-License-Identifier: Apache-2.0
+
+{{- if .Values.ingress.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Release.Name }}-http
+  namespace: '{{ .Release.Namespace }}'
+  labels:
+    app: {{ .Chart.Name }}
+    release: '{{ .Release.Name }}'
+  {{- if .Values.ingress.annotations.http }}
+  annotations:
+    {{- range $key, $value := .Values.ingress.annotations.http }}
+    {{ $key }}: {{ tpl $value $ | quote }}
+    {{- end }}
+  {{- end }}
+spec:
+  ingressClassName: {{ .Values.ingress.className }}
+  tls:
+  - hosts:
+    - "{{ .Values.ingress.domainPrefixHttp }}.{{ .Values.ingress.apiDomainName }}"
+    secretName: "{{ .Release.Name }}-http-tls"
+  rules:
+  - host: "{{ .Values.ingress.domainPrefixHttp }}.{{ .Values.ingress.apiDomainName }}"
+    http:
+      paths:
+      - backend:
+          service:
+            name: {{ .Release.Name }}
+            port:
+              number: {{ .Values.service.http.port}}
+        path: /
+        pathType: Prefix
+{{- end }}
