@@ -20,7 +20,6 @@ The Identity Node service provides identity management capabilities including Ve
 
 ## Installation
 
-
 ```bash
 # Add the required repositories
 helm repo add bitnami https://charts.bitnami.com/bitnami
@@ -29,17 +28,20 @@ helm repo add bitnami https://charts.bitnami.com/bitnami
 helm dependency update ./charts
 ```
 
-Create a values-custom.yaml file with your domain configuration:
+Create a `values-custom.yaml` file with your domain configuration:
+
 ```yaml
 ingress:
   domainPrefixHttp: api.yourdomain
   domainPrefixGrpc: api.grpc.yourdomain
   apiDomainName: yourdomain.com
 ```
+
 Then install with:
+
 ```bash
 # Create your own values-override.yaml file
-helm install identity-node ./charts -f values-override.yaml
+helm install identity-node ./charts -f values-custom.yaml
 ```
 
 ## Configuration
@@ -72,7 +74,6 @@ The following table lists the configurable parameters of the Identity Node chart
 3. Consider using external secrets management
 4. Apply appropriate resource limits
 5. Use a values override file for sensitive information
-
 
 ## License
 
