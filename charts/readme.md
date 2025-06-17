@@ -56,7 +56,7 @@ The following table lists the configurable parameters of the Identity Node chart
 | `image.pullPolicy` | Image pull policy | `IfNotPresent` |
 | `service.type` | Kubernetes service type | `ClusterIP` |
 | `service.http.port` | HTTP service port | `4000` |
-| `service.grpc.port` | gRPC service port | `5006` |
+| `service.grpc.port` | gRPC service port | `4001` |
 | `ingress.enabled` | Enable ingress | `true` |
 | `ingress.domainPrefixHttp` | Prefix for HTTP domain | `api.example` |
 | `ingress.domainPrefixGrpc` | Prefix for gRPC domain | `api.grpc.example` |
