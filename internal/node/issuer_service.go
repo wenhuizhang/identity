@@ -82,7 +82,6 @@ func (i *issuerService) Register(
 		issuer,
 		proof,
 	)
-
 	if verificationErr != nil {
 		return errutil.ErrInfo(
 			errtypes.ERROR_REASON_INVALID_ISSUER,

@@ -84,7 +84,7 @@ func (v *verifyService) VerifyCredential(
 		}
 
 		// Verify the badge using the Resolver Metadata public key
-		parsedVC, err := jose.Verify(&jwks, credential)
+		parsedVC, err := jose.VerifyAndParse(&jwks, credential)
 		if err != nil {
 			return nil, fmt.Errorf("error verifying badge: %w", err)
 		}

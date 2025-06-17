@@ -158,6 +158,16 @@ type VerifiableCredential struct {
 	Proof *Proof `json:"proof,omitempty" protobuf:"bytes,9,opt,name=proof"`
 }
 
+func (vc *VerifiableCredential) GetDID() (string, bool) {
+	if val, ok := vc.CredentialSubject["id"]; ok {
+		if did, ok := val.(string); ok && did != "" {
+			return did, true
+		}
+	}
+
+	return "", false
+}
+
 // DataModel represents the W3C Verifiable Presentation Data Model defined [here]
 //
 // [here]: https://www.w3.org/TR/vc-data-model/

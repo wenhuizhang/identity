@@ -7,13 +7,13 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strings"
 
 	errcore "github.com/agntcy/identity/internal/core/errors"
 	errtypes "github.com/agntcy/identity/internal/core/errors/types"
 	idcore "github.com/agntcy/identity/internal/core/id"
-	issuercore "github.com/agntcy/identity/internal/core/issuer"
+	issuerverification "github.com/agntcy/identity/internal/core/issuer/verification"
 	vccore "github.com/agntcy/identity/internal/core/vc"
-	"github.com/agntcy/identity/internal/core/vc/jose"
 	vctypes "github.com/agntcy/identity/internal/core/vc/types"
 	"github.com/agntcy/identity/internal/pkg/errutil"
 	"github.com/agntcy/identity/pkg/log"
@@ -34,23 +34,20 @@ type VerifiableCredentialService interface {
 }
 
 type verifiableCredentialService struct {
-	idRepository     idcore.IdRepository
-	issuerRepository issuercore.Repository
-	vcRepository     vccore.Repository
-	idGenerator      IDGenerator
+	idRepository idcore.IdRepository
+	verifService issuerverification.Service
+	vcRepository vccore.Repository
 }
 
 func NewVerifiableCredentialService(
 	idRepository idcore.IdRepository,
-	issuerRepository issuercore.Repository,
+	verifService issuerverification.Service,
 	vcRepository vccore.Repository,
-	idGenerator IDGenerator,
 ) VerifiableCredentialService {
 	return &verifiableCredentialService{
-		idRepository:     idRepository,
-		issuerRepository: issuerRepository,
-		vcRepository:     vcRepository,
-		idGenerator:      idGenerator,
+		idRepository: idRepository,
+		verifService: verifService,
+		vcRepository: vcRepository,
 	}
 }
 
@@ -67,9 +64,31 @@ func (s *verifiableCredentialService) Publish(
 		)
 	}
 
-	id, _, err := s.idGenerator.GenerateFromProof(ctx, proof)
+	parsedVC, err := vccore.ParseEnvelopedCredential(credential)
 	if err != nil {
 		return err
+	}
+
+	id, ok := parsedVC.GetDID()
+	if !ok {
+		return errutil.ErrInfo(
+			errtypes.ERROR_REASON_INVALID_VERIFIABLE_CREDENTIAL,
+			"unable to find the ID inside the CredentialSubject",
+			nil,
+		)
+	}
+
+	jwt, _, err := s.verifService.VerifyExistingIssuer(ctx, proof)
+	if err != nil {
+		return err
+	}
+
+	if !strings.HasSuffix(id, jwt.Claims.Subject) {
+		return errutil.ErrInfo(
+			errtypes.ERROR_REASON_INVALID_VERIFIABLE_CREDENTIAL,
+			"the ID in the Verifiable Credential does not match the ID in the proof",
+			nil,
+		)
 	}
 
 	log.Debug("Resolving the ID into a ResolverMetadata")
@@ -87,37 +106,16 @@ func (s *verifiableCredentialService) Publish(
 		return errutil.ErrInfo(errtypes.ERROR_REASON_INTERNAL, "unexpected error", err)
 	}
 
-	var validatedVC *vctypes.VerifiableCredential
-
 	log.Debug("Validating the verifiable credential")
 
-	switch credential.EnvelopeType {
-	case vctypes.CREDENTIAL_ENVELOPE_TYPE_EMBEDDED_PROOF:
-		return errutil.ErrInfo(
-			errtypes.ERROR_REASON_INVALID_CREDENTIAL_ENVELOPE_TYPE,
-			"credential envelope type not implemented yet",
-			err,
-		)
-	case vctypes.CREDENTIAL_ENVELOPE_TYPE_JOSE:
-		log.Debug("Verifying and parsing the JOSE Verifiable Credential")
-
-		parsedVC, err := jose.Verify(resolverMD.GetJwks(), credential)
-		if err != nil {
-			return err
-		}
-
-		validatedVC = parsedVC
-	default:
-		return errutil.ErrInfo(
-			errtypes.ERROR_REASON_INVALID_CREDENTIAL_ENVELOPE_TYPE,
-			"invalid credential envelope type",
-			nil,
-		)
+	err = vccore.VerifyEnvelopedCredential(credential, resolverMD.GetJwks())
+	if err != nil {
+		return err
 	}
 
 	log.Debug("Storing the Verifiable Credential")
 
-	_, err = s.vcRepository.Create(ctx, validatedVC, id)
+	_, err = s.vcRepository.Create(ctx, parsedVC, id)
 	if err != nil {
 		return errutil.ErrInfo(
 			errtypes.ERROR_REASON_INTERNAL,

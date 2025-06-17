@@ -140,9 +140,9 @@ func main() {
 	vcRepository := vcpg.NewRepository(dbContext)
 
 	// Create internal services
-	verificationService := verification.NewService(oidcParser)
+	verificationService := verification.NewService(oidcParser, issuerRepository)
 	nodeIssuerService := node.NewIssuerService(issuerRepository, verificationService)
-	idGenerator := node.NewIDGenerator(oidcParser, issuerRepository)
+	idGenerator := node.NewIDGenerator(verificationService)
 	nodeIdService := node.NewIdService(
 		idRepository,
 		issuerRepository,
@@ -150,9 +150,8 @@ func main() {
 	)
 	nodeVcService := node.NewVerifiableCredentialService(
 		idRepository,
-		issuerRepository,
+		verificationService,
 		vcRepository,
-		idGenerator,
 	)
 
 	register := identityapi.GrpcServiceRegister{

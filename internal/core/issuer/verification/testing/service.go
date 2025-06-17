@@ -9,6 +9,7 @@ import (
 	issuertypes "github.com/agntcy/identity/internal/core/issuer/types"
 	"github.com/agntcy/identity/internal/core/issuer/verification"
 	vctypes "github.com/agntcy/identity/internal/core/vc/types"
+	"github.com/agntcy/identity/internal/pkg/oidc"
 )
 
 const (
@@ -16,18 +17,25 @@ const (
 	ValidProofSub    string = "SUBJECT"
 )
 
-type FakeVerifiedVerificationService struct{}
+type FakeVerifiedVerificationServiceStub struct{}
 
-func NewFakeVerifiedVerificationService() verification.Service {
-	return &FakeVerifiedVerificationService{}
+func NewFakeVerifiedVerificationServiceStub() verification.Service {
+	return &FakeVerifiedVerificationServiceStub{}
 }
 
-func (f *FakeVerifiedVerificationService) Verify(
+func (f *FakeVerifiedVerificationServiceStub) Verify(
 	ctx context.Context,
 	issuer *issuertypes.Issuer,
 	proof *vctypes.Proof,
 ) (bool, error) {
 	return true, nil
+}
+
+func (f *FakeVerifiedVerificationServiceStub) VerifyExistingIssuer(
+	ctx context.Context,
+	proof *vctypes.Proof,
+) (*oidc.ParsedJWT, *issuertypes.Issuer, error) {
+	panic("unimplemented")
 }
 
 type FakeUnverifiedVerificationServiceStub struct{}
@@ -42,4 +50,11 @@ func (f *FakeUnverifiedVerificationServiceStub) Verify(
 	proof *vctypes.Proof,
 ) (bool, error) {
 	return false, nil
+}
+
+func (f *FakeUnverifiedVerificationServiceStub) VerifyExistingIssuer(
+	ctx context.Context,
+	proof *vctypes.Proof,
+) (*oidc.ParsedJWT, *issuertypes.Issuer, error) {
+	panic("unimplemented")
 }
