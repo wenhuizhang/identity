@@ -30,6 +30,10 @@ env:
     value: "postgres"
   - name: DB_PASSWORD
     value: "change-me"
+  - name: SERVER_HTTP_HOST
+    value: ":4000"
+  - name: SERVER_GRPC_HOST
+    value: ":4001"
 
 postgresql:
   enabled: true
