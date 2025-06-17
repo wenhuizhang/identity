@@ -28,8 +28,8 @@ jobs:
           fetch-depth: 0
       - name: Render Helm templates
         run: |
-          helm dependency update ./charts
-          helm template identity-node ./charts --namespace identity-node > rendered.yaml
+          helm dependency update ./deloyments/charts
+          helm template identity-node ./deloyments/charts --namespace identity-node > rendered.yaml
           sed -i 's/[[:space:]]*$//' rendered.yaml
       - name: 🧹 run superlinter
         uses: super-linter/super-linter@12150456a73e248bdc94d0794898f94e23127c88 # v7.4.0

@@ -14,4 +14,4 @@ rules:
     check-keys: false
 
 ignore: # should ignore helm files because it's not proper yaml
-  - charts/
+  - deployments/charts/
