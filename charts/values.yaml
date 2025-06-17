@@ -70,8 +70,6 @@ ingress:
 config:
   appEnv: production
   logLevel: info
-  extraConfig: 
-    DATABASE_URL: "postgresql://{{ .Values.postgresql.auth.username }}:{{ .Values.postgresql.auth.password }}@{{ .Release.Name }}-postgresql:5432/{{ .Values.postgresql.auth.database }}"
 
 resources:
   limits:

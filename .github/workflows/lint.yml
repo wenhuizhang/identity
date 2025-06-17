@@ -26,6 +26,11 @@ jobs:
       - uses: actions/checkout@85e6279cec87321a52edac9c87bce653a07cf6c2 # v4.1.7
         with:
           fetch-depth: 0
+      - name: Render Helm templates
+        run: |
+          helm dependency update ./charts
+          helm template identity-node ./charts --namespace identity-node > rendered.yaml
+          sed -i '' 's/[[:space:]]*$//' rendered.yaml
       - name: 🧹 run superlinter
         uses: super-linter/super-linter@12150456a73e248bdc94d0794898f94e23127c88 # v7.4.0
         env:
@@ -35,6 +40,7 @@ jobs:
           YAML_CONFIG_FILE: ".yamllint.yml"
           GO_CONFIG_FILE: ".golangci.yaml"
           PROTOBUF_CONFIG_FILE: ".protolintrc.yml"
+          FILTER_REGEX_EXCLUDE: "^charts/"
           VALIDATE_ALL_CODEBASE: false
           VALIDATE_MARKDOWN_PRETTIER: false
           VALIDATE_YAML_PRETTIER: false

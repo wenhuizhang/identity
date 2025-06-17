@@ -11,10 +11,4 @@ metadata:
 data:
   APP_ENV: {{ .Values.config.appEnv | default "production" | quote }}
   LOG_LEVEL: {{ .Values.config.logLevel | default "info" | quote }}
-  {{- range $key, $value := .Values.config.extraConfig }}
-  {{ $key }}: {{ $value | quote }}
-  {{- end }}
-data:
-  APP_ENV: "production"
-  DATABASE_URL: "postgresql://user:password@postgresql-service:5432/mydatabase"
-  LOG_LEVEL: "info"
+  DATABASE_URL: "postgresql://{{ .Values.postgresql.auth.username }}:{{ .Values.postgresql.auth.password }}@{{ .Release.Name }}-postgresql:5432/{{ .Values.postgresql.auth.database }}"
