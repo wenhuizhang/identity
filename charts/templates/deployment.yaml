@@ -4,18 +4,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}
+  name: {{ include "identity-node.fullname" . }}
   labels:
-    app: {{ .Chart.Name }}
+    {{ include "identity-node.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ .Chart.Name }}
+      app.kubernetes.io/name: {{ .Chart.Name }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{ .Chart.Name }}
+        {{ include "identity-node.labels" . | nindent 8 }}
     spec:
       containers:
         - name: {{ .Chart.Name }}
