@@ -1,0 +1,47 @@
+{{- if .Release }}
+Thank you for installing {{ .Chart.Name }}!
+
+Your release "{{ .Release.Name }}" has been successfully deployed.
+
+{{- if .Values.ingress.enabled }}
+## Access Information
+
+### HTTP Endpoint:
+{{- if .Values.ingress.domainPrefixHttp }}
+  URL: http://{{ .Values.ingress.domainPrefixHttp }}.{{ .Values.ingress.apiDomainName }}
+{{- else }}
+  URL: http://<your-http-domain>
+{{- end }}
+
+### gRPC Endpoint:
+{{- if .Values.ingress.domainPrefixGrpc }}
+  URL: grpc://{{ .Values.ingress.domainPrefixGrpc }}.{{ .Values.ingress.apiDomainName }}
+{{- else }}
+  URL: grpc://<your-grpc-domain>
+{{- end }}
+{{- else }}
+## Access Information
+Ingress is disabled. Use the service endpoints directly.
+{{- end }}
+
+## PostgreSQL Information
+{{- if .Values.postgresql.enabled }}
+The PostgreSQL database has been deployed.
+
+  Host: {{ .Release.Name }}-postgresql
+  Port: {{ .Values.postgresql.service.port }}
+  Database: {{ .Values.postgresql.auth.database }}
+  Username: {{ .Values.postgresql.auth.username }}
+  Password: {{ .Values.postgresql.auth.postgresPassword }}
+{{- else }}
+PostgreSQL is disabled. Ensure your application connects to an external database.
+{{- end }}
+
+## Next Steps
+- Monitor your application using `kubectl get pods -n {{ .Release.Namespace }}`
+- View logs using `kubectl logs -l app.kubernetes.io/name={{ .Chart.Name }} -n {{ .Release.Namespace }}`
+- For more information, refer to the README.md file.
+
+{{- else }}
+Error: Release information is not available.
+{{- end }}
