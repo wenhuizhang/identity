@@ -6,7 +6,7 @@ requires = ["setuptools", "setuptools-scm"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "identity-python-sdk"
+name = "agntcy-identity-python-sdk"
 version = "0.0.1"
 authors = [
     {name = "Jean Diaconu", email = "jdiaconu@cisco.com"},
@@ -14,7 +14,7 @@ authors = [
 description = "Identity SDK for Python"
 readme = "README.md"
 requires-python = ">=3.8"
-license = {text = "Apache-2.0"}
+license = "Apache-2.0"
 classifiers = [
     "Programming Language :: Python :: 3",
 ]
@@ -25,7 +25,7 @@ dependencies = ["grpcio", "protobuf", "grpcio-tools", "protoc_gen_openapiv2"]
 "Bug Tracker" = "https://github.com/agntcy/identity/issues"
 
 [tool.setuptools]
-packages = ["identity", "openapiv3", "google.api"]
+packages = ["agntcyidentity", "openapiv3", "google.api", "agntcy.identity.node.v1alpha1", "agntcy.identity.core.v1alpha1"]
 
 [tool.pytest.ini_options]
 minversion = "8.0.0"
