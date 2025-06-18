@@ -10,18 +10,18 @@ import grpc
 
 from agntcyidentity import constant
 
-
 logger = logging.getLogger("client")
 
 
-class Client:
+class Client:  # pylint: disable=too-few-public-methods
     """Client class for the Identity Python SDK."""
 
     def __init__(self, async_mode=False):
         """Initialize the client."""
         # Get credentials
-        grpc_server_url = os.environ.get("IDENTITY_NODE_GRPC_SERVER_URL",
-                                         constant.DEFAULT_GRPC_URL)
+        grpc_server_url = os.environ.get(
+            "IDENTITY_NODE_GRPC_SERVER_URL", constant.DEFAULT_GRPC_URL
+        )
         logger.debug("Connecting to %s", grpc_server_url)
 
         # Options
@@ -53,17 +53,20 @@ class Client:
             logger.debug("Using SSL")
             if use_insecure == 1:
                 root_cert = base64.b64decode(
-                    os.environ["IDENTITY_NODE_INSECURE_ROOT_CA"])
+                    os.environ["IDENTITY_NODE_INSECURE_ROOT_CA"]
+                )
                 channel_credentials = grpc.ssl_channel_credentials(
-                    root_certificates=root_cert)
+                    root_certificates=root_cert
+                )
             else:
                 channel_credentials = grpc.ssl_channel_credentials()
         else:
             logger.debug("Using local credentials")
 
         # Set if async
-        secure_channel = (grpc.aio.secure_channel
-                          if async_mode else grpc.secure_channel)
+        secure_channel = (
+            grpc.aio.secure_channel if async_mode else grpc.secure_channel
+        )
 
         self.channel = secure_channel(
             grpc_server_url,

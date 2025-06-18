@@ -61,14 +61,16 @@ class IdentitySdk:
         """Get the vc service."""
         return VcServiceStub(self.client.channel)
 
-    def get_badge(self, id: str) -> EnvelopedCredential:
+    def get_badge(self, badge_id: str) -> EnvelopedCredential:
         """Returns last badge for a given ID."""
         well_known_response: GetVcWellKnownResponse = (
-            self._get_vc_service().GetWellKnown(GetVcWellKnownRequest(id=id))
+            self._get_vc_service().GetWellKnown(
+                GetVcWellKnownRequest(id=badge_id)
+            )
         )
 
         if not well_known_response.vcs:
-            raise ValueError(f"No badge found for ID: {id}")
+            raise ValueError("No badge found for ID: ", badge_id)
 
         return well_known_response.vcs[0]
 
