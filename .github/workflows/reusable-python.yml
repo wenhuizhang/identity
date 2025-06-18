@@ -6,6 +6,14 @@ name: Reusable Python Build
 
 on:
   workflow_call:
+    py-version:
+      description: 'Python version to install'
+      required: false
+      default: "3.12"
+    uv-install:
+      description: 'Install uv'
+      required: false
+      default: true
 
 jobs:
   python-bindings-wheels:
@@ -13,7 +21,7 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: ./
+        working-directory: ./sdk/python
     strategy:
       matrix:
         platform:
@@ -33,11 +41,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Setup Python
-        uses: ./.github/actions/setup-python
+        if: ${{ inputs.py-install }}
+        id: setup-python
+        uses: actions/setup-python@v5
         with:
-          py-install: false
-          poetry-install: false
-          uv-install: true
+          python-version: ${{ inputs.py-version }}
       - name: Build wheel
         run: |
           uv build
@@ -46,3 +54,16 @@ jobs:
         with:
           name: wheel-${{ matrix.platform.os }}-${{ matrix.platform.target }}
           path: ./dist
+      - name: Install uv (unix)
+        if: ${{ inputs.uv-install && runner.os != 'Windows' }}
+        shell: bash
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | env UV_INSTALL_DIR="${HOME}/.local/bin" sh
+      - name: Install uv (windows)
+        if: ${{ inputs.uv-install && runner.os == 'Windows' }}
+        shell: bash
+        run: |
+          powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+      - name: Update GITHUB_PATH
+        shell: bash
+        run: echo "$HOME/.local/bin" >> $GITHUB_PATH
