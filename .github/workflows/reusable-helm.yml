@@ -46,4 +46,4 @@ jobs:
         with:
           charts_dir: ${{ inputs.charts-dir }}
           packages_with_index: true
-          target_branch: ${{ inputs.gh-pages-branch }}
+          pages_branch: ${{ inputs.gh-pages-branch }}
