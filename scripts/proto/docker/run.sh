@@ -149,6 +149,9 @@ cd "${Identity_ROOT}/code/api/spec"
 # Go
 /usr/local/bin/buf generate --debug -v
 
+# Python
+/usr/local/bin/buf generate --include-imports --template buf.gen.python.yaml --output ../../sdk/python
+
 # Openapi
 /usr/local/bin/buf generate --template buf.gen.openapi.yaml --output ../spec/static/api/openapi/node/v1alpha1 --path proto/$PROTO_NODE_FILE_PATH
 
