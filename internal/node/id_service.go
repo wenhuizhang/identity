@@ -76,6 +76,13 @@ func (s *idService) Generate(
 
 	keyID := fmt.Sprintf("%s#%s", id, uuid.NewString())
 
+	services := make([]*idtypes.Service, 0)
+	if storedIss.AuthType == issuertypes.ISSUER_AUTH_TYPE_IDP {
+		services = append(services, &idtypes.Service{
+			ServiceEndpoint: []string{fmt.Sprintf("https://%s", storedIss.CommonName)},
+		})
+	}
+
 	resolverMetadata := &idtypes.ResolverMetadata{
 		ID: id,
 		VerificationMethod: []*idtypes.VerificationMethod{
@@ -85,12 +92,7 @@ func (s *idService) Generate(
 			},
 		},
 		AssertionMethod: []string{keyID},
-		Service: []*idtypes.Service{
-			{
-				// This works for now, but not when we add support for non IdP backed Issuers
-				ServiceEndpoint: []string{fmt.Sprintf("https://%s", storedIss.CommonName)},
-			},
-		},
+		Service:         services,
 	}
 
 	log.Debug("Storing the ResolverMetadata")

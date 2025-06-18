@@ -56,15 +56,7 @@ func (s *verifiableCredentialService) Publish(
 	credential *vctypes.EnvelopedCredential,
 	proof *vctypes.Proof,
 ) error {
-	if credential.Value == "" {
-		return errutil.ErrInfo(
-			errtypes.ERROR_REASON_INVALID_CREDENTIAL_ENVELOPE_VALUE_FORMAT,
-			"invalid credential envelope value",
-			nil,
-		)
-	}
-
-	parsedVC, err := vccore.ParseEnvelopedCredential(credential)
+	parsedVC, err := s.verifyEnvelopedCredential(ctx, credential)
 	if err != nil {
 		return err
 	}
@@ -78,39 +70,19 @@ func (s *verifiableCredentialService) Publish(
 		)
 	}
 
-	verifRes, err := s.verifService.VerifyExistingIssuer(ctx, proof)
+	log.Debug("Validating the authentication proof")
+
+	issuerVerification, err := s.verifService.VerifyExistingIssuer(ctx, proof)
 	if err != nil {
 		return err
 	}
 
-	if !strings.HasSuffix(id, verifRes.Subject) {
+	if !strings.HasSuffix(id, issuerVerification.Subject) {
 		return errutil.ErrInfo(
 			errtypes.ERROR_REASON_INVALID_VERIFIABLE_CREDENTIAL,
 			"the ID in the Verifiable Credential does not match the ID in the proof",
 			nil,
 		)
-	}
-
-	log.Debug("Resolving the ID into a ResolverMetadata")
-
-	resolverMD, err := s.idRepository.ResolveID(ctx, id)
-	if err != nil {
-		if errors.Is(err, errcore.ErrResourceNotFound) {
-			return errutil.ErrInfo(
-				errtypes.ERROR_REASON_RESOLVER_METADATA_NOT_FOUND,
-				fmt.Sprintf("could not resolve the ID (%s) to a resolver metadata", id),
-				err,
-			)
-		}
-
-		return errutil.ErrInfo(errtypes.ERROR_REASON_INTERNAL, "unexpected error", err)
-	}
-
-	log.Debug("Validating the verifiable credential")
-
-	err = vccore.VerifyEnvelopedCredential(credential, resolverMD.GetJwks())
-	if err != nil {
-		return err
 	}
 
 	log.Debug("Storing the Verifiable Credential")
@@ -194,4 +166,72 @@ func (s *verifiableCredentialService) GetVcs(
 	}
 
 	return envelopedCredentials, nil
+}
+
+// Verify an existing Verifiable Credential
+func (s *verifiableCredentialService) Verify(
+	ctx context.Context,
+	credential *vctypes.EnvelopedCredential,
+) error {
+	_, err := s.verifyEnvelopedCredential(ctx, credential)
+	return err
+}
+
+func (s *verifiableCredentialService) verifyEnvelopedCredential(
+	ctx context.Context,
+	credential *vctypes.EnvelopedCredential,
+) (*vctypes.VerifiableCredential, error) {
+	if credential.Value == "" {
+		return nil, errutil.ErrInfo(
+			errtypes.ERROR_REASON_INVALID_CREDENTIAL_ENVELOPE_VALUE_FORMAT,
+			"invalid credential envelope value",
+			nil,
+		)
+	}
+
+	parsedVC, err := vccore.ParseEnvelopedCredential(credential)
+	if err != nil {
+		return nil, errutil.ErrInfo(
+			errtypes.ERROR_REASON_INVALID_CREDENTIAL_ENVELOPE_VALUE_FORMAT,
+			"invalid credential envelope value",
+			err,
+		)
+	}
+
+	id, ok := parsedVC.GetDID()
+	if !ok {
+		return nil, errutil.ErrInfo(
+			errtypes.ERROR_REASON_INVALID_VERIFIABLE_CREDENTIAL,
+			"unable to find the ID inside the CredentialSubject",
+			nil,
+		)
+	}
+
+	log.Debug("Resolving the ID into a ResolverMetadata")
+
+	resolverMD, err := s.idRepository.ResolveID(ctx, id)
+	if err != nil {
+		if errors.Is(err, errcore.ErrResourceNotFound) {
+			return nil, errutil.ErrInfo(
+				errtypes.ERROR_REASON_RESOLVER_METADATA_NOT_FOUND,
+				fmt.Sprintf("could not resolve the ID (%s) to a resolver metadata", id),
+				err,
+			)
+		}
+
+		return nil, errutil.ErrInfo(errtypes.ERROR_REASON_INTERNAL, "unexpected error", err)
+	}
+
+	log.Debug("Validating the verifiable credential")
+
+	err = vccore.VerifyEnvelopedCredential(credential, resolverMD.GetJwks())
+	if err != nil {
+		return nil, errutil.ErrInfo(
+			errtypes.ERROR_REASON_INVALID_VERIFIABLE_CREDENTIAL,
+			"unable to verify verifiable credential",
+			err,
+		)
+	}
+
+	return parsedVC, nil
 }
