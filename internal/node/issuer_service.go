@@ -15,8 +15,8 @@ import (
 	"github.com/agntcy/identity/internal/core/issuer/verification"
 	vctypes "github.com/agntcy/identity/internal/core/vc/types"
 	"github.com/agntcy/identity/internal/pkg/errutil"
-	"github.com/agntcy/identity/internal/pkg/joseutil"
-	"github.com/agntcy/identity/internal/pkg/oidc"
+	"github.com/agntcy/identity/pkg/joseutil"
+	"github.com/agntcy/identity/pkg/oidc"
 )
 
 // The IssuerService interface defines the Node methods for Issuers

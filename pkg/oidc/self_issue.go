@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/agntcy/identity/internal/core/id/types"
-	"github.com/agntcy/identity/internal/pkg/joseutil"
+	"github.com/agntcy/identity/pkg/joseutil"
 	"github.com/lestrrat-go/jwx/v3/jwt"
 )
 

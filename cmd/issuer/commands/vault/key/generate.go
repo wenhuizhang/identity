@@ -10,7 +10,7 @@ import (
 
 	clicache "github.com/agntcy/identity/cmd/issuer/cache"
 	vaultsrv "github.com/agntcy/identity/internal/issuer/vault"
-	"github.com/agntcy/identity/internal/pkg/joseutil"
+	"github.com/agntcy/identity/pkg/joseutil"
 	"github.com/google/uuid"
 	"github.com/spf13/cobra"
 )

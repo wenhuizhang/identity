@@ -13,8 +13,8 @@ import (
 	issdata "github.com/agntcy/identity/internal/issuer/issuer/data"
 	mddata "github.com/agntcy/identity/internal/issuer/metadata/data"
 	"github.com/agntcy/identity/internal/pkg/errutil"
-	"github.com/agntcy/identity/internal/pkg/joseutil"
 	"github.com/agntcy/identity/internal/pkg/nodeapi"
+	"github.com/agntcy/identity/pkg/joseutil"
 	"github.com/google/uuid"
 
 	idtypes "github.com/agntcy/identity/internal/core/id/types"

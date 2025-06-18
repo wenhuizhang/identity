@@ -12,7 +12,7 @@ import (
 	"github.com/agntcy/identity/internal/issuer/issuer/types"
 	idptypes "github.com/agntcy/identity/internal/issuer/types"
 	"github.com/agntcy/identity/internal/issuer/vault"
-	"github.com/agntcy/identity/internal/pkg/oidc"
+	"github.com/agntcy/identity/pkg/oidc"
 	"github.com/google/uuid"
 )
 

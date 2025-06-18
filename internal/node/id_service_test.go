@@ -17,8 +17,8 @@ import (
 	verificationtesting "github.com/agntcy/identity/internal/core/issuer/verification/testing"
 	vctypes "github.com/agntcy/identity/internal/core/vc/types"
 	"github.com/agntcy/identity/internal/node"
-	"github.com/agntcy/identity/internal/pkg/oidc"
-	oidctesting "github.com/agntcy/identity/internal/pkg/oidc/testing"
+	"github.com/agntcy/identity/pkg/oidc"
+	oidctesting "github.com/agntcy/identity/pkg/oidc/testing"
 	"github.com/stretchr/testify/assert"
 )
 

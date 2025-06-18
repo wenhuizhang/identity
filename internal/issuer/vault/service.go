@@ -8,9 +8,9 @@ import (
 	"errors"
 
 	idtypes "github.com/agntcy/identity/internal/core/id/types"
-	"github.com/agntcy/identity/internal/core/keystore"
 	"github.com/agntcy/identity/internal/issuer/vault/data"
 	"github.com/agntcy/identity/internal/issuer/vault/types"
+	"github.com/agntcy/identity/pkg/keystore"
 )
 
 type VaultService interface {
