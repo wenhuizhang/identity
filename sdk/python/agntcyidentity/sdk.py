@@ -77,4 +77,5 @@ class IdentitySdk:
             id=claims["id"],
             type=claims["type"],
             issuer=claims["issuer"],
+            content=claims["credentialSubject"],
         )
