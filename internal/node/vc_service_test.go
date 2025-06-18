@@ -23,8 +23,9 @@ import (
 	vctesting "github.com/agntcy/identity/internal/core/vc/testing"
 	vctypes "github.com/agntcy/identity/internal/core/vc/types"
 	"github.com/agntcy/identity/internal/node"
-	"github.com/agntcy/identity/internal/pkg/oidc"
-	oidctesting "github.com/agntcy/identity/internal/pkg/oidc/testing"
+	jwktype "github.com/agntcy/identity/pkg/jwk"
+	"github.com/agntcy/identity/pkg/oidc"
+	oidctesting "github.com/agntcy/identity/pkg/oidc/testing"
 	"github.com/google/uuid"
 	"github.com/lestrrat-go/jwx/v3/jwa"
 	"github.com/lestrrat-go/jwx/v3/jwk"
@@ -195,7 +196,7 @@ func generateValidVC(
 
 func signVCWithJose(
 	vc *vctypes.VerifiableCredential,
-) (*vctypes.EnvelopedCredential, *idtypes.Jwk, error) {
+) (*vctypes.EnvelopedCredential, *jwktype.Jwk, error) {
 	pk, err := rsa.GenerateKey(rand.Reader, 2048)
 	if err != nil {
 		return nil, nil, err
@@ -238,7 +239,7 @@ func signVCWithJose(
 		return nil, nil, err
 	}
 
-	var k idtypes.Jwk
+	var k jwktype.Jwk
 
 	err = json.Unmarshal(keyAsJson, &k)
 	if err != nil {

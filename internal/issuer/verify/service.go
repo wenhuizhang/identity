@@ -8,10 +8,10 @@ import (
 	"encoding/json"
 	"fmt"
 
-	idtypes "github.com/agntcy/identity/internal/core/id/types"
 	"github.com/agntcy/identity/internal/core/vc/jose"
 	vctypes "github.com/agntcy/identity/internal/core/vc/types"
 	"github.com/agntcy/identity/internal/pkg/nodeapi"
+	jwktype "github.com/agntcy/identity/pkg/jwk"
 	"github.com/lestrrat-go/jwx/v3/jws"
 )
 
@@ -78,7 +78,7 @@ func (v *verifyService) VerifyCredential(
 		}
 
 		// convert resolvedMetadata.VerificationMethods to JWKs
-		var jwks idtypes.Jwks
+		var jwks jwktype.Jwks
 		for _, vm := range resolvedMetadata.VerificationMethod {
 			jwks.Keys = append(jwks.Keys, vm.PublicKeyJwk)
 		}

@@ -8,6 +8,7 @@ import (
 	issuertypes "github.com/agntcy/identity/internal/core/issuer/types"
 	vc "github.com/agntcy/identity/internal/core/vc/postgres"
 	"github.com/agntcy/identity/internal/pkg/convertutil"
+	"github.com/agntcy/identity/pkg/jwk"
 	"github.com/google/uuid"
 	"github.com/lib/pq"
 )
@@ -41,8 +42,8 @@ func (md *ResolverMetadata) ToCoreType() *types.ResolverMetadata {
 }
 
 type VerificationMethod struct {
-	ID                 string     `gorm:"primaryKey"`
-	PublicKeyJwk       *types.Jwk `gorm:"embedded;embeddedPrefix:public_key_jwk_"`
+	ID                 string   `gorm:"primaryKey"`
+	PublicKeyJwk       *jwk.Jwk `gorm:"embedded;embeddedPrefix:public_key_jwk_"`
 	ResolverMetadataID string
 }
 

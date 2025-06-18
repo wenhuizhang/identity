@@ -5,16 +5,16 @@ package postgres
 
 import (
 	id "github.com/agntcy/identity/internal/core/id/postgres"
-	idtypes "github.com/agntcy/identity/internal/core/id/types"
 	"github.com/agntcy/identity/internal/core/issuer/types"
+	"github.com/agntcy/identity/pkg/jwk"
 )
 
 type Issuer struct {
-	CommonName       string       `gorm:"primaryKey"`
-	Verified         bool         `gorm:"not null;type:boolean;default:false"`
-	Organization     string       `gorm:"not null;type:varchar(256);"`
-	SubOrganization  string       `gorm:"not null;type:varchar(256);"`
-	PublicKey        *idtypes.Jwk `gorm:"embedded;embeddedPrefix:public_key_"`
+	CommonName       string   `gorm:"primaryKey"`
+	Verified         bool     `gorm:"not null;type:boolean;default:false"`
+	Organization     string   `gorm:"not null;type:varchar(256);"`
+	SubOrganization  string   `gorm:"not null;type:varchar(256);"`
+	PublicKey        *jwk.Jwk `gorm:"embedded;embeddedPrefix:public_key_"`
 	AuthType         types.IssuerAuthType
 	ResolverMetadata []*id.ResolverMetadata `gorm:"foreignKey:Controller"`
 }

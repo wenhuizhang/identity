@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"net/mail"
 
-	idtypes "github.com/agntcy/identity/internal/core/id/types"
+	"github.com/agntcy/identity/pkg/jwk"
 )
 
 // IssuerAuthType represents the type of authentication mechanism used by the issuer.
@@ -45,11 +45,11 @@ type Issuer struct {
 	// This field is optional
 	// The keys of the issuer in JWK format
 	// The public key is used to verify the signature of the different claims
-	PublicKey *idtypes.Jwk `json:"publicKey,omitempty" protobuf:"bytes,4,opt,name=public_key"`
+	PublicKey *jwk.Jwk `json:"publicKey,omitempty" protobuf:"bytes,4,opt,name=public_key"`
 
 	// This field is optional
 	// The private key of the issuer in JWK format
-	PrivateKey *idtypes.Jwk `json:"privateKey,omitempty" protobuf:"bytes,5,opt,name=private_key"`
+	PrivateKey *jwk.Jwk `json:"privateKey,omitempty" protobuf:"bytes,5,opt,name=private_key"`
 
 	// This field specifies the authentication mechanism used by the issuer.
 	// It determines whether the issuer uses an external Identity Provider (IDP)

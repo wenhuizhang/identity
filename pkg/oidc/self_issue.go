@@ -8,8 +8,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/agntcy/identity/internal/core/id/types"
-	"github.com/agntcy/identity/internal/pkg/joseutil"
+	"github.com/agntcy/identity/pkg/joseutil"
+	"github.com/agntcy/identity/pkg/jwk"
 	"github.com/lestrrat-go/jwx/v3/jwt"
 )
 
@@ -18,7 +18,7 @@ const (
 	SelfIssuedIssScheme            string = "agntcy"
 )
 
-func SelfIssueJWT(issuer, sub string, key *types.Jwk) (string, error) {
+func SelfIssueJWT(issuer, sub string, key *jwk.Jwk) (string, error) {
 	tok, _ := jwt.NewBuilder().
 		Issuer(fmt.Sprintf("%s:%s", SelfIssuedIssScheme, issuer)).
 		Subject(sub).

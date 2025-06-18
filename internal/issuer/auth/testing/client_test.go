@@ -11,7 +11,7 @@ import (
 	"github.com/agntcy/identity/internal/issuer/issuer/types"
 	idptypes "github.com/agntcy/identity/internal/issuer/types"
 	vaulttesting "github.com/agntcy/identity/internal/issuer/vault/testing"
-	"github.com/agntcy/identity/internal/pkg/oidc"
+	"github.com/agntcy/identity/pkg/oidc"
 	"github.com/stretchr/testify/assert"
 )
 

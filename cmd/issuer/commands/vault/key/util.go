@@ -6,8 +6,8 @@ package key
 import (
 	"fmt"
 
-	"github.com/agntcy/identity/internal/core/keystore"
 	vaulttypes "github.com/agntcy/identity/internal/issuer/vault/types"
+	"github.com/agntcy/identity/pkg/keystore"
 )
 
 func newKeyService(vault *vaulttypes.Vault) (keystore.KeyService, error) {

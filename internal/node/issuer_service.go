@@ -9,14 +9,14 @@ import (
 
 	errcore "github.com/agntcy/identity/internal/core/errors"
 	errtypes "github.com/agntcy/identity/internal/core/errors/types"
-	idtypes "github.com/agntcy/identity/internal/core/id/types"
 	issuercore "github.com/agntcy/identity/internal/core/issuer"
 	issuertypes "github.com/agntcy/identity/internal/core/issuer/types"
 	"github.com/agntcy/identity/internal/core/issuer/verification"
 	vctypes "github.com/agntcy/identity/internal/core/vc/types"
 	"github.com/agntcy/identity/internal/pkg/errutil"
-	"github.com/agntcy/identity/internal/pkg/joseutil"
-	"github.com/agntcy/identity/internal/pkg/oidc"
+	"github.com/agntcy/identity/pkg/joseutil"
+	"github.com/agntcy/identity/pkg/jwk"
+	"github.com/agntcy/identity/pkg/oidc"
 )
 
 // The IssuerService interface defines the Node methods for Issuers
@@ -27,7 +27,7 @@ type IssuerService interface {
 
 	// Find the issuer by common name
 	// Return the public keys of the Issuer
-	GetJwks(ctx context.Context, commonName string) (*idtypes.Jwks, error)
+	GetJwks(ctx context.Context, commonName string) (*jwk.Jwks, error)
 }
 
 // The issuerService struct implements the IssuerService interface
@@ -131,7 +131,7 @@ func (i *issuerService) Register(
 func (i *issuerService) GetJwks(
 	ctx context.Context,
 	commonName string,
-) (*idtypes.Jwks, error) {
+) (*jwk.Jwks, error) {
 	// Validate the common name
 	if commonName == "" {
 		return nil, errutil.ErrInfo(
@@ -160,8 +160,8 @@ func (i *issuerService) GetJwks(
 	}
 
 	// Return the public keys of the Issuer
-	return &idtypes.Jwks{
-		Keys: []*idtypes.Jwk{
+	return &jwk.Jwks{
+		Keys: []*jwk.Jwk{
 			issuer.PublicKey,
 		},
 	}, nil

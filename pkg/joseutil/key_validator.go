@@ -10,11 +10,11 @@ import (
 	"math/big"
 	"strings"
 
-	"github.com/agntcy/identity/internal/core/id/types"
+	"github.com/agntcy/identity/pkg/jwk"
 )
 
 // ValidatePubKey validates the public key fields of the JWK according to its algorithm.
-func ValidatePubKey(j *types.Jwk) error {
+func ValidatePubKey(j *jwk.Jwk) error {
 	if j == nil {
 		return errors.New("jwk is nil")
 	}
@@ -32,7 +32,7 @@ func ValidatePubKey(j *types.Jwk) error {
 }
 
 // ValidatePrivKey validates the private key fields of the JWK according to its algorithm.
-func ValidatePrivKey(j *types.Jwk) error {
+func ValidatePrivKey(j *jwk.Jwk) error {
 	if j == nil {
 		return errors.New("jwk is nil")
 	}
@@ -47,7 +47,7 @@ func ValidatePrivKey(j *types.Jwk) error {
 
 // --- RSA Validation ---
 
-func validateRSAPubKey(j *types.Jwk) error {
+func validateRSAPubKey(j *jwk.Jwk) error {
 	if j.N == "" || j.E == "" {
 		return errors.New("missing modulus (n) or exponent (e) for RSA public key")
 	}
@@ -73,7 +73,7 @@ func validateRSAPubKey(j *types.Jwk) error {
 	return nil
 }
 
-func validateRSAPrivKey(j *types.Jwk) error {
+func validateRSAPrivKey(j *jwk.Jwk) error {
 	// Check required fields
 	if j.N == "" || j.E == "" || j.D == "" || j.P == "" || j.Q == "" || j.DP == "" || j.DQ == "" ||
 		j.QI == "" {

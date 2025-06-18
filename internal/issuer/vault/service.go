@@ -7,10 +7,10 @@ import (
 	"context"
 	"errors"
 
-	idtypes "github.com/agntcy/identity/internal/core/id/types"
-	"github.com/agntcy/identity/internal/core/keystore"
 	"github.com/agntcy/identity/internal/issuer/vault/data"
 	"github.com/agntcy/identity/internal/issuer/vault/types"
+	"github.com/agntcy/identity/pkg/jwk"
+	"github.com/agntcy/identity/pkg/keystore"
 )
 
 type VaultService interface {
@@ -22,12 +22,12 @@ type VaultService interface {
 		ctx context.Context,
 		vaultID string,
 		keyID string,
-	) (*idtypes.Jwk, error)
+	) (*jwk.Jwk, error)
 	RetrievePrivKey(
 		ctx context.Context,
 		vaultID string,
 		keyID string,
-	) (*idtypes.Jwk, error)
+	) (*jwk.Jwk, error)
 }
 
 type vaultService struct {
@@ -84,7 +84,7 @@ func (s *vaultService) RetrievePubKey(
 	ctx context.Context,
 	vaultID string,
 	keyID string,
-) (*idtypes.Jwk, error) {
+) (*jwk.Jwk, error) {
 	keySrv, err := s.newKeyService(vaultID)
 	if err != nil {
 		return nil, err
@@ -102,7 +102,7 @@ func (s *vaultService) RetrievePrivKey(
 	ctx context.Context,
 	vaultID string,
 	keyID string,
-) (*idtypes.Jwk, error) {
+) (*jwk.Jwk, error) {
 	keySrv, err := s.newKeyService(vaultID)
 	if err != nil {
 		return nil, err

@@ -14,8 +14,8 @@ import (
 	issuertypes "github.com/agntcy/identity/internal/core/issuer/types"
 	vctypes "github.com/agntcy/identity/internal/core/vc/types"
 	"github.com/agntcy/identity/internal/pkg/errutil"
-	"github.com/agntcy/identity/internal/pkg/oidc"
 	"github.com/agntcy/identity/pkg/log"
+	"github.com/agntcy/identity/pkg/oidc"
 )
 
 type Result struct {

@@ -10,12 +10,12 @@ import (
 	"encoding/json"
 	"testing"
 
-	idtypes "github.com/agntcy/identity/internal/core/id/types"
 	issuertesting "github.com/agntcy/identity/internal/core/issuer/testing"
 	issuertypes "github.com/agntcy/identity/internal/core/issuer/types"
 	verificationtesting "github.com/agntcy/identity/internal/core/issuer/verification/testing"
 	vctypes "github.com/agntcy/identity/internal/core/vc/types"
 	"github.com/agntcy/identity/internal/node"
+	jwktype "github.com/agntcy/identity/pkg/jwk"
 	"github.com/lestrrat-go/jwx/v3/jwa"
 	"github.com/lestrrat-go/jwx/v3/jwk"
 	"github.com/stretchr/testify/assert"
@@ -115,7 +115,7 @@ func TestRegisterIssuer_Should_Register_Unverified_Issuer(t *testing.T) {
 	assert.Equal(t, registeredIssuer.Verified, false)
 }
 
-func generatePubKey() (*idtypes.Jwk, error) {
+func generatePubKey() (*jwktype.Jwk, error) {
 	pk, err := rsa.GenerateKey(rand.Reader, 2048)
 	if err != nil {
 		return nil, err
@@ -141,7 +141,7 @@ func generatePubKey() (*idtypes.Jwk, error) {
 		return nil, err
 	}
 
-	var k idtypes.Jwk
+	var k jwktype.Jwk
 
 	err = json.Unmarshal(keyAsJson, &k)
 	if err != nil {

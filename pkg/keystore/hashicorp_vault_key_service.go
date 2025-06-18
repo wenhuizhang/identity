@@ -10,7 +10,7 @@ import (
 	"fmt"
 	"path"
 
-	"github.com/agntcy/identity/internal/core/id/types"
+	"github.com/agntcy/identity/pkg/jwk"
 	"github.com/hashicorp/vault/api"
 )
 
@@ -28,7 +28,7 @@ type VaultStorageConfig struct {
 	Namespace   string
 }
 
-func (s *VaultKeyService) SaveKey(ctx context.Context, id string, jwk *types.Jwk) error {
+func (s *VaultKeyService) SaveKey(ctx context.Context, id string, jwk *jwk.Jwk) error {
 	if jwk == nil {
 		return errors.New("jwk cannot be nil")
 	}
@@ -54,7 +54,7 @@ func (s *VaultKeyService) SaveKey(ctx context.Context, id string, jwk *types.Jwk
 	return nil
 }
 
-func (s *VaultKeyService) RetrievePubKey(ctx context.Context, id string) (*types.Jwk, error) {
+func (s *VaultKeyService) RetrievePubKey(ctx context.Context, id string) (*jwk.Jwk, error) {
 	jwk, err := s.retrieveKey(ctx, id)
 	if err != nil {
 		return nil, err
@@ -63,7 +63,7 @@ func (s *VaultKeyService) RetrievePubKey(ctx context.Context, id string) (*types
 	return jwk.PublicKey(), nil
 }
 
-func (s *VaultKeyService) RetrievePrivKey(ctx context.Context, id string) (*types.Jwk, error) {
+func (s *VaultKeyService) RetrievePrivKey(ctx context.Context, id string) (*jwk.Jwk, error) {
 	return s.retrieveKey(ctx, id)
 }
 
@@ -122,7 +122,7 @@ func (s *VaultKeyService) ListKeys(ctx context.Context) ([]string, error) {
 	return keys, nil
 }
 
-func (s *VaultKeyService) retrieveKey(ctx context.Context, id string) (*types.Jwk, error) {
+func (s *VaultKeyService) retrieveKey(ctx context.Context, id string) (*jwk.Jwk, error) {
 	fullPath := buildKeyPath(s.mountPath, s.keyBasePath, id)
 
 	secret, err := s.client.Logical().ReadWithContext(ctx, fullPath)
@@ -144,7 +144,7 @@ func (s *VaultKeyService) retrieveKey(ctx context.Context, id string) (*types.Jw
 		return nil, errors.New("JWK not found in Vault data")
 	}
 
-	var jwk types.Jwk
+	var jwk jwk.Jwk
 	if err := json.Unmarshal([]byte(jwkJSON), &jwk); err != nil {
 		return nil, fmt.Errorf("failed to unmarshal JWK: %w", err)
 	}
