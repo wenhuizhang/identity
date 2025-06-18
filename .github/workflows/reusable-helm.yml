@@ -1,0 +1,45 @@
+# Copyright 2025 Copyright AGNTCY Contributors (https://github.com/agntcy)
+# SPDX-License-Identifier: Apache-2.0
+
+---
+name: Reusable Helm Chart Release
+
+on:
+  workflow_call:
+    inputs:
+      charts-dir:
+        description: "Path to the Helm charts directory"
+        required: true
+        type: string
+      gh-pages-branch:
+        description: "Branch to publish Helm charts (e.g., gh-pages)"
+        required: true
+        type: string
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3.5
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v3.5
+        with:
+          version: v3.12.0
+
+      - name: Cache Helm dependencies
+        uses: actions/cache@v3.5
+        with:
+          path: ~/.cache/helm
+          key: ${{ runner.os }}-helm
+
+      - name: Run chart-releaser
+        uses: helm/chart-releaser-action@v1.6.0
+        env:
+          CR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          charts_dir: ${{ inputs.charts-dir }}
+          packages_with_index: true
+          target_branch: ${{ inputs.gh-pages-branch }}

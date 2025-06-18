@@ -71,3 +71,9 @@ jobs:
       github-token: ${{ secrets.GITHUB_TOKEN }}
       gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
       gpg-passphrase: ${{ secrets.GPG_PASSPHRASE }}
+
+  publish-helm-charts:
+    uses: ./.github/workflows/reusable-helm.yml
+    with:
+      charts-dir: "deployments/charts"
+      gh-pages-branch: "gh-pages"

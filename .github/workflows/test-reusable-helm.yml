@@ -1,0 +1,15 @@
+# Copyright 2025 Copyright AGNTCY Contributors (https://github.com/agntcy)
+# SPDX-License-Identifier: Apache-2.0
+
+---
+name: Test Reusable Helm Workflow
+
+on:
+  workflow_dispatch: # Allows manual triggering of the workflow
+
+jobs:
+  test-reusable-helm:
+    uses: ./.github/workflows/reusable-helm.yml
+    with:
+      charts-dir: "deployments/charts"
+      gh-pages-branch: "gh-pages"
