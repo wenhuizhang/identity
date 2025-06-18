@@ -6,6 +6,7 @@ package badge
 import (
 	"context"
 	"encoding/json"
+	"strings"
 
 	"github.com/agntcy/identity/internal/issuer/auth"
 	"github.com/agntcy/identity/internal/issuer/badge/data"
@@ -150,13 +151,11 @@ func (s *badgeService) PublishBadge(
 		return nil, errutil.Err(err, "unable to fetch the metadata")
 	}
 
-	token, err := s.authClient.Token(
+	token, err := s.authClient.Authenticate(
 		ctx,
-		vaultId,
-		keyId,
 		issuer,
-		md.IdpConfig,
-		&metadataId,
+		auth.WithIdpIssuing(md.IdpConfig),
+		auth.WithSelfIssuing(vaultId, keyId, strings.TrimPrefix(md.ID, "AGNTCY-")),
 	)
 	if err != nil {
 		return nil, err

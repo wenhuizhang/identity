@@ -56,11 +56,9 @@ func (f *LoadFlags) AddFlags(cmd *cobra.Command) {
 
 func (cmd *LoadCommand) Run(ctx context.Context, flags *LoadFlags) error {
 	// if the vault id is not set, prompt the user for it interactively
-	if flags.VaultID == "" {
-		err := cmdutil.ScanRequired("Vault ID to load", &flags.VaultID)
-		if err != nil {
-			return fmt.Errorf("error reading vault ID: %w", err)
-		}
+	err := cmdutil.ScanRequiredIfNotSet("Vault ID to load", &flags.VaultID)
+	if err != nil {
+		return fmt.Errorf("error reading vault ID: %w", err)
 	}
 
 	// check the vault id is valid

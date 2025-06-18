@@ -79,7 +79,7 @@ linters:
     nestif:
       min-complexity: 10
     cyclop:
-      max-complexity: 20
+      max-complexity: 15
     goconst:
       min-len: 2
       min-occurrences: 3

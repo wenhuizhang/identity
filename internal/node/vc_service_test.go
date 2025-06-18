@@ -13,10 +13,12 @@ import (
 	"testing"
 
 	errtypes "github.com/agntcy/identity/internal/core/errors/types"
+	idcore "github.com/agntcy/identity/internal/core/id"
 	idtesting "github.com/agntcy/identity/internal/core/id/testing"
 	idtypes "github.com/agntcy/identity/internal/core/id/types"
 	issuertesting "github.com/agntcy/identity/internal/core/issuer/testing"
 	issuertypes "github.com/agntcy/identity/internal/core/issuer/types"
+	issuerverif "github.com/agntcy/identity/internal/core/issuer/verification"
 	verificationtesting "github.com/agntcy/identity/internal/core/issuer/verification/testing"
 	vctesting "github.com/agntcy/identity/internal/core/vc/testing"
 	vctypes "github.com/agntcy/identity/internal/core/vc/types"
@@ -42,38 +44,22 @@ func TestPublishVC(t *testing.T) {
 			Issuer:  "http://" + verificationtesting.ValidProofIssuer,
 			Subject: verificationtesting.ValidProofSub,
 		},
-		Verified:   true,
 		CommonName: verificationtesting.ValidProofIssuer,
 	}
-	idGen := node.NewIDGenerator(
+	verifSrv := issuerverif.NewService(
 		oidctesting.NewFakeParser(jwt, nil),
 		issuerRepo,
 	)
-	sut := node.NewVerifiableCredentialService(idRepo, issuerRepo, vcRepo, idGen)
+	sut := node.NewVerifiableCredentialService(idRepo, verifSrv, vcRepo)
 	issuer := &issuertypes.Issuer{
 		CommonName:   verificationtesting.ValidProofIssuer,
 		Organization: "Some Org",
 	}
 	_, _ = issuerRepo.CreateIssuer(context.Background(), issuer)
-	credential := &vctypes.VerifiableCredential{
-		ID: "VC_ID",
-	}
 
-	envelope, pubKey, err := signVCWithJose(credential)
-	assert.NoError(t, err)
+	envelope := generateValidVC(t, idRepo, issuer)
 
-	resolverMD := &idtypes.ResolverMetadata{
-		ID: fmt.Sprintf("DUO-%s", verificationtesting.ValidProofSub),
-		VerificationMethod: []*idtypes.VerificationMethod{
-			{
-				ID:           pubKey.KID,
-				PublicKeyJwk: pubKey,
-			},
-		},
-	}
-	_, _ = idRepo.CreateID(context.Background(), resolverMD, issuer)
-
-	err = sut.Publish(context.Background(), envelope, &vctypes.Proof{Type: "JWT"})
+	err := sut.Publish(context.Background(), envelope, &vctypes.Proof{Type: "JWT"})
 
 	assert.NoError(t, err)
 }
@@ -81,7 +67,7 @@ func TestPublishVC(t *testing.T) {
 func TestPublishVC_Should_Return_Invalid_Credential_Format_Error(t *testing.T) {
 	t.Parallel()
 
-	sut := node.NewVerifiableCredentialService(nil, nil, nil, nil)
+	sut := node.NewVerifiableCredentialService(nil, nil, nil)
 	invalidEnvelope := &vctypes.EnvelopedCredential{
 		Value: "",
 	}
@@ -94,13 +80,13 @@ func TestPublishVC_Should_Return_Invalid_Credential_Format_Error(t *testing.T) {
 func TestPublishVC_Should_Return_Invalid_Proof_Error_If_Empty(t *testing.T) {
 	t.Parallel()
 
-	idGen := node.NewIDGenerator(oidctesting.NewFakeParser(nil, nil), nil)
-	sut := node.NewVerifiableCredentialService(nil, nil, nil, idGen)
-	invalidEnvelope := &vctypes.EnvelopedCredential{
-		Value: "something",
-	}
+	idRepo := idtesting.NewFakeIdRepository()
+	vcRepo := vctesting.NewFakeVCRepository()
+	verifSrv := issuerverif.NewService(oidctesting.NewFakeParser(nil, nil), nil)
+	sut := node.NewVerifiableCredentialService(idRepo, verifSrv, vcRepo)
+	envelope := generateValidVC(t, idRepo, &issuertypes.Issuer{CommonName: "issuer"})
 
-	err := sut.Publish(context.Background(), invalidEnvelope, nil)
+	err := sut.Publish(context.Background(), envelope, nil)
 
 	assertErrorInfoReason(t, err, errtypes.ERROR_REASON_INVALID_PROOF)
 }
@@ -108,13 +94,14 @@ func TestPublishVC_Should_Return_Invalid_Proof_Error_If_Empty(t *testing.T) {
 func TestPublishVC_Should_Return_Invalid_Proof_Error(t *testing.T) {
 	t.Parallel()
 
-	idGen := node.NewIDGenerator(oidctesting.NewFakeParser(nil, errors.New("")), nil)
-	sut := node.NewVerifiableCredentialService(nil, nil, nil, idGen)
-	invalidEnvelope := &vctypes.EnvelopedCredential{
-		Value: "something",
-	}
+	idRepo := idtesting.NewFakeIdRepository()
+	vcRepo := vctesting.NewFakeVCRepository()
+	verifSrv := issuerverif.NewService(oidctesting.NewFakeParser(nil, errors.New("")), nil)
+	sut := node.NewVerifiableCredentialService(idRepo, verifSrv, vcRepo)
+	envelope := generateValidVC(t, idRepo, &issuertypes.Issuer{CommonName: "issuer"})
+	invalidProof := &vctypes.Proof{Type: "JWT"}
 
-	err := sut.Publish(context.Background(), invalidEnvelope, &vctypes.Proof{Type: "JWT"})
+	err := sut.Publish(context.Background(), envelope, invalidProof)
 
 	assertErrorInfoReason(t, err, errtypes.ERROR_REASON_INVALID_PROOF)
 }
@@ -132,35 +119,19 @@ func TestPublishVC_Should_Return_Issuer_Not_Registered(t *testing.T) {
 			Issuer:  "INVALID",
 		},
 	}
-	idGen := node.NewIDGenerator(
+	verifSrv := issuerverif.NewService(
 		oidctesting.NewFakeParser(jwt, nil),
 		issuerRepo,
 	)
-	sut := node.NewVerifiableCredentialService(idRepo, issuerRepo, vcRepo, idGen)
+	sut := node.NewVerifiableCredentialService(idRepo, verifSrv, vcRepo)
 	issuer := &issuertypes.Issuer{
 		CommonName:   verificationtesting.ValidProofIssuer,
 		Organization: "Some Org",
 	}
 	_, _ = issuerRepo.CreateIssuer(context.Background(), issuer)
-	credential := &vctypes.VerifiableCredential{
-		ID: "VC_ID",
-	}
+	envelope := generateValidVC(t, idRepo, issuer)
 
-	envelope, pubKey, err := signVCWithJose(credential)
-	assert.NoError(t, err)
-
-	resolverMD := &idtypes.ResolverMetadata{
-		ID: fmt.Sprintf("DUO-%s", verificationtesting.ValidProofSub),
-		VerificationMethod: []*idtypes.VerificationMethod{
-			{
-				ID:           pubKey.KID,
-				PublicKeyJwk: pubKey,
-			},
-		},
-	}
-	_, _ = idRepo.CreateID(context.Background(), resolverMD, issuer)
-
-	err = sut.Publish(context.Background(), envelope, &vctypes.Proof{Type: "JWT"})
+	err := sut.Publish(context.Background(), envelope, &vctypes.Proof{Type: "JWT"})
 
 	assertErrorInfoReason(t, err, errtypes.ERROR_REASON_ISSUER_NOT_REGISTERED)
 }
@@ -169,7 +140,7 @@ func TestGetWellKnown_Should_Return_Items(t *testing.T) {
 	t.Parallel()
 
 	vcRepo := vctesting.NewFakeVCRepository()
-	sut := node.NewVerifiableCredentialService(nil, nil, vcRepo, nil)
+	sut := node.NewVerifiableCredentialService(nil, nil, vcRepo)
 	resolverMetadatID := "my-id"
 
 	validVC, _ := vcRepo.Create(t.Context(), &vctypes.VerifiableCredential{
@@ -189,6 +160,37 @@ func TestGetWellKnown_Should_Return_Items(t *testing.T) {
 	assert.Len(t, actual, 1)
 	assert.Equal(t, vctypes.CREDENTIAL_ENVELOPE_TYPE_JOSE, actual[0].EnvelopeType)
 	assert.Equal(t, validVC.Proof.ProofValue, actual[0].Value)
+}
+
+func generateValidVC(
+	t *testing.T,
+	idRepo idcore.IdRepository,
+	issuer *issuertypes.Issuer,
+) *vctypes.EnvelopedCredential {
+	t.Helper()
+
+	credential := &vctypes.VerifiableCredential{
+		ID: "VC_ID",
+		CredentialSubject: map[string]any{
+			"id": "DUO-" + verificationtesting.ValidProofSub,
+		},
+	}
+
+	envelope, pubKey, err := signVCWithJose(credential)
+	assert.NoError(t, err)
+
+	resolverMD := &idtypes.ResolverMetadata{
+		ID: fmt.Sprintf("DUO-%s", verificationtesting.ValidProofSub),
+		VerificationMethod: []*idtypes.VerificationMethod{
+			{
+				ID:           pubKey.KID,
+				PublicKeyJwk: pubKey,
+			},
+		},
+	}
+	_, _ = idRepo.CreateID(context.Background(), resolverMD, issuer)
+
+	return envelope
 }
 
 func signVCWithJose(

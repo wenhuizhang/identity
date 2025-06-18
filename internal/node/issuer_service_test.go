@@ -24,7 +24,7 @@ import (
 func TestRegisterIssuer_Should_Not_Register_Same_Issuer_Twice(t *testing.T) {
 	t.Parallel()
 
-	verficationSrv := verificationtesting.NewFakeVerifiedVerificationService()
+	verficationSrv := verificationtesting.NewFakeVerifiedVerificationServiceStub()
 	issuerRepo := issuertesting.NewFakeIssuerRepository()
 	sut := node.NewIssuerService(issuerRepo, verficationSrv)
 	pubKey, _ := generatePubKey()
@@ -52,7 +52,7 @@ func TestRegisterIssuer_Should_Not_Register_Same_Issuer_Twice(t *testing.T) {
 func TestRegisterIssuer_Should_Register_Verified_Issuer(t *testing.T) {
 	t.Parallel()
 
-	verficationSrv := verificationtesting.NewFakeVerifiedVerificationService()
+	verficationSrv := verificationtesting.NewFakeVerifiedVerificationServiceStub()
 	issuerRepo := issuertesting.NewFakeIssuerRepository()
 	sut := node.NewIssuerService(issuerRepo, verficationSrv)
 	pubKey, _ := generatePubKey()

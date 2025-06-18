@@ -16,6 +16,7 @@ import (
 	vctypes "github.com/agntcy/identity/internal/core/vc/types"
 	"github.com/agntcy/identity/internal/pkg/errutil"
 	"github.com/agntcy/identity/internal/pkg/joseutil"
+	"github.com/agntcy/identity/internal/pkg/oidc"
 )
 
 // The IssuerService interface defines the Node methods for Issuers
@@ -53,7 +54,6 @@ func (i *issuerService) Register(
 	issuer *issuertypes.Issuer,
 	proof *vctypes.Proof,
 ) error {
-	// Validate the issuer
 	if issuer == nil || issuer.ValidateCommonName() != nil {
 		return errutil.ErrInfo(
 			errtypes.ERROR_REASON_INVALID_ISSUER,
@@ -62,11 +62,8 @@ func (i *issuerService) Register(
 		)
 	}
 
-	// Validate the public key
-	validationErr := joseutil.ValidatePubKey(
-		issuer.PublicKey,
-	)
-	if validationErr != nil {
+	err := joseutil.ValidatePubKey(issuer.PublicKey)
+	if err != nil {
 		return errutil.ErrInfo(
 			errtypes.ERROR_REASON_INVALID_ISSUER,
 			"issuer has invalid public key",
@@ -77,17 +74,16 @@ func (i *issuerService) Register(
 	// Verify the issuer's common name
 	// Validate the proof exists
 	// If the proof is self signed, the issuer will not be verified
-	verified, verificationErr := i.verficationService.Verify(
+	verifRes, err := i.verficationService.Verify(
 		ctx,
 		issuer,
 		proof,
 	)
-
-	if verificationErr != nil {
+	if err != nil {
 		return errutil.ErrInfo(
 			errtypes.ERROR_REASON_INVALID_ISSUER,
 			"failed to verify common name",
-			verificationErr,
+			err,
 		)
 	}
 
@@ -105,7 +101,14 @@ func (i *issuerService) Register(
 	}
 
 	// Set the verified status of the issuer
-	issuer.Verified = verified
+	// When we implement the verification process we need to change this code
+	issuer.Verified = verifRes.Verified
+
+	if verifRes.Provider == oidc.SelfProviderName {
+		issuer.AuthType = issuertypes.ISSUER_AUTH_TYPE_SELF
+	} else {
+		issuer.AuthType = issuertypes.ISSUER_AUTH_TYPE_IDP
+	}
 
 	// Save the issuer in the database
 	_, repositoryErr := i.issuerRepository.CreateIssuer(

@@ -5,6 +5,9 @@ package oidc
 
 import (
 	"context"
+	"encoding/json"
+	"net/url"
+	"strings"
 	"time"
 
 	identitycache "github.com/agntcy/identity/internal/pkg/cache"
@@ -23,14 +26,7 @@ import (
 type Claims struct {
 	Issuer  string `json:"iss"`
 	Subject string `json:"sub"`
-}
-
-func (c *Claims) GetCommonName() string {
-	if c == nil {
-		return ""
-	}
-
-	return c.Issuer
+	SubJWK  string `json:"sub_jwk"` // used for self-issued tokens
 }
 
 type ProviderName int
@@ -46,9 +42,8 @@ type ParsedJWT struct {
 	Claims           *Claims
 	Provider         ProviderName
 	CommonName       string
-	Verified         bool
 	providerMetadata *providerMetadata
-	jwtString        *string
+	jwt              *string
 }
 
 type providerMetadata struct {
@@ -67,23 +62,15 @@ type CachedJwks struct {
 
 // The Parser defines different methods for the PARSER standard
 type Parser interface {
-	// VerifyJwt verifies the provided JWT signature
-	// It will attempt to retrieve the JWKS from the issuer's metadata
-	// If the metadata is not available, it will use the JWKS provided in the jwksString
-	// In that case, the provider will be set to SelfProviderName
-	VerifyJwt(ctx context.Context, jwt *ParsedJWT, jwksString *string) error
+	// VerifyJwt verifies the provided JWT signature.
+	// If the JWT is not self-issued (provider = SelfProviderName) it will validate
+	// the token using the public key located in the claims (sub_jwk).
+	// Else, it will attempt to retrieve the JWKS from the issuer's metadata.
+	VerifyJwt(ctx context.Context, jwt *ParsedJWT) error
 
 	// Get the parsed JWT including the issuer, the subject claims
 	// the common name and the provider metadata
-	ParseJwt(ctx context.Context, jwtString *string) *ParsedJWT
-
-	// Combines the ParseJwt and VerifyJwt methods
-	// It will parse the JWT and then verify its signature using the JWKS
-	ParseAndVerifyJwt(
-		ctx context.Context,
-		jwtString *string,
-		jwksString *string,
-	) (*ParsedJWT, error)
+	ParseJwt(ctx context.Context, jwtString *string) (*ParsedJWT, error)
 }
 
 // The parser struct implements the Parser interface
@@ -104,33 +91,7 @@ func NewParser() Parser {
 	}
 }
 
-func (p *parser) ParseAndVerifyJwt(
-	ctx context.Context,
-	jwtString *string,
-	jwksString *string,
-) (*ParsedJWT, error) {
-	// Parse the JWT
-	parsedJwt := p.ParseJwt(ctx, jwtString)
-
-	// If the JWT could not be parsed, return an Error
-	if parsedJwt == nil {
-		return nil, errutil.Err(nil, "failed to parse JWT")
-	}
-
-	// Verify the JWT
-	err := p.VerifyJwt(ctx, parsedJwt, jwksString)
-	if err != nil {
-		return nil, errutil.Err(err, "failed to verify JWT")
-	}
-
-	return parsedJwt, nil
-}
-
-func (p *parser) VerifyJwt(
-	ctx context.Context,
-	parsedJwt *ParsedJWT,
-	jwksString *string,
-) error {
+func (p *parser) VerifyJwt(ctx context.Context, parsedJwt *ParsedJWT) error {
 	if parsedJwt == nil {
 		return errutil.Err(
 			nil,
@@ -150,15 +111,17 @@ func (p *parser) VerifyJwt(
 	} else {
 		log.Debug("Using issuer's self generated JWKS")
 
-		// We will use issuer's self generated JWKS
-		jwks, err = p.parseJwks(jwksString)
+		key, err := jwk.ParseKey([]byte(parsedJwt.Claims.SubJWK))
 		if err != nil {
 			return errutil.Err(err, "failed to parse JWKS")
 		}
+
+		jwks = jwk.NewSet()
+		_ = jwks.AddKey(key)
 	}
 
 	// Verify the JWT signature
-	_, err = jws.Verify([]byte(*parsedJwt.jwtString), jws.WithKeySet(jwks))
+	_, err = jws.Verify([]byte(*parsedJwt.jwt), jws.WithKeySet(jwks))
 	if err != nil {
 		return err
 	}
@@ -169,33 +132,47 @@ func (p *parser) VerifyJwt(
 func (p *parser) ParseJwt(
 	ctx context.Context,
 	jwtString *string,
-) *ParsedJWT {
-	// Check if the JWT string is empty
+) (*ParsedJWT, error) {
 	if jwtString == nil || *jwtString == "" {
-		return nil
+		return nil, errutil.Err(nil, "JWT string is empty")
 	}
 
 	claims, err := p.GetClaims(ctx, jwtString)
 	if err != nil {
-		return nil
+		return nil, err
 	}
 
 	log.Debug("Validating JWT for issuer:", claims.Issuer, " and subject:", claims.Subject)
 
-	providerName := SelfProviderName
+	var providerName ProviderName
+	var commonName string
+	var providerMetadata *providerMetadata
 
-	// Get the provider metadata from the issuer
-	providerMetadata, err := p.getProviderMetadata(ctx, claims.Issuer)
-	if err == nil {
-		providerName, err = p.detectProviderName(ctx, providerMetadata)
-		if err != nil {
-			return nil
-		}
+	selfIssued, err := p.isSelfIssuedToken(claims)
+	if err != nil {
+		return nil, err
 	}
 
-	// Get common name from the JWT claims
-	commonName := claims.Issuer
-	if providerName != SelfProviderName {
+	if selfIssued {
+		log.Debug("The JWT is self-issued")
+
+		providerName = SelfProviderName
+
+		// Remove the self-issued scheme from the issuer to get the common name
+		commonName, _ = strings.CutPrefix(claims.Issuer, SelfIssuedIssScheme+":")
+	} else {
+		pmd, err := p.getProviderMetadata(ctx, claims.Issuer)
+		if err != nil {
+			return nil, err
+		}
+
+		providerMetadata = pmd
+
+		providerName, err = p.detectProviderName(ctx, providerMetadata)
+		if err != nil {
+			return nil, err
+		}
+
 		commonName = httputil.Hostname(claims.Issuer)
 	}
 
@@ -203,17 +180,15 @@ func (p *parser) ParseJwt(
 		Claims:           claims,
 		Provider:         providerName,
 		CommonName:       commonName,
-		Verified:         providerName != SelfProviderName,
 		providerMetadata: providerMetadata,
-		jwtString:        jwtString,
-	}
+		jwt:              jwtString,
+	}, nil
 }
 
 func (p *parser) GetClaims(
 	ctx context.Context,
 	jwtString *string,
 ) (*Claims, error) {
-	// Parse the JWT string
 	jwtToken, err := jwt.Parse(
 		[]byte(*jwtString),
 		jwt.WithVerify(false),
@@ -224,22 +199,41 @@ func (p *parser) GetClaims(
 		return nil, errutil.Err(err, "failed to parse JWT")
 	}
 
-	// Get issuer from the JWT string
 	issuer, ok := jwtToken.Issuer()
 	if !ok {
 		return nil, errutil.Err(nil, "failed to decode JWT: missing 'iss' claim")
 	}
 
-	// Get subject from the JWT string
 	subject, ok := jwtToken.Subject()
 	if !ok {
 		return nil, errutil.Err(nil, "failed to decode JWT: missing 'sub' claim")
 	}
 
+	var subJWK map[string]any
+	var jsonSubJWK []byte
+
+	err = jwtToken.Get(SelfIssuedTokenSubJwkClaimName, &subJWK)
+	if err == nil {
+		jsonSubJWK, err = json.Marshal(subJWK)
+		if err != nil {
+			return nil, errutil.Err(err, "failed to decode JWT: invalid 'sub_jwk' claim")
+		}
+	}
+
 	return &Claims{
 		Issuer:  issuer,
 		Subject: subject,
+		SubJWK:  string(jsonSubJWK),
 	}, nil
+}
+
+func (p *parser) isSelfIssuedToken(claims *Claims) (bool, error) {
+	u, err := url.Parse(claims.Issuer)
+	if err != nil {
+		return false, err
+	}
+
+	return strings.EqualFold(u.Scheme, SelfIssuedIssScheme), nil
 }
 
 func (p *parser) getWellKnownURL(issuer string) string {
@@ -250,14 +244,11 @@ func (p *parser) getProviderMetadata(
 	ctx context.Context,
 	issuer string,
 ) (*providerMetadata, error) {
-	// Get the raw data from the issuer
-	var metadata providerMetadata
-
-	// Get the well-known URL from the issuer
 	wellKnownURL := p.getWellKnownURL(issuer)
 	log.Debug("Getting metadata from issuer:", issuer, " with URL:", wellKnownURL)
 
-	// Get the metadata from the issuer
+	var metadata providerMetadata
+
 	err := httputil.GetJSON(ctx, wellKnownURL, &metadata)
 	if err != nil {
 		return nil, errutil.Err(err, "failed to get metadata from issuer")
@@ -269,16 +260,13 @@ func (p *parser) getProviderMetadata(
 }
 
 func (p *parser) getJwks(ctx context.Context, provider *providerMetadata) (jwk.Set, error) {
-	// Try to get the cached JWKS
 	cachedEntry, found := identitycache.GetFromCache[CachedJwks](ctx, p.jwksCache, provider.Issuer)
 	if found {
 		return p.parseJwks(&cachedEntry.Jwks)
 	}
 
-	// Get the raw data from the JWKS URI
 	var jwksString string
 
-	// Get the JWKs
 	err := httputil.GetWithRawBody(ctx, provider.JWKSURL, nil, &jwksString)
 	if err != nil {
 		return nil, errutil.Err(err, "failed to get JWKS from issuer")
@@ -289,7 +277,6 @@ func (p *parser) getJwks(ctx context.Context, provider *providerMetadata) (jwk.S
 		return nil, errutil.Err(err, "failed to parse JWKS")
 	}
 
-	// Cache the JWKS
 	err = identitycache.AddToCache(ctx, p.jwksCache, provider.Issuer, &CachedJwks{Jwks: jwksString})
 	if err != nil {
 		log.Warn(err)

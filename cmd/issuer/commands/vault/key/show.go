@@ -67,11 +67,9 @@ func (cmd *ShowCommand) Run(ctx context.Context, flags *ShowFlags) error {
 	}
 
 	// if the key id is not set, prompt the user for it interactively
-	if flags.KeyID == "" {
-		err := cmdutil.ScanRequired("Key ID", &flags.KeyID)
-		if err != nil {
-			return fmt.Errorf("error reading key ID: %w", err)
-		}
+	err = cmdutil.ScanRequiredIfNotSet("Key ID", &flags.KeyID)
+	if err != nil {
+		return fmt.Errorf("error reading key ID: %w", err)
 	}
 
 	// get the vault configuration

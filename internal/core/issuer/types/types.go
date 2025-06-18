@@ -10,6 +10,22 @@ import (
 	idtypes "github.com/agntcy/identity/internal/core/id/types"
 )
 
+// IssuerAuthType represents the type of authentication mechanism used by the issuer.
+type IssuerAuthType int
+
+const (
+	// ISSUER_AUTH_TYPE_UNSPECIFIED represents an unspecified or unknown authentication type.
+	ISSUER_AUTH_TYPE_UNSPECIFIED IssuerAuthType = iota
+
+	// ISSUER_AUTH_TYPE_IDP indicates that the issuer uses an external Identity Provider (IDP)
+	// to authenticate
+	ISSUER_AUTH_TYPE_IDP
+
+	// ISSUER_AUTH_TYPE_SELF indicates that the issuer uses a self-issued key for authentication.
+	// This is typically used in scenarios where the issuer doesn't rely on an IdP.
+	ISSUER_AUTH_TYPE_SELF
+)
+
 // A Identity Issuer
 type Issuer struct {
 	// The organization of the issuer
@@ -34,6 +50,11 @@ type Issuer struct {
 	// This field is optional
 	// The private key of the issuer in JWK format
 	PrivateKey *idtypes.Jwk `json:"privateKey,omitempty" protobuf:"bytes,5,opt,name=private_key"`
+
+	// This field specifies the authentication mechanism used by the issuer.
+	// It determines whether the issuer uses an external Identity Provider (IDP)
+	// or a self-issued key for authentication.
+	AuthType IssuerAuthType `json:"authType,omitempty" protobuf:"varint,7,opt,name=auth_type"`
 }
 
 // ValidateCommonName validates the common name of the issuer

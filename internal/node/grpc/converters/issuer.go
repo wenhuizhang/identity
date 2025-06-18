@@ -19,6 +19,7 @@ func FromIssuer(src *issuertypes.Issuer) *coreapi.Issuer {
 		SubOrganization: ptrutil.Ptr(src.SubOrganization),
 		CommonName:      ptrutil.Ptr(src.CommonName),
 		PublicKey:       FromJwk(src.PublicKey),
+		AuthType:        ptrutil.Ptr(coreapi.IssuerAuthType(src.AuthType)),
 	}
 }
 
@@ -32,5 +33,6 @@ func ToIssuer(src *coreapi.Issuer) *issuertypes.Issuer {
 		SubOrganization: ptrutil.DerefStr(src.SubOrganization),
 		CommonName:      ptrutil.DerefStr(src.CommonName),
 		PublicKey:       ToJwk(src.PublicKey),
+		AuthType:        issuertypes.IssuerAuthType(ptrutil.Derefrence(src.AuthType, 0)),
 	}
 }

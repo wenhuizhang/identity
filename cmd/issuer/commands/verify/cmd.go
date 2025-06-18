@@ -65,23 +65,19 @@ func (f *VerifyFlags) AddFlags(cmd *cobra.Command) {
 
 func (cmd *VerifyCommand) Run(ctx context.Context, flags *VerifyFlags) error {
 	// if the file path is not set, prompt the user for it interactively
-	if flags.BadgeFilePath == "" {
-		err := cmdutil.ScanRequired("Full file path to the badge file", &flags.BadgeFilePath)
-		if err != nil {
-			return fmt.Errorf("error reading file path: %w", err)
-		}
+	err := cmdutil.ScanRequiredIfNotSet("Full file path to the badge file", &flags.BadgeFilePath)
+	if err != nil {
+		return fmt.Errorf("error reading file path: %w", err)
 	}
 
 	// if the identity node address is not set, prompt the user for it interactively
-	if flags.IdentityNodeURL == "" {
-		err := cmdutil.ScanWithDefault(
-			"Identity node address",
-			defaultNodeAddress,
-			&flags.IdentityNodeURL,
-		)
-		if err != nil {
-			return fmt.Errorf("error reading identity node address: %w", err)
-		}
+	err = cmdutil.ScanWithDefaultIfNotSet(
+		"Identity node address",
+		defaultNodeAddress,
+		&flags.IdentityNodeURL,
+	)
+	if err != nil {
+		return fmt.Errorf("error reading identity node address: %w", err)
 	}
 
 	it, err := readBadgesFromFile(flags.BadgeFilePath)

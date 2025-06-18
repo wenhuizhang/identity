@@ -16,18 +16,28 @@ const (
 	ValidProofSub    string = "SUBJECT"
 )
 
-type FakeVerifiedVerificationService struct{}
+type FakeVerifiedVerificationServiceStub struct{}
 
-func NewFakeVerifiedVerificationService() verification.Service {
-	return &FakeVerifiedVerificationService{}
+func NewFakeVerifiedVerificationServiceStub() verification.Service {
+	return &FakeVerifiedVerificationServiceStub{}
 }
 
-func (f *FakeVerifiedVerificationService) Verify(
+func (f *FakeVerifiedVerificationServiceStub) Verify(
 	ctx context.Context,
 	issuer *issuertypes.Issuer,
 	proof *vctypes.Proof,
-) (bool, error) {
-	return true, nil
+) (*verification.Result, error) {
+	return &verification.Result{
+		Issuer:   issuer,
+		Verified: true,
+	}, nil
+}
+
+func (f *FakeVerifiedVerificationServiceStub) VerifyExistingIssuer(
+	ctx context.Context,
+	proof *vctypes.Proof,
+) (*verification.Result, error) {
+	panic("unimplemented")
 }
 
 type FakeUnverifiedVerificationServiceStub struct{}
@@ -40,6 +50,16 @@ func (f *FakeUnverifiedVerificationServiceStub) Verify(
 	ctx context.Context,
 	issuer *issuertypes.Issuer,
 	proof *vctypes.Proof,
-) (bool, error) {
-	return false, nil
+) (*verification.Result, error) {
+	return &verification.Result{
+		Issuer:   issuer,
+		Verified: false,
+	}, nil
+}
+
+func (f *FakeUnverifiedVerificationServiceStub) VerifyExistingIssuer(
+	ctx context.Context,
+	proof *vctypes.Proof,
+) (*verification.Result, error) {
+	panic("unimplemented")
 }

@@ -43,12 +43,12 @@ func (s *issuerService) RegisterIssuer(
 	vaultId, keyId string,
 	issuer *types.Issuer,
 ) (string, error) {
-	token, err := s.authClient.Token(
+	token, err := s.authClient.Authenticate(
 		ctx,
-		vaultId,
-		keyId,
 		issuer,
-		issuer.IdpConfig, &issuer.ID)
+		auth.WithIdpIssuing(issuer.IdpConfig),
+		auth.WithSelfIssuing(vaultId, keyId, issuer.ID),
+	)
 	if err != nil {
 		return "", err
 	}

@@ -49,11 +49,20 @@ func (s *vcService) Publish(
 }
 
 // Verify an existing Verifiable Credential
-func (vcService) Verify(
+func (s *vcService) Verify(
 	ctx context.Context,
 	req *nodeapi.VerifyRequest,
 ) (*emptypb.Empty, error) {
-	return nil, fmt.Errorf("not implemented")
+	err := s.vcSrv.Verify(ctx, converters.ToEnvelopedCredential(req.Vc))
+	if err != nil {
+		if errtypes.IsErrorInfo(err, errtypes.ERROR_REASON_INTERNAL) {
+			return nil, grpcutil.InternalError(err)
+		}
+
+		return nil, grpcutil.BadRequestError(err)
+	}
+
+	return &emptypb.Empty{}, nil
 }
 
 // Returns the well-known Verifiable Credentials for the specified Id

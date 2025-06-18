@@ -13,6 +13,14 @@ const (
 	errNewLine = "unexpected newline"
 )
 
+func ScanRequiredIfNotSet(msg string, in *string) error {
+	if in != nil && *in != "" {
+		return nil
+	}
+
+	return ScanRequired(msg, in)
+}
+
 func ScanRequired(msg string, in *string) error {
 	fmt.Fprintf(os.Stdout, "%s: ", msg)
 
@@ -30,6 +38,14 @@ func ScanRequired(msg string, in *string) error {
 	return nil
 }
 
+func ScanOptionalIfNotSet(msg string, in *string) error {
+	if in != nil && *in != "" {
+		return nil
+	}
+
+	return ScanOptional(msg, in)
+}
+
 func ScanOptional(msg string, in *string) error {
 	fmt.Fprintf(os.Stdout, "(Optional) %s: ", msg)
 
@@ -41,6 +57,14 @@ func ScanOptional(msg string, in *string) error {
 	}
 
 	return nil
+}
+
+func ScanWithDefaultIfNotSet(msg, defaultValue string, in *string) error {
+	if in != nil && *in != "" {
+		return nil
+	}
+
+	return ScanWithDefault(msg, defaultValue, in)
 }
 
 func ScanWithDefault(msg, defaultValue string, in *string) error {

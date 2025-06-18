@@ -11,7 +11,6 @@ import (
 type Configuration struct {
 	ServerHttpHost                                          string        `split_words:"true" default:":4000"`
 	ServerGrpcHost                                          string        `split_words:"true" default:":4001"`
-	ApiUrl                                                  string        `split_words:"true" default:"http://localhost:4000"`
 	GoEnv                                                   string        `split_words:"true" default:"production"`
 	LogLevel                                                string        `split_words:"true" default:"InfoLevel"`
 	DbHost                                                  string        `split_words:"true"                                 required:"true"`

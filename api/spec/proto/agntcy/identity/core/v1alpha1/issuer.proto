@@ -36,4 +36,21 @@ message Issuer {
   // This field is optional
   // The private key of the issuer in JWK format
   optional .agntcy.identity.core.v1alpha1.Jwk private_key = 5;
+
+  // This field specifies the authentication mechanism used by the issuer.
+  // It determines whether the issuer uses an external Identity Provider (IDP)
+  // or a self-issued key for authentication.
+  optional IssuerAuthType auth_type = 7;
+}
+
+// IssuerAuthType represents the type of authentication mechanism used by the issuer.
+enum IssuerAuthType {
+  // ISSUER_AUTH_TYPE_UNSPECIFIED represents an unspecified or unknown authentication type.
+  ISSUER_AUTH_TYPE_UNSPECIFIED = 0;
+  // ISSUER_AUTH_TYPE_IDP indicates that the issuer uses an external Identity Provider (IDP)
+  // to authenticate
+  ISSUER_AUTH_TYPE_IDP = 1;
+  // ISSUER_AUTH_TYPE_SELF indicates that the issuer uses a self-issued key for authentication.
+  // This is typically used in scenarios where the issuer doesn't rely on an IdP.
+  ISSUER_AUTH_TYPE_SELF = 2;
 }
