@@ -82,7 +82,7 @@ jobs:
 
   build-python-sdk:
     name: Build Python SDK
-    uses: ./.github/workflows/reusable-python.yaml
+    uses: ./.github/workflows/reusable-python.yml
 
   publish-python-sdk:
     name: Upload Identity Python Package to PyPI
