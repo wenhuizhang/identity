@@ -1,0 +1,89 @@
+# Copyright 2025 Copyright AGNTCY Contributors (https://github.com/agntcy)
+# SPDX-License-Identifier: Apache-2.0
+
+# Default configuration for the identity-node service
+# ===================================================
+
+replicaCount: 1
+
+image:
+  repository: ghcr.io/agntcy/identity/node
+  pullPolicy: IfNotPresent
+  tag: "latest"
+
+service:
+  type: ClusterIP
+  http:
+    port: 4000
+    targetPort: 4000
+  grpc:
+    port: 4001
+    targetPort: 4001
+
+env:
+# These are example values only - DO NOT use in production
+  - name: DB_HOST
+    value: "identity-node-postgresql"
+  - name: DB_PORT
+    value: "5432"
+  - name: DB_USERNAME
+    value: "postgres"
+  - name: DB_PASSWORD
+    value: "change-me"
+  - name: SERVER_HTTP_HOST
+    value: ":4000"
+  - name: SERVER_GRPC_HOST
+    value: ":4001"
+
+ingress:
+  enabled: true
+  annotations:
+    grpc:
+      kubernetes.io/ingress.class: nginx
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+    http:
+      kubernetes.io/ingress.class: nginx
+      nginx.ingress.kubernetes.io/rewrite-target: /
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+
+  # Example domains - replace with your actual domains in production
+  domainPrefixHttp: api.example
+  domainPrefixGrpc: api.grpc.example
+  apiDomainName: example.com
+
+config:
+  appEnv: production
+  logLevel: info
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+secrets: {}
+
+# Default configuration for the PostgreSQL instance
+# ===================================================
+
+postgresql:
+  enabled: true
+  image:
+    repository: postgres
+    tag: "latest"
+    pullPolicy: IfNotPresent
+  service:
+    port: 5432
+  auth:
+    enablePostgresUser: true
+    username: "postgres"
+    # These are example values only - DO NOT use in production
+    postgresPassword: "change-me"
+    database: identity
+  pgHbaConfiguration: |
+    local all all trust
+    host all all all md5

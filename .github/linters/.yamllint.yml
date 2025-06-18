@@ -12,3 +12,7 @@ rules:
   indentation: disable
   truthy:
     check-keys: false
+
+# Ignore Helm files
+ignore:
+  - charts/
