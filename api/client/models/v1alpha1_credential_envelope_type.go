@@ -46,7 +46,7 @@ const (
 )
 
 // for schema
-var v1alpha1CredentialEnvelopeTypeEnum []interface{}
+var v1alpha1CredentialEnvelopeTypeEnum []any
 
 func init() {
 	var res []V1alpha1CredentialEnvelopeType

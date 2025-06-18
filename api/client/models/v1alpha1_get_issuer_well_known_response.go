@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -43,11 +44,15 @@ func (m *V1alpha1GetIssuerWellKnownResponse) validateJwks(formats strfmt.Registr
 
 	if m.Jwks != nil {
 		if err := m.Jwks.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("jwks")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("jwks")
 			}
+
 			return err
 		}
 	}
@@ -78,11 +83,15 @@ func (m *V1alpha1GetIssuerWellKnownResponse) contextValidateJwks(ctx context.Con
 		}
 
 		if err := m.Jwks.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("jwks")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("jwks")
 			}
+
 			return err
 		}
 	}

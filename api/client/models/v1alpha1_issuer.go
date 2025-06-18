@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -17,6 +18,11 @@ import (
 //
 // swagger:model v1alpha1Issuer
 type V1alpha1Issuer struct {
+
+	// This field specifies the authentication mechanism used by the issuer.
+	// It determines whether the issuer uses an external Identity Provider (IDP)
+	// or a self-issued key for authentication.
+	AuthType *V1alpha1IssuerAuthType `json:"authType,omitempty"`
 
 	// The common name of the issuer
 	// Could be a FQDN or a FQDA
@@ -46,6 +52,10 @@ type V1alpha1Issuer struct {
 func (m *V1alpha1Issuer) Validate(formats strfmt.Registry) error {
 	var res []error
 
+	if err := m.validateAuthType(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.validatePrivateKey(formats); err != nil {
 		res = append(res, err)
 	}
@@ -60,6 +70,29 @@ func (m *V1alpha1Issuer) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
+func (m *V1alpha1Issuer) validateAuthType(formats strfmt.Registry) error {
+	if swag.IsZero(m.AuthType) { // not required
+		return nil
+	}
+
+	if m.AuthType != nil {
+		if err := m.AuthType.Validate(formats); err != nil {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
+				return ve.ValidateName("authType")
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
+				return ce.ValidateName("authType")
+			}
+
+			return err
+		}
+	}
+
+	return nil
+}
+
 func (m *V1alpha1Issuer) validatePrivateKey(formats strfmt.Registry) error {
 	if swag.IsZero(m.PrivateKey) { // not required
 		return nil
@@ -67,11 +100,15 @@ func (m *V1alpha1Issuer) validatePrivateKey(formats strfmt.Registry) error {
 
 	if m.PrivateKey != nil {
 		if err := m.PrivateKey.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("privateKey")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("privateKey")
 			}
+
 			return err
 		}
 	}
@@ -86,11 +123,15 @@ func (m *V1alpha1Issuer) validatePublicKey(formats strfmt.Registry) error {
 
 	if m.PublicKey != nil {
 		if err := m.PublicKey.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("publicKey")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("publicKey")
 			}
+
 			return err
 		}
 	}
@@ -101,6 +142,10 @@ func (m *V1alpha1Issuer) validatePublicKey(formats strfmt.Registry) error {
 // ContextValidate validate this v1alpha1 issuer based on the context it is used
 func (m *V1alpha1Issuer) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
+
+	if err := m.contextValidateAuthType(ctx, formats); err != nil {
+		res = append(res, err)
+	}
 
 	if err := m.contextValidatePrivateKey(ctx, formats); err != nil {
 		res = append(res, err)
@@ -116,6 +161,31 @@ func (m *V1alpha1Issuer) ContextValidate(ctx context.Context, formats strfmt.Reg
 	return nil
 }
 
+func (m *V1alpha1Issuer) contextValidateAuthType(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.AuthType != nil {
+
+		if swag.IsZero(m.AuthType) { // not required
+			return nil
+		}
+
+		if err := m.AuthType.ContextValidate(ctx, formats); err != nil {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
+				return ve.ValidateName("authType")
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
+				return ce.ValidateName("authType")
+			}
+
+			return err
+		}
+	}
+
+	return nil
+}
+
 func (m *V1alpha1Issuer) contextValidatePrivateKey(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.PrivateKey != nil {
@@ -125,11 +195,15 @@ func (m *V1alpha1Issuer) contextValidatePrivateKey(ctx context.Context, formats 
 		}
 
 		if err := m.PrivateKey.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("privateKey")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("privateKey")
 			}
+
 			return err
 		}
 	}
@@ -146,11 +220,15 @@ func (m *V1alpha1Issuer) contextValidatePublicKey(ctx context.Context, formats s
 		}
 
 		if err := m.PublicKey.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("publicKey")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("publicKey")
 			}
+
 			return err
 		}
 	}

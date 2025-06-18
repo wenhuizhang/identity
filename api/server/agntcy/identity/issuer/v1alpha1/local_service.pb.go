@@ -186,7 +186,7 @@ var File_agntcy_identity_issuer_v1alpha1_local_service_proto protoreflect.FileDe
 
 const file_agntcy_identity_issuer_v1alpha1_local_service_proto_rawDesc = "" +
 	"\n" +
-	"3agntcy/identity/issuer/v1alpha1/local_service.proto\x12\x1fagntcy.identity.issuer.v1alpha1\x1a&agntcy/identity/core/v1alpha1/id.proto\x1a&agntcy/identity/core/v1alpha1/vc.proto\x1a\x1bgoogle/protobuf/empty.proto\"\xc8\x01\n" +
+	"3agntcy/identity/issuer/v1alpha1/local_service.proto\x12\x1fagntcy.identity.issuer.v1alpha1\x1a&agntcy/identity/core/v1alpha1/id.proto\x1a'agntcy/identity/core/v1alpha1/jwk.proto\x1a&agntcy/identity/core/v1alpha1/vc.proto\x1a\x1bgoogle/protobuf/empty.proto\"\xc8\x01\n" +
 	"\x0eIssueVCRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12J\n" +
 	"\acontent\x18\x02 \x01(\v20.agntcy.identity.core.v1alpha1.CredentialContentR\acontent\x12Z\n" +

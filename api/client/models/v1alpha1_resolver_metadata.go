@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -71,11 +72,15 @@ func (m *V1alpha1ResolverMetadata) validateService(formats strfmt.Registry) erro
 
 		if m.Service[i] != nil {
 			if err := m.Service[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("service" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("service" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -97,11 +102,15 @@ func (m *V1alpha1ResolverMetadata) validateVerificationMethod(formats strfmt.Reg
 
 		if m.VerificationMethod[i] != nil {
 			if err := m.VerificationMethod[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("verificationMethod" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("verificationMethod" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -140,11 +149,15 @@ func (m *V1alpha1ResolverMetadata) contextValidateService(ctx context.Context, f
 			}
 
 			if err := m.Service[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("service" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("service" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -165,11 +178,15 @@ func (m *V1alpha1ResolverMetadata) contextValidateVerificationMethod(ctx context
 			}
 
 			if err := m.VerificationMethod[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("verificationMethod" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("verificationMethod" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}

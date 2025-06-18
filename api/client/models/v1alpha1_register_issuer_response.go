@@ -7,5 +7,7 @@ package models
 
 // V1alpha1RegisterIssuerResponse Returns a registration response for the issuer
 //
+// # Empty response
+//
 // swagger:model v1alpha1RegisterIssuerResponse
-type V1alpha1RegisterIssuerResponse interface{}
+type V1alpha1RegisterIssuerResponse any

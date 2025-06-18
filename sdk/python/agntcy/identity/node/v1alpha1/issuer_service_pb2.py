@@ -17,12 +17,13 @@ _sym_db = _symbol_database.Default()
 
 from agntcy.identity.core.v1alpha1 import id_pb2 as agntcy_dot_identity_dot_core_dot_v1alpha1_dot_id__pb2
 from agntcy.identity.core.v1alpha1 import issuer_pb2 as agntcy_dot_identity_dot_core_dot_v1alpha1_dot_issuer__pb2
+from agntcy.identity.core.v1alpha1 import jwk_pb2 as agntcy_dot_identity_dot_core_dot_v1alpha1_dot_jwk__pb2
 from agntcy.identity.core.v1alpha1 import vc_pb2 as agntcy_dot_identity_dot_core_dot_v1alpha1_dot_vc__pb2
 from google.api import annotations_pb2 as google_dot_api_dot_annotations__pb2
 from protoc_gen_openapiv2.options import annotations_pb2 as protoc__gen__openapiv2_dot_options_dot_annotations__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n2agntcy/identity/node/v1alpha1/issuer_service.proto\x12\x1d\x61gntcy.identity.node.v1alpha1\x1a&agntcy/identity/core/v1alpha1/id.proto\x1a*agntcy/identity/core/v1alpha1/issuer.proto\x1a&agntcy/identity/core/v1alpha1/vc.proto\x1a\x1cgoogle/api/annotations.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\"\xa1\x01\n\x15RegisterIssuerRequest\x12=\n\x06issuer\x18\x01 \x01(\x0b\x32%.agntcy.identity.core.v1alpha1.IssuerR\x06issuer\x12?\n\x05proof\x18\x02 \x01(\x0b\x32$.agntcy.identity.core.v1alpha1.ProofH\x00R\x05proof\x88\x01\x01\x42\x08\n\x06_proof\"\x18\n\x16RegisterIssuerResponse\"<\n\x19GetIssuerWellKnownRequest\x12\x1f\n\x0b\x63ommon_name\x18\x01 \x01(\tR\ncommonName\"U\n\x1aGetIssuerWellKnownResponse\x12\x37\n\x04jwks\x18\x01 \x01(\x0b\x32#.agntcy.identity.core.v1alpha1.JwksR\x04jwks2\xb7\x04\n\rIssuerService\x12\xe4\x01\n\x08Register\x12\x34.agntcy.identity.node.v1alpha1.RegisterIssuerRequest\x1a\x35.agntcy.identity.node.v1alpha1.RegisterIssuerResponse\"k\x92\x41\x44\x12\x32Register an issuer by providing the issuer details*\x0eRegisterIssuer\x82\xd3\xe4\x93\x02\x1e\"\x19/v1alpha1/issuer/register:\x01*\x12\xaa\x02\n\x0cGetWellKnown\x12\x38.agntcy.identity.node.v1alpha1.GetIssuerWellKnownRequest\x1a\x39.agntcy.identity.node.v1alpha1.GetIssuerWellKnownResponse\"\xa4\x01\x92\x41\x65\x12OReturns the well-known document for an issuer in Json Web Key Set (JWKS) format*\x12GetIssuerWellKnown\x82\xd3\xe4\x93\x02\x36\x12\x34/v1alpha1/issuer/{common_name}/.well-known/jwks.json\x1a\x12\x92\x41\x0f\n\rIssuerServiceB\xa8\x02\n!com.agntcy.identity.node.v1alpha1B\x12IssuerServiceProtoP\x01ZXgithub.com/agntcy/identity/api/server/agntcy/identity/node/v1alpha1;identity_node_sdk_go\xa2\x02\x03\x41IN\xaa\x02\x1d\x41gntcy.Identity.Node.V1alpha1\xca\x02\x1d\x41gntcy\\Identity\\Node\\V1alpha1\xe2\x02)Agntcy\\Identity\\Node\\V1alpha1\\GPBMetadata\xea\x02 Agntcy::Identity::Node::V1alpha1b\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n2agntcy/identity/node/v1alpha1/issuer_service.proto\x12\x1d\x61gntcy.identity.node.v1alpha1\x1a&agntcy/identity/core/v1alpha1/id.proto\x1a*agntcy/identity/core/v1alpha1/issuer.proto\x1a\'agntcy/identity/core/v1alpha1/jwk.proto\x1a&agntcy/identity/core/v1alpha1/vc.proto\x1a\x1cgoogle/api/annotations.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\"\xa1\x01\n\x15RegisterIssuerRequest\x12=\n\x06issuer\x18\x01 \x01(\x0b\x32%.agntcy.identity.core.v1alpha1.IssuerR\x06issuer\x12?\n\x05proof\x18\x02 \x01(\x0b\x32$.agntcy.identity.core.v1alpha1.ProofH\x00R\x05proof\x88\x01\x01\x42\x08\n\x06_proof\"\x18\n\x16RegisterIssuerResponse\"<\n\x19GetIssuerWellKnownRequest\x12\x1f\n\x0b\x63ommon_name\x18\x01 \x01(\tR\ncommonName\"U\n\x1aGetIssuerWellKnownResponse\x12\x37\n\x04jwks\x18\x01 \x01(\x0b\x32#.agntcy.identity.core.v1alpha1.JwksR\x04jwks2\xb7\x04\n\rIssuerService\x12\xe4\x01\n\x08Register\x12\x34.agntcy.identity.node.v1alpha1.RegisterIssuerRequest\x1a\x35.agntcy.identity.node.v1alpha1.RegisterIssuerResponse\"k\x92\x41\x44\x12\x32Register an issuer by providing the issuer details*\x0eRegisterIssuer\x82\xd3\xe4\x93\x02\x1e\"\x19/v1alpha1/issuer/register:\x01*\x12\xaa\x02\n\x0cGetWellKnown\x12\x38.agntcy.identity.node.v1alpha1.GetIssuerWellKnownRequest\x1a\x39.agntcy.identity.node.v1alpha1.GetIssuerWellKnownResponse\"\xa4\x01\x92\x41\x65\x12OReturns the well-known document for an issuer in Json Web Key Set (JWKS) format*\x12GetIssuerWellKnown\x82\xd3\xe4\x93\x02\x36\x12\x34/v1alpha1/issuer/{common_name}/.well-known/jwks.json\x1a\x12\x92\x41\x0f\n\rIssuerServiceB\xa8\x02\n!com.agntcy.identity.node.v1alpha1B\x12IssuerServiceProtoP\x01ZXgithub.com/agntcy/identity/api/server/agntcy/identity/node/v1alpha1;identity_node_sdk_go\xa2\x02\x03\x41IN\xaa\x02\x1d\x41gntcy.Identity.Node.V1alpha1\xca\x02\x1d\x41gntcy\\Identity\\Node\\V1alpha1\xe2\x02)Agntcy\\Identity\\Node\\V1alpha1\\GPBMetadata\xea\x02 Agntcy::Identity::Node::V1alpha1b\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -36,14 +37,14 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   _globals['_ISSUERSERVICE'].methods_by_name['Register']._serialized_options = b'\222AD\0222Register an issuer by providing the issuer details*\016RegisterIssuer\202\323\344\223\002\036\"\031/v1alpha1/issuer/register:\001*'
   _globals['_ISSUERSERVICE'].methods_by_name['GetWellKnown']._options = None
   _globals['_ISSUERSERVICE'].methods_by_name['GetWellKnown']._serialized_options = b'\222Ae\022OReturns the well-known document for an issuer in Json Web Key Set (JWKS) format*\022GetIssuerWellKnown\202\323\344\223\0026\0224/v1alpha1/issuer/{common_name}/.well-known/jwks.json'
-  _globals['_REGISTERISSUERREQUEST']._serialized_start=288
-  _globals['_REGISTERISSUERREQUEST']._serialized_end=449
-  _globals['_REGISTERISSUERRESPONSE']._serialized_start=451
-  _globals['_REGISTERISSUERRESPONSE']._serialized_end=475
-  _globals['_GETISSUERWELLKNOWNREQUEST']._serialized_start=477
-  _globals['_GETISSUERWELLKNOWNREQUEST']._serialized_end=537
-  _globals['_GETISSUERWELLKNOWNRESPONSE']._serialized_start=539
-  _globals['_GETISSUERWELLKNOWNRESPONSE']._serialized_end=624
-  _globals['_ISSUERSERVICE']._serialized_start=627
-  _globals['_ISSUERSERVICE']._serialized_end=1194
+  _globals['_REGISTERISSUERREQUEST']._serialized_start=329
+  _globals['_REGISTERISSUERREQUEST']._serialized_end=490
+  _globals['_REGISTERISSUERRESPONSE']._serialized_start=492
+  _globals['_REGISTERISSUERRESPONSE']._serialized_end=516
+  _globals['_GETISSUERWELLKNOWNREQUEST']._serialized_start=518
+  _globals['_GETISSUERWELLKNOWNREQUEST']._serialized_end=578
+  _globals['_GETISSUERWELLKNOWNRESPONSE']._serialized_start=580
+  _globals['_GETISSUERWELLKNOWNRESPONSE']._serialized_end=665
+  _globals['_ISSUERSERVICE']._serialized_start=668
+  _globals['_ISSUERSERVICE']._serialized_end=1235
 # @@protoc_insertion_point(module_scope)
