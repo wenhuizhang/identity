@@ -5,6 +5,7 @@
 import inspect
 import logging
 import os
+import jwt
 from importlib import import_module
 from pkgutil import iter_modules
 
@@ -14,7 +15,7 @@ from dotenv import load_dotenv
 
 from agntcyidentity import client, log
 from agntcy.identity.node.v1alpha1.vc_service_pb2_grpc import VcServiceStub
-from agntcy.identity.core.v1alpha1.vc_pb2 import EnvelopedCredential, CredentialContent
+from agntcy.identity.core.v1alpha1.vc_pb2 import EnvelopedCredential, VerifiableCredential
 
 
 logger = logging.getLogger("identity")
@@ -62,11 +63,18 @@ class IdentitySdk:
 
         return well_known_response.vcs[0]
 
-    def verify_badge(self, badge: EnvelopedCredential) -> CredentialContent:
+    def verify_badge(self, badge: EnvelopedCredential) -> VerifiableCredential:
         """Verify a badge."""
         try:
             self._get_vc_service().Verify(IdentitySdk.VerifyRequest(vc=badge))
         except Exception as err:
             raise err
 
-        return CredentialContent()
+        # Decode the badge value to get the claims
+        claims = jwt.decode(badge.value, options={"verify_signature": False})
+
+        return VerifiableCredential(
+            id=claims["id"],
+            type=claims["type"],
+            issuer=claims["issuer"],
+        )
