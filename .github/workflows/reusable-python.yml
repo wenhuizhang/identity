@@ -37,14 +37,6 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Build wheel
-        run: |
-          uv build
-      - name: Upload wheel
-        uses: actions/upload-artifact@v4
-        with:
-          name: wheel-${{ matrix.platform.os }}-${{ matrix.platform.target }}
-          path: ./dist
       - name: Install uv (unix)
         if: ${{ runner.os != 'Windows' }}
         shell: bash
@@ -58,3 +50,11 @@ jobs:
       - name: Update GITHUB_PATH
         shell: bash
         run: echo "$HOME/.local/bin" >> $GITHUB_PATH
+      - name: Build wheel
+        run: |
+          uv build
+      - name: Upload wheel
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheel-${{ matrix.platform.os }}-${{ matrix.platform.target }}
+          path: ./sdk/python/dist
