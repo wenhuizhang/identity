@@ -7,7 +7,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "agntcy-identity-python-sdk"
-version = "0.0.1"
+version = "0.0.1+unreleased"
 authors = [
     {name = "Jean Diaconu", email = "jdiaconu@cisco.com"},
 ]
