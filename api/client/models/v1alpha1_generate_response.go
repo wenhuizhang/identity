@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -43,11 +44,15 @@ func (m *V1alpha1GenerateResponse) validateResolverMetadata(formats strfmt.Regis
 
 	if m.ResolverMetadata != nil {
 		if err := m.ResolverMetadata.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("resolverMetadata")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("resolverMetadata")
 			}
+
 			return err
 		}
 	}
@@ -78,11 +83,15 @@ func (m *V1alpha1GenerateResponse) contextValidateResolverMetadata(ctx context.C
 		}
 
 		if err := m.ResolverMetadata.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("resolverMetadata")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("resolverMetadata")
 			}
+
 			return err
 		}
 	}

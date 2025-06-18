@@ -7,6 +7,7 @@ package vc_service
 
 import (
 	"encoding/json"
+	stderrors "errors"
 	"fmt"
 	"io"
 
@@ -22,7 +23,7 @@ type PublishVerifiableCredentialReader struct {
 }
 
 // ReadResponse reads a server response into the received o.
-func (o *PublishVerifiableCredentialReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
+func (o *PublishVerifiableCredentialReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (any, error) {
 	switch response.Code() {
 	case 200:
 		result := NewPublishVerifiableCredentialOK()
@@ -53,7 +54,7 @@ PublishVerifiableCredentialOK describes a response with status code 200, with de
 A successful response.
 */
 type PublishVerifiableCredentialOK struct {
-	Payload interface{}
+	Payload any
 }
 
 // IsSuccess returns true when this publish verifiable credential o k response has a 2xx status code
@@ -96,14 +97,14 @@ func (o *PublishVerifiableCredentialOK) String() string {
 	return fmt.Sprintf("[POST /v1alpha1/vc/publish][%d] publishVerifiableCredentialOK %s", 200, payload)
 }
 
-func (o *PublishVerifiableCredentialOK) GetPayload() interface{} {
+func (o *PublishVerifiableCredentialOK) GetPayload() any {
 	return o.Payload
 }
 
 func (o *PublishVerifiableCredentialOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	// response payload
-	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 
@@ -177,7 +178,7 @@ func (o *PublishVerifiableCredentialDefault) readResponse(response runtime.Clien
 	o.Payload = new(models.RPCStatus)
 
 	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 

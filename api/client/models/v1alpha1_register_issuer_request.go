@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -52,11 +53,15 @@ func (m *V1alpha1RegisterIssuerRequest) validateIssuer(formats strfmt.Registry) 
 
 	if m.Issuer != nil {
 		if err := m.Issuer.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("issuer")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("issuer")
 			}
+
 			return err
 		}
 	}
@@ -71,11 +76,15 @@ func (m *V1alpha1RegisterIssuerRequest) validateProof(formats strfmt.Registry) e
 
 	if m.Proof != nil {
 		if err := m.Proof.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("proof")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("proof")
 			}
+
 			return err
 		}
 	}
@@ -110,11 +119,15 @@ func (m *V1alpha1RegisterIssuerRequest) contextValidateIssuer(ctx context.Contex
 		}
 
 		if err := m.Issuer.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("issuer")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("issuer")
 			}
+
 			return err
 		}
 	}
@@ -131,11 +144,15 @@ func (m *V1alpha1RegisterIssuerRequest) contextValidateProof(ctx context.Context
 		}
 
 		if err := m.Proof.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("proof")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("proof")
 			}
+
 			return err
 		}
 	}
