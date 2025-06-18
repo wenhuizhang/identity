@@ -79,7 +79,3 @@ message Oauth2Metadata {
   // This is a list of strings, such as "openid" or "profile".
   repeated string scopes_supported = 4;
 }
- supported
-  // This is a list of strings, such as "openid" or "profile".
-  repeated string scopes_supported = 4;
-}
