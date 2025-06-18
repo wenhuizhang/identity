@@ -217,7 +217,7 @@ var File_agntcy_identity_node_v1alpha1_issuer_service_proto protoreflect.FileDes
 
 const file_agntcy_identity_node_v1alpha1_issuer_service_proto_rawDesc = "" +
 	"\n" +
-	"2agntcy/identity/node/v1alpha1/issuer_service.proto\x12\x1dagntcy.identity.node.v1alpha1\x1a&agntcy/identity/core/v1alpha1/id.proto\x1a*agntcy/identity/core/v1alpha1/issuer.proto\x1a&agntcy/identity/core/v1alpha1/vc.proto\x1a\x1cgoogle/api/annotations.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\"\xa1\x01\n" +
+	"2agntcy/identity/node/v1alpha1/issuer_service.proto\x12\x1dagntcy.identity.node.v1alpha1\x1a&agntcy/identity/core/v1alpha1/id.proto\x1a*agntcy/identity/core/v1alpha1/issuer.proto\x1a'agntcy/identity/core/v1alpha1/jwk.proto\x1a&agntcy/identity/core/v1alpha1/vc.proto\x1a\x1cgoogle/api/annotations.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\"\xa1\x01\n" +
 	"\x15RegisterIssuerRequest\x12=\n" +
 	"\x06issuer\x18\x01 \x01(\v2%.agntcy.identity.core.v1alpha1.IssuerR\x06issuer\x12?\n" +
 	"\x05proof\x18\x02 \x01(\v2$.agntcy.identity.core.v1alpha1.ProofH\x00R\x05proof\x88\x01\x01B\b\n" +
