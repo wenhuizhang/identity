@@ -8,6 +8,7 @@ import (
 	idtypes "github.com/agntcy/identity/internal/core/id/types"
 	"github.com/agntcy/identity/internal/pkg/convertutil"
 	"github.com/agntcy/identity/internal/pkg/ptrutil"
+	"github.com/agntcy/identity/pkg/jwk"
 )
 
 func FromResolverMetadata(src *idtypes.ResolverMetadata) *coreapi.ResolverMetadata {
@@ -50,7 +51,7 @@ func FromService(src *idtypes.Service) *coreapi.Service {
 	}
 }
 
-func FromJwk(src *idtypes.Jwk) *coreapi.Jwk {
+func FromJwk(src *jwk.Jwk) *coreapi.Jwk {
 	if src == nil {
 		return nil
 	}
@@ -74,12 +75,12 @@ func FromJwk(src *idtypes.Jwk) *coreapi.Jwk {
 	}
 }
 
-func ToJwk(src *coreapi.Jwk) *idtypes.Jwk {
+func ToJwk(src *coreapi.Jwk) *jwk.Jwk {
 	if src == nil {
 		return nil
 	}
 
-	return &idtypes.Jwk{
+	return &jwk.Jwk{
 		ALG:  ptrutil.DerefStr(src.Alg),
 		KTY:  ptrutil.DerefStr(src.Kty),
 		USE:  ptrutil.DerefStr(src.Use),
@@ -98,7 +99,7 @@ func ToJwk(src *coreapi.Jwk) *idtypes.Jwk {
 	}
 }
 
-func FromJwks(src *idtypes.Jwks) *coreapi.Jwks {
+func FromJwks(src *jwk.Jwks) *coreapi.Jwks {
 	if src == nil {
 		return nil
 	}

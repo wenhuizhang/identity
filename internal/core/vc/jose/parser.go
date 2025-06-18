@@ -7,15 +7,15 @@ import (
 	"encoding/json"
 
 	errtypes "github.com/agntcy/identity/internal/core/errors/types"
-	idtypes "github.com/agntcy/identity/internal/core/id/types"
 	vctypes "github.com/agntcy/identity/internal/core/vc/types"
 	"github.com/agntcy/identity/internal/pkg/errutil"
+	jwktype "github.com/agntcy/identity/pkg/jwk"
 	"github.com/lestrrat-go/jwx/v3/jwk"
 	"github.com/lestrrat-go/jwx/v3/jws"
 )
 
 func Verify(
-	jwks *idtypes.Jwks,
+	jwks *jwktype.Jwks,
 	credential *vctypes.EnvelopedCredential,
 ) error {
 	// we assume the VC is not encrypted with JWE
@@ -77,7 +77,7 @@ func Parse(
 }
 
 func VerifyAndParse(
-	jwks *idtypes.Jwks,
+	jwks *jwktype.Jwks,
 	credential *vctypes.EnvelopedCredential,
 ) (*vctypes.VerifiableCredential, error) {
 	err := Verify(jwks, credential)

@@ -6,19 +6,19 @@ package keystore
 import (
 	"context"
 
-	"github.com/agntcy/identity/internal/core/id/types"
+	"github.com/agntcy/identity/pkg/jwk"
 )
 
 // KeyService defines methods for generating, saving, and retrieving JWKs.
 type KeyService interface {
 	// SaveKey saves a JWK to the key storage. it supports local file, and hashicorp vault
-	SaveKey(ctx context.Context, id string, jwk *types.Jwk) error
+	SaveKey(ctx context.Context, id string, jwk *jwk.Jwk) error
 
 	// RetrieveKey retrieves a public JWK by its ID.
-	RetrievePubKey(ctx context.Context, id string) (*types.Jwk, error)
+	RetrievePubKey(ctx context.Context, id string) (*jwk.Jwk, error)
 
 	// RetrieveKey retrieves a private JWK by its ID.
-	RetrievePrivKey(ctx context.Context, id string) (*types.Jwk, error)
+	RetrievePrivKey(ctx context.Context, id string) (*jwk.Jwk, error)
 
 	// DeleteKey deletes a JWK by its ID.
 	DeleteKey(ctx context.Context, id string) error

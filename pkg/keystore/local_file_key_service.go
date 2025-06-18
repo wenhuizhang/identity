@@ -11,7 +11,7 @@ import (
 	"os"
 	"sync"
 
-	"github.com/agntcy/identity/internal/core/id/types"
+	jwktype "github.com/agntcy/identity/pkg/jwk"
 )
 
 type LocalFileKeyService struct {
@@ -22,7 +22,7 @@ type LocalFileKeyService struct {
 const filePerm = 0o644 // Read and write permissions for the owner only
 
 // SaveKey saves or updates a JWK in the local file.
-func (s *LocalFileKeyService) SaveKey(ctx context.Context, id string, jwk *types.Jwk) error {
+func (s *LocalFileKeyService) SaveKey(ctx context.Context, id string, jwk *jwktype.Jwk) error {
 	if jwk == nil {
 		return errors.New("jwk cannot be nil")
 	}
@@ -30,7 +30,7 @@ func (s *LocalFileKeyService) SaveKey(ctx context.Context, id string, jwk *types
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	var jwks []types.Jwk
+	var jwks []jwktype.Jwk
 
 	// Read existing keys if file exists
 	file, err := os.OpenFile(s.FilePath, os.O_RDWR|os.O_CREATE, filePerm)
@@ -74,7 +74,7 @@ func (s *LocalFileKeyService) SaveKey(ctx context.Context, id string, jwk *types
 }
 
 // RetrievePubKey returns the public JWK for the given id.
-func (s *LocalFileKeyService) RetrievePubKey(ctx context.Context, id string) (*types.Jwk, error) {
+func (s *LocalFileKeyService) RetrievePubKey(ctx context.Context, id string) (*jwktype.Jwk, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
@@ -94,7 +94,7 @@ func (s *LocalFileKeyService) RetrievePubKey(ctx context.Context, id string) (*t
 }
 
 // RetrievePrivKey returns the private JWK for the given id.
-func (s *LocalFileKeyService) RetrievePrivKey(ctx context.Context, id string) (*types.Jwk, error) {
+func (s *LocalFileKeyService) RetrievePrivKey(ctx context.Context, id string) (*jwktype.Jwk, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
@@ -117,14 +117,14 @@ func (s *LocalFileKeyService) RetrievePrivKey(ctx context.Context, id string) (*
 }
 
 // readAll reads all JWKs from the file.
-func (s *LocalFileKeyService) readAll() ([]types.Jwk, error) {
+func (s *LocalFileKeyService) readAll() ([]jwktype.Jwk, error) {
 	file, err := os.OpenFile(s.FilePath, os.O_RDONLY|os.O_CREATE, filePerm)
 	if err != nil {
 		return nil, err
 	}
 	defer file.Close()
 
-	var jwks []types.Jwk
+	var jwks []jwktype.Jwk
 
 	decoder := json.NewDecoder(file)
 	if err := decoder.Decode(&jwks); err != nil && err != io.EOF {
@@ -144,7 +144,7 @@ func (s *LocalFileKeyService) DeleteKey(ctx context.Context, id string) error {
 	}
 
 	found := false
-	filteredJwks := make([]types.Jwk, 0, len(jwks))
+	filteredJwks := make([]jwktype.Jwk, 0, len(jwks))
 
 	for i := range jwks {
 		if jwks[i].KID != id {

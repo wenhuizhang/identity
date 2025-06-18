@@ -17,6 +17,7 @@ import (
 	verificationtesting "github.com/agntcy/identity/internal/core/issuer/verification/testing"
 	vctypes "github.com/agntcy/identity/internal/core/vc/types"
 	"github.com/agntcy/identity/internal/node"
+	"github.com/agntcy/identity/pkg/jwk"
 	"github.com/agntcy/identity/pkg/oidc"
 	oidctesting "github.com/agntcy/identity/pkg/oidc/testing"
 	"github.com/stretchr/testify/assert"
@@ -109,7 +110,7 @@ func TestGenerateID_Should_Return_Error_With_Idp_And_Self_Proof(t *testing.T) {
 		CommonName:   verificationtesting.ValidProofIssuer,
 		Organization: "Some Org",
 		Verified:     true,
-		PublicKey:    &idtypes.Jwk{},
+		PublicKey:    &jwk.Jwk{},
 		AuthType:     issuertypes.ISSUER_AUTH_TYPE_IDP,
 	}
 	_, _ = issuerRepo.CreateIssuer(context.Background(), issuer)

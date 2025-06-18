@@ -11,7 +11,13 @@ PROTO_CORE_FILE_PATH="agntcy/identity/core/v1alpha1/"
 PROTO_NODE_FILE_PATH="agntcy/identity/node/v1alpha1/"
 
 get_module_name_from_package() {
-  dirname "$1" | xargs basename
+  last_dir=$(basename "$1")
+
+  if [ "$last_dir" = "types" ]; then
+    dirname "$1" | xargs basename
+  else
+    basename "$1"
+  fi
 }
 
 echo ""
@@ -39,6 +45,8 @@ for file in $type_files; do
   package=$(dirname "$dir")
   packages="$packages $package"
 done
+
+packages="$packages github.com/agntcy/identity/pkg/jwk"
 
 # go-to-protobuf doesn't support protobuf type "google.protobuf.Struct"
 # this hack will add support for that.

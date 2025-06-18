@@ -10,7 +10,7 @@ import (
 	"errors"
 	"math/big"
 
-	"github.com/agntcy/identity/internal/core/id/types"
+	"github.com/agntcy/identity/pkg/jwk"
 	"github.com/google/uuid"
 )
 
@@ -21,7 +21,7 @@ const (
 	KeyTypeRSA = "RSA"
 )
 
-func GenerateJWK(alg, use, id string) (*types.Jwk, error) {
+func GenerateJWK(alg, use, id string) (*jwk.Jwk, error) {
 	if id == "" {
 		id = uuid.NewString()
 	}
@@ -34,7 +34,7 @@ func GenerateJWK(alg, use, id string) (*types.Jwk, error) {
 	}
 }
 
-func generateRSAJWK(alg, use, id string) (*types.Jwk, error) {
+func generateRSAJWK(alg, use, id string) (*jwk.Jwk, error) {
 	bits := map[string]int{
 		"RS256": rsaBits256,
 		"RS384": rsaBits384,
@@ -46,7 +46,7 @@ func generateRSAJWK(alg, use, id string) (*types.Jwk, error) {
 		return nil, err
 	}
 
-	return &types.Jwk{
+	return &jwk.Jwk{
 		KID: id,
 		ALG: alg,
 		KTY: KeyTypeRSA,

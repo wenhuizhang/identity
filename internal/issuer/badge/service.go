@@ -15,9 +15,9 @@ import (
 	"github.com/agntcy/identity/internal/pkg/errutil"
 	"github.com/agntcy/identity/internal/pkg/nodeapi"
 	"github.com/agntcy/identity/pkg/joseutil"
+	"github.com/agntcy/identity/pkg/jwk"
 	"github.com/google/uuid"
 
-	idtypes "github.com/agntcy/identity/internal/core/id/types"
 	"github.com/agntcy/identity/internal/core/vc"
 	vctypes "github.com/agntcy/identity/internal/core/vc/types"
 	internalIssuerTypes "github.com/agntcy/identity/internal/issuer/types"
@@ -30,7 +30,7 @@ type BadgeService interface {
 		issuerId string,
 		metadataId string,
 		content *vctypes.CredentialContent,
-		privateKey *idtypes.Jwk,
+		privateKey *jwk.Jwk,
 	) (string, error)
 	PublishBadge(
 		ctx context.Context,
@@ -77,7 +77,7 @@ func (s *badgeService) IssueBadge(
 	issuerId string,
 	metadataId string,
 	content *vctypes.CredentialContent,
-	privateKey *idtypes.Jwk,
+	privateKey *jwk.Jwk,
 ) (string, error) {
 	issuer, err := s.issuerRepository.GetIssuer(vaultId, keyId, issuerId)
 	if err != nil {

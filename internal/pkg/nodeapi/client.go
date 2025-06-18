@@ -16,6 +16,7 @@ import (
 	issuertypes "github.com/agntcy/identity/internal/core/issuer/types"
 	vctypes "github.com/agntcy/identity/internal/core/vc/types"
 	"github.com/agntcy/identity/internal/pkg/convertutil"
+	"github.com/agntcy/identity/pkg/jwk"
 	httptransport "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
 )
@@ -140,7 +141,7 @@ func (c *nodeClient) GenerateID(
 			func(vm *apimodels.V1alpha1VerificationMethod) *idtypes.VerificationMethod {
 				return &idtypes.VerificationMethod{
 					ID:           vm.ID,
-					PublicKeyJwk: convertutil.Convert[idtypes.Jwk](vm.PublicKeyJwk),
+					PublicKeyJwk: convertutil.Convert[jwk.Jwk](vm.PublicKeyJwk),
 				}
 			},
 		),
@@ -211,7 +212,7 @@ func (c *nodeClient) ResolveMetadataByID(
 			func(vm *apimodels.V1alpha1VerificationMethod) *idtypes.VerificationMethod {
 				return &idtypes.VerificationMethod{
 					ID:           vm.ID,
-					PublicKeyJwk: convertutil.Convert[idtypes.Jwk](vm.PublicKeyJwk),
+					PublicKeyJwk: convertutil.Convert[jwk.Jwk](vm.PublicKeyJwk),
 				}
 			},
 		),

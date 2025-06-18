@@ -6,8 +6,8 @@ package joseutil_test
 import (
 	"testing"
 
-	"github.com/agntcy/identity/internal/core/id/types"
 	"github.com/agntcy/identity/pkg/joseutil"
+	"github.com/agntcy/identity/pkg/jwk"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -47,12 +47,12 @@ func TestValidatePubKey_NilOrEmptyFields(t *testing.T) {
 	t.Parallel()
 
 	// Test nil Jwk pointer
-	var nilJwk *types.Jwk
+	var nilJwk *jwk.Jwk
 	err := joseutil.ValidatePubKey(nilJwk)
 	assert.Error(t, err, "ValidatePubKey should fail if Jwk is nil")
 
 	// Test Jwk with missing required fields for RSA
-	jwk := &types.Jwk{KTY: "RSA"}
+	jwk := &jwk.Jwk{KTY: "RSA"}
 	err = joseutil.ValidatePubKey(jwk)
 	assert.Error(t, err, "ValidatePubKey should fail if required RSA fields are missing")
 }

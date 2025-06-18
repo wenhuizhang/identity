@@ -9,8 +9,8 @@ import (
 	"crypto/rsa"
 	"encoding/json"
 
-	idtypes "github.com/agntcy/identity/internal/core/id/types"
 	"github.com/agntcy/identity/internal/issuer/vault/types"
+	jwktype "github.com/agntcy/identity/pkg/jwk"
 	"github.com/lestrrat-go/jwx/v3/jwa"
 	"github.com/lestrrat-go/jwx/v3/jwk"
 )
@@ -26,12 +26,12 @@ type FakeVaultService interface {
 		ctx context.Context,
 		vaultID string,
 		keyID string,
-	) (*idtypes.Jwk, error)
+	) (*jwktype.Jwk, error)
 	RetrievePrivKey(
 		ctx context.Context,
 		vaultID string,
 		keyID string,
-	) (*idtypes.Jwk, error)
+	) (*jwktype.Jwk, error)
 }
 
 type fakeVaultService struct {
@@ -63,19 +63,19 @@ func (s *fakeVaultService) RetrievePubKey(
 	ctx context.Context,
 	vaultID string,
 	keyID string,
-) (*idtypes.Jwk, error) {
-	return &idtypes.Jwk{}, nil
+) (*jwktype.Jwk, error) {
+	return &jwktype.Jwk{}, nil
 }
 
 func (s *fakeVaultService) RetrievePrivKey(
 	ctx context.Context,
 	vaultID string,
 	keyID string,
-) (*idtypes.Jwk, error) {
+) (*jwktype.Jwk, error) {
 	return generatePrivKey()
 }
 
-func generatePrivKey() (*idtypes.Jwk, error) {
+func generatePrivKey() (*jwktype.Jwk, error) {
 	pk, err := rsa.GenerateKey(rand.Reader, keySize)
 	if err != nil {
 		return nil, err
@@ -96,7 +96,7 @@ func generatePrivKey() (*idtypes.Jwk, error) {
 		return nil, err
 	}
 
-	var k idtypes.Jwk
+	var k jwktype.Jwk
 
 	err = json.Unmarshal(keyAsJson, &k)
 	if err != nil {

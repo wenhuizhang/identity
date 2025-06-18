@@ -5,10 +5,10 @@ package vc
 
 import (
 	errtypes "github.com/agntcy/identity/internal/core/errors/types"
-	idtypes "github.com/agntcy/identity/internal/core/id/types"
 	"github.com/agntcy/identity/internal/core/vc/jose"
 	"github.com/agntcy/identity/internal/core/vc/types"
 	"github.com/agntcy/identity/internal/pkg/errutil"
+	"github.com/agntcy/identity/pkg/jwk"
 	"github.com/agntcy/identity/pkg/log"
 )
 
@@ -34,7 +34,7 @@ func ParseEnvelopedCredential(cred *types.EnvelopedCredential) (*types.Verifiabl
 	return parsed, nil
 }
 
-func VerifyEnvelopedCredential(cred *types.EnvelopedCredential, jwks *idtypes.Jwks) error {
+func VerifyEnvelopedCredential(cred *types.EnvelopedCredential, jwks *jwk.Jwks) error {
 	switch cred.EnvelopeType {
 	case types.CREDENTIAL_ENVELOPE_TYPE_EMBEDDED_PROOF:
 		return credentialEnvelopeTypeNotImplErr()

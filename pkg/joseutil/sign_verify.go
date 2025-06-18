@@ -8,14 +8,14 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/agntcy/identity/internal/core/id/types"
+	jwktype "github.com/agntcy/identity/pkg/jwk"
 	"github.com/lestrrat-go/jwx/v2/jwa"
 	"github.com/lestrrat-go/jwx/v2/jwk"
 	"github.com/lestrrat-go/jwx/v2/jws"
 )
 
 // Sign creates a JWS signature for the provided payload using the specified key
-func Sign(privateJwk *types.Jwk, payload []byte) ([]byte, error) {
+func Sign(privateJwk *jwktype.Jwk, payload []byte) ([]byte, error) {
 	if privateJwk == nil {
 		return nil, errors.New("private key is nil")
 	}
@@ -42,7 +42,7 @@ func Sign(privateJwk *types.Jwk, payload []byte) ([]byte, error) {
 }
 
 // Verify checks if a JWS signature is valid using the specified public key
-func Verify(publicJwk *types.Jwk, signedPayload []byte) ([]byte, error) {
+func Verify(publicJwk *jwktype.Jwk, signedPayload []byte) ([]byte, error) {
 	if publicJwk == nil {
 		return nil, errors.New("public key is nil")
 	}
@@ -69,7 +69,7 @@ func Verify(publicJwk *types.Jwk, signedPayload []byte) ([]byte, error) {
 }
 
 // customJwkToLibraryJwk converts our custom JWK type to the jwx library's JWK
-func customJwkToLibraryJwk(jwkObj *types.Jwk) (jwk.Key, error) {
+func customJwkToLibraryJwk(jwkObj *jwktype.Jwk) (jwk.Key, error) {
 	// Convert to a JSON representation first
 	jsonBytes, err := json.Marshal(jwkObj)
 	if err != nil {
