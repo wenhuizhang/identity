@@ -21,7 +21,7 @@
               "type": "integer"
             }
           ],
-          "description": "The type of the authentication TODO",
+          "description": "This field specifies the authentication mechanism used by the issuer.\n It determines whether the issuer uses an external Identity Provider (IDP)\n or a self-issued key for authentication.",
           "title": "Issuer Auth Type"
         },
         "^(common_name)$": {
@@ -58,7 +58,7 @@
               "type": "integer"
             }
           ],
-          "description": "The type of the authentication TODO",
+          "description": "This field specifies the authentication mechanism used by the issuer.\n It determines whether the issuer uses an external Identity Provider (IDP)\n or a self-issued key for authentication.",
           "title": "Issuer Auth Type"
         },
         "commonName": {

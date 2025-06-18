@@ -23,12 +23,18 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+// IssuerAuthType represents the type of authentication mechanism used by the issuer.
 type IssuerAuthType int32
 
 const (
+	// ISSUER_AUTH_TYPE_UNSPECIFIED represents an unspecified or unknown authentication type.
 	IssuerAuthType_ISSUER_AUTH_TYPE_UNSPECIFIED IssuerAuthType = 0
-	IssuerAuthType_ISSUER_AUTH_TYPE_IDP         IssuerAuthType = 1
-	IssuerAuthType_ISSUER_AUTH_TYPE_SELF        IssuerAuthType = 2
+	// ISSUER_AUTH_TYPE_IDP indicates that the issuer uses an external Identity Provider (IDP)
+	// to authenticate
+	IssuerAuthType_ISSUER_AUTH_TYPE_IDP IssuerAuthType = 1
+	// ISSUER_AUTH_TYPE_SELF indicates that the issuer uses a self-issued key for authentication.
+	// This is typically used in scenarios where the issuer doesn't rely on an IdP.
+	IssuerAuthType_ISSUER_AUTH_TYPE_SELF IssuerAuthType = 2
 )
 
 // Enum value maps for IssuerAuthType.
@@ -92,7 +98,9 @@ type Issuer struct {
 	// This field is optional
 	// The private key of the issuer in JWK format
 	PrivateKey *Jwk `protobuf:"bytes,5,opt,name=private_key,json=privateKey,proto3,oneof" json:"private_key,omitempty"`
-	// The type of the authentication TODO
+	// This field specifies the authentication mechanism used by the issuer.
+	// It determines whether the issuer uses an external Identity Provider (IDP)
+	// or a self-issued key for authentication.
 	AuthType      *IssuerAuthType `protobuf:"varint,7,opt,name=auth_type,json=authType,proto3,enum=agntcy.identity.core.v1alpha1.IssuerAuthType,oneof" json:"auth_type,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache

@@ -335,7 +335,10 @@ components:
                         - ISSUER_AUTH_TYPE_IDP
                         - ISSUER_AUTH_TYPE_SELF
                     type: string
-                    description: The type of the authentication TODO
+                    description: |-
+                        This field specifies the authentication mechanism used by the issuer.
+                         It determines whether the issuer uses an external Identity Provider (IDP)
+                         or a self-issued key for authentication.
                     format: enum
             description: A Identity Issuer
         Jwk:

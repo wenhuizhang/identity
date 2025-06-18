@@ -31,6 +31,12 @@ type VerifiableCredentialService interface {
 		ctx context.Context,
 		resolverMetadataID string,
 	) ([]*vctypes.EnvelopedCredential, error)
+
+	// Parse and verify a Verifiable Credential
+	Verify(
+		ctx context.Context,
+		credential *vctypes.EnvelopedCredential,
+	) error
 }
 
 type verifiableCredentialService struct {
