@@ -5,18 +5,25 @@
 import inspect
 import logging
 import os
-import jwt
 from importlib import import_module
 from pkgutil import iter_modules
 
-import agntcy.identity.node.v1alpha1
-import agntcy.identity.core.v1alpha1
+import jwt
 from dotenv import load_dotenv
 
-from agntcyidentity import client, log
+import agntcy.identity.core.v1alpha1
+import agntcy.identity.node.v1alpha1
+from agntcy.identity.core.v1alpha1.vc_pb2 import (
+    EnvelopedCredential,
+    VerifiableCredential,
+)
+from agntcy.identity.node.v1alpha1.vc_service_pb2 import (
+    GetVcWellKnownRequest,
+    GetVcWellKnownResponse,
+    VerifyRequest,
+)
 from agntcy.identity.node.v1alpha1.vc_service_pb2_grpc import VcServiceStub
-from agntcy.identity.core.v1alpha1.vc_pb2 import EnvelopedCredential, VerifiableCredential
-
+from agntcyidentity import client, log
 
 logger = logging.getLogger("identity")
 
@@ -41,22 +48,24 @@ class IdentitySdk:
     def __init__(self, async_mode=False):
         """Initialize the Identity SDK."""
         # Load dynamically all objects
-        _load_grpc_objects(agntcy.identity.node.v1alpha1,
-                           "agntcy.identity.node.v1alpha1")
-        _load_grpc_objects(agntcy.identity.core.v1alpha1,
-                           "agntcy.identity.core.v1alpha1")
+        _load_grpc_objects(
+            agntcy.identity.node.v1alpha1, "agntcy.identity.node.v1alpha1"
+        )
+        _load_grpc_objects(
+            agntcy.identity.core.v1alpha1, "agntcy.identity.core.v1alpha1"
+        )
 
         self.client = client.Client(async_mode)
 
     def _get_vc_service(self) -> VcServiceStub:
         """Get the vc service."""
-        return IdentitySdk.VcServiceStub(self.client.channel)
+        return VcServiceStub(self.client.channel)
 
     def get_badge(self, id: str) -> EnvelopedCredential:
-        """ Returns last badge for a given ID."""
-
-        well_known_response: IdentitySdk.GetVcWellKnownResponse = self._get_vc_service(
-        ).GetWellKnown(IdentitySdk.GetVcWellKnownRequest(id=id))
+        """Returns last badge for a given ID."""
+        well_known_response: GetVcWellKnownResponse = (
+            self._get_vc_service().GetWellKnown(GetVcWellKnownRequest(id=id))
+        )
 
         if not well_known_response.vcs:
             raise ValueError(f"No badge found for ID: {id}")
@@ -66,7 +75,7 @@ class IdentitySdk:
     def verify_badge(self, badge: EnvelopedCredential) -> VerifiableCredential:
         """Verify a badge."""
         try:
-            self._get_vc_service().Verify(IdentitySdk.VerifyRequest(vc=badge))
+            self._get_vc_service().Verify(VerifyRequest(vc=badge))
         except Exception as err:
             raise err
 
