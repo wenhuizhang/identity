@@ -6,14 +6,6 @@ name: Reusable Python Build
 
 on:
   workflow_call:
-    py-version:
-      description: 'Python version to install'
-      required: false
-      default: "3.12"
-    uv-install:
-      description: 'Install uv'
-      required: false
-      default: true
 
 jobs:
   python-bindings-wheels:
@@ -41,11 +33,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Setup Python
-        if: ${{ inputs.py-install }}
         id: setup-python
         uses: actions/setup-python@v5
         with:
-          python-version: ${{ inputs.py-version }}
+          python-version: "3.12"
       - name: Build wheel
         run: |
           uv build
@@ -55,12 +46,12 @@ jobs:
           name: wheel-${{ matrix.platform.os }}-${{ matrix.platform.target }}
           path: ./dist
       - name: Install uv (unix)
-        if: ${{ inputs.uv-install && runner.os != 'Windows' }}
+        if: ${{ runner.os != 'Windows' }}
         shell: bash
         run: |
           curl -LsSf https://astral.sh/uv/install.sh | env UV_INSTALL_DIR="${HOME}/.local/bin" sh
       - name: Install uv (windows)
-        if: ${{ inputs.uv-install && runner.os == 'Windows' }}
+        if: ${{ runner.os == 'Windows' }}
         shell: bash
         run: |
           powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
