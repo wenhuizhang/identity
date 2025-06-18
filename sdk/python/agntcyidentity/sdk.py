@@ -9,9 +9,12 @@ from importlib import import_module
 from pkgutil import iter_modules
 
 import agntcy.identity.node.v1alpha1
+import agntcy.identity.core.v1alpha1
 from dotenv import load_dotenv
 
-from air import client, log
+from agntcyidentity import client, log
+from agntcy.identity.node.v1alpha1.vc_service_pb2_grpc import VcServiceStub
+from agntcy.identity.core.v1alpha1.vc_pb2 import EnvelopedCredential, CredentialContent
 
 
 logger = logging.getLogger("identity")
@@ -21,11 +24,11 @@ if os.getenv("IDENTITY_ENABLE_LOGS", "0") == "1":
     log.configure()
 
 
-def _load_grpc_objects():
+def _load_grpc_objects(module, path):
     """Load all the objects from the Python Identity SDK."""
-    for _, modname, _ in iter_modules(agntcy.identity.node.v1alpha1.__path__):
+    for _, modname, _ in iter_modules(module.__path__):
         # Import the module
-        module = import_module(f"agntcy.identity.node.v1alpha1.{modname}")
+        module = import_module(f"{path}.{modname}")
         # Inspect the module and set attributes on Identity SDK for each class found
         for name, obj in inspect.getmembers(module, inspect.isclass):
             setattr(IdentitySdk, name, obj)
@@ -37,10 +40,33 @@ class IdentitySdk:
     def __init__(self, async_mode=False):
         """Initialize the Identity SDK."""
         # Load dynamically all objects
-        _load_grpc_objects()
+        _load_grpc_objects(agntcy.identity.node.v1alpha1,
+                           "agntcy.identity.node.v1alpha1")
+        _load_grpc_objects(agntcy.identity.core.v1alpha1,
+                           "agntcy.identity.core.v1alpha1")
 
         self.client = client.Client(async_mode)
 
-    def get_vc_service(self):
+    def _get_vc_service(self) -> VcServiceStub:
         """Get the vc service."""
         return IdentitySdk.VcServiceStub(self.client.channel)
+
+    def get_badge(self, id: str) -> EnvelopedCredential:
+        """ Returns last badge for a given ID."""
+
+        well_known_response: IdentitySdk.GetVcWellKnownResponse = self._get_vc_service(
+        ).GetWellKnown(IdentitySdk.GetVcWellKnownRequest(id=id))
+
+        if not well_known_response.vcs:
+            raise ValueError(f"No badge found for ID: {id}")
+
+        return well_known_response.vcs[0]
+
+    def verify_badge(self, badge: EnvelopedCredential) -> CredentialContent:
+        """Verify a badge."""
+        try:
+            self._get_vc_service().Verify(IdentitySdk.VerifyRequest(vc=badge))
+        except Exception as err:
+            raise err
+
+        return CredentialContent()

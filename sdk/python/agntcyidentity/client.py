@@ -8,7 +8,7 @@ import os
 
 import grpc
 
-from identity import constant
+from agntcyidentity import constant
 
 
 logger = logging.getLogger("client")
@@ -46,9 +46,11 @@ class Client:
         use_ssl = int(os.environ.get("IDENTITY_NODE_USE_SSL", 1))
         use_insecure = int(os.environ.get("IDENTITY_NODE_USE_INSECURE", 0))
 
+        logger.debug("Using SSL: %s, Insecure: %s", use_ssl, use_insecure)
+
         channel_credentials = grpc.local_channel_credentials()
         if use_ssl == 1:
-            logger.info("Using SSL")
+            logger.debug("Using SSL")
             if use_insecure == 1:
                 root_cert = base64.b64decode(
                     os.environ["IDENTITY_NODE_INSECURE_ROOT_CA"])
@@ -57,7 +59,7 @@ class Client:
             else:
                 channel_credentials = grpc.ssl_channel_credentials()
         else:
-            logger.info("Using local credentials")
+            logger.debug("Using local credentials")
 
         # Set if async
         secure_channel = (grpc.aio.secure_channel
