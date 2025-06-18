@@ -5,13 +5,13 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ include "identity-node.fullname" . }}-grpc
+  name: {{ include "identity-node.fullname" . }}-http
   namespace: '{{ .Release.Namespace }}'
   labels:
     {{ include "identity-node.labels" . | nindent 4 }}
-  {{- if .Values.ingress.annotations.grpc }}
+  {{- if .Values.ingress.annotations.http }}
   annotations:
-    {{- range $key, $value := .Values.ingress.annotations.grpc }}
+    {{- range $key, $value := .Values.ingress.annotations.http }}
     {{ $key }}: {{ tpl $value $ | quote }}
     {{- end }}
   {{- end }}
@@ -19,17 +19,17 @@ spec:
   ingressClassName: {{ .Values.ingress.className }}
   tls:
   - hosts:
-    - "{{ .Values.ingress.domainPrefixGrpc }}.{{ .Values.ingress.apiDomainName }}"
-    secretName: "{{ .Release.Name }}-grpc-tls"
+    - "{{ .Values.ingress.domainPrefixHttp }}.{{ .Values.ingress.apiDomainName }}"
+    secretName: "{{ .Release.Name }}-http-tls"
   rules:
-  - host: "{{ .Values.ingress.domainPrefixGrpc }}.{{ .Values.ingress.apiDomainName }}"
+  - host: "{{ .Values.ingress.domainPrefixHttp }}.{{ .Values.ingress.apiDomainName }}"
     http:
       paths:
       - backend:
           service:
             name: {{ include "identity-node.fullname" . }}
             port:
-              number: {{ .Values.service.grpc.port}}
+              number: {{ .Values.service.http.port}}
         path: /
-        pathType: ImplementationSpecific
+        pathType: Prefix
 {{- end }}

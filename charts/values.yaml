@@ -9,7 +9,7 @@ replicaCount: 1
 image:
   repository: ghcr.io/agntcy/identity/node
   pullPolicy: IfNotPresent
-  tag: "latest" 
+  tag: "latest"
 
 service:
   type: ClusterIP
@@ -34,24 +34,6 @@ env:
     value: ":4000"
   - name: SERVER_GRPC_HOST
     value: ":4001"
-
-postgresql:
-  enabled: true
-  image:
-    repository: postgres
-    tag: "latest"
-    pullPolicy: IfNotPresent
-  service:
-    port: 5432
-  auth:
-    enablePostgresUser: true
-    username: "postgres"
-    # These are example values only - DO NOT use in production
-    postgresPassword: "change-me"
-    database: identity
-  pgHbaConfiguration: |
-    local all all trust
-    host all all all md5
 
 ingress:
   enabled: true
@@ -84,3 +66,24 @@ resources:
     memory: 128Mi
 
 secrets: {}
+
+# Default configuration for the PostgreSQL instance
+# ===================================================
+
+postgresql:
+  enabled: true
+  image:
+    repository: postgres
+    tag: "latest"
+    pullPolicy: IfNotPresent
+  service:
+    port: 5432
+  auth:
+    enablePostgresUser: true
+    username: "postgres"
+    # These are example values only - DO NOT use in production
+    postgresPassword: "change-me"
+    database: identity
+  pgHbaConfiguration: |
+    local all all trust
+    host all all all md5
