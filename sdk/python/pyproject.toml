@@ -6,7 +6,7 @@ requires = ["setuptools", "setuptools-scm"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "agntcy-identity"
+name = "agntcy-identity-sdk"
 version = "0.0.1+unreleased"
 authors = [
     {name = "Jean Diaconu", email = "jdiaconu@cisco.com"},
