@@ -54,3 +54,6 @@ message VerificationMethod {
   // The public key used for the verification method.
   optional .agntcy.identity.core.v1alpha1.Jwk public_key_jwk = 2;
 }
+he public key used for the verification method.
+  optional .agntcy.identity.core.v1alpha1.Jwk public_key_jwk = 2;
+}
