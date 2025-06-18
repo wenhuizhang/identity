@@ -57,13 +57,11 @@ func (s *metadataService) GenerateMetadata(
 		return "", err
 	}
 
-	token, err := s.authClient.Token(
+	token, err := s.authClient.Authenticate(
 		ctx,
-		vaultId,
-		keyId,
 		issuer,
-		idpConfig,
-		nil,
+		auth.WithIdpIssuing(idpConfig),
+		auth.WithSelfIssuing(vaultId, keyId, ""),
 	)
 	if err != nil {
 		return "", err

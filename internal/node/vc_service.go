@@ -78,12 +78,12 @@ func (s *verifiableCredentialService) Publish(
 		)
 	}
 
-	jwt, _, err := s.verifService.VerifyExistingIssuer(ctx, proof)
+	verifRes, err := s.verifService.VerifyExistingIssuer(ctx, proof)
 	if err != nil {
 		return err
 	}
 
-	if !strings.HasSuffix(id, jwt.Claims.Subject) {
+	if !strings.HasSuffix(id, verifRes.Subject) {
 		return errutil.ErrInfo(
 			errtypes.ERROR_REASON_INVALID_VERIFIABLE_CREDENTIAL,
 			"the ID in the Verifiable Credential does not match the ID in the proof",

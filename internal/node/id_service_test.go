@@ -33,7 +33,6 @@ func TestGenerateID_Should_Not_Return_Errors(t *testing.T) {
 			Issuer:  "http://" + verificationtesting.ValidProofIssuer,
 			Subject: "test",
 		},
-		Verified:   true,
 		CommonName: verificationtesting.ValidProofIssuer,
 	}
 	idGen := node.NewIDGenerator(
@@ -65,7 +64,6 @@ func TestGenerateID_Should_Not_Return_Error_With_Self_Provider(t *testing.T) {
 			Issuer:  verificationtesting.ValidProofIssuer,
 			Subject: "test",
 		},
-		Verified:   false,
 		CommonName: verificationtesting.ValidProofIssuer,
 	}
 	idGen := node.NewIDGenerator(
@@ -98,7 +96,6 @@ func TestGenerateID_Should_Return_Error_With_Idp_And_Self_Proof(t *testing.T) {
 			Issuer:  verificationtesting.ValidProofIssuer,
 			Subject: "test",
 		},
-		Verified:   false,
 		CommonName: verificationtesting.ValidProofIssuer,
 	}
 	idGen := node.NewIDGenerator(
@@ -112,6 +109,8 @@ func TestGenerateID_Should_Return_Error_With_Idp_And_Self_Proof(t *testing.T) {
 		CommonName:   verificationtesting.ValidProofIssuer,
 		Organization: "Some Org",
 		Verified:     true,
+		PublicKey:    &idtypes.Jwk{},
+		AuthType:     issuertypes.ISSUER_AUTH_TYPE_IDP,
 	}
 	_, _ = issuerRepo.CreateIssuer(context.Background(), issuer)
 
@@ -167,7 +166,6 @@ func TestGenerateID_Should_Return_Invalid_Issuer_Error(t *testing.T) {
 			Subject: "test",
 		},
 		CommonName: verificationtesting.ValidProofIssuer,
-		Verified:   true,
 	}
 	idGen := node.NewIDGenerator(
 		issuerverif.NewService(
@@ -229,7 +227,6 @@ func TestGenerateID_Should_Return_ID_Already_Exists_Error(t *testing.T) {
 		Provider:   oidc.DuoProviderName,
 		Claims:     claims,
 		CommonName: verificationtesting.ValidProofIssuer,
-		Verified:   true,
 	}
 	idGen := node.NewIDGenerator(
 		issuerverif.NewService(

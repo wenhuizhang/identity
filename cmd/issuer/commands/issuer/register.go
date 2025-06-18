@@ -99,6 +99,7 @@ func (cmd *RegisterCommand) Run(ctx context.Context, flags *RegisterFlags) error
 	}
 
 	commonName := flags.CommonName
+	issuerAuthType := coreissuertypes.ISSUER_AUTH_TYPE_SELF
 	id := uuid.NewString()
 	var idpConfig *idptypes.IdpConfig
 
@@ -117,6 +118,7 @@ func (cmd *RegisterCommand) Run(ctx context.Context, flags *RegisterFlags) error
 		}
 
 		id = flags.ClientID
+		issuerAuthType = coreissuertypes.ISSUER_AUTH_TYPE_IDP
 	}
 
 	pubKey, err := cmd.vaultSrv.RetrievePubKey(ctx, cmd.cache.VaultId, cmd.cache.KeyID)
@@ -124,16 +126,15 @@ func (cmd *RegisterCommand) Run(ctx context.Context, flags *RegisterFlags) error
 		return fmt.Errorf("error retreiving public key: %w", err)
 	}
 
-	coreIssuer := coreissuertypes.Issuer{
-		Organization:    flags.Organization,
-		SubOrganization: flags.SubOrganization,
-		CommonName:      commonName,
-		PublicKey:       pubKey,
-		Verified:        flags.CommonName == "",
-	}
-
 	issuer := issuertypes.Issuer{
-		Issuer:          coreIssuer,
+		Issuer: coreissuertypes.Issuer{
+			Organization:    flags.Organization,
+			SubOrganization: flags.SubOrganization,
+			CommonName:      commonName,
+			PublicKey:       pubKey,
+			Verified:        flags.CommonName == "",
+			AuthType:        issuerAuthType,
+		},
 		ID:              id,
 		IdentityNodeURL: flags.IdentityNodeURL,
 		IdpConfig:       idpConfig,

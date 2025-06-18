@@ -18,6 +18,13 @@ import (
 	"github.com/agntcy/identity/pkg/log"
 )
 
+type Result struct {
+	Issuer   *issuertypes.Issuer
+	Verified bool
+	Provider oidc.ProviderName
+	Subject  string
+}
+
 // The VerificationService interface defines the core methods for
 // common name verification
 type Service interface {
@@ -25,14 +32,13 @@ type Service interface {
 		ctx context.Context,
 		issuer *issuertypes.Issuer,
 		proof *vctypes.Proof,
-	) (bool, error)
+	) (*Result, error)
 	VerifyExistingIssuer(
 		ctx context.Context,
 		proof *vctypes.Proof,
-	) (*oidc.ParsedJWT, *issuertypes.Issuer, error)
+	) (*Result, error)
 }
 
-// The verificationService struct implements the VerificationService interface
 type service struct {
 	oidcParser oidc.Parser
 	repository issuercore.Repository
@@ -52,87 +58,21 @@ func (v *service) Verify(
 	ctx context.Context,
 	issuer *issuertypes.Issuer,
 	proof *vctypes.Proof,
-) (bool, error) {
+) (*Result, error) {
 	// The proof is required to verify the issuer's common name
 	if proof == nil {
-		return false, errutil.ErrInfo(
+		return nil, errutil.ErrInfo(
 			errtypes.ERROR_REASON_INVALID_PROOF,
 			"a proof is required to verify the issuer's common name",
 			nil,
 		)
 	}
 
-	// Verify the proof
-	// If the proof is self provided, the issuer will be unverified
-	verified, err := v.verifyProof(ctx, issuer, proof)
-	if err != nil {
-		return false, err
-	}
-
-	return verified, nil
-}
-
-// VerifyProof verifies the proof for the issuer by checking the proof type
-func (v *service) verifyProof(
-	ctx context.Context,
-	issuer *issuertypes.Issuer,
-	proof *vctypes.Proof,
-) (bool, error) {
-	// Validate the proof
-	if proof == nil {
-		return false, errutil.Err(nil, "proof is empty")
-	}
-
 	log.Debug("Verifying proof: ", proof.ProofValue, " of type: ", proof.Type)
 
 	// Check the proof type
 	if !proof.IsJWT() {
-		return false, errutil.Err(nil, fmt.Sprintf("unsupported proof type '%s'", proof.Type))
-	}
-
-	// Parse JWT to extract the common name and issuer information
-	jwt, err := v.oidcParser.ParseAndVerifyJwt(
-		ctx,
-		&proof.ProofValue,
-		issuer.PublicKey.Jwks().String(),
-	)
-	if err != nil {
-		return false, errutil.ErrInfo(
-			errtypes.ERROR_REASON_INVALID_PROOF,
-			"failed to parse and verify JWT",
-			err,
-		)
-	}
-
-	log.Debug("Verifying common name:", issuer.CommonName)
-
-	// Verify common name is the same as the issuer's hostname
-	if jwt.CommonName != issuer.CommonName {
-		return false, errutil.Err(nil, "common name does not match issuer")
-	}
-
-	log.Debug("Common name verified successfully")
-
-	return jwt.Verified, nil
-}
-
-func (v *service) VerifyExistingIssuer(
-	ctx context.Context,
-	proof *vctypes.Proof,
-) (*oidc.ParsedJWT, *issuertypes.Issuer, error) {
-	// Validate the proof
-	if proof == nil {
-		return nil, nil, errutil.ErrInfo(
-			errtypes.ERROR_REASON_INVALID_PROOF,
-			"proof is empty",
-			nil,
-		)
-	}
-
-	log.Debug("Verifying proof: ", proof.ProofValue, " of type: ", proof.Type)
-
-	if !proof.IsJWT() {
-		return nil, nil, errutil.ErrInfo(
+		return nil, errutil.ErrInfo(
 			errtypes.ERROR_REASON_UNSUPPORTED_PROOF,
 			fmt.Sprintf("unsupported proof type: %s", proof.Type),
 			nil,
@@ -142,7 +82,70 @@ func (v *service) VerifyExistingIssuer(
 	// Parse JWT to extract the common name and issuer information
 	parsedJWT, err := v.oidcParser.ParseJwt(ctx, &proof.ProofValue)
 	if err != nil {
-		return nil, nil, errutil.ErrInfo(
+		return nil, errutil.ErrInfo(
+			errtypes.ERROR_REASON_INVALID_PROOF,
+			err.Error(),
+			err,
+		)
+	}
+
+	if parsedJWT.Provider == oidc.SelfProviderName {
+		// We make sure we always use the Issuer's public key to verify the JWT
+		parsedJWT.Claims.SubJWK = string(issuer.PublicKey.ToJSON())
+	}
+
+	// Verify the JWT signature
+	err = v.oidcParser.VerifyJwt(ctx, parsedJWT)
+	if err != nil {
+		return nil, errutil.ErrInfo(errtypes.ERROR_REASON_INVALID_PROOF, err.Error(), err)
+	}
+
+	log.Debug("Verifying common name:", issuer.CommonName)
+
+	// Verify common name is the same as the issuer's hostname
+	if parsedJWT.CommonName != issuer.CommonName {
+		return nil, errutil.Err(nil, "common name does not match issuer")
+	}
+
+	log.Debug("Common name verified successfully")
+
+	verified := parsedJWT.Provider != oidc.SelfProviderName
+
+	return &Result{
+		Issuer:   issuer,
+		Verified: verified,
+		Provider: parsedJWT.Provider,
+		Subject:  parsedJWT.Claims.Subject,
+	}, nil
+}
+
+func (v *service) VerifyExistingIssuer(
+	ctx context.Context,
+	proof *vctypes.Proof,
+) (*Result, error) {
+	// Validate the proof
+	if proof == nil {
+		return nil, errutil.ErrInfo(
+			errtypes.ERROR_REASON_INVALID_PROOF,
+			"proof is empty",
+			nil,
+		)
+	}
+
+	log.Debug("Verifying proof: ", proof.ProofValue, " of type: ", proof.Type)
+
+	if !proof.IsJWT() {
+		return nil, errutil.ErrInfo(
+			errtypes.ERROR_REASON_UNSUPPORTED_PROOF,
+			fmt.Sprintf("unsupported proof type: %s", proof.Type),
+			nil,
+		)
+	}
+
+	// Parse JWT to extract the common name and issuer information
+	parsedJWT, err := v.oidcParser.ParseJwt(ctx, &proof.ProofValue)
+	if err != nil {
+		return nil, errutil.ErrInfo(
 			errtypes.ERROR_REASON_INVALID_PROOF,
 			err.Error(),
 			err,
@@ -151,26 +154,37 @@ func (v *service) VerifyExistingIssuer(
 
 	issuer, err := v.getIssuer(ctx, parsedJWT.CommonName)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
+	}
+
+	if parsedJWT.Provider == oidc.SelfProviderName {
+		// We make sure we always use the Issuer's public key to verify the JWT
+		parsedJWT.Claims.SubJWK = string(issuer.PublicKey.ToJSON())
 	}
 
 	// Verify the JWT signature
-	err = v.oidcParser.VerifyJwt(ctx, parsedJWT, issuer.PublicKey.Jwks().String())
+	err = v.oidcParser.VerifyJwt(ctx, parsedJWT)
 	if err != nil {
-		return nil, nil, errutil.ErrInfo(errtypes.ERROR_REASON_INVALID_PROOF, err.Error(), err)
+		return nil, errutil.ErrInfo(errtypes.ERROR_REASON_INVALID_PROOF, err.Error(), err)
 	}
 
-	// If the issuer is verified
+	// If the issuer is not self-issued
 	// we require a valid proof from the IdP
-	if issuer.Verified && parsedJWT.Provider == oidc.SelfProviderName {
-		return nil, nil, errutil.ErrInfo(
+	if issuer.AuthType == issuertypes.ISSUER_AUTH_TYPE_IDP &&
+		parsedJWT.Provider == oidc.SelfProviderName {
+		return nil, errutil.ErrInfo(
 			errtypes.ERROR_REASON_IDP_REQUIRED,
-			"the issuer is verified so the proof must be from an IdP",
+			"the issuer is issued from an IdP so the proof must be from an IdP as well",
 			nil,
 		)
 	}
 
-	return parsedJWT, issuer, nil
+	return &Result{
+		Issuer:   issuer,
+		Verified: issuer.Verified,
+		Provider: parsedJWT.Provider,
+		Subject:  parsedJWT.Claims.Subject,
+	}, nil
 }
 
 func (v *service) getIssuer(

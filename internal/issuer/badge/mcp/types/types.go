@@ -23,20 +23,20 @@ type McpServer struct {
 // This can be a function with name, description, and parameters.
 type McpTool struct {
 	// Name of the tool.
-	Name string `json:"name"`
+	Name string `json:"name" protobuf:"bytes,1,opt,name=name"`
 
 	// Description of the tool.
-	Description string `json:"description"`
+	Description string `json:"description" protobuf:"bytes,2,opt,name=description"`
 
 	// Parameters of the tool.
 	// This is a JSON object that describes the parameters
-	Parameters map[string]any `json:"parameters,omitempty"`
+	Parameters map[string]any `json:"parameters,omitempty" protobuf:"google.protobuf.Struct,3,opt,name=parameters"`
 
 	// Oauth2 Protected Resource metadata.
 	// This will correspond to a resource on the server.
 	// Or can be specified or overridden by the auth policies.
 	// This complies with RFC 9728.
-	Oauth2Metadata *Oauth2Metadata `json:"oauth2_metadata,omitempty"`
+	Oauth2Metadata *Oauth2Metadata `json:"oauth2_metadata,omitempty" protobuf:"bytes,4,opt,name=oauth2_metadata"`
 }
 
 // McpResource represents a resource available on the MCP server.

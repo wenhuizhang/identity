@@ -5,6 +5,16 @@
       "additionalProperties": false,
       "description": "A Identity Issuer",
       "properties": {
+        "auth_type": {
+          "description": "The type of the authentication TODO",
+          "enum": [
+            "ISSUER_AUTH_TYPE_UNSPECIFIED",
+            "ISSUER_AUTH_TYPE_IDP",
+            "ISSUER_AUTH_TYPE_SELF"
+          ],
+          "title": "Issuer Auth Type",
+          "type": "string"
+        },
         "common_name": {
           "description": "The common name of the issuer\n Could be a FQDN or a FQDA",
           "type": "string"

@@ -10,6 +10,14 @@ import (
 	idtypes "github.com/agntcy/identity/internal/core/id/types"
 )
 
+type IssuerAuthType int
+
+const (
+	ISSUER_AUTH_TYPE_UNSPECIFIED IssuerAuthType = iota
+	ISSUER_AUTH_TYPE_IDP
+	ISSUER_AUTH_TYPE_SELF
+)
+
 // A Identity Issuer
 type Issuer struct {
 	// The organization of the issuer
@@ -34,6 +42,9 @@ type Issuer struct {
 	// This field is optional
 	// The private key of the issuer in JWK format
 	PrivateKey *idtypes.Jwk `json:"privateKey,omitempty" protobuf:"bytes,5,opt,name=private_key"`
+
+	// The type of the authentication TODO
+	AuthType IssuerAuthType `json:"authType,omitempty" protobuf:"varint,7,opt,name=auth_type"`
 }
 
 // ValidateCommonName validates the common name of the issuer

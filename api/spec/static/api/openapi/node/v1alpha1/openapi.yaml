@@ -329,6 +329,14 @@ components:
                     description: |-
                         This field is optional
                          The private key of the issuer in JWK format
+                authType:
+                    enum:
+                        - ISSUER_AUTH_TYPE_UNSPECIFIED
+                        - ISSUER_AUTH_TYPE_IDP
+                        - ISSUER_AUTH_TYPE_SELF
+                    type: string
+                    description: The type of the authentication TODO
+                    format: enum
             description: A Identity Issuer
         Jwk:
             type: object

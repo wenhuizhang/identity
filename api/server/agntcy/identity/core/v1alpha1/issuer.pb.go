@@ -23,6 +23,55 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type IssuerAuthType int32
+
+const (
+	IssuerAuthType_ISSUER_AUTH_TYPE_UNSPECIFIED IssuerAuthType = 0
+	IssuerAuthType_ISSUER_AUTH_TYPE_IDP         IssuerAuthType = 1
+	IssuerAuthType_ISSUER_AUTH_TYPE_SELF        IssuerAuthType = 2
+)
+
+// Enum value maps for IssuerAuthType.
+var (
+	IssuerAuthType_name = map[int32]string{
+		0: "ISSUER_AUTH_TYPE_UNSPECIFIED",
+		1: "ISSUER_AUTH_TYPE_IDP",
+		2: "ISSUER_AUTH_TYPE_SELF",
+	}
+	IssuerAuthType_value = map[string]int32{
+		"ISSUER_AUTH_TYPE_UNSPECIFIED": 0,
+		"ISSUER_AUTH_TYPE_IDP":         1,
+		"ISSUER_AUTH_TYPE_SELF":        2,
+	}
+)
+
+func (x IssuerAuthType) Enum() *IssuerAuthType {
+	p := new(IssuerAuthType)
+	*p = x
+	return p
+}
+
+func (x IssuerAuthType) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (IssuerAuthType) Descriptor() protoreflect.EnumDescriptor {
+	return file_agntcy_identity_core_v1alpha1_issuer_proto_enumTypes[0].Descriptor()
+}
+
+func (IssuerAuthType) Type() protoreflect.EnumType {
+	return &file_agntcy_identity_core_v1alpha1_issuer_proto_enumTypes[0]
+}
+
+func (x IssuerAuthType) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use IssuerAuthType.Descriptor instead.
+func (IssuerAuthType) EnumDescriptor() ([]byte, []int) {
+	return file_agntcy_identity_core_v1alpha1_issuer_proto_rawDescGZIP(), []int{0}
+}
+
 // A Identity Issuer
 type Issuer struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
@@ -42,7 +91,9 @@ type Issuer struct {
 	PublicKey *Jwk `protobuf:"bytes,4,opt,name=public_key,json=publicKey,proto3,oneof" json:"public_key,omitempty"`
 	// This field is optional
 	// The private key of the issuer in JWK format
-	PrivateKey    *Jwk `protobuf:"bytes,5,opt,name=private_key,json=privateKey,proto3,oneof" json:"private_key,omitempty"`
+	PrivateKey *Jwk `protobuf:"bytes,5,opt,name=private_key,json=privateKey,proto3,oneof" json:"private_key,omitempty"`
+	// The type of the authentication TODO
+	AuthType      *IssuerAuthType `protobuf:"varint,7,opt,name=auth_type,json=authType,proto3,enum=agntcy.identity.core.v1alpha1.IssuerAuthType,oneof" json:"auth_type,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -119,11 +170,18 @@ func (x *Issuer) GetPrivateKey() *Jwk {
 	return nil
 }
 
+func (x *Issuer) GetAuthType() IssuerAuthType {
+	if x != nil && x.AuthType != nil {
+		return *x.AuthType
+	}
+	return IssuerAuthType_ISSUER_AUTH_TYPE_UNSPECIFIED
+}
+
 var File_agntcy_identity_core_v1alpha1_issuer_proto protoreflect.FileDescriptor
 
 const file_agntcy_identity_core_v1alpha1_issuer_proto_rawDesc = "" +
 	"\n" +
-	"*agntcy/identity/core/v1alpha1/issuer.proto\x12\x1dagntcy.identity.core.v1alpha1\x1a&agntcy/identity/core/v1alpha1/id.proto\"\x9c\x03\n" +
+	"*agntcy/identity/core/v1alpha1/issuer.proto\x12\x1dagntcy.identity.core.v1alpha1\x1a&agntcy/identity/core/v1alpha1/id.proto\"\xfb\x03\n" +
 	"\x06Issuer\x12'\n" +
 	"\forganization\x18\x01 \x01(\tH\x00R\forganization\x88\x01\x01\x12.\n" +
 	"\x10sub_organization\x18\x02 \x01(\tH\x01R\x0fsubOrganization\x88\x01\x01\x12$\n" +
@@ -133,13 +191,20 @@ const file_agntcy_identity_core_v1alpha1_issuer_proto_rawDesc = "" +
 	"\n" +
 	"public_key\x18\x04 \x01(\v2\".agntcy.identity.core.v1alpha1.JwkH\x04R\tpublicKey\x88\x01\x01\x12H\n" +
 	"\vprivate_key\x18\x05 \x01(\v2\".agntcy.identity.core.v1alpha1.JwkH\x05R\n" +
-	"privateKey\x88\x01\x01B\x0f\n" +
+	"privateKey\x88\x01\x01\x12O\n" +
+	"\tauth_type\x18\a \x01(\x0e2-.agntcy.identity.core.v1alpha1.IssuerAuthTypeH\x06R\bauthType\x88\x01\x01B\x0f\n" +
 	"\r_organizationB\x13\n" +
 	"\x11_sub_organizationB\x0e\n" +
 	"\f_common_nameB\v\n" +
 	"\t_verifiedB\r\n" +
 	"\v_public_keyB\x0e\n" +
-	"\f_private_keyBZZXgithub.com/agntcy/identity/api/server/agntcy/identity/core/v1alpha1;identity_core_sdk_gob\x06proto3"
+	"\f_private_keyB\f\n" +
+	"\n" +
+	"_auth_type*g\n" +
+	"\x0eIssuerAuthType\x12 \n" +
+	"\x1cISSUER_AUTH_TYPE_UNSPECIFIED\x10\x00\x12\x18\n" +
+	"\x14ISSUER_AUTH_TYPE_IDP\x10\x01\x12\x19\n" +
+	"\x15ISSUER_AUTH_TYPE_SELF\x10\x02BZZXgithub.com/agntcy/identity/api/server/agntcy/identity/core/v1alpha1;identity_core_sdk_gob\x06proto3"
 
 var (
 	file_agntcy_identity_core_v1alpha1_issuer_proto_rawDescOnce sync.Once
@@ -153,19 +218,22 @@ func file_agntcy_identity_core_v1alpha1_issuer_proto_rawDescGZIP() []byte {
 	return file_agntcy_identity_core_v1alpha1_issuer_proto_rawDescData
 }
 
+var file_agntcy_identity_core_v1alpha1_issuer_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
 var file_agntcy_identity_core_v1alpha1_issuer_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_agntcy_identity_core_v1alpha1_issuer_proto_goTypes = []any{
-	(*Issuer)(nil), // 0: agntcy.identity.core.v1alpha1.Issuer
-	(*Jwk)(nil),    // 1: agntcy.identity.core.v1alpha1.Jwk
+	(IssuerAuthType)(0), // 0: agntcy.identity.core.v1alpha1.IssuerAuthType
+	(*Issuer)(nil),      // 1: agntcy.identity.core.v1alpha1.Issuer
+	(*Jwk)(nil),         // 2: agntcy.identity.core.v1alpha1.Jwk
 }
 var file_agntcy_identity_core_v1alpha1_issuer_proto_depIdxs = []int32{
-	1, // 0: agntcy.identity.core.v1alpha1.Issuer.public_key:type_name -> agntcy.identity.core.v1alpha1.Jwk
-	1, // 1: agntcy.identity.core.v1alpha1.Issuer.private_key:type_name -> agntcy.identity.core.v1alpha1.Jwk
-	2, // [2:2] is the sub-list for method output_type
-	2, // [2:2] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	2, // 0: agntcy.identity.core.v1alpha1.Issuer.public_key:type_name -> agntcy.identity.core.v1alpha1.Jwk
+	2, // 1: agntcy.identity.core.v1alpha1.Issuer.private_key:type_name -> agntcy.identity.core.v1alpha1.Jwk
+	0, // 2: agntcy.identity.core.v1alpha1.Issuer.auth_type:type_name -> agntcy.identity.core.v1alpha1.IssuerAuthType
+	3, // [3:3] is the sub-list for method output_type
+	3, // [3:3] is the sub-list for method input_type
+	3, // [3:3] is the sub-list for extension type_name
+	3, // [3:3] is the sub-list for extension extendee
+	0, // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_agntcy_identity_core_v1alpha1_issuer_proto_init() }
@@ -180,13 +248,14 @@ func file_agntcy_identity_core_v1alpha1_issuer_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_agntcy_identity_core_v1alpha1_issuer_proto_rawDesc), len(file_agntcy_identity_core_v1alpha1_issuer_proto_rawDesc)),
-			NumEnums:      0,
+			NumEnums:      1,
 			NumMessages:   1,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
 		GoTypes:           file_agntcy_identity_core_v1alpha1_issuer_proto_goTypes,
 		DependencyIndexes: file_agntcy_identity_core_v1alpha1_issuer_proto_depIdxs,
+		EnumInfos:         file_agntcy_identity_core_v1alpha1_issuer_proto_enumTypes,
 		MessageInfos:      file_agntcy_identity_core_v1alpha1_issuer_proto_msgTypes,
 	}.Build()
 	File_agntcy_identity_core_v1alpha1_issuer_proto = out.File

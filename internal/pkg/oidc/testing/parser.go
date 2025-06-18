@@ -24,18 +24,9 @@ func NewFakeParser(
 	}
 }
 
-func (p *fakeParser) ParseAndVerifyJwt(
-	ctx context.Context,
-	jwtString *string,
-	jwksString *string,
-) (*oidc.ParsedJWT, error) {
-	return p.ParseJwt(ctx, jwtString)
-}
-
 func (p *fakeParser) VerifyJwt(
 	ctx context.Context,
 	parsedJwt *oidc.ParsedJWT,
-	jwksString *string,
 ) error {
 	return nil
 }

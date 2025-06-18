@@ -9,7 +9,6 @@ import (
 	issuertypes "github.com/agntcy/identity/internal/core/issuer/types"
 	"github.com/agntcy/identity/internal/core/issuer/verification"
 	vctypes "github.com/agntcy/identity/internal/core/vc/types"
-	"github.com/agntcy/identity/internal/pkg/oidc"
 )
 
 const (
@@ -27,14 +26,17 @@ func (f *FakeVerifiedVerificationServiceStub) Verify(
 	ctx context.Context,
 	issuer *issuertypes.Issuer,
 	proof *vctypes.Proof,
-) (bool, error) {
-	return true, nil
+) (*verification.Result, error) {
+	return &verification.Result{
+		Issuer:   issuer,
+		Verified: true,
+	}, nil
 }
 
 func (f *FakeVerifiedVerificationServiceStub) VerifyExistingIssuer(
 	ctx context.Context,
 	proof *vctypes.Proof,
-) (*oidc.ParsedJWT, *issuertypes.Issuer, error) {
+) (*verification.Result, error) {
 	panic("unimplemented")
 }
 
@@ -48,13 +50,16 @@ func (f *FakeUnverifiedVerificationServiceStub) Verify(
 	ctx context.Context,
 	issuer *issuertypes.Issuer,
 	proof *vctypes.Proof,
-) (bool, error) {
-	return false, nil
+) (*verification.Result, error) {
+	return &verification.Result{
+		Issuer:   issuer,
+		Verified: false,
+	}, nil
 }
 
 func (f *FakeUnverifiedVerificationServiceStub) VerifyExistingIssuer(
 	ctx context.Context,
 	proof *vctypes.Proof,
-) (*oidc.ParsedJWT, *issuertypes.Issuer, error) {
+) (*verification.Result, error) {
 	panic("unimplemented")
 }

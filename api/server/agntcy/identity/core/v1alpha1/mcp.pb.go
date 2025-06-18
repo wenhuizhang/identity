@@ -11,6 +11,7 @@ package identity_core_sdk_go
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	structpb "google.golang.org/protobuf/types/known/structpb"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
@@ -172,7 +173,7 @@ type McpTool struct {
 	Description *string `protobuf:"bytes,2,opt,name=description,proto3,oneof" json:"description,omitempty"`
 	// Parameters of the tool.
 	// This is a JSON object that describes the parameters
-	Parameters *string `protobuf:"bytes,3,opt,name=parameters,proto3,oneof" json:"parameters,omitempty"`
+	Parameters *structpb.Struct `protobuf:"bytes,3,opt,name=parameters,proto3,oneof" json:"parameters,omitempty"`
 	// Oauth2 Protected Resource metadata.
 	// This will correspond to a resource on the server.
 	// Or can be specified or overridden by the auth policies.
@@ -226,11 +227,11 @@ func (x *McpTool) GetDescription() string {
 	return ""
 }
 
-func (x *McpTool) GetParameters() string {
-	if x != nil && x.Parameters != nil {
-		return *x.Parameters
+func (x *McpTool) GetParameters() *structpb.Struct {
+	if x != nil {
+		return x.Parameters
 	}
-	return ""
+	return nil
 }
 
 func (x *McpTool) GetOauth2Metadata() *Oauth2Metadata {
@@ -321,7 +322,7 @@ var File_agntcy_identity_core_v1alpha1_mcp_proto protoreflect.FileDescriptor
 
 const file_agntcy_identity_core_v1alpha1_mcp_proto_rawDesc = "" +
 	"\n" +
-	"'agntcy/identity/core/v1alpha1/mcp.proto\x12\x1dagntcy.identity.core.v1alpha1\"\x85\x01\n" +
+	"'agntcy/identity/core/v1alpha1/mcp.proto\x12\x1dagntcy.identity.core.v1alpha1\x1a\x1cgoogle/protobuf/struct.proto\"\x85\x01\n" +
 	"\vMcpResource\x12\x17\n" +
 	"\x04name\x18\x01 \x01(\tH\x00R\x04name\x88\x01\x01\x12%\n" +
 	"\vdescription\x18\x02 \x01(\tH\x01R\vdescription\x88\x01\x01\x12\x15\n" +
@@ -335,12 +336,12 @@ const file_agntcy_identity_core_v1alpha1_mcp_proto_rawDesc = "" +
 	"\x05tools\x18\x03 \x03(\v2&.agntcy.identity.core.v1alpha1.McpToolR\x05tools\x12H\n" +
 	"\tresources\x18\x04 \x03(\v2*.agntcy.identity.core.v1alpha1.McpResourceR\tresourcesB\a\n" +
 	"\x05_nameB\x06\n" +
-	"\x04_url\"\x87\x02\n" +
+	"\x04_url\"\xa0\x02\n" +
 	"\aMcpTool\x12\x17\n" +
 	"\x04name\x18\x01 \x01(\tH\x00R\x04name\x88\x01\x01\x12%\n" +
-	"\vdescription\x18\x02 \x01(\tH\x01R\vdescription\x88\x01\x01\x12#\n" +
+	"\vdescription\x18\x02 \x01(\tH\x01R\vdescription\x88\x01\x01\x12<\n" +
 	"\n" +
-	"parameters\x18\x03 \x01(\tH\x02R\n" +
+	"parameters\x18\x03 \x01(\v2\x17.google.protobuf.StructH\x02R\n" +
 	"parameters\x88\x01\x01\x12[\n" +
 	"\x0foauth2_metadata\x18\x04 \x01(\v2-.agntcy.identity.core.v1alpha1.Oauth2MetadataH\x03R\x0eoauth2Metadata\x88\x01\x01B\a\n" +
 	"\x05_nameB\x0e\n" +
@@ -369,20 +370,22 @@ func file_agntcy_identity_core_v1alpha1_mcp_proto_rawDescGZIP() []byte {
 
 var file_agntcy_identity_core_v1alpha1_mcp_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_agntcy_identity_core_v1alpha1_mcp_proto_goTypes = []any{
-	(*McpResource)(nil),    // 0: agntcy.identity.core.v1alpha1.McpResource
-	(*McpServer)(nil),      // 1: agntcy.identity.core.v1alpha1.McpServer
-	(*McpTool)(nil),        // 2: agntcy.identity.core.v1alpha1.McpTool
-	(*Oauth2Metadata)(nil), // 3: agntcy.identity.core.v1alpha1.Oauth2Metadata
+	(*McpResource)(nil),     // 0: agntcy.identity.core.v1alpha1.McpResource
+	(*McpServer)(nil),       // 1: agntcy.identity.core.v1alpha1.McpServer
+	(*McpTool)(nil),         // 2: agntcy.identity.core.v1alpha1.McpTool
+	(*Oauth2Metadata)(nil),  // 3: agntcy.identity.core.v1alpha1.Oauth2Metadata
+	(*structpb.Struct)(nil), // 4: google.protobuf.Struct
 }
 var file_agntcy_identity_core_v1alpha1_mcp_proto_depIdxs = []int32{
 	2, // 0: agntcy.identity.core.v1alpha1.McpServer.tools:type_name -> agntcy.identity.core.v1alpha1.McpTool
 	0, // 1: agntcy.identity.core.v1alpha1.McpServer.resources:type_name -> agntcy.identity.core.v1alpha1.McpResource
-	3, // 2: agntcy.identity.core.v1alpha1.McpTool.oauth2_metadata:type_name -> agntcy.identity.core.v1alpha1.Oauth2Metadata
-	3, // [3:3] is the sub-list for method output_type
-	3, // [3:3] is the sub-list for method input_type
-	3, // [3:3] is the sub-list for extension type_name
-	3, // [3:3] is the sub-list for extension extendee
-	0, // [0:3] is the sub-list for field type_name
+	4, // 2: agntcy.identity.core.v1alpha1.McpTool.parameters:type_name -> google.protobuf.Struct
+	3, // 3: agntcy.identity.core.v1alpha1.McpTool.oauth2_metadata:type_name -> agntcy.identity.core.v1alpha1.Oauth2Metadata
+	4, // [4:4] is the sub-list for method output_type
+	4, // [4:4] is the sub-list for method input_type
+	4, // [4:4] is the sub-list for extension type_name
+	4, // [4:4] is the sub-list for extension extendee
+	0, // [0:4] is the sub-list for field type_name
 }
 
 func init() { file_agntcy_identity_core_v1alpha1_mcp_proto_init() }

@@ -123,10 +123,6 @@ type Jwk struct {
 
 // PublicKey returns a copy of the private Jwk containing only the public fields.
 func (j *Jwk) PublicKey() *Jwk {
-	if j == nil {
-		return nil
-	}
-
 	pub := &Jwk{
 		ALG: j.ALG,
 		KTY: j.KTY,
@@ -143,6 +139,15 @@ func (j *Jwk) PublicKey() *Jwk {
 	}
 
 	return pub
+}
+
+func (j *Jwk) ToJSON() []byte {
+	raw, err := json.Marshal(j)
+	if err != nil {
+		return nil
+	}
+
+	return raw
 }
 
 // JWKS represents a set of JSON Web Keys (JWKs).

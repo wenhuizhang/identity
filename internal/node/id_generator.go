@@ -47,14 +47,14 @@ func (g *idGenerator) GenerateFromProof(
 	ctx context.Context,
 	proof *vctypes.Proof,
 ) (string, *issuertypes.Issuer, error) {
-	jwt, issuer, err := g.verifService.VerifyExistingIssuer(ctx, proof)
+	verifRes, err := g.verifService.VerifyExistingIssuer(ctx, proof)
 	if err != nil {
 		return "", nil, err
 	}
 
 	var scheme string
 
-	switch jwt.Provider {
+	switch verifRes.Provider {
 	case oidc.OktaProviderName:
 		scheme = OktaScheme
 	case oidc.DuoProviderName:
@@ -69,8 +69,8 @@ func (g *idGenerator) GenerateFromProof(
 		)
 	}
 
-	log.Debug("Issuer is verified: ", issuer.Verified)
+	log.Debug("Issuer is verified: ", verifRes.Issuer.Verified)
 	log.Debug("JWT scheme: ", scheme)
 
-	return fmt.Sprintf("%s%s", scheme, jwt.Claims.Subject), issuer, nil
+	return fmt.Sprintf("%s%s", scheme, verifRes.Subject), verifRes.Issuer, nil
 }

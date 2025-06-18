@@ -4,6 +4,25 @@
   "additionalProperties": false,
   "description": "A Identity Issuer",
   "patternProperties": {
+    "^(authType)$": {
+      "anyOf": [
+        {
+          "enum": [
+            "ISSUER_AUTH_TYPE_UNSPECIFIED",
+            "ISSUER_AUTH_TYPE_IDP",
+            "ISSUER_AUTH_TYPE_SELF"
+          ],
+          "type": "string"
+        },
+        {
+          "maximum": 2147483647,
+          "minimum": -2147483648,
+          "type": "integer"
+        }
+      ],
+      "description": "The type of the authentication TODO",
+      "title": "Issuer Auth Type"
+    },
     "^(commonName)$": {
       "description": "The common name of the issuer\n Could be a FQDN or a FQDA",
       "type": "string"
@@ -22,6 +41,25 @@
     }
   },
   "properties": {
+    "auth_type": {
+      "anyOf": [
+        {
+          "enum": [
+            "ISSUER_AUTH_TYPE_UNSPECIFIED",
+            "ISSUER_AUTH_TYPE_IDP",
+            "ISSUER_AUTH_TYPE_SELF"
+          ],
+          "type": "string"
+        },
+        {
+          "maximum": 2147483647,
+          "minimum": -2147483648,
+          "type": "integer"
+        }
+      ],
+      "description": "The type of the authentication TODO",
+      "title": "Issuer Auth Type"
+    },
     "common_name": {
       "description": "The common name of the issuer\n Could be a FQDN or a FQDA",
       "type": "string"
