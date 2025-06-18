@@ -46,6 +46,20 @@ jobs:
           path: ~/.cache/helm
           key: ${{ runner.os }}-helm
 
+      - name: Add Helm repositories
+        run: |
+          helm repo add bitnami https://charts.bitnami.com/bitnami
+          helm repo update
+
+      - name: Update Helm dependencies
+        run: |
+          for chart in ${{ inputs.charts-dir }}/*; do
+            if [ -d "$chart" ]; then
+              echo "Updating dependencies for $chart"
+              helm dependency update "$chart"
+            fi
+          done
+
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.6.0
         env:
