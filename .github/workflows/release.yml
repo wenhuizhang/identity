@@ -74,6 +74,7 @@ jobs:
 
   publish-helm-charts:
     uses: ./.github/workflows/reusable-helm.yml
+    needs: [prepare-release]
     with:
       charts-dir: "charts"
       gh-pages-branch: "gh-pages"
@@ -82,6 +83,7 @@ jobs:
 
   build-python-sdk:
     name: Build Python SDK
+    needs: [prepare-release]
     uses: ./.github/workflows/reusable-python.yml
 
   publish-python-sdk:
