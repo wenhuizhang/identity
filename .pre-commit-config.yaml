@@ -3,6 +3,7 @@
 
 ---
 default_stages: [pre-commit, pre-push]
+exclude: (sdk/python/agntcy/.*)
 repos:
   - repo: https://github.com/google/addlicense
     rev: 499ed7f28389eb4a08c2d7e40b1637cfd7f65381
