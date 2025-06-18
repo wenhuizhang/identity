@@ -47,3 +47,4 @@ jobs:
           charts_dir: ${{ inputs.charts-dir }}
           packages_with_index: true
           pages_branch: ${{ inputs.gh-pages-branch }}
+          skip_existing: false
