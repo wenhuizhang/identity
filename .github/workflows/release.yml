@@ -75,7 +75,7 @@ jobs:
   publish-helm-charts:
     uses: ./.github/workflows/reusable-helm.yml
     with:
-      charts-dir: "deployments/charts"
+      charts-dir: "charts"
       gh-pages-branch: "gh-pages"
     secrets:
       github-token: ${{ secrets.GITHUB_TOKEN }}
