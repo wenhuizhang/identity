@@ -140,7 +140,7 @@ type VerifiableCredential struct {
 	Issuer string `json:"issuer" protobuf:"bytes,3,opt,name=issuer"`
 
 	// https://www.w3.org/TR/vc-data-model/#credential-subject
-	CredentialSubject map[string]any `json:"credentiaSubject" protobuf:"google.protobuf.Struct,4,opt,name=content"`
+	CredentialSubject map[string]any `json:"credentialSubject" protobuf:"google.protobuf.Struct,4,opt,name=content"`
 
 	// https://www.w3.org/TR/vc-data-model/#identifiers
 	ID string `json:"id,omitempty" protobuf:"bytes,5,opt,name=id"`

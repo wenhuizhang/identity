@@ -79,3 +79,36 @@ jobs:
       gh-pages-branch: "gh-pages"
     secrets:
       github-token: ${{ secrets.GITHUB_TOKEN }}
+
+  build-python-sdk:
+    name: Build Python SDK
+    uses: ./.github/workflows/reusable-python.yml
+
+  publish-python-sdk:
+    name: Upload Identity Python Package to PyPI
+    runs-on: ubuntu-latest
+    needs:
+      - build-python-sdk
+    if: |
+      always() &&
+      (needs.build-python-sdk.result == 'skipped' || needs.build-python-sdk.result == 'success')
+    environment: pypi
+    permissions:
+      # IMPORTANT: this permission is mandatory for Trusted Publishing
+      id-token: write
+      contents: read
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          merge-multiple: true
+          path: ./dist
+
+      - name: Show files
+        run: ls -l ./dist
+
+      - name: Publish package distributions to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.PYPI_API_TOKEN }}
+          packages-dir: ./dist

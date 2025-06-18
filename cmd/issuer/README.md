@@ -61,7 +61,7 @@ Without an Identity Provider (IdP):
 
 ```bash
 identity issuer register -o "My Organization" \
-     -k "common-name"
+     -n "common-name"
 ```
 
 > [!NOTE]
