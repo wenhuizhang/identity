@@ -13,7 +13,7 @@ To use the `Python SDK`, you need to have the following installed:
 To install the `Python SDK`, you can use `pip`:
 
 ```bash
-pip install identity-python-sdk
+pip install agntcy-identity-sdk
 ```
 
 ## Example Usage
