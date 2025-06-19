@@ -72,10 +72,14 @@ secrets: {}
 
 postgresql:
   enabled: true
-  image:
-    repository: postgres
-    tag: "latest"
-    pullPolicy: IfNotPresent
+  volumePermissions:
+    enabled: true
+  securityContext:
+    enabled: true
+    fsGroup: 1001
+  containerSecurityContext:
+    enabled: true
+    runAsUser: 1001
   service:
     port: 5432
   auth:
