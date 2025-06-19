@@ -15,7 +15,7 @@ Your release "{{ .Release.Name }}" has been successfully deployed.
 
 ### gRPC Endpoint:
 {{- if .Values.ingress.domainPrefixGrpc }}
-  URL: grpc://{{ .Values.ingress.domainPrefixGrpc }}.{{ .Values.ingress.apiDomainName }}
+  URL: {{ .Values.ingress.domainPrefixGrpc }}.{{ .Values.ingress.apiDomainName }}
 {{- else }}
   URL: grpc://<your-grpc-domain>
 {{- end }}
