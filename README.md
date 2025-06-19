@@ -145,7 +145,7 @@ go install github.com/agntcy/identity/cmd/issuer@latest && \
    ```
 
 > [!NOTE]
-> You can also install the `Node Backend` using our helm chart, for which instructions are available in the [charts](charts/README.md) directory.
+> You can also install the `Node Backend` using our helm chart, for which instructions are available in the [chart's](charts/identity-node/README.md) directory.
 
 ### Step 3: Verify the Installation
 
