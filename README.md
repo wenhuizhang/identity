@@ -144,6 +144,9 @@ go install github.com/agntcy/identity/cmd/issuer@latest && \
    make start_node
    ```
 
+> [!NOTE]
+> You can also install the `Node Backend` using our helm chart, for which instructions are available in the [charts](charts/README.md) directory.
+
 ### Step 3: Verify the Installation
 
 You can verify the installation by running the command below to see the [different commands available](#-core-commands-to-use-the-cli):
@@ -306,6 +309,9 @@ This allows others to verify the Agent and MCP badges you publish.
    ```bash
    identity verify -f vcs.json
    ```
+
+> [!NOTE]
+> You can also use our Python SDK to verify the badge programmatically. See the [Python SDK](sdk/python/README.md) for more details.
 
 ## Development
 
