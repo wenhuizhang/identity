@@ -21,6 +21,7 @@ import (
 const (
 	OktaScheme = "OKTA-"
 	DuoScheme  = "DUO-"
+	OryScheme  = "ORY-"
 	SelfScheme = "AGNTCY-"
 )
 
@@ -59,6 +60,8 @@ func (g *idGenerator) GenerateFromProof(
 		scheme = OktaScheme
 	case oidc.DuoProviderName:
 		scheme = DuoScheme
+	case oidc.OryProviderName:
+		scheme = OryScheme
 	case oidc.SelfProviderName:
 		scheme = SelfScheme
 	default:

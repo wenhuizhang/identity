@@ -22,15 +22,23 @@ func (p *parser) detectProviderName(
 		return UnknownProviderName, err
 	}
 
-	resp.Body.Close()
+	_ = resp.Body.Close()
 
-	if isOkta(resp) {
+	switch {
+	case isOry(resp):
+		return OryProviderName, nil
+	case isOkta(resp):
 		return OktaProviderName, nil
-	} else if isDuo(resp) {
+	case isDuo(resp):
 		return DuoProviderName, nil
+	default:
+		return UnknownProviderName, errutil.Err(nil, "unable to detect provider name")
 	}
+}
 
-	return UnknownProviderName, errutil.Err(nil, "unable to detect provider name")
+func isOry(resp *http.Response) bool {
+	return resp != nil &&
+		(resp.Header.Get("Ory-Network-Region") != "" || strings.HasSuffix(resp.Request.Host, "oryapis.com"))
 }
 
 func isOkta(resp *http.Response) bool {
