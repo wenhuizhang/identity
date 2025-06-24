@@ -35,6 +35,7 @@ const (
 	UnknownProviderName ProviderName = iota
 	OktaProviderName
 	DuoProviderName
+	OryProviderName
 	SelfProviderName
 )
 
