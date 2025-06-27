@@ -32,7 +32,7 @@ func (p *parser) detectProviderName(
 	case isDuo(resp):
 		return DuoProviderName, nil
 	default:
-		return LocalProviderName, nil
+		return IdpProviderName, nil
 	}
 }
 
