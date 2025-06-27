@@ -36,6 +36,7 @@ const (
 	OktaProviderName
 	DuoProviderName
 	OryProviderName
+	LocalProviderName
 	SelfProviderName
 )
 

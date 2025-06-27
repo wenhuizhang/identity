@@ -32,7 +32,7 @@ func (p *parser) detectProviderName(
 	case isDuo(resp):
 		return DuoProviderName, nil
 	default:
-		return UnknownProviderName, errutil.Err(nil, "unable to detect provider name")
+		return LocalProviderName, nil
 	}
 }
 
