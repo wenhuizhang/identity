@@ -58,6 +58,9 @@ const (
 
 	// The ID and Resolver Metadata are already registered in the system
 	ERROR_REASON_ID_ALREADY_REGISTERED
+
+	// The Verifiable Credential is revoked
+	ERROR_REASON_VERIFIABLE_CREDENTIAL_IS_REVOKED
 )
 
 // Describes the cause of the error with structured details.

@@ -46,6 +46,24 @@ message CredentialSchema {
   optional string id = 2;
 }
 
+// CredentialStatus represents the credentialStatus property of a Verifiable Credential.
+// more information can be found [here]
+//
+// [here]: https://www.w3.org/TR/vc-data-model-2.0/#status
+message CredentialStatus {
+  // The URL identifying the schema file
+  optional string id = 1;
+
+  // Type specifies the type of the file
+  optional string type = 2;
+
+  // The creation date and time of the status
+  optional Time created_at = 3;
+
+  // The value of the purpose for the status entry
+  optional CredentialStatusPurpose purpose = 4;
+}
+
 // EnvelopedCredential represents a Credential enveloped in a specific format.
 message EnvelopedCredential {
   // EnvelopeType specifies the type of the envelope used to store the credential.
@@ -96,8 +114,11 @@ message VerifiableCredential {
   // https://www.w3.org/TR/vc-data-model-2.0/#data-schemas
   repeated CredentialSchema credential_schema = 8;
 
+  // https://www.w3.org/TR/vc-data-model-2.0/#status
+  repeated CredentialStatus credential_status = 9;
+
   // https://w3id.org/security#proof
-  optional Proof proof = 9;
+  optional Proof proof = 10;
 }
 
 // DataModel represents the W3C Verifiable Presentation Data Model defined [here]
@@ -116,6 +137,8 @@ message VerifiablePresentation {
   // https://w3id.org/security#proof
   optional Proof proof = 4;
 }
+
+message Time {}
 
 // The content of the Credential.
 // Multiple content types can be supported: AgentBadge, etc.
@@ -142,4 +165,16 @@ enum CredentialEnvelopeType {
   CREDENTIAL_ENVELOPE_TYPE_EMBEDDED_PROOF = 1;
   // JOSE Envelope Type.
   CREDENTIAL_ENVELOPE_TYPE_JOSE = 2;
+}
+
+// The purpose of the status entry
+enum CredentialStatusPurpose {
+  // Unspecified status purpose
+  CREDENTIAL_STATUS_PURPOSE_UNSPECIFIED = 0;
+  // Used to cancel the validity of a verifiable credential.
+  // This status is not reversible.
+  CREDENTIAL_STATUS_PURPOSE_REVOCATION = 1;
+  // Used to temporarily prevent the acceptance of a verifiable credential.
+  // This status is reversible.
+  CREDENTIAL_STATUS_PURPOSE_SUSPENSION = 2;
 }

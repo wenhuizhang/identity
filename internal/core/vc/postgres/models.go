@@ -23,6 +23,7 @@ type VerifiableCredential struct {
 	IssuanceDate       string
 	ExpirationDate     string
 	CredentialSchema   []*CredentialSchema `gorm:"foreignKey:VerifiableCredentialID"`
+	Status             []*CredentialStatus `gorm:"foreignKey:VerifiableCredentialID"`
 	Proof              *types.Proof        `gorm:"embedded;embeddedPrefix:proof_"`
 	ResolverMetadataID string
 }
@@ -66,6 +67,23 @@ func (c *CredentialSchema) ToCoreType() *types.CredentialSchema {
 	}
 }
 
+type CredentialStatus struct {
+	ID                     string `gorm:"primaryKey"`
+	VerifiableCredentialID string `gorm:"primaryKey"`
+	Type                   string
+	CreatedAt              time.Time
+	Purpose                types.CredentialStatusPurpose
+}
+
+func (c *CredentialStatus) ToCoreType() *types.CredentialStatus {
+	return &types.CredentialStatus{
+		ID:        c.ID,
+		Type:      c.Type,
+		CreatedAt: c.CreatedAt,
+		Purpose:   c.Purpose,
+	}
+}
+
 func newVerifiableCredentialModel(
 	src *types.VerifiableCredential,
 	resolverMetadataID string,
@@ -86,16 +104,35 @@ func newVerifiableCredentialModel(
 		ExpirationDate:    src.ExpirationDate,
 		CredentialSchema: convertutil.ConvertSlice(
 			src.CredentialSchema,
-			newCredentialSchemaModel,
+			func(cs *types.CredentialSchema) *CredentialSchema {
+				return newCredentialSchemaModel(cs, src.ID)
+			},
+		),
+		Status: convertutil.ConvertSlice(
+			src.Status,
+			func(cs *types.CredentialStatus) *CredentialStatus {
+				return newCredentialStatusModel(cs, src.ID)
+			},
 		),
 		Proof:              src.Proof,
 		ResolverMetadataID: resolverMetadataID,
 	}
 }
 
-func newCredentialSchemaModel(src *types.CredentialSchema) *CredentialSchema {
+func newCredentialSchemaModel(src *types.CredentialSchema, vcID string) *CredentialSchema {
 	return &CredentialSchema{
-		ID:   src.ID,
-		Type: src.Type,
+		ID:                     src.ID,
+		Type:                   src.Type,
+		VerifiableCredentialID: vcID,
+	}
+}
+
+func newCredentialStatusModel(src *types.CredentialStatus, vcID string) *CredentialStatus {
+	return &CredentialStatus{
+		ID:                     src.ID,
+		Type:                   src.Type,
+		CreatedAt:              src.CreatedAt,
+		Purpose:                src.Purpose,
+		VerifiableCredentialID: vcID,
 	}
 }

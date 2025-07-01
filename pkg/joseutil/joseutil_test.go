@@ -20,19 +20,19 @@ func TestGenerateAndValidateKeys(t *testing.T) {
 		t.Run(alg, func(t *testing.T) {
 			t.Parallel()
 
-			jwk, err := joseutil.GenerateJWK(alg, "sig", "")
+			priv, err := joseutil.GenerateJWK(alg, "sig", "")
 			assert.NoError(t, err, "GenerateJWK failed for %s", alg)
 
 			// Validate public key (should pass)
-			err = joseutil.ValidatePubKey(jwk.PublicKey())
+			err = joseutil.ValidatePubKey(priv.PublicKey())
 			assert.NoError(t, err, "ValidatePubKey failed for %s", alg)
 
 			// Validate private key (should pass)
-			err = joseutil.ValidatePrivKey(jwk)
+			err = joseutil.ValidatePrivKey(priv)
 			assert.NoError(t, err, "ValidatePrivKey failed for %s", alg)
 
 			// Public key with private fields should fail
-			err = joseutil.ValidatePubKey(jwk)
+			err = joseutil.ValidatePubKey(priv)
 			assert.Error(
 				t,
 				err,
@@ -52,8 +52,8 @@ func TestValidatePubKey_NilOrEmptyFields(t *testing.T) {
 	assert.Error(t, err, "ValidatePubKey should fail if Jwk is nil")
 
 	// Test Jwk with missing required fields for RSA
-	jwk := &jwk.Jwk{KTY: "RSA"}
-	err = joseutil.ValidatePubKey(jwk)
+	pub := &jwk.Jwk{KTY: "RSA"}
+	err = joseutil.ValidatePubKey(pub)
 	assert.Error(t, err, "ValidatePubKey should fail if required RSA fields are missing")
 }
 
@@ -75,14 +75,14 @@ func TestSignAndVerify(t *testing.T) {
 			t.Parallel()
 
 			// Generate a key pair
-			jwk, err := joseutil.GenerateJWK(alg, "sig", "")
+			priv, err := joseutil.GenerateJWK(alg, "sig", "")
 			assert.NoError(t, err, "GenerateJWK failed")
 
 			// Get the public key
-			publicKey := jwk.PublicKey()
+			publicKey := priv.PublicKey()
 
 			// Sign the payload with the private key
-			signature, err := joseutil.Sign(jwk, payload)
+			signature, err := joseutil.Sign(priv, payload)
 			assert.NoError(t, err, "Sign failed")
 			assert.NotEmpty(t, signature, "Signature should not be empty")
 
@@ -106,9 +106,9 @@ func TestSignAndVerifyErrors(t *testing.T) {
 	payload := []byte(`{"test":"data"}`)
 
 	// Generate a key
-	jwk, err := joseutil.GenerateJWK("RS256", "sig", "")
+	priv, err := joseutil.GenerateJWK("RS256", "sig", "")
 	assert.NoError(t, err, "GenerateJWK failed")
-	publicKey := jwk.PublicKey()
+	publicKey := priv.PublicKey()
 
 	// Test nil keys
 	_, err = joseutil.Sign(nil, payload)
@@ -118,8 +118,8 @@ func TestSignAndVerifyErrors(t *testing.T) {
 	assert.Error(t, err, "Verify should fail with nil key")
 
 	// Test unsupported algorithm
-	jwk.ALG = "UNSUPPORTED"
-	_, err = joseutil.Sign(jwk, payload)
+	priv.ALG = "UNSUPPORTED"
+	_, err = joseutil.Sign(priv, payload)
 	assert.Error(t, err, "Sign should fail with unsupported algorithm")
 
 	publicKey.ALG = "UNSUPPORTED"

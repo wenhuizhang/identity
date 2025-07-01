@@ -27,6 +27,7 @@ const (
 	VcService_Verify_FullMethodName       = "/agntcy.identity.node.v1alpha1.VcService/Verify"
 	VcService_GetWellKnown_FullMethodName = "/agntcy.identity.node.v1alpha1.VcService/GetWellKnown"
 	VcService_Search_FullMethodName       = "/agntcy.identity.node.v1alpha1.VcService/Search"
+	VcService_Revoke_FullMethodName       = "/agntcy.identity.node.v1alpha1.VcService/Revoke"
 )
 
 // VcServiceClient is the client API for VcService service.
@@ -43,6 +44,8 @@ type VcServiceClient interface {
 	GetWellKnown(ctx context.Context, in *GetVcWellKnownRequest, opts ...grpc.CallOption) (*GetVcWellKnownResponse, error)
 	// Search for Verifiable Credentials based on the specified criteria
 	Search(ctx context.Context, in *SearchRequest, opts ...grpc.CallOption) (*SearchResponse, error)
+	// Revoke a Verifiable Credential. THIS ACTION IS NOT REVERSIBLE.
+	Revoke(ctx context.Context, in *RevokeRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
 type vcServiceClient struct {
@@ -93,6 +96,16 @@ func (c *vcServiceClient) Search(ctx context.Context, in *SearchRequest, opts ..
 	return out, nil
 }
 
+func (c *vcServiceClient) Revoke(ctx context.Context, in *RevokeRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, VcService_Revoke_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // VcServiceServer is the server API for VcService service.
 // All implementations should embed UnimplementedVcServiceServer
 // for forward compatibility.
@@ -107,6 +120,8 @@ type VcServiceServer interface {
 	GetWellKnown(context.Context, *GetVcWellKnownRequest) (*GetVcWellKnownResponse, error)
 	// Search for Verifiable Credentials based on the specified criteria
 	Search(context.Context, *SearchRequest) (*SearchResponse, error)
+	// Revoke a Verifiable Credential. THIS ACTION IS NOT REVERSIBLE.
+	Revoke(context.Context, *RevokeRequest) (*emptypb.Empty, error)
 }
 
 // UnimplementedVcServiceServer should be embedded to have
@@ -127,6 +142,9 @@ func (UnimplementedVcServiceServer) GetWellKnown(context.Context, *GetVcWellKnow
 }
 func (UnimplementedVcServiceServer) Search(context.Context, *SearchRequest) (*SearchResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Search not implemented")
+}
+func (UnimplementedVcServiceServer) Revoke(context.Context, *RevokeRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Revoke not implemented")
 }
 func (UnimplementedVcServiceServer) testEmbeddedByValue() {}
 
@@ -220,6 +238,24 @@ func _VcService_Search_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
+func _VcService_Revoke_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RevokeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VcServiceServer).Revoke(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: VcService_Revoke_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VcServiceServer).Revoke(ctx, req.(*RevokeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // VcService_ServiceDesc is the grpc.ServiceDesc for VcService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -242,6 +278,10 @@ var VcService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Search",
 			Handler:    _VcService_Search_Handler,
+		},
+		{
+			MethodName: "Revoke",
+			Handler:    _VcService_Revoke_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

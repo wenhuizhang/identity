@@ -333,6 +333,63 @@ func (x *GetVcWellKnownResponse) GetVcs() []*v1alpha1.EnvelopedCredential {
 	return nil
 }
 
+// Request to revoke a published Verifiable Credential
+type RevokeRequest struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The Verifiable Credential to revoked
+	Vc *v1alpha1.EnvelopedCredential `protobuf:"bytes,1,opt,name=vc,proto3" json:"vc,omitempty"`
+	// Required Proof of ownership of the Issuer's ResolverMetadata
+	// This should be provided when the Issuer is provided by an external IdP
+	// Example: a signed JWT
+	Proof         *v1alpha1.Proof `protobuf:"bytes,2,opt,name=proof,proto3" json:"proof,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *RevokeRequest) Reset() {
+	*x = RevokeRequest{}
+	mi := &file_agntcy_identity_node_v1alpha1_vc_service_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RevokeRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RevokeRequest) ProtoMessage() {}
+
+func (x *RevokeRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_agntcy_identity_node_v1alpha1_vc_service_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RevokeRequest.ProtoReflect.Descriptor instead.
+func (*RevokeRequest) Descriptor() ([]byte, []int) {
+	return file_agntcy_identity_node_v1alpha1_vc_service_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *RevokeRequest) GetVc() *v1alpha1.EnvelopedCredential {
+	if x != nil {
+		return x.Vc
+	}
+	return nil
+}
+
+func (x *RevokeRequest) GetProof() *v1alpha1.Proof {
+	if x != nil {
+		return x.Proof
+	}
+	return nil
+}
+
 var File_agntcy_identity_node_v1alpha1_vc_service_proto protoreflect.FileDescriptor
 
 const file_agntcy_identity_node_v1alpha1_vc_service_proto_rawDesc = "" +
@@ -353,12 +410,16 @@ const file_agntcy_identity_node_v1alpha1_vc_service_proto_rawDesc = "" +
 	"\x15GetVcWellKnownRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\"^\n" +
 	"\x16GetVcWellKnownResponse\x12D\n" +
-	"\x03vcs\x18\x01 \x03(\v22.agntcy.identity.core.v1alpha1.EnvelopedCredentialR\x03vcs2\xf2\x06\n" +
+	"\x03vcs\x18\x01 \x03(\v22.agntcy.identity.core.v1alpha1.EnvelopedCredentialR\x03vcs\"\x8f\x01\n" +
+	"\rRevokeRequest\x12B\n" +
+	"\x02vc\x18\x01 \x01(\v22.agntcy.identity.core.v1alpha1.EnvelopedCredentialR\x02vc\x12:\n" +
+	"\x05proof\x18\x02 \x01(\v2$.agntcy.identity.core.v1alpha1.ProofR\x05proof2\xc2\b\n" +
 	"\tVcService\x12\xb2\x01\n" +
 	"\aPublish\x12-.agntcy.identity.node.v1alpha1.PublishRequest\x1a\x16.google.protobuf.Empty\"`\x92A>\x12\x1fPublish a Verifiable Credential*\x1bPublishVerifiableCredential\x82\xd3\xe4\x93\x02\x19:\x01*\"\x14/v1alpha1/vc/publish\x12\xad\x01\n" +
 	"\x06Verify\x12,.agntcy.identity.node.v1alpha1.VerifyRequest\x1a\x16.google.protobuf.Empty\"]\x92A<\x12\x1eVerify a Verifiable Credential*\x1aVerifyVerifiableCredential\x82\xd3\xe4\x93\x02\x18:\x01*\"\x13/v1alpha1/vc/verify\x12\x83\x02\n" +
 	"\fGetWellKnown\x124.agntcy.identity.node.v1alpha1.GetVcWellKnownRequest\x1a5.agntcy.identity.node.v1alpha1.GetVcWellKnownResponse\"\x85\x01\x92AT\x12BReturns the well-known Verifiable Credentials for the specified Id*\x0eGetVcWellKnown\x82\xd3\xe4\x93\x02(\x12&/v1alpha1/vc/{id}/.well-known/vcs.json\x12\xe9\x01\n" +
-	"\x06Search\x12,.agntcy.identity.node.v1alpha1.SearchRequest\x1a-.agntcy.identity.node.v1alpha1.SearchResponse\"\x81\x01\x92A`\x12ASearch for Verifiable Credentials based on the specified criteria*\x1bSearchVerifiableCredentials\x82\xd3\xe4\x93\x02\x18:\x01*\"\x13/v1alpha1/vc/search\x1a\x0e\x92A\v\n" +
+	"\x06Search\x12,.agntcy.identity.node.v1alpha1.SearchRequest\x1a-.agntcy.identity.node.v1alpha1.SearchResponse\"\x81\x01\x92A`\x12ASearch for Verifiable Credentials based on the specified criteria*\x1bSearchVerifiableCredentials\x82\xd3\xe4\x93\x02\x18:\x01*\"\x13/v1alpha1/vc/search\x12\xcd\x01\n" +
+	"\x06Revoke\x12,.agntcy.identity.node.v1alpha1.RevokeRequest\x1a\x16.google.protobuf.Empty\"}\x92A\\\x12>Revoke a Verifiable Credential. THIS ACTION IS NOT REVERSIBLE.*\x1aRevokeVerifiableCredential\x82\xd3\xe4\x93\x02\x18:\x01*\"\x13/v1alpha1/vc/revoke\x1a\x0e\x92A\v\n" +
 	"\tVcServiceBZZXgithub.com/agntcy/identity/api/server/agntcy/identity/node/v1alpha1;identity_node_sdk_gob\x06proto3"
 
 var (
@@ -373,7 +434,7 @@ func file_agntcy_identity_node_v1alpha1_vc_service_proto_rawDescGZIP() []byte {
 	return file_agntcy_identity_node_v1alpha1_vc_service_proto_rawDescData
 }
 
-var file_agntcy_identity_node_v1alpha1_vc_service_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
+var file_agntcy_identity_node_v1alpha1_vc_service_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_agntcy_identity_node_v1alpha1_vc_service_proto_goTypes = []any{
 	(*PublishRequest)(nil),               // 0: agntcy.identity.node.v1alpha1.PublishRequest
 	(*VerifyRequest)(nil),                // 1: agntcy.identity.node.v1alpha1.VerifyRequest
@@ -381,31 +442,36 @@ var file_agntcy_identity_node_v1alpha1_vc_service_proto_goTypes = []any{
 	(*SearchResponse)(nil),               // 3: agntcy.identity.node.v1alpha1.SearchResponse
 	(*GetVcWellKnownRequest)(nil),        // 4: agntcy.identity.node.v1alpha1.GetVcWellKnownRequest
 	(*GetVcWellKnownResponse)(nil),       // 5: agntcy.identity.node.v1alpha1.GetVcWellKnownResponse
-	(*v1alpha1.EnvelopedCredential)(nil), // 6: agntcy.identity.core.v1alpha1.EnvelopedCredential
-	(*v1alpha1.Proof)(nil),               // 7: agntcy.identity.core.v1alpha1.Proof
-	(*v1alpha1.CredentialSchema)(nil),    // 8: agntcy.identity.core.v1alpha1.CredentialSchema
-	(*emptypb.Empty)(nil),                // 9: google.protobuf.Empty
+	(*RevokeRequest)(nil),                // 6: agntcy.identity.node.v1alpha1.RevokeRequest
+	(*v1alpha1.EnvelopedCredential)(nil), // 7: agntcy.identity.core.v1alpha1.EnvelopedCredential
+	(*v1alpha1.Proof)(nil),               // 8: agntcy.identity.core.v1alpha1.Proof
+	(*v1alpha1.CredentialSchema)(nil),    // 9: agntcy.identity.core.v1alpha1.CredentialSchema
+	(*emptypb.Empty)(nil),                // 10: google.protobuf.Empty
 }
 var file_agntcy_identity_node_v1alpha1_vc_service_proto_depIdxs = []int32{
-	6,  // 0: agntcy.identity.node.v1alpha1.PublishRequest.vc:type_name -> agntcy.identity.core.v1alpha1.EnvelopedCredential
-	7,  // 1: agntcy.identity.node.v1alpha1.PublishRequest.proof:type_name -> agntcy.identity.core.v1alpha1.Proof
-	6,  // 2: agntcy.identity.node.v1alpha1.VerifyRequest.vc:type_name -> agntcy.identity.core.v1alpha1.EnvelopedCredential
-	8,  // 3: agntcy.identity.node.v1alpha1.SearchRequest.schema:type_name -> agntcy.identity.core.v1alpha1.CredentialSchema
-	6,  // 4: agntcy.identity.node.v1alpha1.SearchResponse.vcs:type_name -> agntcy.identity.core.v1alpha1.EnvelopedCredential
-	6,  // 5: agntcy.identity.node.v1alpha1.GetVcWellKnownResponse.vcs:type_name -> agntcy.identity.core.v1alpha1.EnvelopedCredential
-	0,  // 6: agntcy.identity.node.v1alpha1.VcService.Publish:input_type -> agntcy.identity.node.v1alpha1.PublishRequest
-	1,  // 7: agntcy.identity.node.v1alpha1.VcService.Verify:input_type -> agntcy.identity.node.v1alpha1.VerifyRequest
-	4,  // 8: agntcy.identity.node.v1alpha1.VcService.GetWellKnown:input_type -> agntcy.identity.node.v1alpha1.GetVcWellKnownRequest
-	2,  // 9: agntcy.identity.node.v1alpha1.VcService.Search:input_type -> agntcy.identity.node.v1alpha1.SearchRequest
-	9,  // 10: agntcy.identity.node.v1alpha1.VcService.Publish:output_type -> google.protobuf.Empty
-	9,  // 11: agntcy.identity.node.v1alpha1.VcService.Verify:output_type -> google.protobuf.Empty
-	5,  // 12: agntcy.identity.node.v1alpha1.VcService.GetWellKnown:output_type -> agntcy.identity.node.v1alpha1.GetVcWellKnownResponse
-	3,  // 13: agntcy.identity.node.v1alpha1.VcService.Search:output_type -> agntcy.identity.node.v1alpha1.SearchResponse
-	10, // [10:14] is the sub-list for method output_type
-	6,  // [6:10] is the sub-list for method input_type
-	6,  // [6:6] is the sub-list for extension type_name
-	6,  // [6:6] is the sub-list for extension extendee
-	0,  // [0:6] is the sub-list for field type_name
+	7,  // 0: agntcy.identity.node.v1alpha1.PublishRequest.vc:type_name -> agntcy.identity.core.v1alpha1.EnvelopedCredential
+	8,  // 1: agntcy.identity.node.v1alpha1.PublishRequest.proof:type_name -> agntcy.identity.core.v1alpha1.Proof
+	7,  // 2: agntcy.identity.node.v1alpha1.VerifyRequest.vc:type_name -> agntcy.identity.core.v1alpha1.EnvelopedCredential
+	9,  // 3: agntcy.identity.node.v1alpha1.SearchRequest.schema:type_name -> agntcy.identity.core.v1alpha1.CredentialSchema
+	7,  // 4: agntcy.identity.node.v1alpha1.SearchResponse.vcs:type_name -> agntcy.identity.core.v1alpha1.EnvelopedCredential
+	7,  // 5: agntcy.identity.node.v1alpha1.GetVcWellKnownResponse.vcs:type_name -> agntcy.identity.core.v1alpha1.EnvelopedCredential
+	7,  // 6: agntcy.identity.node.v1alpha1.RevokeRequest.vc:type_name -> agntcy.identity.core.v1alpha1.EnvelopedCredential
+	8,  // 7: agntcy.identity.node.v1alpha1.RevokeRequest.proof:type_name -> agntcy.identity.core.v1alpha1.Proof
+	0,  // 8: agntcy.identity.node.v1alpha1.VcService.Publish:input_type -> agntcy.identity.node.v1alpha1.PublishRequest
+	1,  // 9: agntcy.identity.node.v1alpha1.VcService.Verify:input_type -> agntcy.identity.node.v1alpha1.VerifyRequest
+	4,  // 10: agntcy.identity.node.v1alpha1.VcService.GetWellKnown:input_type -> agntcy.identity.node.v1alpha1.GetVcWellKnownRequest
+	2,  // 11: agntcy.identity.node.v1alpha1.VcService.Search:input_type -> agntcy.identity.node.v1alpha1.SearchRequest
+	6,  // 12: agntcy.identity.node.v1alpha1.VcService.Revoke:input_type -> agntcy.identity.node.v1alpha1.RevokeRequest
+	10, // 13: agntcy.identity.node.v1alpha1.VcService.Publish:output_type -> google.protobuf.Empty
+	10, // 14: agntcy.identity.node.v1alpha1.VcService.Verify:output_type -> google.protobuf.Empty
+	5,  // 15: agntcy.identity.node.v1alpha1.VcService.GetWellKnown:output_type -> agntcy.identity.node.v1alpha1.GetVcWellKnownResponse
+	3,  // 16: agntcy.identity.node.v1alpha1.VcService.Search:output_type -> agntcy.identity.node.v1alpha1.SearchResponse
+	10, // 17: agntcy.identity.node.v1alpha1.VcService.Revoke:output_type -> google.protobuf.Empty
+	13, // [13:18] is the sub-list for method output_type
+	8,  // [8:13] is the sub-list for method input_type
+	8,  // [8:8] is the sub-list for extension type_name
+	8,  // [8:8] is the sub-list for extension extendee
+	0,  // [0:8] is the sub-list for field type_name
 }
 
 func init() { file_agntcy_identity_node_v1alpha1_vc_service_proto_init() }
@@ -420,7 +486,7 @@ func file_agntcy_identity_node_v1alpha1_vc_service_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_agntcy_identity_node_v1alpha1_vc_service_proto_rawDesc), len(file_agntcy_identity_node_v1alpha1_vc_service_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   6,
+			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

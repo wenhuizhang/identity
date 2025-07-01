@@ -5,11 +5,14 @@ package postgres
 
 import (
 	"context"
+	"errors"
 
+	errcore "github.com/agntcy/identity/internal/core/errors"
 	vccore "github.com/agntcy/identity/internal/core/vc"
 	"github.com/agntcy/identity/internal/core/vc/types"
 	"github.com/agntcy/identity/internal/pkg/errutil"
 	"github.com/agntcy/identity/pkg/db"
+	"gorm.io/gorm"
 )
 
 type vcPostgresRepository struct {
@@ -39,6 +42,23 @@ func (r *vcPostgresRepository) Create(
 	return credential, nil
 }
 
+func (r *vcPostgresRepository) Update(
+	ctx context.Context,
+	credential *types.VerifiableCredential,
+	resolverMetadataID string,
+) (*types.VerifiableCredential, error) {
+	model := newVerifiableCredentialModel(credential, resolverMetadataID)
+
+	err := r.dbContext.Client().Save(model).Error
+	if err != nil {
+		return nil, errutil.Err(
+			err, "there was an error updating the verifiable credential",
+		)
+	}
+
+	return credential, nil
+}
+
 func (r *vcPostgresRepository) GetByResolverMetadata(
 	ctx context.Context,
 	resolverMetadataID string,
@@ -61,4 +81,24 @@ func (r *vcPostgresRepository) GetByResolverMetadata(
 	}
 
 	return vcs, nil
+}
+
+func (r *vcPostgresRepository) GetByID(
+	ctx context.Context,
+	id string,
+) (*types.VerifiableCredential, error) {
+	var vc VerifiableCredential
+
+	err := r.dbContext.Client().Where("id = ?", id).First(&vc).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, errcore.ErrResourceNotFound
+		}
+
+		return nil, errutil.Err(
+			err, "there was an error fetching the verifiable credential",
+		)
+	}
+
+	return vc.ToCoreType(), nil
 }

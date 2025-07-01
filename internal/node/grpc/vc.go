@@ -102,3 +102,24 @@ func (vcService) Search(
 ) (*nodeapi.SearchResponse, error) {
 	return nil, fmt.Errorf("not implemented")
 }
+
+// Revoke an existing Verifiable Credential
+func (s *vcService) Revoke(
+	ctx context.Context,
+	req *nodeapi.RevokeRequest,
+) (*emptypb.Empty, error) {
+	err := s.vcSrv.Revoke(
+		ctx,
+		converters.ToEnvelopedCredential(req.Vc),
+		converters.ToProof(req.Proof),
+	)
+	if err != nil {
+		if errtypes.IsErrorInfo(err, errtypes.ERROR_REASON_INTERNAL) {
+			return nil, grpcutil.InternalError(err)
+		}
+
+		return nil, grpcutil.BadRequestError(err)
+	}
+
+	return &emptypb.Empty{}, nil
+}

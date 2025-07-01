@@ -16,8 +16,19 @@ type Repository interface {
 		resolverMetadataID string,
 	) (*types.VerifiableCredential, error)
 
+	Update(
+		ctx context.Context,
+		credential *types.VerifiableCredential,
+		resolverMetadataID string,
+	) (*types.VerifiableCredential, error)
+
 	GetByResolverMetadata(
 		ctx context.Context,
 		resolverMetadataID string,
 	) ([]*types.VerifiableCredential, error)
+
+	GetByID(
+		ctx context.Context,
+		id string,
+	) (*types.VerifiableCredential, error)
 }

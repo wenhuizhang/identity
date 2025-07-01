@@ -6,6 +6,7 @@ package testing
 import (
 	"context"
 
+	errcore "github.com/agntcy/identity/internal/core/errors"
 	vccore "github.com/agntcy/identity/internal/core/vc"
 	vctypes "github.com/agntcy/identity/internal/core/vc/types"
 )
@@ -50,4 +51,24 @@ func (r *FakeVCRepository) GetByResolverMetadata(
 	}
 
 	return result, nil
+}
+
+func (r *FakeVCRepository) GetByID(
+	ctx context.Context,
+	id string,
+) (*vctypes.VerifiableCredential, error) {
+	if credential, ok := r.store[id]; ok {
+		return credential, nil
+	}
+
+	return nil, errcore.ErrResourceNotFound
+}
+
+func (r *FakeVCRepository) Update(
+	ctx context.Context,
+	credential *vctypes.VerifiableCredential,
+	resolverMetadataID string,
+) (*vctypes.VerifiableCredential, error) {
+	r.store[credential.ID] = credential
+	return credential, nil
 }
