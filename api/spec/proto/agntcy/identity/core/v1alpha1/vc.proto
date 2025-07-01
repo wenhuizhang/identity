@@ -174,7 +174,4 @@ enum CredentialStatusPurpose {
   // Used to cancel the validity of a verifiable credential.
   // This status is not reversible.
   CREDENTIAL_STATUS_PURPOSE_REVOCATION = 1;
-  // Used to temporarily prevent the acceptance of a verifiable credential.
-  // This status is reversible.
-  CREDENTIAL_STATUS_PURPOSE_SUSPENSION = 2;
 }

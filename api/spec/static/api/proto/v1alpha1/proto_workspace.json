@@ -81,7 +81,7 @@
               "description": "The ID and Resolver Metadata are already registered in the system"
             },
             {
-              "name": "ERROR_REASON_VERIFIABLE_CREDENTIAL_IS_REVOKED",
+              "name": "ERROR_REASON_VERIFIABLE_CREDENTIAL_REVOKED",
               "number": "13",
               "description": "The Verifiable Credential is revoked"
             }
@@ -939,11 +939,6 @@
               "name": "CREDENTIAL_STATUS_PURPOSE_REVOCATION",
               "number": "1",
               "description": "Used to cancel the validity of a verifiable credential.\nThis status is not reversible."
-            },
-            {
-              "name": "CREDENTIAL_STATUS_PURPOSE_SUSPENSION",
-              "number": "2",
-              "description": "Used to temporarily prevent the acceptance of a verifiable credential.\nThis status is reversible."
             }
           ]
         }

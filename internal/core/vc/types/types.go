@@ -11,6 +11,9 @@ import (
 	"slices"
 	"strings"
 	"time"
+
+	errtypes "github.com/agntcy/identity/internal/core/errors/types"
+	"github.com/agntcy/identity/internal/pkg/errutil"
 )
 
 // The Envelope Type of the Credential.
@@ -138,10 +141,6 @@ const (
 	// Used to cancel the validity of a verifiable credential.
 	// This status is not reversible.
 	CREDENTIAL_STATUS_PURPOSE_REVOCATION
-
-	// Used to temporarily prevent the acceptance of a verifiable credential.
-	// This status is reversible.
-	CREDENTIAL_STATUS_PURPOSE_SUSPENSION
 )
 
 // CredentialStatus represents the credentialStatus property of a Verifiable Credential.
@@ -205,6 +204,20 @@ func (vc *VerifiableCredential) GetDID() (string, bool) {
 	}
 
 	return "", false
+}
+
+func (vc *VerifiableCredential) ValidateStatus() error {
+	for _, status := range vc.Status {
+		if status.Purpose == CREDENTIAL_STATUS_PURPOSE_REVOCATION {
+			return errutil.ErrInfo(
+				errtypes.ERROR_REASON_VERIFIABLE_CREDENTIAL_REVOKED,
+				"Verifiable Credential is revoked",
+				nil,
+			)
+		}
+	}
+
+	return nil
 }
 
 // DataModel represents the W3C Verifiable Presentation Data Model defined [here]

@@ -12,6 +12,7 @@ import (
 	"fmt"
 	"testing"
 
+	errtesting "github.com/agntcy/identity/internal/core/errors/testing"
 	errtypes "github.com/agntcy/identity/internal/core/errors/types"
 	idcore "github.com/agntcy/identity/internal/core/id"
 	idtesting "github.com/agntcy/identity/internal/core/id/testing"
@@ -75,7 +76,7 @@ func TestPublishVC_Should_Return_Invalid_Credential_Format_Error(t *testing.T) {
 
 	err := sut.Publish(context.Background(), invalidEnvelope, &vctypes.Proof{})
 
-	assertErrorInfoReason(t, err, errtypes.ERROR_REASON_INVALID_CREDENTIAL_ENVELOPE_VALUE_FORMAT)
+	errtesting.AssertErrorInfoReason(t, err, errtypes.ERROR_REASON_INVALID_CREDENTIAL_ENVELOPE_VALUE_FORMAT)
 }
 
 func TestPublishVC_Should_Return_Invalid_Proof_Error_If_Empty(t *testing.T) {
@@ -89,7 +90,7 @@ func TestPublishVC_Should_Return_Invalid_Proof_Error_If_Empty(t *testing.T) {
 
 	err := sut.Publish(context.Background(), envelope, nil)
 
-	assertErrorInfoReason(t, err, errtypes.ERROR_REASON_INVALID_PROOF)
+	errtesting.AssertErrorInfoReason(t, err, errtypes.ERROR_REASON_INVALID_PROOF)
 }
 
 func TestPublishVC_Should_Return_Invalid_Proof_Error(t *testing.T) {
@@ -104,7 +105,7 @@ func TestPublishVC_Should_Return_Invalid_Proof_Error(t *testing.T) {
 
 	err := sut.Publish(context.Background(), envelope, invalidProof)
 
-	assertErrorInfoReason(t, err, errtypes.ERROR_REASON_INVALID_PROOF)
+	errtesting.AssertErrorInfoReason(t, err, errtypes.ERROR_REASON_INVALID_PROOF)
 }
 
 func TestPublishVC_Should_Return_Issuer_Not_Registered(t *testing.T) {
@@ -134,7 +135,7 @@ func TestPublishVC_Should_Return_Issuer_Not_Registered(t *testing.T) {
 
 	err := sut.Publish(context.Background(), envelope, &vctypes.Proof{Type: "JWT"})
 
-	assertErrorInfoReason(t, err, errtypes.ERROR_REASON_ISSUER_NOT_REGISTERED)
+	errtesting.AssertErrorInfoReason(t, err, errtypes.ERROR_REASON_ISSUER_NOT_REGISTERED)
 }
 
 func TestGetWellKnown_Should_Return_Items(t *testing.T) {
@@ -161,6 +162,52 @@ func TestGetWellKnown_Should_Return_Items(t *testing.T) {
 	assert.Len(t, actual, 1)
 	assert.Equal(t, vctypes.CREDENTIAL_ENVELOPE_TYPE_JOSE, actual[0].EnvelopeType)
 	assert.Equal(t, validVC.Proof.ProofValue, actual[0].Value)
+}
+
+func TestVerifyVC_Should_Succeed(t *testing.T) {
+	t.Parallel()
+
+	credential := &vctypes.VerifiableCredential{
+		ID: "VC_ID",
+		CredentialSubject: map[string]any{
+			"id": "DUO-" + verificationtesting.ValidProofSub,
+		},
+	}
+	privKey, pubKey, _ := genKey()
+	sut := setupVcServiceWithResolverMD(t, pubKey)
+	envelope, err := signVCWithJose(credential, privKey, pubKey.KID)
+	assert.NoError(t, err)
+	_ = sut.Publish(context.Background(), envelope, &vctypes.Proof{Type: "JWT"})
+
+	err = sut.Verify(t.Context(), envelope)
+
+	assert.NoError(t, err)
+}
+
+func TestVerifyVC_Should_Fail_When_Revoked(t *testing.T) {
+	t.Parallel()
+
+	credential := &vctypes.VerifiableCredential{
+		ID: "VC_ID",
+		CredentialSubject: map[string]any{
+			"id": "DUO-" + verificationtesting.ValidProofSub,
+		},
+		Status: []*vctypes.CredentialStatus{
+			{
+				Purpose: vctypes.CREDENTIAL_STATUS_PURPOSE_REVOCATION,
+			},
+		},
+	}
+	privKey, pubKey, _ := genKey()
+	sut := setupVcServiceWithResolverMD(t, pubKey)
+	envelope, err := signVCWithJose(credential, privKey, pubKey.KID)
+	assert.NoError(t, err)
+	_ = sut.Publish(context.Background(), envelope, &vctypes.Proof{Type: "JWT"})
+
+	err = sut.Verify(t.Context(), envelope)
+
+	assert.Error(t, err)
+	errtesting.AssertErrorInfoReason(t, err, errtypes.ERROR_REASON_INVALID_VERIFIABLE_CREDENTIAL)
 }
 
 func TestRevokeVC_Should_Succeed(t *testing.T) {
@@ -220,7 +267,7 @@ func TestRevokeVC_Should_Fail_When_VC_Not_Found(t *testing.T) {
 	err = sut.Revoke(t.Context(), envelope, &vctypes.Proof{Type: "JWT"})
 
 	assert.Error(t, err)
-	assertErrorInfoReason(t, err, errtypes.ERROR_REASON_INVALID_VERIFIABLE_CREDENTIAL)
+	errtesting.AssertErrorInfoReason(t, err, errtypes.ERROR_REASON_INVALID_VERIFIABLE_CREDENTIAL)
 }
 
 func TestRevoke_Should_Fail_When_VC_Already_Revoked(t *testing.T) {
@@ -255,7 +302,7 @@ func TestRevoke_Should_Fail_When_VC_Already_Revoked(t *testing.T) {
 	err = sut.Revoke(t.Context(), envelope, &vctypes.Proof{Type: "JWT"})
 
 	assert.Error(t, err)
-	assertErrorInfoReason(t, err, errtypes.ERROR_REASON_VERIFIABLE_CREDENTIAL_IS_REVOKED)
+	errtesting.AssertErrorInfoReason(t, err, errtypes.ERROR_REASON_VERIFIABLE_CREDENTIAL_REVOKED)
 }
 
 func TestRevokeVC_Should_Return_Invalid_Credential_Format_Error(t *testing.T) {
@@ -268,7 +315,7 @@ func TestRevokeVC_Should_Return_Invalid_Credential_Format_Error(t *testing.T) {
 
 	err := sut.Revoke(context.Background(), invalidEnvelope, &vctypes.Proof{})
 
-	assertErrorInfoReason(t, err, errtypes.ERROR_REASON_INVALID_CREDENTIAL_ENVELOPE_VALUE_FORMAT)
+	errtesting.AssertErrorInfoReason(t, err, errtypes.ERROR_REASON_INVALID_CREDENTIAL_ENVELOPE_VALUE_FORMAT)
 }
 
 func TestRevokeVC_Should_Return_Invalid_Proof_Error_If_Empty(t *testing.T) {
@@ -282,7 +329,7 @@ func TestRevokeVC_Should_Return_Invalid_Proof_Error_If_Empty(t *testing.T) {
 
 	err := sut.Revoke(context.Background(), envelope, nil)
 
-	assertErrorInfoReason(t, err, errtypes.ERROR_REASON_INVALID_PROOF)
+	errtesting.AssertErrorInfoReason(t, err, errtypes.ERROR_REASON_INVALID_PROOF)
 }
 
 func TestRevokeVC_Should_Return_Invalid_Proof_Error(t *testing.T) {
@@ -297,7 +344,7 @@ func TestRevokeVC_Should_Return_Invalid_Proof_Error(t *testing.T) {
 
 	err := sut.Revoke(context.Background(), envelope, invalidProof)
 
-	assertErrorInfoReason(t, err, errtypes.ERROR_REASON_INVALID_PROOF)
+	errtesting.AssertErrorInfoReason(t, err, errtypes.ERROR_REASON_INVALID_PROOF)
 }
 
 func TestRevokeVC_Should_Return_Issuer_Not_Registered(t *testing.T) {
@@ -327,7 +374,7 @@ func TestRevokeVC_Should_Return_Issuer_Not_Registered(t *testing.T) {
 
 	err := sut.Revoke(context.Background(), envelope, &vctypes.Proof{Type: "JWT"})
 
-	assertErrorInfoReason(t, err, errtypes.ERROR_REASON_ISSUER_NOT_REGISTERED)
+	errtesting.AssertErrorInfoReason(t, err, errtypes.ERROR_REASON_ISSUER_NOT_REGISTERED)
 }
 
 func TestRevoke_Should_Fail_When_Status_Does_Not_Have_Revocation(t *testing.T) {
@@ -353,7 +400,7 @@ func TestRevoke_Should_Fail_When_Status_Does_Not_Have_Revocation(t *testing.T) {
 	err = sut.Revoke(t.Context(), envelope, &vctypes.Proof{Type: "JWT"})
 
 	assert.Error(t, err)
-	assertErrorInfoReason(t, err, errtypes.ERROR_REASON_INVALID_VERIFIABLE_CREDENTIAL)
+	errtesting.AssertErrorInfoReason(t, err, errtypes.ERROR_REASON_INVALID_VERIFIABLE_CREDENTIAL)
 }
 
 func setupVcServiceWithResolverMD(t *testing.T, pubKey *jwktype.Jwk) node.VerifiableCredentialService {

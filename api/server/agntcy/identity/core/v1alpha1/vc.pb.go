@@ -146,9 +146,6 @@ const (
 	// Used to cancel the validity of a verifiable credential.
 	// This status is not reversible.
 	CredentialStatusPurpose_CREDENTIAL_STATUS_PURPOSE_REVOCATION CredentialStatusPurpose = 1
-	// Used to temporarily prevent the acceptance of a verifiable credential.
-	// This status is reversible.
-	CredentialStatusPurpose_CREDENTIAL_STATUS_PURPOSE_SUSPENSION CredentialStatusPurpose = 2
 )
 
 // Enum value maps for CredentialStatusPurpose.
@@ -156,12 +153,10 @@ var (
 	CredentialStatusPurpose_name = map[int32]string{
 		0: "CREDENTIAL_STATUS_PURPOSE_UNSPECIFIED",
 		1: "CREDENTIAL_STATUS_PURPOSE_REVOCATION",
-		2: "CREDENTIAL_STATUS_PURPOSE_SUSPENSION",
 	}
 	CredentialStatusPurpose_value = map[string]int32{
 		"CREDENTIAL_STATUS_PURPOSE_UNSPECIFIED": 0,
 		"CREDENTIAL_STATUS_PURPOSE_REVOCATION":  1,
-		"CREDENTIAL_STATUS_PURPOSE_SUSPENSION":  2,
 	}
 )
 
@@ -878,11 +873,10 @@ const file_agntcy_identity_core_v1alpha1_vc_proto_rawDesc = "" +
 	"\x16CredentialEnvelopeType\x12(\n" +
 	"$CREDENTIAL_ENVELOPE_TYPE_UNSPECIFIED\x10\x00\x12+\n" +
 	"'CREDENTIAL_ENVELOPE_TYPE_EMBEDDED_PROOF\x10\x01\x12!\n" +
-	"\x1dCREDENTIAL_ENVELOPE_TYPE_JOSE\x10\x02*\x98\x01\n" +
+	"\x1dCREDENTIAL_ENVELOPE_TYPE_JOSE\x10\x02*n\n" +
 	"\x17CredentialStatusPurpose\x12)\n" +
 	"%CREDENTIAL_STATUS_PURPOSE_UNSPECIFIED\x10\x00\x12(\n" +
-	"$CREDENTIAL_STATUS_PURPOSE_REVOCATION\x10\x01\x12(\n" +
-	"$CREDENTIAL_STATUS_PURPOSE_SUSPENSION\x10\x02BZZXgithub.com/agntcy/identity/api/server/agntcy/identity/core/v1alpha1;identity_core_sdk_gob\x06proto3"
+	"$CREDENTIAL_STATUS_PURPOSE_REVOCATION\x10\x01BZZXgithub.com/agntcy/identity/api/server/agntcy/identity/core/v1alpha1;identity_core_sdk_gob\x06proto3"
 
 var (
 	file_agntcy_identity_core_v1alpha1_vc_proto_rawDescOnce sync.Once

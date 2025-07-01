@@ -10,12 +10,11 @@ func _() {
 	var x [1]struct{}
 	_ = x[CREDENTIAL_STATUS_PURPOSE_UNSPECIFIED-0]
 	_ = x[CREDENTIAL_STATUS_PURPOSE_REVOCATION-1]
-	_ = x[CREDENTIAL_STATUS_PURPOSE_SUSPENSION-2]
 }
 
-const _CredentialStatusPurpose_name = "CREDENTIAL_STATUS_PURPOSE_UNSPECIFIEDCREDENTIAL_STATUS_PURPOSE_REVOCATIONCREDENTIAL_STATUS_PURPOSE_SUSPENSION"
+const _CredentialStatusPurpose_name = "CREDENTIAL_STATUS_PURPOSE_UNSPECIFIEDCREDENTIAL_STATUS_PURPOSE_REVOCATION"
 
-var _CredentialStatusPurpose_index = [...]uint8{0, 37, 73, 109}
+var _CredentialStatusPurpose_index = [...]uint8{0, 37, 73}
 
 func (i CredentialStatusPurpose) String() string {
 	if i < 0 || i >= CredentialStatusPurpose(len(_CredentialStatusPurpose_index)-1) {

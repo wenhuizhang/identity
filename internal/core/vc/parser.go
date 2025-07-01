@@ -34,17 +34,30 @@ func ParseEnvelopedCredential(cred *types.EnvelopedCredential) (*types.Verifiabl
 	return parsed, nil
 }
 
-func VerifyEnvelopedCredential(cred *types.EnvelopedCredential, jwks *jwk.Jwks) error {
+func VerifyEnvelopedCredential(cred *types.EnvelopedCredential, jwks *jwk.Jwks, checkStatus bool) error {
+	var vc *types.VerifiableCredential
+
 	switch cred.EnvelopeType {
 	case types.CREDENTIAL_ENVELOPE_TYPE_EMBEDDED_PROOF:
 		return credentialEnvelopeTypeNotImplErr()
 	case types.CREDENTIAL_ENVELOPE_TYPE_JOSE:
 		log.Debug("Verifying the JOSE Verifiable Credential")
 
-		return jose.Verify(jwks, cred)
+		parsed, err := jose.VerifyAndParse(jwks, cred)
+		if err != nil {
+			return err
+		}
+
+		vc = parsed
 	default:
 		return invalidCredentialEnvelopeTypeErr()
 	}
+
+	if checkStatus {
+		return vc.ValidateStatus()
+	}
+
+	return nil
 }
 
 func credentialEnvelopeTypeNotImplErr() error {

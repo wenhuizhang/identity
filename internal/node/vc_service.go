@@ -70,7 +70,7 @@ func (s *verifiableCredentialService) Publish(
 	credential *vctypes.EnvelopedCredential,
 	proof *vctypes.Proof,
 ) error {
-	parsedVC, err := s.verifyEnvelopedCredential(ctx, credential)
+	parsedVC, err := s.verifyEnvelopedCredential(ctx, credential, false)
 	if err != nil {
 		return err
 	}
@@ -187,13 +187,14 @@ func (s *verifiableCredentialService) Verify(
 	ctx context.Context,
 	credential *vctypes.EnvelopedCredential,
 ) error {
-	_, err := s.verifyEnvelopedCredential(ctx, credential)
+	_, err := s.verifyEnvelopedCredential(ctx, credential, true)
 	return err
 }
 
 func (s *verifiableCredentialService) verifyEnvelopedCredential(
 	ctx context.Context,
 	credential *vctypes.EnvelopedCredential,
+	checkStatus bool,
 ) (*vctypes.VerifiableCredential, error) {
 	if credential.Value == "" {
 		return nil, errutil.ErrInfo(
@@ -238,7 +239,7 @@ func (s *verifiableCredentialService) verifyEnvelopedCredential(
 
 	log.Debug("Validating the verifiable credential")
 
-	err = vccore.VerifyEnvelopedCredential(credential, resolverMD.GetJwks())
+	err = vccore.VerifyEnvelopedCredential(credential, resolverMD.GetJwks(), checkStatus)
 	if err != nil {
 		return nil, errutil.ErrInfo(
 			errtypes.ERROR_REASON_INVALID_VERIFIABLE_CREDENTIAL,
@@ -255,7 +256,7 @@ func (s *verifiableCredentialService) Revoke(
 	credential *vctypes.EnvelopedCredential,
 	proof *vctypes.Proof,
 ) error {
-	parsedVC, err := s.verifyEnvelopedCredential(ctx, credential)
+	parsedVC, err := s.verifyEnvelopedCredential(ctx, credential, false)
 	if err != nil {
 		return err
 	}
@@ -310,7 +311,7 @@ func (s *verifiableCredentialService) Revoke(
 	for _, status := range storedVC.Status {
 		if status.Purpose == vctypes.CREDENTIAL_STATUS_PURPOSE_REVOCATION {
 			return errutil.ErrInfo(
-				errtypes.ERROR_REASON_VERIFIABLE_CREDENTIAL_IS_REVOKED,
+				errtypes.ERROR_REASON_VERIFIABLE_CREDENTIAL_REVOKED,
 				"the Verifiable Credential is already revoked",
 				nil,
 			)

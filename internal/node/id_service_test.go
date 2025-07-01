@@ -8,6 +8,7 @@ import (
 	"errors"
 	"testing"
 
+	errtesting "github.com/agntcy/identity/internal/core/errors/testing"
 	errtypes "github.com/agntcy/identity/internal/core/errors/types"
 	idtesting "github.com/agntcy/identity/internal/core/id/testing"
 	idtypes "github.com/agntcy/identity/internal/core/id/types"
@@ -117,7 +118,7 @@ func TestGenerateID_Should_Return_Error_With_Idp_And_Self_Proof(t *testing.T) {
 
 	_, err := sut.Generate(context.Background(), issuer, &vctypes.Proof{Type: "JWT"})
 
-	assertErrorInfoReason(t, err, errtypes.ERROR_REASON_IDP_REQUIRED)
+	errtesting.AssertErrorInfoReason(t, err, errtypes.ERROR_REASON_IDP_REQUIRED)
 }
 
 func TestGenerateID_Should_Return_Invalid_Proof_If_Empty(t *testing.T) {
@@ -133,7 +134,7 @@ func TestGenerateID_Should_Return_Invalid_Proof_If_Empty(t *testing.T) {
 
 	_, err := sut.Generate(context.Background(), issuer, nil)
 
-	assertErrorInfoReason(t, err, errtypes.ERROR_REASON_INVALID_PROOF)
+	errtesting.AssertErrorInfoReason(t, err, errtypes.ERROR_REASON_INVALID_PROOF)
 }
 
 func TestGenerateID_Should_Return_Invalid_Proof_Error(t *testing.T) {
@@ -153,7 +154,7 @@ func TestGenerateID_Should_Return_Invalid_Proof_Error(t *testing.T) {
 
 	_, err := sut.Generate(context.Background(), issuer, &vctypes.Proof{Type: "JWT"})
 
-	assertErrorInfoReason(t, err, errtypes.ERROR_REASON_INVALID_PROOF)
+	errtesting.AssertErrorInfoReason(t, err, errtypes.ERROR_REASON_INVALID_PROOF)
 }
 
 func TestGenerateID_Should_Return_Invalid_Issuer_Error(t *testing.T) {
@@ -187,7 +188,7 @@ func TestGenerateID_Should_Return_Invalid_Issuer_Error(t *testing.T) {
 
 	_, err := sut.Generate(context.Background(), invalidIssuer, &vctypes.Proof{Type: "JWT"})
 
-	assertErrorInfoReason(t, err, errtypes.ERROR_REASON_INVALID_ISSUER)
+	errtesting.AssertErrorInfoReason(t, err, errtypes.ERROR_REASON_INVALID_ISSUER)
 }
 
 func TestGenerateID_Should_Return_Unregistred_Issuer_Error(t *testing.T) {
@@ -212,7 +213,7 @@ func TestGenerateID_Should_Return_Unregistred_Issuer_Error(t *testing.T) {
 
 	_, err := sut.Generate(context.Background(), issuer, &vctypes.Proof{Type: "JWT"})
 
-	assertErrorInfoReason(t, err, errtypes.ERROR_REASON_ISSUER_NOT_REGISTERED)
+	errtesting.AssertErrorInfoReason(t, err, errtypes.ERROR_REASON_ISSUER_NOT_REGISTERED)
 }
 
 func TestGenerateID_Should_Return_ID_Already_Exists_Error(t *testing.T) {
@@ -249,7 +250,7 @@ func TestGenerateID_Should_Return_ID_Already_Exists_Error(t *testing.T) {
 
 	_, err := sut.Generate(context.Background(), nil, &vctypes.Proof{Type: "JWT"})
 
-	assertErrorInfoReason(t, err, errtypes.ERROR_REASON_ID_ALREADY_REGISTERED)
+	errtesting.AssertErrorInfoReason(t, err, errtypes.ERROR_REASON_ID_ALREADY_REGISTERED)
 }
 
 func TestResolveID_Should_Return_Resolver_Metadata(t *testing.T) {
@@ -280,13 +281,5 @@ func TestResolveID_Should_Return_Resolver_Metadata_Not_Found_Error(t *testing.T)
 
 	_, err := sut.Resolve(context.Background(), "SOME_ID")
 
-	assertErrorInfoReason(t, err, errtypes.ERROR_REASON_RESOLVER_METADATA_NOT_FOUND)
-}
-
-func assertErrorInfoReason(t *testing.T, err error, reason errtypes.ErrorReason) {
-	t.Helper()
-
-	var errInfo errtypes.ErrorInfo
-	assert.ErrorAs(t, err, &errInfo)
-	assert.Equal(t, reason, errInfo.Reason)
+	errtesting.AssertErrorInfoReason(t, err, errtypes.ERROR_REASON_RESOLVER_METADATA_NOT_FOUND)
 }
