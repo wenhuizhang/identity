@@ -32,6 +32,8 @@ type ClientService interface {
 
 	PublishVerifiableCredential(params *PublishVerifiableCredentialParams, opts ...ClientOption) (*PublishVerifiableCredentialOK, error)
 
+	RevokeVerifiableCredential(params *RevokeVerifiableCredentialParams, opts ...ClientOption) (*RevokeVerifiableCredentialOK, error)
+
 	SearchVerifiableCredentials(params *SearchVerifiableCredentialsParams, opts ...ClientOption) (*SearchVerifiableCredentialsOK, error)
 
 	VerifyVerifiableCredential(params *VerifyVerifiableCredentialParams, opts ...ClientOption) (*VerifyVerifiableCredentialOK, error)
@@ -110,6 +112,43 @@ func (a *Client) PublishVerifiableCredential(params *PublishVerifiableCredential
 	}
 	// unexpected success response
 	unexpectedSuccess := result.(*PublishVerifiableCredentialDefault)
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
+}
+
+/*
+RevokeVerifiableCredential revokes a verifiable credential t h i s a c t i o n i s n o t r e v e r s i b l e
+*/
+func (a *Client) RevokeVerifiableCredential(params *RevokeVerifiableCredentialParams, opts ...ClientOption) (*RevokeVerifiableCredentialOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewRevokeVerifiableCredentialParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "RevokeVerifiableCredential",
+		Method:             "POST",
+		PathPattern:        "/v1alpha1/vc/revoke",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &RevokeVerifiableCredentialReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*RevokeVerifiableCredentialOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	unexpectedSuccess := result.(*RevokeVerifiableCredentialDefault)
 	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
 }
 
