@@ -39,6 +39,11 @@ class VcServiceStub(object):
                 request_serializer=agntcy_dot_identity_dot_node_dot_v1alpha1_dot_vc__service__pb2.SearchRequest.SerializeToString,
                 response_deserializer=agntcy_dot_identity_dot_node_dot_v1alpha1_dot_vc__service__pb2.SearchResponse.FromString,
                 _registered_method=True)
+        self.Revoke = channel.unary_unary(
+                '/agntcy.identity.node.v1alpha1.VcService/Revoke',
+                request_serializer=agntcy_dot_identity_dot_node_dot_v1alpha1_dot_vc__service__pb2.RevokeRequest.SerializeToString,
+                response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+                _registered_method=True)
 
 
 class VcServiceServicer(object):
@@ -73,6 +78,13 @@ class VcServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def Revoke(self, request, context):
+        """Revoke a Verifiable Credential. THIS ACTION IS NOT REVERSIBLE.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_VcServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -95,6 +107,11 @@ def add_VcServiceServicer_to_server(servicer, server):
                     servicer.Search,
                     request_deserializer=agntcy_dot_identity_dot_node_dot_v1alpha1_dot_vc__service__pb2.SearchRequest.FromString,
                     response_serializer=agntcy_dot_identity_dot_node_dot_v1alpha1_dot_vc__service__pb2.SearchResponse.SerializeToString,
+            ),
+            'Revoke': grpc.unary_unary_rpc_method_handler(
+                    servicer.Revoke,
+                    request_deserializer=agntcy_dot_identity_dot_node_dot_v1alpha1_dot_vc__service__pb2.RevokeRequest.FromString,
+                    response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -206,6 +223,33 @@ class VcService(object):
             '/agntcy.identity.node.v1alpha1.VcService/Search',
             agntcy_dot_identity_dot_node_dot_v1alpha1_dot_vc__service__pb2.SearchRequest.SerializeToString,
             agntcy_dot_identity_dot_node_dot_v1alpha1_dot_vc__service__pb2.SearchResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def Revoke(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/agntcy.identity.node.v1alpha1.VcService/Revoke',
+            agntcy_dot_identity_dot_node_dot_v1alpha1_dot_vc__service__pb2.RevokeRequest.SerializeToString,
+            google_dot_protobuf_dot_empty__pb2.Empty.FromString,
             options,
             channel_credentials,
             insecure,

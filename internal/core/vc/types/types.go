@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 //go:generate stringer -type=CredentialEnvelopeType
+//go:generate stringer -type=CredentialStatusPurpose
 
 package types
 
@@ -9,6 +10,10 @@ import (
 	"fmt"
 	"slices"
 	"strings"
+	"time"
+
+	errtypes "github.com/agntcy/identity/internal/core/errors/types"
+	"github.com/agntcy/identity/internal/pkg/errutil"
 )
 
 // The Envelope Type of the Credential.
@@ -126,6 +131,36 @@ func (p *Proof) IsJWT() bool {
 	return slices.Contains(strings.Split(proofTypeJWT, ","), p.Type)
 }
 
+// The purpose of the status entry
+type CredentialStatusPurpose int
+
+const (
+	// Unspecified status purpose
+	CREDENTIAL_STATUS_PURPOSE_UNSPECIFIED CredentialStatusPurpose = iota
+
+	// Used to cancel the validity of a verifiable credential.
+	// This status is not reversible.
+	CREDENTIAL_STATUS_PURPOSE_REVOCATION
+)
+
+// CredentialStatus represents the credentialStatus property of a Verifiable Credential.
+// more information can be found [here]
+//
+// [here]: https://www.w3.org/TR/vc-data-model-2.0/#status
+type CredentialStatus struct {
+	// The URL identifying the schema file
+	ID string `json:"id" protobuf:"bytes,1,opt,name=id"`
+
+	// Type specifies the type of the file
+	Type string `json:"type" protobuf:"bytes,2,opt,name=type"`
+
+	// The creation date and time of the status
+	CreatedAt time.Time `json:"createdAt" protobuf:"bytes,3,opt,name=created_at"`
+
+	// The value of the purpose for the status entry
+	Purpose CredentialStatusPurpose `json:"purpose" protobuf:"bytes,4,opt,name=purpose"`
+}
+
 // DataModel represents the W3C Verifiable Credential Data Model defined [here]
 //
 // [here]: https://www.w3.org/TR/vc-data-model/
@@ -154,8 +189,11 @@ type VerifiableCredential struct {
 	// https://www.w3.org/TR/vc-data-model-2.0/#data-schemas
 	CredentialSchema []*CredentialSchema `json:"credentialSchema,omitempty" protobuf:"bytes,8,opt,name=credential_schema"`
 
+	// https://www.w3.org/TR/vc-data-model-2.0/#status
+	Status []*CredentialStatus `json:"credentialStatus,omitempty" protobuf:"bytes,9,opt,name=credential_status"`
+
 	// https://w3id.org/security#proof
-	Proof *Proof `json:"proof,omitempty" protobuf:"bytes,9,opt,name=proof"`
+	Proof *Proof `json:"proof,omitempty" protobuf:"bytes,10,opt,name=proof"`
 }
 
 func (vc *VerifiableCredential) GetDID() (string, bool) {
@@ -166,6 +204,20 @@ func (vc *VerifiableCredential) GetDID() (string, bool) {
 	}
 
 	return "", false
+}
+
+func (vc *VerifiableCredential) ValidateStatus() error {
+	for _, status := range vc.Status {
+		if status.Purpose == CREDENTIAL_STATUS_PURPOSE_REVOCATION {
+			return errutil.ErrInfo(
+				errtypes.ERROR_REASON_VERIFIABLE_CREDENTIAL_REVOKED,
+				"Verifiable Credential is revoked",
+				nil,
+			)
+		}
+	}
+
+	return nil
 }
 
 // DataModel represents the W3C Verifiable Presentation Data Model defined [here]

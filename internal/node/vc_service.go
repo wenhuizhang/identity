@@ -7,6 +7,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"slices"
 	"strings"
 
 	errcore "github.com/agntcy/identity/internal/core/errors"
@@ -37,6 +38,13 @@ type VerifiableCredentialService interface {
 		ctx context.Context,
 		credential *vctypes.EnvelopedCredential,
 	) error
+
+	// Revoke a Verifiable Credential. THIS ACTION IS NOT REVERSIBLE.
+	Revoke(
+		ctx context.Context,
+		credential *vctypes.EnvelopedCredential,
+		proof *vctypes.Proof,
+	) error
 }
 
 type verifiableCredentialService struct {
@@ -62,7 +70,7 @@ func (s *verifiableCredentialService) Publish(
 	credential *vctypes.EnvelopedCredential,
 	proof *vctypes.Proof,
 ) error {
-	parsedVC, err := s.verifyEnvelopedCredential(ctx, credential)
+	parsedVC, err := s.verifyEnvelopedCredential(ctx, credential, false)
 	if err != nil {
 		return err
 	}
@@ -179,13 +187,14 @@ func (s *verifiableCredentialService) Verify(
 	ctx context.Context,
 	credential *vctypes.EnvelopedCredential,
 ) error {
-	_, err := s.verifyEnvelopedCredential(ctx, credential)
+	_, err := s.verifyEnvelopedCredential(ctx, credential, true)
 	return err
 }
 
 func (s *verifiableCredentialService) verifyEnvelopedCredential(
 	ctx context.Context,
 	credential *vctypes.EnvelopedCredential,
+	checkStatus bool,
 ) (*vctypes.VerifiableCredential, error) {
 	if credential.Value == "" {
 		return nil, errutil.ErrInfo(
@@ -230,7 +239,7 @@ func (s *verifiableCredentialService) verifyEnvelopedCredential(
 
 	log.Debug("Validating the verifiable credential")
 
-	err = vccore.VerifyEnvelopedCredential(credential, resolverMD.GetJwks())
+	err = vccore.VerifyEnvelopedCredential(credential, resolverMD.GetJwks(), checkStatus)
 	if err != nil {
 		return nil, errutil.ErrInfo(
 			errtypes.ERROR_REASON_INVALID_VERIFIABLE_CREDENTIAL,
@@ -240,4 +249,85 @@ func (s *verifiableCredentialService) verifyEnvelopedCredential(
 	}
 
 	return parsedVC, nil
+}
+
+func (s *verifiableCredentialService) Revoke(
+	ctx context.Context,
+	credential *vctypes.EnvelopedCredential,
+	proof *vctypes.Proof,
+) error {
+	parsedVC, err := s.verifyEnvelopedCredential(ctx, credential, false)
+	if err != nil {
+		return err
+	}
+
+	id, ok := parsedVC.GetDID()
+	if !ok {
+		return errutil.ErrInfo(
+			errtypes.ERROR_REASON_INVALID_VERIFIABLE_CREDENTIAL,
+			"unable to find the ID inside the CredentialSubject",
+			nil,
+		)
+	}
+
+	log.Debug("Validating the authentication proof")
+
+	issuerVerification, err := s.verifService.VerifyExistingIssuer(ctx, proof)
+	if err != nil {
+		return err
+	}
+
+	if !strings.HasSuffix(id, issuerVerification.Subject) {
+		return errutil.ErrInfo(
+			errtypes.ERROR_REASON_INVALID_VERIFIABLE_CREDENTIAL,
+			"the ID in the Verifiable Credential does not match the ID in the proof",
+			nil,
+		)
+	}
+
+	if !slices.ContainsFunc(parsedVC.Status, func(status *vctypes.CredentialStatus) bool {
+		return status.Purpose == vctypes.CREDENTIAL_STATUS_PURPOSE_REVOCATION
+	}) {
+		return errutil.ErrInfo(
+			errtypes.ERROR_REASON_INVALID_VERIFIABLE_CREDENTIAL,
+			"unable to find the revocation status in credentialStatus",
+			nil,
+		)
+	}
+
+	storedVC, err := s.vcRepository.GetByID(ctx, parsedVC.ID)
+	if err != nil {
+		if errors.Is(err, errcore.ErrResourceNotFound) {
+			return errutil.ErrInfo(
+				errtypes.ERROR_REASON_INVALID_VERIFIABLE_CREDENTIAL,
+				fmt.Sprintf("unable to find the Verifiable Credential %s", parsedVC.ID),
+				err,
+			)
+		}
+
+		return errutil.ErrInfo(errtypes.ERROR_REASON_INTERNAL, "unexpected error", err)
+	}
+
+	for _, status := range storedVC.Status {
+		if status.Purpose == vctypes.CREDENTIAL_STATUS_PURPOSE_REVOCATION {
+			return errutil.ErrInfo(
+				errtypes.ERROR_REASON_VERIFIABLE_CREDENTIAL_REVOKED,
+				"the Verifiable Credential is already revoked",
+				nil,
+			)
+		}
+	}
+
+	log.Debug("Storing the Verifiable Credential")
+
+	_, err = s.vcRepository.Update(ctx, parsedVC, id)
+	if err != nil {
+		return errutil.ErrInfo(
+			errtypes.ERROR_REASON_INTERNAL,
+			"unable to store verifiable credential",
+			err,
+		)
+	}
+
+	return nil
 }

@@ -58,6 +58,8 @@ const (
 	ErrorReason_ERROR_REASON_UNKNOWN_IDP ErrorReason = 11
 	// The ID and Resolver Metadata are already registered in the system
 	ErrorReason_ERROR_REASON_ID_ALREADY_REGISTERED ErrorReason = 12
+	// The Verifiable Credential is revoked
+	ErrorReason_ERROR_REASON_VERIFIABLE_CREDENTIAL_REVOKED ErrorReason = 13
 )
 
 // Enum value maps for ErrorReason.
@@ -76,6 +78,7 @@ var (
 		10: "ERROR_REASON_RESOLVER_METADATA_NOT_FOUND",
 		11: "ERROR_REASON_UNKNOWN_IDP",
 		12: "ERROR_REASON_ID_ALREADY_REGISTERED",
+		13: "ERROR_REASON_VERIFIABLE_CREDENTIAL_REVOKED",
 	}
 	ErrorReason_value = map[string]int32{
 		"ERROR_REASON_UNSPECIFIED":                              0,
@@ -91,6 +94,7 @@ var (
 		"ERROR_REASON_RESOLVER_METADATA_NOT_FOUND":              10,
 		"ERROR_REASON_UNKNOWN_IDP":                              11,
 		"ERROR_REASON_ID_ALREADY_REGISTERED":                    12,
+		"ERROR_REASON_VERIFIABLE_CREDENTIAL_REVOKED":            13,
 	}
 )
 
@@ -189,7 +193,7 @@ const file_agntcy_identity_core_v1alpha1_errors_proto_rawDesc = "" +
 	"\amessage\x18\x02 \x01(\tH\x01R\amessage\x88\x01\x01B\t\n" +
 	"\a_reasonB\n" +
 	"\n" +
-	"\b_message*\x84\x04\n" +
+	"\b_message*\xb4\x04\n" +
 	"\vErrorReason\x12\x1c\n" +
 	"\x18ERROR_REASON_UNSPECIFIED\x10\x00\x12\x19\n" +
 	"\x15ERROR_REASON_INTERNAL\x10\x01\x121\n" +
@@ -204,7 +208,8 @@ const file_agntcy_identity_core_v1alpha1_errors_proto_rawDesc = "" +
 	"(ERROR_REASON_RESOLVER_METADATA_NOT_FOUND\x10\n" +
 	"\x12\x1c\n" +
 	"\x18ERROR_REASON_UNKNOWN_IDP\x10\v\x12&\n" +
-	"\"ERROR_REASON_ID_ALREADY_REGISTERED\x10\fBZZXgithub.com/agntcy/identity/api/server/agntcy/identity/core/v1alpha1;identity_core_sdk_gob\x06proto3"
+	"\"ERROR_REASON_ID_ALREADY_REGISTERED\x10\f\x12.\n" +
+	"*ERROR_REASON_VERIFIABLE_CREDENTIAL_REVOKED\x10\rBZZXgithub.com/agntcy/identity/api/server/agntcy/identity/core/v1alpha1;identity_core_sdk_gob\x06proto3"
 
 var (
 	file_agntcy_identity_core_v1alpha1_errors_proto_rawDescOnce sync.Once

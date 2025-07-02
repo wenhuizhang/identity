@@ -28,12 +28,12 @@ type VaultStorageConfig struct {
 	Namespace   string
 }
 
-func (s *VaultKeyService) SaveKey(ctx context.Context, id string, jwk *jwk.Jwk) error {
-	if jwk == nil {
+func (s *VaultKeyService) SaveKey(ctx context.Context, id string, priv *jwk.Jwk) error {
+	if priv == nil {
 		return errors.New("jwk cannot be nil")
 	}
 
-	jsonData, err := json.Marshal(jwk)
+	jsonData, err := json.Marshal(priv)
 	if err != nil {
 		return fmt.Errorf("failed to marshal JWK: %w", err)
 	}
@@ -55,12 +55,12 @@ func (s *VaultKeyService) SaveKey(ctx context.Context, id string, jwk *jwk.Jwk) 
 }
 
 func (s *VaultKeyService) RetrievePubKey(ctx context.Context, id string) (*jwk.Jwk, error) {
-	jwk, err := s.retrieveKey(ctx, id)
+	priv, err := s.retrieveKey(ctx, id)
 	if err != nil {
 		return nil, err
 	}
 
-	return jwk.PublicKey(), nil
+	return priv.PublicKey(), nil
 }
 
 func (s *VaultKeyService) RetrievePrivKey(ctx context.Context, id string) (*jwk.Jwk, error) {
@@ -144,12 +144,12 @@ func (s *VaultKeyService) retrieveKey(ctx context.Context, id string) (*jwk.Jwk,
 		return nil, errors.New("JWK not found in Vault data")
 	}
 
-	var jwk jwk.Jwk
-	if err := json.Unmarshal([]byte(jwkJSON), &jwk); err != nil {
+	var key jwk.Jwk
+	if err := json.Unmarshal([]byte(jwkJSON), &key); err != nil {
 		return nil, fmt.Errorf("failed to unmarshal JWK: %w", err)
 	}
 
-	return &jwk, nil
+	return &key, nil
 }
 
 func buildKeyPath(mountPath, basePath, id string) string {

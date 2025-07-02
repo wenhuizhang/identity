@@ -7,6 +7,8 @@ import (
 	"encoding/json"
 	"testing"
 
+	errtesting "github.com/agntcy/identity/internal/core/errors/testing"
+	errtypes "github.com/agntcy/identity/internal/core/errors/types"
 	"github.com/agntcy/identity/internal/core/vc/types"
 	"github.com/stretchr/testify/assert"
 )
@@ -46,4 +48,19 @@ func TestUnmarshalJson_CredentialEnvelopeType(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Contains(t, tt, types.CREDENTIAL_ENVELOPE_TYPE_EMBEDDED_PROOF)
 	assert.Contains(t, tt, types.CREDENTIAL_ENVELOPE_TYPE_JOSE)
+}
+
+func TestValidateStatus(t *testing.T) {
+	t.Parallel()
+
+	vc := &types.VerifiableCredential{
+		Status: []*types.CredentialStatus{
+			{
+				Purpose: types.CREDENTIAL_STATUS_PURPOSE_REVOCATION,
+			},
+		},
+	}
+	err := vc.ValidateStatus()
+	assert.Error(t, err)
+	errtesting.AssertErrorInfoReason(t, err, errtypes.ERROR_REASON_VERIFIABLE_CREDENTIAL_REVOKED)
 }

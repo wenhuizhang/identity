@@ -89,6 +89,11 @@ func (v *verifyService) VerifyCredential(
 			return nil, fmt.Errorf("error verifying badge: %w", err)
 		}
 
+		err = parsedVC.ValidateStatus()
+		if err != nil {
+			return nil, fmt.Errorf("error verifying badge status: %w", err)
+		}
+
 		return parsedVC, nil
 	default:
 		return nil, fmt.Errorf("unsupported badge envelope type: %s", credential.EnvelopeType)

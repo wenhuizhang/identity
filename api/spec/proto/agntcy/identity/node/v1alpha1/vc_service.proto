@@ -65,6 +65,19 @@ service VcService {
       summary: "Search for Verifiable Credentials based on the specified criteria";
     };
   }
+
+  // Revoke a Verifiable Credential. THIS ACTION IS NOT REVERSIBLE.
+  rpc Revoke(RevokeRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/v1alpha1/vc/revoke"
+      body: "*"
+    };
+
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      operation_id: "RevokeVerifiableCredential";
+      summary: "Revoke a Verifiable Credential. THIS ACTION IS NOT REVERSIBLE.";
+    };
+  }
 }
 
 // Request to publish an issued Verifiable Credential
@@ -112,4 +125,15 @@ message GetVcWellKnownRequest {
 message GetVcWellKnownResponse {
   // The list of VCs for the specified Id
   repeated agntcy.identity.core.v1alpha1.EnvelopedCredential vcs = 1;
+}
+
+// Request to revoke a published Verifiable Credential
+message RevokeRequest {
+  // The Verifiable Credential to revoked
+  agntcy.identity.core.v1alpha1.EnvelopedCredential vc = 1;
+
+  // Required Proof of ownership of the Issuer's ResolverMetadata
+  // This should be provided when the Issuer is provided by an external IdP
+  // Example: a signed JWT
+  agntcy.identity.core.v1alpha1.Proof proof = 2;
 }
