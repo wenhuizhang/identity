@@ -50,6 +50,12 @@ func (vm *VerifiableCredential) ToCoreType() *types.VerifiableCredential {
 				return c.ToCoreType()
 			},
 		),
+		Status: convertutil.ConvertSlice(
+			vm.Status,
+			func(c *CredentialStatus) *types.CredentialStatus {
+				return c.ToCoreType()
+			},
+		),
 		Proof: vm.Proof,
 	}
 }

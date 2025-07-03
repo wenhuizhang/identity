@@ -66,8 +66,9 @@ func (r *vcPostgresRepository) GetByResolverMetadata(
 	var storedVCs []*VerifiableCredential
 
 	result := r.dbContext.Client().
-		Model(&VerifiableCredential{}).
+		Preload("Status").
 		Where("resolver_metadata_id = ?", resolverMetadataID).
+		Order("issuance_date DESC").
 		Find(&storedVCs)
 	if result.Error != nil {
 		return nil, errutil.Err(
@@ -89,7 +90,7 @@ func (r *vcPostgresRepository) GetByID(
 ) (*types.VerifiableCredential, error) {
 	var vc VerifiableCredential
 
-	err := r.dbContext.Client().Where("id = ?", id).First(&vc).Error
+	err := r.dbContext.Client().Preload("Status").Where("id = ?", id).First(&vc).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, errcore.ErrResourceNotFound
