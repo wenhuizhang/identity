@@ -101,6 +101,7 @@ func main() {
 		&idpg.VerificationMethod{},
 		&vcpg.VerifiableCredential{},
 		&vcpg.CredentialSchema{},
+		&vcpg.CredentialStatus{},
 	)
 	if err != nil {
 		log.Fatal(err)

@@ -143,6 +143,21 @@ const (
 	CREDENTIAL_STATUS_PURPOSE_REVOCATION
 )
 
+func (t *CredentialStatusPurpose) UnmarshalText(text []byte) error {
+	switch string(text) {
+	case CREDENTIAL_STATUS_PURPOSE_REVOCATION.String():
+		*t = CREDENTIAL_STATUS_PURPOSE_REVOCATION
+	default:
+		*t = CREDENTIAL_STATUS_PURPOSE_UNSPECIFIED
+	}
+
+	return nil
+}
+
+func (t CredentialStatusPurpose) MarshalText() ([]byte, error) {
+	return []byte(t.String()), nil
+}
+
 // CredentialStatus represents the credentialStatus property of a Verifiable Credential.
 // more information can be found [here]
 //
