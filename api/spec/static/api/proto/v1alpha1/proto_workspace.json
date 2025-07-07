@@ -1447,7 +1447,7 @@
               "defaultValue": ""
             },
             {
-              "name": "mediaType",
+              "name": "media_type",
               "description": "The media type of the Verifiable Credential (ex: application/vc)",
               "label": "optional",
               "type": "string",
@@ -1455,7 +1455,7 @@
               "fullType": "string",
               "ismap": false,
               "isoneof": true,
-              "oneofdecl": "_mediaType",
+              "oneofdecl": "_media_type",
               "defaultValue": ""
             },
             {
@@ -1471,7 +1471,7 @@
               "defaultValue": ""
             },
             {
-              "name": "controlledIdentifierDocument",
+              "name": "controlled_identifier_document",
               "description": "A controlled identifier document that is associated with the verification method\nused to verify the securing mechanism (i,e the DID)",
               "label": "optional",
               "type": "string",
@@ -1479,7 +1479,7 @@
               "fullType": "string",
               "ismap": false,
               "isoneof": true,
-              "oneofdecl": "_controlledIdentifierDocument",
+              "oneofdecl": "_controlled_identifier_document",
               "defaultValue": ""
             },
             {

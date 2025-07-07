@@ -134,7 +134,8 @@ func FromVerifiableCredential(src *vctypes.VerifiableCredential) *coreapi.Verifi
 			src.CredentialSchema,
 			FromCredentialSchema,
 		),
-		Proof: FromProof(src.Proof),
+		CredentialStatus: convertutil.ConvertSlice(src.Status, FromCredentialStatus),
+		Proof:            FromProof(src.Proof),
 	}
 }
 
@@ -176,5 +177,17 @@ func FromVerificationResult(src *vctypes.VerificationResult) *coreapi.Verificati
 		Errors: convertutil.ConvertSlice(src.Errors, func(err errtypes.ErrorInfo) *coreapi.ErrorInfo {
 			return FromErrorInfo(&err)
 		}),
+	}
+}
+
+func FromCredentialStatus(src *vctypes.CredentialStatus) *coreapi.CredentialStatus {
+	if src == nil {
+		return nil
+	}
+
+	return &coreapi.CredentialStatus{
+		Id:      ptrutil.Ptr(src.ID),
+		Type:    ptrutil.Ptr(src.Type),
+		Purpose: ptrutil.Ptr(coreapi.CredentialStatusPurpose(src.Purpose)),
 	}
 }
