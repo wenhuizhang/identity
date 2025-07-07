@@ -5,6 +5,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
+from agntcy.identity.core.v1alpha1 import vc_pb2 as agntcy_dot_identity_dot_core_dot_v1alpha1_dot_vc__pb2
 from agntcy.identity.node.v1alpha1 import vc_service_pb2 as agntcy_dot_identity_dot_node_dot_v1alpha1_dot_vc__service__pb2
 from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
 
@@ -27,7 +28,7 @@ class VcServiceStub(object):
         self.Verify = channel.unary_unary(
                 '/agntcy.identity.node.v1alpha1.VcService/Verify',
                 request_serializer=agntcy_dot_identity_dot_node_dot_v1alpha1_dot_vc__service__pb2.VerifyRequest.SerializeToString,
-                response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+                response_deserializer=agntcy_dot_identity_dot_core_dot_v1alpha1_dot_vc__pb2.VerificationResult.FromString,
                 _registered_method=True)
         self.GetWellKnown = channel.unary_unary(
                 '/agntcy.identity.node.v1alpha1.VcService/GetWellKnown',
@@ -96,7 +97,7 @@ def add_VcServiceServicer_to_server(servicer, server):
             'Verify': grpc.unary_unary_rpc_method_handler(
                     servicer.Verify,
                     request_deserializer=agntcy_dot_identity_dot_node_dot_v1alpha1_dot_vc__service__pb2.VerifyRequest.FromString,
-                    response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+                    response_serializer=agntcy_dot_identity_dot_core_dot_v1alpha1_dot_vc__pb2.VerificationResult.SerializeToString,
             ),
             'GetWellKnown': grpc.unary_unary_rpc_method_handler(
                     servicer.GetWellKnown,
@@ -168,7 +169,7 @@ class VcService(object):
             target,
             '/agntcy.identity.node.v1alpha1.VcService/Verify',
             agntcy_dot_identity_dot_node_dot_v1alpha1_dot_vc__service__pb2.VerifyRequest.SerializeToString,
-            google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+            agntcy_dot_identity_dot_core_dot_v1alpha1_dot_vc__pb2.VerificationResult.FromString,
             options,
             channel_credentials,
             insecure,

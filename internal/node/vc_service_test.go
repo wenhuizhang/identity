@@ -179,9 +179,11 @@ func TestVerifyVC_Should_Succeed(t *testing.T) {
 	assert.NoError(t, err)
 	_ = sut.Publish(context.Background(), envelope, &vctypes.Proof{Type: "JWT"})
 
-	err = sut.Verify(t.Context(), envelope)
+	result, err := sut.Verify(t.Context(), envelope)
 
 	assert.NoError(t, err)
+	assert.Empty(t, result.Errors)
+	assert.Empty(t, result.Warnings)
 }
 
 func TestVerifyVC_Should_Fail_When_Revoked(t *testing.T) {
@@ -204,10 +206,10 @@ func TestVerifyVC_Should_Fail_When_Revoked(t *testing.T) {
 	assert.NoError(t, err)
 	_ = sut.Publish(context.Background(), envelope, &vctypes.Proof{Type: "JWT"})
 
-	err = sut.Verify(t.Context(), envelope)
+	result, err := sut.Verify(t.Context(), envelope)
 
-	assert.Error(t, err)
-	errtesting.AssertErrorInfoReason(t, err, errtypes.ERROR_REASON_INVALID_VERIFIABLE_CREDENTIAL)
+	assert.NoError(t, err)
+	assert.Equal(t, result.Warnings[0].Reason, errtypes.ERROR_REASON_VERIFIABLE_CREDENTIAL_REVOKED)
 }
 
 func TestRevokeVC_Should_Succeed(t *testing.T) {

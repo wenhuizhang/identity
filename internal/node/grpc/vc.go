@@ -52,8 +52,8 @@ func (s *vcService) Publish(
 func (s *vcService) Verify(
 	ctx context.Context,
 	req *nodeapi.VerifyRequest,
-) (*emptypb.Empty, error) {
-	err := s.vcSrv.Verify(ctx, converters.ToEnvelopedCredential(req.Vc))
+) (*coreapi.VerificationResult, error) {
+	result, err := s.vcSrv.Verify(ctx, converters.ToEnvelopedCredential(req.Vc))
 	if err != nil {
 		if errtypes.IsErrorInfo(err, errtypes.ERROR_REASON_INTERNAL) {
 			return nil, grpcutil.InternalError(err)
@@ -62,7 +62,7 @@ func (s *vcService) Verify(
 		return nil, grpcutil.BadRequestError(err)
 	}
 
-	return &emptypb.Empty{}, nil
+	return converters.FromVerificationResult(result), nil
 }
 
 // Returns the well-known Verifiable Credentials for the specified Id

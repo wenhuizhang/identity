@@ -43,8 +43,10 @@ type ResolverMetadata struct {
 	// AssertionMethod is used to specify how the entity represented by the ID
 	// is expected to express claims, such as for the purposes of issuing a VCs.
 	AssertionMethod []string `protobuf:"bytes,4,rep,name=assertion_method,json=assertionMethod,proto3" json:"assertion_method,omitempty"`
-	unknownFields   protoimpl.UnknownFields
-	sizeCache       protoimpl.SizeCache
+	// A controller is an entity that is authorized to make changes to a Resolver Metadata.
+	Controller    *string `protobuf:"bytes,5,opt,name=controller,proto3,oneof" json:"controller,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *ResolverMetadata) Reset() {
@@ -103,6 +105,13 @@ func (x *ResolverMetadata) GetAssertionMethod() []string {
 		return x.AssertionMethod
 	}
 	return nil
+}
+
+func (x *ResolverMetadata) GetController() string {
+	if x != nil && x.Controller != nil {
+		return *x.Controller
+	}
+	return ""
 }
 
 // Service is used in ResolverMetadata to express ways of communicating with
@@ -214,13 +223,17 @@ var File_agntcy_identity_core_v1alpha1_id_proto protoreflect.FileDescriptor
 
 const file_agntcy_identity_core_v1alpha1_id_proto_rawDesc = "" +
 	"\n" +
-	"&agntcy/identity/core/v1alpha1/id.proto\x12\x1dagntcy.identity.core.v1alpha1\x1a'agntcy/identity/core/v1alpha1/jwk.proto\"\xff\x01\n" +
+	"&agntcy/identity/core/v1alpha1/id.proto\x12\x1dagntcy.identity.core.v1alpha1\x1a'agntcy/identity/core/v1alpha1/jwk.proto\"\xb3\x02\n" +
 	"\x10ResolverMetadata\x12\x13\n" +
 	"\x02id\x18\x01 \x01(\tH\x00R\x02id\x88\x01\x01\x12b\n" +
 	"\x13verification_method\x18\x02 \x03(\v21.agntcy.identity.core.v1alpha1.VerificationMethodR\x12verificationMethod\x12@\n" +
 	"\aservice\x18\x03 \x03(\v2&.agntcy.identity.core.v1alpha1.ServiceR\aservice\x12)\n" +
-	"\x10assertion_method\x18\x04 \x03(\tR\x0fassertionMethodB\x05\n" +
-	"\x03_id\"4\n" +
+	"\x10assertion_method\x18\x04 \x03(\tR\x0fassertionMethod\x12#\n" +
+	"\n" +
+	"controller\x18\x05 \x01(\tH\x01R\n" +
+	"controller\x88\x01\x01B\x05\n" +
+	"\x03_idB\r\n" +
+	"\v_controller\"4\n" +
 	"\aService\x12)\n" +
 	"\x10service_endpoint\x18\x01 \x03(\tR\x0fserviceEndpoint\"\x92\x01\n" +
 	"\x12VerificationMethod\x12\x13\n" +

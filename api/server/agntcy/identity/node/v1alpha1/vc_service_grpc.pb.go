@@ -11,6 +11,7 @@ package identity_node_sdk_go
 
 import (
 	context "context"
+	v1alpha1 "github.com/agntcy/identity/api/server/agntcy/identity/core/v1alpha1"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -39,7 +40,7 @@ type VcServiceClient interface {
 	// Publish an issued Verifiable Credential
 	Publish(ctx context.Context, in *PublishRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Verify an existing Verifiable Credential
-	Verify(ctx context.Context, in *VerifyRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	Verify(ctx context.Context, in *VerifyRequest, opts ...grpc.CallOption) (*v1alpha1.VerificationResult, error)
 	// Returns the well-known Verifiable Credentials for the specified Id
 	GetWellKnown(ctx context.Context, in *GetVcWellKnownRequest, opts ...grpc.CallOption) (*GetVcWellKnownResponse, error)
 	// Search for Verifiable Credentials based on the specified criteria
@@ -66,9 +67,9 @@ func (c *vcServiceClient) Publish(ctx context.Context, in *PublishRequest, opts 
 	return out, nil
 }
 
-func (c *vcServiceClient) Verify(ctx context.Context, in *VerifyRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *vcServiceClient) Verify(ctx context.Context, in *VerifyRequest, opts ...grpc.CallOption) (*v1alpha1.VerificationResult, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(emptypb.Empty)
+	out := new(v1alpha1.VerificationResult)
 	err := c.cc.Invoke(ctx, VcService_Verify_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -115,7 +116,7 @@ type VcServiceServer interface {
 	// Publish an issued Verifiable Credential
 	Publish(context.Context, *PublishRequest) (*emptypb.Empty, error)
 	// Verify an existing Verifiable Credential
-	Verify(context.Context, *VerifyRequest) (*emptypb.Empty, error)
+	Verify(context.Context, *VerifyRequest) (*v1alpha1.VerificationResult, error)
 	// Returns the well-known Verifiable Credentials for the specified Id
 	GetWellKnown(context.Context, *GetVcWellKnownRequest) (*GetVcWellKnownResponse, error)
 	// Search for Verifiable Credentials based on the specified criteria
@@ -134,7 +135,7 @@ type UnimplementedVcServiceServer struct{}
 func (UnimplementedVcServiceServer) Publish(context.Context, *PublishRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Publish not implemented")
 }
-func (UnimplementedVcServiceServer) Verify(context.Context, *VerifyRequest) (*emptypb.Empty, error) {
+func (UnimplementedVcServiceServer) Verify(context.Context, *VerifyRequest) (*v1alpha1.VerificationResult, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Verify not implemented")
 }
 func (UnimplementedVcServiceServer) GetWellKnown(context.Context, *GetVcWellKnownRequest) (*GetVcWellKnownResponse, error) {

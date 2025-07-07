@@ -5,6 +5,7 @@ package converters
 
 import (
 	coreapi "github.com/agntcy/identity/api/server/agntcy/identity/core/v1alpha1"
+	errtypes "github.com/agntcy/identity/internal/core/errors/types"
 	vctypes "github.com/agntcy/identity/internal/core/vc/types"
 	"github.com/agntcy/identity/internal/pkg/convertutil"
 	"github.com/agntcy/identity/internal/pkg/ptrutil"
@@ -155,5 +156,25 @@ func ToVerifiableCredential(src *coreapi.VerifiableCredential) *vctypes.Verifiab
 			ToCredentialSchema,
 		),
 		Proof: ToProof(src.Proof),
+	}
+}
+
+func FromVerificationResult(src *vctypes.VerificationResult) *coreapi.VerificationResult {
+	if src == nil {
+		return nil
+	}
+
+	return &coreapi.VerificationResult{
+		Status:                       ptrutil.Ptr(src.Status),
+		Document:                     FromVerifiableCredential(src.Document),
+		MediaType:                    ptrutil.Ptr(src.MediaType),
+		Controller:                   ptrutil.Ptr(src.Controller),
+		ControlledIdentifierDocument: ptrutil.Ptr(src.ControlledIdentifierDocument),
+		Warnings: convertutil.ConvertSlice(src.Warnings, func(err errtypes.ErrorInfo) *coreapi.ErrorInfo {
+			return FromErrorInfo(&err)
+		}),
+		Errors: convertutil.ConvertSlice(src.Errors, func(err errtypes.ErrorInfo) *coreapi.ErrorInfo {
+			return FromErrorInfo(&err)
+		}),
 	}
 }

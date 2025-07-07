@@ -34,6 +34,9 @@ message ResolverMetadata {
   // AssertionMethod is used to specify how the entity represented by the ID
   // is expected to express claims, such as for the purposes of issuing a VCs.
   repeated string assertion_method = 4;
+
+  // A controller is an entity that is authorized to make changes to a Resolver Metadata.
+  optional string controller = 5;
 }
 
 // Service is used in ResolverMetadata to express ways of communicating with

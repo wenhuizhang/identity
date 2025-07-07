@@ -38,6 +38,7 @@ func (md *ResolverMetadata) ToCoreType() *types.ResolverMetadata {
 			},
 		),
 		AssertionMethod: md.AssertionMethod,
+		Controller:      md.Controller,
 	}
 }
 

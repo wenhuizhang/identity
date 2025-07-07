@@ -13,6 +13,7 @@ import (
 	errcore "github.com/agntcy/identity/internal/core/errors"
 	errtypes "github.com/agntcy/identity/internal/core/errors/types"
 	idcore "github.com/agntcy/identity/internal/core/id"
+	idtypes "github.com/agntcy/identity/internal/core/id/types"
 	issuerverification "github.com/agntcy/identity/internal/core/issuer/verification"
 	vccore "github.com/agntcy/identity/internal/core/vc"
 	vctypes "github.com/agntcy/identity/internal/core/vc/types"
@@ -37,7 +38,7 @@ type VerifiableCredentialService interface {
 	Verify(
 		ctx context.Context,
 		credential *vctypes.EnvelopedCredential,
-	) error
+	) (*vctypes.VerificationResult, error)
 
 	// Revoke a Verifiable Credential. THIS ACTION IS NOT REVERSIBLE.
 	Revoke(
@@ -70,7 +71,7 @@ func (s *verifiableCredentialService) Publish(
 	credential *vctypes.EnvelopedCredential,
 	proof *vctypes.Proof,
 ) error {
-	parsedVC, err := s.verifyEnvelopedCredential(ctx, credential, false)
+	parsedVC, _, err := s.verifyEnvelopedCredential(ctx, credential, false)
 	if err != nil {
 		return err
 	}
@@ -186,18 +187,47 @@ func (s *verifiableCredentialService) GetVcs(
 func (s *verifiableCredentialService) Verify(
 	ctx context.Context,
 	credential *vctypes.EnvelopedCredential,
-) error {
-	_, err := s.verifyEnvelopedCredential(ctx, credential, true)
-	return err
+) (*vctypes.VerificationResult, error) {
+	vc, resolverMD, err := s.verifyEnvelopedCredential(ctx, credential, true)
+	if err == nil {
+		return &vctypes.VerificationResult{
+			Status:                       true,
+			Document:                     vc,
+			Controller:                   resolverMD.Controller,
+			ControlledIdentifierDocument: resolverMD.ID,
+			MediaType:                    "application/vp",
+		}, nil
+	}
+
+	var errInfo errtypes.ErrorInfo
+	if !errors.As(err, &errInfo) {
+		return nil, err
+	}
+
+	if errInfo.Reason == errtypes.ERROR_REASON_VERIFIABLE_CREDENTIAL_REVOKED {
+		return &vctypes.VerificationResult{
+			Status:                       false,
+			Document:                     vc,
+			Controller:                   resolverMD.Controller,
+			ControlledIdentifierDocument: resolverMD.ID,
+			MediaType:                    "application/vp",
+			Warnings:                     []errtypes.ErrorInfo{errInfo},
+		}, nil
+	}
+
+	return &vctypes.VerificationResult{
+		Status: false,
+		Errors: []errtypes.ErrorInfo{errInfo},
+	}, nil
 }
 
 func (s *verifiableCredentialService) verifyEnvelopedCredential(
 	ctx context.Context,
 	credential *vctypes.EnvelopedCredential,
 	checkStatus bool,
-) (*vctypes.VerifiableCredential, error) {
+) (*vctypes.VerifiableCredential, *idtypes.ResolverMetadata, error) {
 	if credential.Value == "" {
-		return nil, errutil.ErrInfo(
+		return nil, nil, errutil.ErrInfo(
 			errtypes.ERROR_REASON_INVALID_CREDENTIAL_ENVELOPE_VALUE_FORMAT,
 			"invalid credential envelope value",
 			nil,
@@ -206,7 +236,7 @@ func (s *verifiableCredentialService) verifyEnvelopedCredential(
 
 	parsedVC, err := vccore.ParseEnvelopedCredential(credential)
 	if err != nil {
-		return nil, errutil.ErrInfo(
+		return nil, nil, errutil.ErrInfo(
 			errtypes.ERROR_REASON_INVALID_CREDENTIAL_ENVELOPE_VALUE_FORMAT,
 			"invalid credential envelope value",
 			err,
@@ -215,7 +245,7 @@ func (s *verifiableCredentialService) verifyEnvelopedCredential(
 
 	id, ok := parsedVC.GetDID()
 	if !ok {
-		return nil, errutil.ErrInfo(
+		return nil, nil, errutil.ErrInfo(
 			errtypes.ERROR_REASON_INVALID_VERIFIABLE_CREDENTIAL,
 			"unable to find the ID inside the CredentialSubject",
 			nil,
@@ -227,28 +257,21 @@ func (s *verifiableCredentialService) verifyEnvelopedCredential(
 	resolverMD, err := s.idRepository.ResolveID(ctx, id)
 	if err != nil {
 		if errors.Is(err, errcore.ErrResourceNotFound) {
-			return nil, errutil.ErrInfo(
+			return nil, nil, errutil.ErrInfo(
 				errtypes.ERROR_REASON_RESOLVER_METADATA_NOT_FOUND,
 				fmt.Sprintf("could not resolve the ID (%s) to a resolver metadata", id),
 				err,
 			)
 		}
 
-		return nil, errutil.ErrInfo(errtypes.ERROR_REASON_INTERNAL, "unexpected error", err)
+		return nil, nil, errutil.ErrInfo(errtypes.ERROR_REASON_INTERNAL, "unexpected error", err)
 	}
 
 	log.Debug("Validating the verifiable credential")
 
 	err = vccore.VerifyEnvelopedCredential(credential, resolverMD.GetJwks(), checkStatus)
-	if err != nil {
-		return nil, errutil.ErrInfo(
-			errtypes.ERROR_REASON_INVALID_VERIFIABLE_CREDENTIAL,
-			"unable to verify verifiable credential",
-			err,
-		)
-	}
 
-	return parsedVC, nil
+	return parsedVC, resolverMD, err
 }
 
 func (s *verifiableCredentialService) Revoke(
@@ -256,7 +279,7 @@ func (s *verifiableCredentialService) Revoke(
 	credential *vctypes.EnvelopedCredential,
 	proof *vctypes.Proof,
 ) error {
-	parsedVC, err := s.verifyEnvelopedCredential(ctx, credential, false)
+	parsedVC, _, err := s.verifyEnvelopedCredential(ctx, credential, false)
 	if err != nil {
 		return err
 	}

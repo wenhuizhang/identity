@@ -48,6 +48,9 @@ type ResolverMetadata struct {
 	// AssertionMethod is used to specify how the entity represented by the ID
 	// is expected to express claims, such as for the purposes of issuing a VCs.
 	AssertionMethod []string `json:"assertionMethod,omitempty" protobuf:"bytes,4,opt,name=assertion_method"`
+
+	// A controller is an entity that is authorized to make changes to a Resolver Metadata.
+	Controller string
 }
 
 func (r *ResolverMetadata) GetJwks() *jwk.Jwks {

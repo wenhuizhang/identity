@@ -31,7 +31,7 @@ service VcService {
   }
 
   // Verify an existing Verifiable Credential
-  rpc Verify(VerifyRequest) returns (google.protobuf.Empty) {
+  rpc Verify(VerifyRequest) returns (agntcy.identity.core.v1alpha1.VerificationResult) {
     option (google.api.http) = {
       post: "/v1alpha1/vc/verify"
       body: "*"
