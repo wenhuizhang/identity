@@ -27,6 +27,7 @@ jobs:
     outputs:
       version: ${{ steps.set-version.outputs.version }}
       targets: ${{ steps.all-targets.outputs.targets }}
+      is_test_release: ${{ steps.set-version.outputs.is_test_release }}  # Add this line to export the output
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -43,7 +44,12 @@ jobs:
           VERSION=${VERSION#test-v}
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "is_test_release=$(echo $TAG | grep -q '^test-' && echo 'true' || echo 'false')" >> "$GITHUB_OUTPUT"
-
+          # Debug output
+          if echo $TAG | grep -q '^test-'; then
+            echo "This is a test release tag: $TAG"
+          else
+            echo "This is a regular release tag: $TAG"
+          fi
       - name: List all targets
         id: all-targets
         uses: docker/bake-action/subaction/list-targets@37816e747588cb137173af99ab33873600c46ea8 # v6.8.0
@@ -100,8 +106,8 @@ jobs:
       - build-python-sdk
     if: |
       always() &&
-      (needs.build-python-sdk.result == 'skipped' || needs.build-python-sdk.result == 'success')
-    environment: pypi
+      (needs.build-python-sdk.result == 'skipped' || needs.build-python-sdk.result == 'success') &&
+      needs.prepare-release.outputs.is_test_release != 'true'
     permissions:
       # IMPORTANT: this permission is mandatory for Trusted Publishing
       id-token: write
