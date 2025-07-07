@@ -8,14 +8,13 @@ import os
 from importlib import import_module
 from pkgutil import iter_modules
 
-import jwt
 from dotenv import load_dotenv
 
 import agntcy.identity.core.v1alpha1
 import agntcy.identity.node.v1alpha1
 from agntcy.identity.core.v1alpha1.vc_pb2 import (
     EnvelopedCredential,
-    VerifiableCredential,
+    VerificationResult,
 )
 from agntcy.identity.node.v1alpha1.vc_service_pb2 import (
     GetVcWellKnownRequest,
@@ -24,6 +23,7 @@ from agntcy.identity.node.v1alpha1.vc_service_pb2 import (
 )
 from agntcy.identity.node.v1alpha1.vc_service_pb2_grpc import VcServiceStub
 from agntcyidentity import client, log
+
 
 logger = logging.getLogger("identity")
 
@@ -48,12 +48,10 @@ class IdentitySdk:
     def __init__(self, async_mode=False):
         """Initialize the Identity SDK."""
         # Load dynamically all objects
-        _load_grpc_objects(
-            agntcy.identity.node.v1alpha1, "agntcy.identity.node.v1alpha1"
-        )
-        _load_grpc_objects(
-            agntcy.identity.core.v1alpha1, "agntcy.identity.core.v1alpha1"
-        )
+        _load_grpc_objects(agntcy.identity.node.v1alpha1,
+                           "agntcy.identity.node.v1alpha1")
+        _load_grpc_objects(agntcy.identity.core.v1alpha1,
+                           "agntcy.identity.core.v1alpha1")
 
         self.client = client.Client(async_mode)
 
@@ -65,28 +63,16 @@ class IdentitySdk:
         """Returns last badge for a given ID."""
         well_known_response: GetVcWellKnownResponse = (
             self._get_vc_service().GetWellKnown(
-                GetVcWellKnownRequest(id=badge_id)
-            )
-        )
+                GetVcWellKnownRequest(id=badge_id)))
 
         if not well_known_response.vcs:
             raise ValueError("No badge found for ID: ", badge_id)
 
         return well_known_response.vcs[0]
 
-    def verify_badge(self, badge: EnvelopedCredential) -> VerifiableCredential:
+    def verify_badge(self, badge: EnvelopedCredential) -> VerificationResult:
         """Verify a badge."""
         try:
-            self._get_vc_service().Verify(VerifyRequest(vc=badge))
+            return self._get_vc_service().Verify(VerifyRequest(vc=badge))
         except Exception as err:
             raise err
-
-        # Decode the badge value to get the claims
-        claims = jwt.decode(badge.value, options={"verify_signature": False})
-
-        return VerifiableCredential(
-            id=claims["id"],
-            type=claims["type"],
-            issuer=claims["issuer"],
-            content=claims["credentialSubject"],
-        )
