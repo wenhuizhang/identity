@@ -43,12 +43,23 @@ func VerifyEnvelopedCredential(cred *types.EnvelopedCredential, jwks *jwk.Jwks, 
 	case types.CREDENTIAL_ENVELOPE_TYPE_JOSE:
 		log.Debug("Verifying the JOSE Verifiable Credential")
 
-		parsed, err := jose.VerifyAndParse(jwks, cred)
+		err := jose.Verify(jwks, cred)
 		if err != nil {
-			return err
+			return errutil.ErrInfo(
+				errtypes.ERROR_REASON_INVALID_PROOF,
+				"Unable to verify the integrity of the data provided.",
+				err,
+			)
 		}
 
-		vc = parsed
+		vc, err = jose.Parse(cred)
+		if err != nil {
+			return errutil.ErrInfo(
+				errtypes.ERROR_REASON_INVALID_VERIFIABLE_CREDENTIAL,
+				"Unable to parse the data provided.",
+				err,
+			)
+		}
 	default:
 		return invalidCredentialEnvelopeTypeErr()
 	}

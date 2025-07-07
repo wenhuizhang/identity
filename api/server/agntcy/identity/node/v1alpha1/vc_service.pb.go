@@ -413,10 +413,10 @@ const file_agntcy_identity_node_v1alpha1_vc_service_proto_rawDesc = "" +
 	"\x03vcs\x18\x01 \x03(\v22.agntcy.identity.core.v1alpha1.EnvelopedCredentialR\x03vcs\"\x8f\x01\n" +
 	"\rRevokeRequest\x12B\n" +
 	"\x02vc\x18\x01 \x01(\v22.agntcy.identity.core.v1alpha1.EnvelopedCredentialR\x02vc\x12:\n" +
-	"\x05proof\x18\x02 \x01(\v2$.agntcy.identity.core.v1alpha1.ProofR\x05proof2\xc2\b\n" +
+	"\x05proof\x18\x02 \x01(\v2$.agntcy.identity.core.v1alpha1.ProofR\x05proof2\xdd\b\n" +
 	"\tVcService\x12\xb2\x01\n" +
-	"\aPublish\x12-.agntcy.identity.node.v1alpha1.PublishRequest\x1a\x16.google.protobuf.Empty\"`\x92A>\x12\x1fPublish a Verifiable Credential*\x1bPublishVerifiableCredential\x82\xd3\xe4\x93\x02\x19:\x01*\"\x14/v1alpha1/vc/publish\x12\xad\x01\n" +
-	"\x06Verify\x12,.agntcy.identity.node.v1alpha1.VerifyRequest\x1a\x16.google.protobuf.Empty\"]\x92A<\x12\x1eVerify a Verifiable Credential*\x1aVerifyVerifiableCredential\x82\xd3\xe4\x93\x02\x18:\x01*\"\x13/v1alpha1/vc/verify\x12\x83\x02\n" +
+	"\aPublish\x12-.agntcy.identity.node.v1alpha1.PublishRequest\x1a\x16.google.protobuf.Empty\"`\x92A>\x12\x1fPublish a Verifiable Credential*\x1bPublishVerifiableCredential\x82\xd3\xe4\x93\x02\x19:\x01*\"\x14/v1alpha1/vc/publish\x12\xc8\x01\n" +
+	"\x06Verify\x12,.agntcy.identity.node.v1alpha1.VerifyRequest\x1a1.agntcy.identity.core.v1alpha1.VerificationResult\"]\x92A<\x12\x1eVerify a Verifiable Credential*\x1aVerifyVerifiableCredential\x82\xd3\xe4\x93\x02\x18:\x01*\"\x13/v1alpha1/vc/verify\x12\x83\x02\n" +
 	"\fGetWellKnown\x124.agntcy.identity.node.v1alpha1.GetVcWellKnownRequest\x1a5.agntcy.identity.node.v1alpha1.GetVcWellKnownResponse\"\x85\x01\x92AT\x12BReturns the well-known Verifiable Credentials for the specified Id*\x0eGetVcWellKnown\x82\xd3\xe4\x93\x02(\x12&/v1alpha1/vc/{id}/.well-known/vcs.json\x12\xe9\x01\n" +
 	"\x06Search\x12,.agntcy.identity.node.v1alpha1.SearchRequest\x1a-.agntcy.identity.node.v1alpha1.SearchResponse\"\x81\x01\x92A`\x12ASearch for Verifiable Credentials based on the specified criteria*\x1bSearchVerifiableCredentials\x82\xd3\xe4\x93\x02\x18:\x01*\"\x13/v1alpha1/vc/search\x12\xcd\x01\n" +
 	"\x06Revoke\x12,.agntcy.identity.node.v1alpha1.RevokeRequest\x1a\x16.google.protobuf.Empty\"}\x92A\\\x12>Revoke a Verifiable Credential. THIS ACTION IS NOT REVERSIBLE.*\x1aRevokeVerifiableCredential\x82\xd3\xe4\x93\x02\x18:\x01*\"\x13/v1alpha1/vc/revoke\x1a\x0e\x92A\v\n" +
@@ -447,6 +447,7 @@ var file_agntcy_identity_node_v1alpha1_vc_service_proto_goTypes = []any{
 	(*v1alpha1.Proof)(nil),               // 8: agntcy.identity.core.v1alpha1.Proof
 	(*v1alpha1.CredentialSchema)(nil),    // 9: agntcy.identity.core.v1alpha1.CredentialSchema
 	(*emptypb.Empty)(nil),                // 10: google.protobuf.Empty
+	(*v1alpha1.VerificationResult)(nil),  // 11: agntcy.identity.core.v1alpha1.VerificationResult
 }
 var file_agntcy_identity_node_v1alpha1_vc_service_proto_depIdxs = []int32{
 	7,  // 0: agntcy.identity.node.v1alpha1.PublishRequest.vc:type_name -> agntcy.identity.core.v1alpha1.EnvelopedCredential
@@ -463,7 +464,7 @@ var file_agntcy_identity_node_v1alpha1_vc_service_proto_depIdxs = []int32{
 	2,  // 11: agntcy.identity.node.v1alpha1.VcService.Search:input_type -> agntcy.identity.node.v1alpha1.SearchRequest
 	6,  // 12: agntcy.identity.node.v1alpha1.VcService.Revoke:input_type -> agntcy.identity.node.v1alpha1.RevokeRequest
 	10, // 13: agntcy.identity.node.v1alpha1.VcService.Publish:output_type -> google.protobuf.Empty
-	10, // 14: agntcy.identity.node.v1alpha1.VcService.Verify:output_type -> google.protobuf.Empty
+	11, // 14: agntcy.identity.node.v1alpha1.VcService.Verify:output_type -> agntcy.identity.core.v1alpha1.VerificationResult
 	5,  // 15: agntcy.identity.node.v1alpha1.VcService.GetWellKnown:output_type -> agntcy.identity.node.v1alpha1.GetVcWellKnownResponse
 	3,  // 16: agntcy.identity.node.v1alpha1.VcService.Search:output_type -> agntcy.identity.node.v1alpha1.SearchResponse
 	10, // 17: agntcy.identity.node.v1alpha1.VcService.Revoke:output_type -> google.protobuf.Empty

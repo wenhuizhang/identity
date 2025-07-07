@@ -29,6 +29,9 @@ type V1alpha1ResolverMetadata struct {
 	// is expected to express claims, such as for the purposes of issuing a VCs.
 	AssertionMethod []string `json:"assertionMethod"`
 
+	// A controller is an entity that is authorized to make changes to a Resolver Metadata.
+	Controller string `json:"controller,omitempty"`
+
 	// The ID
 	// The metadata below is related as claims to the ID
 	ID string `json:"id,omitempty"`

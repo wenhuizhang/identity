@@ -93,6 +93,7 @@ func (s *idService) Generate(
 		},
 		AssertionMethod: []string{keyID},
 		Service:         services,
+		Controller:      issuer.CommonName,
 	}
 
 	log.Debug("Storing the ResolverMetadata")

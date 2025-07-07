@@ -54,7 +54,7 @@ VerifyVerifiableCredentialOK describes a response with status code 200, with def
 A successful response.
 */
 type VerifyVerifiableCredentialOK struct {
-	Payload any
+	Payload *models.V1alpha1VerificationResult
 }
 
 // IsSuccess returns true when this verify verifiable credential o k response has a 2xx status code
@@ -97,14 +97,16 @@ func (o *VerifyVerifiableCredentialOK) String() string {
 	return fmt.Sprintf("[POST /v1alpha1/vc/verify][%d] verifyVerifiableCredentialOK %s", 200, payload)
 }
 
-func (o *VerifyVerifiableCredentialOK) GetPayload() any {
+func (o *VerifyVerifiableCredentialOK) GetPayload() *models.V1alpha1VerificationResult {
 	return o.Payload
 }
 
 func (o *VerifyVerifiableCredentialOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
+	o.Payload = new(models.V1alpha1VerificationResult)
+
 	// response payload
-	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 
