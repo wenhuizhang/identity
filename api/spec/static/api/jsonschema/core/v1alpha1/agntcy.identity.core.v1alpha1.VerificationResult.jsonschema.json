@@ -3,6 +3,16 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "additionalProperties": false,
   "description": "[here]: https://www.w3.org/TR/vc-data-model-2.0/#verification",
+  "patternProperties": {
+    "^(controlled_identifier_document)$": {
+      "description": "A controlled identifier document that is associated with the verification method\n used to verify the securing mechanism (i,e the DID)",
+      "type": "string"
+    },
+    "^(media_type)$": {
+      "description": "The media type of the Verifiable Credential (ex: application/vc)",
+      "type": "string"
+    }
+  },
   "properties": {
     "controlledIdentifierDocument": {
       "description": "A controlled identifier document that is associated with the verification method\n used to verify the securing mechanism (i,e the DID)",
