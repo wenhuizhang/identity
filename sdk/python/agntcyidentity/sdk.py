@@ -16,8 +16,6 @@ from agntcy.identity.core.v1alpha1.vc_pb2 import (
     EnvelopedCredential,
     VerificationResult,
 )
-from agntcy.identity.core.v1alpha1.vc_pb2 import (
-    EnvelopedCredential, )
 from agntcy.identity.node.v1alpha1.vc_service_pb2 import (
     GetVcWellKnownRequest,
     GetVcWellKnownResponse,
