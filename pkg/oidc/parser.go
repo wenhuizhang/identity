@@ -148,7 +148,7 @@ func (p *parser) ParseJwt(
 
 	var providerName ProviderName
 	var commonName string
-	var someProviderMetadata *providerMetadata
+	var providerMD *providerMetadata
 
 	selfIssued, err := p.isSelfIssuedToken(claims)
 	if err != nil {
@@ -163,22 +163,12 @@ func (p *parser) ParseJwt(
 		// Remove the self-issued scheme from the issuer to get the common name
 		commonName, _ = strings.CutPrefix(claims.Issuer, SelfIssuedIssScheme+":")
 	} else {
-		var pMetadata *providerMetadata
-		var err error
-
-		// Attempt to get the provider metadata from the OIDC well-known URL
-		pMetadata, err = p.getProviderMetadata(ctx, claims.Issuer, p.getOidcWellKnownURL(claims.Issuer))
+		providerMD, err = getProviderMetadata(ctx, claims.Issuer)
 		if err != nil {
-			// If OIDC well-known URL fails, try OAuth well-known URL
-			pMetadata, err = p.getProviderMetadata(ctx, claims.Issuer, p.getOauthWellKnownURL(claims.Issuer))
-			if err != nil {
-				return nil, err
-			}
+			return nil, err
 		}
 
-		someProviderMetadata = pMetadata
-
-		providerName, err = p.detectProviderName(ctx, someProviderMetadata)
+		providerName, err = p.detectProviderName(ctx, providerMD)
 		if err != nil {
 			return nil, err
 		}
@@ -190,7 +180,7 @@ func (p *parser) ParseJwt(
 		Claims:           claims,
 		Provider:         providerName,
 		CommonName:       commonName,
-		providerMetadata: someProviderMetadata,
+		providerMetadata: providerMD,
 		jwt:              jwtString,
 	}, nil
 }
@@ -244,41 +234,6 @@ func (p *parser) isSelfIssuedToken(claims *Claims) (bool, error) {
 	}
 
 	return strings.EqualFold(u.Scheme, SelfIssuedIssScheme), nil
-}
-
-func (p *parser) getOidcWellKnownURL(issuer string) string {
-	return issuer + "/.well-known/openid-configuration"
-}
-
-func (p *parser) getOauthWellKnownURL(issuer string) string {
-	// Get host and path from the issuer URL
-	u, err := url.Parse(issuer)
-	if err != nil {
-		log.Error("Failed to parse issuer URL:", err)
-		return ""
-	}
-
-	// Construct the well-known URL for OAuth
-	return u.Scheme + "://" + u.Host + "/.well-known/oauth-authorization-server/" + u.Path
-}
-
-func (p *parser) getProviderMetadata(
-	ctx context.Context,
-	issuer string,
-	wellKnownURL string,
-) (*providerMetadata, error) {
-	log.Debug("Getting metadata from issuer:", issuer, " with URL:", wellKnownURL)
-
-	var metadata providerMetadata
-
-	err := httputil.GetJSON(ctx, wellKnownURL, &metadata)
-	if err != nil {
-		return nil, errutil.Err(err, "failed to get metadata from issuer")
-	}
-
-	log.Debug("Got metadata from issuer:", metadata)
-
-	return &metadata, nil
 }
 
 func (p *parser) getJwks(ctx context.Context, provider *providerMetadata) (jwk.Set, error) {
