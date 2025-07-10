@@ -5,7 +5,10 @@ package oidc
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"net/http"
+	"net/url"
 	"strings"
 
 	"github.com/agntcy/identity/internal/pkg/errutil"
@@ -52,14 +55,47 @@ func isDuo(resp *http.Response) bool {
 }
 
 func getProviderMetadata(ctx context.Context, issuer string) (*providerMetadata, error) {
-	// Get the raw data from the issuer
+	metadata, oidcErr := getOidcProviderMetadata(ctx, issuer)
+	if oidcErr == nil {
+		return metadata, nil
+	}
+
+	metadata, oauthErr := getOAuthProviderMetadata(ctx, issuer)
+	if oauthErr == nil {
+		return metadata, nil
+	}
+
+	return nil, errors.Join(oidcErr, oauthErr)
+}
+
+func getOidcProviderMetadata(ctx context.Context, issuer string) (*providerMetadata, error) {
+	oidcWellKnownURL := getOidcWellKnownURL(issuer)
+	log.Debug("Getting metadata from issuer:", issuer, " with URL:", oidcWellKnownURL)
+
+	metadata, err := getAuthSrvMetadata(ctx, oidcWellKnownURL)
+	if err != nil {
+		return nil, err
+	}
+
+	return metadata, err
+}
+
+func getOAuthProviderMetadata(ctx context.Context, issuer string) (*providerMetadata, error) {
+	oauthWellKnownURL := getOAuthWellKnownURL(issuer)
+
+	metadata, err := getAuthSrvMetadata(ctx, oauthWellKnownURL)
+	if err != nil {
+		return nil, err
+	}
+
+	return metadata, err
+}
+
+func getAuthSrvMetadata(ctx context.Context, wellKnownURL string) (*providerMetadata, error) {
 	var metadata providerMetadata
 
-	// Get the well-known URL from the issuer
-	wellKnownURL := getWellKnownURL(issuer)
-	log.Debug("Getting metadata from issuer:", issuer, " with URL:", wellKnownURL)
+	log.Debug("Getting metadata for the autorization server:", wellKnownURL)
 
-	// Get the metadata from the issuer
 	err := httputil.GetJSON(ctx, wellKnownURL, &metadata)
 	if err != nil {
 		return nil, errutil.Err(err, "failed to get metadata from issuer")
@@ -70,6 +106,24 @@ func getProviderMetadata(ctx context.Context, issuer string) (*providerMetadata,
 	return &metadata, nil
 }
 
-func getWellKnownURL(issuer string) string {
+func getOidcWellKnownURL(issuer string) string {
 	return issuer + "/.well-known/openid-configuration"
+}
+
+func getOAuthWellKnownURL(issuer string) string {
+	// Get host and path from the issuer URL
+	u, err := url.Parse(issuer)
+	if err != nil {
+		log.Error("Failed to parse issuer URL:", err)
+		return ""
+	}
+
+	// Construct the well-known URL for OAuth
+	result, err := url.JoinPath(fmt.Sprintf("%s://%s", u.Scheme, u.Host), ".well-known/oauth-authorization-server", u.Path)
+	if err != nil {
+		log.Error("Failed to construct oauth well-know URL:", err)
+		return ""
+	}
+
+	return result
 }
