@@ -6,6 +6,7 @@ package oidc
 import (
 	"context"
 	"errors"
+	"fmt"
 	"net/http"
 	"net/url"
 	"strings"
@@ -118,5 +119,11 @@ func getOAuthWellKnownURL(issuer string) string {
 	}
 
 	// Construct the well-known URL for OAuth
-	return u.Scheme + "://" + u.Host + "/.well-known/oauth-authorization-server/" + u.Path
+	result, err := url.JoinPath(fmt.Sprintf("%s://%s", u.Scheme, u.Host), ".well-known/oauth-authorization-server", u.Path)
+	if err != nil {
+		log.Error("Failed to construct oauth well-know URL:", err)
+		return ""
+	}
+
+	return result
 }
