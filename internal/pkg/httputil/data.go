@@ -100,7 +100,7 @@ func getJSON(
 	log.Debug("Server response status code is ", resp.StatusCode)
 
 	if resp.StatusCode != http.StatusOK {
-		return err
+		return fmt.Errorf("got status code %d", resp.StatusCode)
 	}
 
 	jsonErr := json.Unmarshal(body, &result)
