@@ -42,7 +42,7 @@ func GetWithRawBody(
 func Get(ctx context.Context,
 	uri string,
 	headers map[string]string,
-) ([]byte, *http.Header, error) {
+) ([]byte, http.Header, error) {
 	// Create context
 	ctx, cancel := context.WithTimeout(ctx, Timeout*time.Second)
 	defer cancel()
@@ -83,7 +83,7 @@ func Get(ctx context.Context,
 		return nil, nil, fmt.Errorf("got status code %d", resp.StatusCode)
 	}
 
-	return body, &resp.Header, nil
+	return body, resp.Header, nil
 }
 
 func getJSON(

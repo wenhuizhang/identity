@@ -39,16 +39,16 @@ func (p *parser) detectProviderName(
 	}
 }
 
-func isOry(headers *http.Header, host string) bool {
+func isOry(headers http.Header, host string) bool {
 	return headers != nil &&
 		(headers.Get("Ory-Network-Region") != "" || strings.HasSuffix(host, "oryapis.com"))
 }
 
-func isOkta(headers *http.Header, _ string) bool {
+func isOkta(headers http.Header, _ string) bool {
 	return headers != nil && headers.Get("X-Okta-Request-Id") != ""
 }
 
-func isDuo(headers *http.Header, host string) bool {
+func isDuo(headers http.Header, host string) bool {
 	return headers != nil &&
 		(strings.HasPrefix(strings.ToLower(headers.Get("Server")), "duo") ||
 			strings.HasPrefix(host, "duosecurity.com"))
