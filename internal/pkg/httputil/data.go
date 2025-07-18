@@ -15,7 +15,7 @@ import (
 )
 
 // Timeout : API timeout time
-const Timeout = 5
+const Timeout = 30
 
 // GetJSON : Get data
 func GetJSON(ctx context.Context, uri string, result interface{}) error {
