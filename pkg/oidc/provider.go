@@ -20,38 +20,38 @@ func (p *parser) detectProviderName(
 	ctx context.Context,
 	provider *providerMetadata,
 ) (ProviderName, error) {
-	resp, err := httputil.Get(ctx, provider.JWKSURL, nil)
+	_, headers, err := httputil.Get(ctx, provider.JWKSURL, nil)
 	if err != nil {
 		return UnknownProviderName, err
 	}
 
-	_ = resp.Body.Close()
+	providerUrl, _ := url.Parse(provider.JWKSURL)
 
 	switch {
-	case isOry(resp):
+	case isOry(headers, providerUrl.Host):
 		return OryProviderName, nil
-	case isOkta(resp):
+	case isOkta(headers, providerUrl.Host):
 		return OktaProviderName, nil
-	case isDuo(resp):
+	case isDuo(headers, providerUrl.Host):
 		return DuoProviderName, nil
 	default:
 		return IdpProviderName, nil
 	}
 }
 
-func isOry(resp *http.Response) bool {
-	return resp != nil &&
-		(resp.Header.Get("Ory-Network-Region") != "" || strings.HasSuffix(resp.Request.Host, "oryapis.com"))
+func isOry(headers *http.Header, host string) bool {
+	return headers != nil &&
+		(headers.Get("Ory-Network-Region") != "" || strings.HasSuffix(host, "oryapis.com"))
 }
 
-func isOkta(resp *http.Response) bool {
-	return resp != nil && resp.Header.Get("X-Okta-Request-Id") != ""
+func isOkta(headers *http.Header, _ string) bool {
+	return headers != nil && headers.Get("X-Okta-Request-Id") != ""
 }
 
-func isDuo(resp *http.Response) bool {
-	return resp != nil &&
-		(strings.HasPrefix(strings.ToLower(resp.Header.Get("Server")), "duo") ||
-			strings.HasPrefix(resp.Request.Host, "duosecurity.com"))
+func isDuo(headers *http.Header, host string) bool {
+	return headers != nil &&
+		(strings.HasPrefix(strings.ToLower(headers.Get("Server")), "duo") ||
+			strings.HasPrefix(host, "duosecurity.com"))
 }
 
 func getProviderMetadata(ctx context.Context, issuer string) (*providerMetadata, error) {
@@ -119,7 +119,11 @@ func getOAuthWellKnownURL(issuer string) string {
 	}
 
 	// Construct the well-known URL for OAuth
-	result, err := url.JoinPath(fmt.Sprintf("%s://%s", u.Scheme, u.Host), ".well-known/oauth-authorization-server", u.Path)
+	result, err := url.JoinPath(
+		fmt.Sprintf("%s://%s", u.Scheme, u.Host),
+		".well-known/oauth-authorization-server",
+		u.Path,
+	)
 	if err != nil {
 		log.Error("Failed to construct oauth well-know URL:", err)
 		return ""
