@@ -15,7 +15,7 @@ import (
 )
 
 // Timeout : API timeout time
-const Timeout = 5
+const Timeout = 30
 
 // GetJSON : Get data
 func GetJSON(ctx context.Context, uri string, result interface{}) error {
@@ -28,21 +28,10 @@ func GetWithRawBody(
 	headers map[string]string,
 	result *string,
 ) error {
-	resp, err := Get(ctx, uri, headers)
+	body, _, err := Get(ctx, uri, headers)
 	if err != nil {
 		log.Debug("Got error", err)
 		return err
-	}
-
-	defer resp.Body.Close()
-
-	// Read and parse data
-	body, _ := io.ReadAll(resp.Body)
-
-	log.Debug("Server response status code is ", resp.StatusCode)
-
-	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("status code = %d", resp.StatusCode)
 	}
 
 	*result = string(body)
@@ -53,7 +42,7 @@ func GetWithRawBody(
 func Get(ctx context.Context,
 	uri string,
 	headers map[string]string,
-) (*http.Response, error) {
+) ([]byte, http.Header, error) {
 	// Create context
 	ctx, cancel := context.WithTimeout(ctx, Timeout*time.Second)
 	defer cancel()
@@ -76,10 +65,25 @@ func Get(ctx context.Context,
 	resp, err := client.Do(req)
 	if err != nil {
 		log.Debug("Got error", err)
-		return nil, err
+		return nil, nil, err
 	}
 
-	return resp, nil
+	defer resp.Body.Close()
+
+	// Read and parse data
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		log.Debug("Got error reading body", err)
+		return nil, nil, err
+	}
+
+	log.Debug("Server response status code is ", resp.StatusCode)
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, nil, fmt.Errorf("got status code %d", resp.StatusCode)
+	}
+
+	return body, resp.Header, nil
 }
 
 func getJSON(
@@ -88,19 +92,10 @@ func getJSON(
 	headers map[string]string,
 	result interface{},
 ) error {
-	resp, err := Get(ctx, uri, headers)
+	body, _, err := Get(ctx, uri, headers)
 	if err != nil {
 		log.Debug("Got error", err)
 		return err
-	}
-
-	// Read and parse data
-	body, _ := io.ReadAll(resp.Body)
-
-	log.Debug("Server response status code is ", resp.StatusCode)
-
-	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("got status code %d", resp.StatusCode)
 	}
 
 	jsonErr := json.Unmarshal(body, &result)
@@ -110,5 +105,5 @@ func getJSON(
 		return err
 	}
 
-	return resp.Body.Close()
+	return nil
 }

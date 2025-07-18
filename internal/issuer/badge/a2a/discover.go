@@ -5,9 +5,6 @@ package a2a
 
 import (
 	"context"
-	"errors"
-	"io"
-	"net/http"
 
 	"github.com/agntcy/identity/internal/pkg/httputil"
 )
@@ -34,17 +31,7 @@ func (d *discoveryClient) Discover(
 	wellKnownUrl string,
 ) (string, error) {
 	// get the agent card from the well-known URL
-	resp, err := httputil.Get(ctx, wellKnownUrl, nil)
-	if err != nil {
-		return "", err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		return "", errors.New("failed to get agent card with status code: " + resp.Status)
-	}
-
-	body, err := io.ReadAll(resp.Body)
+	body, _, err := httputil.Get(ctx, wellKnownUrl, nil)
 	if err != nil {
 		return "", err
 	}
