@@ -6,6 +6,7 @@ package httputil
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"time"
@@ -74,6 +75,12 @@ func Get(ctx context.Context,
 	if err != nil {
 		log.Debug("Got error reading body", err)
 		return nil, nil, err
+	}
+
+	log.Debug("Server response status code is ", resp.StatusCode)
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, nil, fmt.Errorf("got status code %d", resp.StatusCode)
 	}
 
 	return body, &resp.Header, nil
