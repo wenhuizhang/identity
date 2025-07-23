@@ -44,7 +44,7 @@ func (s *VaultKeyService) SaveKey(ctx context.Context, id string, priv *jwk.Jwk)
 		},
 	}
 
-	fullPath := buildKeyPath(s.mountPath, s.keyBasePath, id)
+	fullPath := s.buildKeyPath(id)
 
 	_, err = s.client.Logical().WriteWithContext(ctx, fullPath, data)
 	if err != nil {
@@ -70,7 +70,7 @@ func (s *VaultKeyService) RetrievePrivKey(ctx context.Context, id string) (*jwk.
 func (s *VaultKeyService) DeleteKey(ctx context.Context, id string) error {
 	metadataPath := path.Join(s.mountPath, "metadata", s.keyBasePath, id)
 
-	dataPath := buildKeyPath(s.mountPath, s.keyBasePath, id)
+	dataPath := s.buildKeyPath(id)
 
 	secret, err := s.client.Logical().ReadWithContext(ctx, dataPath)
 	if err != nil {
@@ -123,7 +123,7 @@ func (s *VaultKeyService) ListKeys(ctx context.Context) ([]string, error) {
 }
 
 func (s *VaultKeyService) retrieveKey(ctx context.Context, id string) (*jwk.Jwk, error) {
-	fullPath := buildKeyPath(s.mountPath, s.keyBasePath, id)
+	fullPath := s.buildKeyPath(id)
 
 	secret, err := s.client.Logical().ReadWithContext(ctx, fullPath)
 	if err != nil {
@@ -152,6 +152,6 @@ func (s *VaultKeyService) retrieveKey(ctx context.Context, id string) (*jwk.Jwk,
 	return &key, nil
 }
 
-func buildKeyPath(mountPath, basePath, id string) string {
-	return path.Join(mountPath, "data", basePath, id)
+func (s *VaultKeyService) buildKeyPath(id string) string {
+	return path.Join(s.mountPath, "data", s.keyBasePath, id)
 }

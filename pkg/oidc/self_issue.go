@@ -10,6 +10,7 @@ import (
 
 	"github.com/agntcy/identity/pkg/joseutil"
 	"github.com/agntcy/identity/pkg/jwk"
+	"github.com/google/uuid"
 	"github.com/lestrrat-go/jwx/v3/jwt"
 )
 
@@ -25,6 +26,7 @@ func SelfIssueJWT(issuer, sub string, key *jwk.Jwk) (string, error) {
 		Audience([]string{sub}).
 		Expiration(time.Now().Add(1*time.Hour)).
 		IssuedAt(time.Now()).
+		JwtID(uuid.NewString()).
 		Claim(SelfIssuedTokenSubJwkClaimName, key.PublicKey()).
 		Build()
 

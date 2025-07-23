@@ -612,6 +612,16 @@ github.com/apache/thrift v0.16.0/go.mod h1:PHK3hniurgQaNMZYaCLEqXKsYK8upmhPbmdP2
 github.com/armon/go-radix v0.0.0-20180808171621-7fddfc383310/go.mod h1:ufUuZ+zHj4x4TnLV4JWEpy2hxWSpsRywHrMgIH9cCH8=
 github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2 h1:DklsrG3dyBCFEj5IhUbnKptjxatkF07cF2ak3yi77so=
 github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2/go.mod h1:WaHUgvxTVq04UNunO+XhnAqY/wQc+bxr74GqbsZ/Jqw=
+github.com/aws/aws-sdk-go-v2 v1.36.6 h1:zJqGjVbRdTPojeCGWn5IR5pbJwSQSBh5RWFTQcEQGdU=
+github.com/aws/aws-sdk-go-v2 v1.36.6/go.mod h1:EYrzvCCN9CMUTa5+6lf6MM4tq3Zjp8UhSGR/cBsjai0=
+github.com/aws/aws-sdk-go-v2/internal/configsources v1.3.37 h1:osMWfm/sC/L4tvEdQ65Gri5ZZDCUpuYJZbTTDrsn4I0=
+github.com/aws/aws-sdk-go-v2/internal/configsources v1.3.37/go.mod h1:ZV2/1fbjOPr4G4v38G3Ww5TBT4+hmsK45s/rxu1fGy0=
+github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.6.37 h1:v+X21AvTb2wZ+ycg1gx+orkB/9U6L7AOp93R7qYxsxM=
+github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.6.37/go.mod h1:G0uM1kyssELxmJ2VZEfG0q2npObR3BAkF3c1VsfVnfs=
+github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.35.8 h1:HD6R8K10gPbN9CNqRDOs42QombXlYeLOr4KkIxe2lQs=
+github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.35.8/go.mod h1:x66GdH8qjYTr6Kb4ik38Ewl6moLsg8igbceNsmxVxeA=
+github.com/aws/smithy-go v1.22.4 h1:uqXzVZNuNexwc/xrh6Tb56u89WDlJY6HS+KC0S4QSjw=
+github.com/aws/smithy-go v1.22.4/go.mod h1:t1ufH5HMublsJYulve2RKmHDC15xu1f26kHCp/HgceI=
 github.com/beorn7/perks v1.0.1 h1:VlbKKnNfV8bJzeqoa4cOKqO6bYr3WgKZxO8Z16+hsOM=
 github.com/beorn7/perks v1.0.1/go.mod h1:G2ZrVWU2WbWT9wwq4/hrbKbnv/1ERSJQ0ibhJ6rlkpw=
 github.com/bgentry/speakeasy v0.1.0/go.mod h1:+zsyZBPWlz7T6j88CTgSN5bM796AkVf0kBD4zp0CCIs=
