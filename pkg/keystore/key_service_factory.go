@@ -15,6 +15,7 @@ type StorageType int
 const (
 	FileStorage StorageType = iota
 	VaultStorage
+	AwsSmStorage
 )
 
 func (s StorageType) String() string {
@@ -74,6 +75,19 @@ func NewKeyService(storageType StorageType, config interface{}) (KeyService, err
 			mountPath:   mountPath,
 			keyBasePath: keyBasePath,
 		}, nil
+
+	case AwsSmStorage:
+		c, err := getConfig[AwsSmStorageConfig](config)
+		if err != nil {
+			return nil, err
+		}
+
+		sm, err := NewAwsSmKeyService(&c)
+		if err != nil {
+			return nil, fmt.Errorf("failed to create AWS SM Key Service: %w", err)
+		}
+
+		return sm, nil
 	default:
 		return nil, fmt.Errorf("unsupported storage type: %s", storageType)
 	}
