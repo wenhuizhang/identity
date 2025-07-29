@@ -34,3 +34,8 @@ spec:
             - name: {{ .name }}
               value: {{ .value | quote }}
             {{- end }}
+          envFrom:
+          {{- if .Values.secretRef }}
+          - secretRef:
+              name: "{{ .Values.secretRef }}"
+          {{- end }}
