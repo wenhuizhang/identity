@@ -67,6 +67,8 @@ resources:
 
 secrets: {}
 
+secretRef: ""
+
 # Default configuration for the PostgreSQL instance
 # ===================================================
 
