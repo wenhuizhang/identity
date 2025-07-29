@@ -65,8 +65,6 @@ resources:
     cpu: 100m
     memory: 128Mi
 
-secrets: {}
-
 secretRef: ""
 
 # Default configuration for the PostgreSQL instance
