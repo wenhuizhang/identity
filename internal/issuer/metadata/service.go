@@ -20,6 +20,7 @@ type MetadataService interface {
 		ctx context.Context,
 		vaultId, keyId, issuerId string,
 		idpConfig *idptypes.IdpConfig,
+		identityNodeURL *string,
 	) (string, error)
 	GetAllMetadata(vaultId, keyId, issuerId string) ([]*types.Metadata, error)
 	GetMetadata(vaultId, keyId, issuerId, metadataId string) (*types.Metadata, error)
@@ -51,6 +52,7 @@ func (s *metadataService) GenerateMetadata(
 	ctx context.Context,
 	vaultId, keyId, issuerId string,
 	idpConfig *idptypes.IdpConfig,
+	identityNodeURL *string,
 ) (string, error) {
 	issuer, err := s.issuerRepository.GetIssuer(vaultId, keyId, issuerId)
 	if err != nil {
@@ -72,7 +74,12 @@ func (s *metadataService) GenerateMetadata(
 		ProofValue: token,
 	}
 
-	client, err := s.nodeClientPrv.New(issuer.IdentityNodeURL)
+	idNodeURL := issuer.IdentityNodeURL
+	if identityNodeURL != nil {
+		idNodeURL = *identityNodeURL
+	}
+
+	client, err := s.nodeClientPrv.New(idNodeURL)
 	if err != nil {
 		return "", err
 	}

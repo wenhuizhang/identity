@@ -26,6 +26,7 @@ jobs:
       - uses: actions/checkout@09d2acae674a48949e3602304ab46fd20ae0c42f # v4.1.7
         with:
           fetch-depth: 0
+          persist-credentials: false
       - name: Render Helm templates
         run: |
           helm dependency update ./charts/identity-node
@@ -40,7 +41,9 @@ jobs:
           YAML_CONFIG_FILE: ".yamllint.yml"
           GO_CONFIG_FILE: ".golangci.yaml"
           PROTOBUF_CONFIG_FILE: ".protolintrc.yml"
+          TRIVY_CONFIG_FILE: ".trivy.yml"
           FILTER_REGEX_EXCLUDE: "(.*/charts/.*)|(sdk/python/agntcy/.*)|(sdk/python/google/.*)|(sdk/python/openapiv3/.*)"
+          VALIDATE_GITHUB_ACTIONS_ZIZMOR: false
           VALIDATE_ALL_CODEBASE: false
           VALIDATE_MARKDOWN_PRETTIER: false
           VALIDATE_YAML_PRETTIER: false

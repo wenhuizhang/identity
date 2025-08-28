@@ -16,7 +16,8 @@ import (
 )
 
 type PublishFlags struct {
-	BadgeID string
+	IdentityNodeURL string
+	BadgeID         string
 }
 
 type PublishCommand struct {
@@ -60,6 +61,9 @@ func NewPublishFlags() *PublishFlags {
 }
 
 func (f *PublishFlags) AddFlags(cmd *cobra.Command) {
+	cmd.Flags().
+		StringVarP(&f.IdentityNodeURL, "identity-node-address", "i", "",
+			"Use a different Identity node than the Issuer's default")
 	cmd.Flags().StringVarP(&f.BadgeID, "badge-id", "b", "", "The ID of the badge to publish")
 }
 
@@ -72,7 +76,11 @@ func (cmd *PublishCommand) Run(ctx context.Context, flags *PublishFlags) error {
 	// if the badge id is not set, prompt the user for it interactively
 	// if there is a badge id in the cache, use it as the default when prompting
 	if cmd.cache.BadgeId != "" {
-		err = cmdutil.ScanWithDefaultIfNotSet("Badge ID to publish", cmd.cache.BadgeId, &flags.BadgeID)
+		err = cmdutil.ScanWithDefaultIfNotSet(
+			"Badge ID to publish",
+			cmd.cache.BadgeId,
+			&flags.BadgeID,
+		)
 	} else {
 		err = cmdutil.ScanRequiredIfNotSet("Badge ID to publish", &flags.BadgeID)
 	}
@@ -99,6 +107,7 @@ func (cmd *PublishCommand) Run(ctx context.Context, flags *PublishFlags) error {
 		cmd.cache.IssuerId,
 		cmd.cache.MetadataId,
 		badge,
+		&flags.IdentityNodeURL,
 	)
 	if err != nil {
 		return fmt.Errorf("error publishing badge: %w", err)
@@ -115,16 +124,21 @@ func (cmd *PublishCommand) Run(ctx context.Context, flags *PublishFlags) error {
 		return fmt.Errorf("error getting issuer: %w", err)
 	}
 
+	iNodeURL := issuer.IdentityNodeURL
+	if flags.IdentityNodeURL != "" {
+		iNodeURL = flags.IdentityNodeURL
+	}
+
 	fmt.Fprintf(os.Stdout,
 		"You can access the published badges for your metadata as a Well-Known at "+
 			"%s/v1alpha1/vc/%s/.well-known/vcs.json\n\n",
-		issuer.IdentityNodeURL,
+		iNodeURL,
 		cmd.cache.MetadataId)
 
 	fmt.Fprintf(os.Stdout,
 		"To download the badges for verification, you can use the following command:\n"+
 			"curl -o vcs.json %s/v1alpha1/vc/%s/.well-known/vcs.json\n\n",
-		issuer.IdentityNodeURL,
+		iNodeURL,
 		cmd.cache.MetadataId,
 	)
 

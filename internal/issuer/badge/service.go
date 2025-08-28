@@ -39,6 +39,7 @@ type BadgeService interface {
 		issuerId string,
 		metadataId string,
 		badge *internalIssuerTypes.Badge,
+		identityNodeURL *string,
 	) (*internalIssuerTypes.Badge, error)
 	GetAllBadges(vaultId, keyId, issuerId, metadataId string) ([]*internalIssuerTypes.Badge, error)
 	GetBadge(
@@ -140,6 +141,7 @@ func (s *badgeService) PublishBadge(
 	issuerId string,
 	metadataId string,
 	badge *internalIssuerTypes.Badge,
+	identityNodeURL *string,
 ) (*internalIssuerTypes.Badge, error) {
 	issuer, err := s.issuerRepository.GetIssuer(vaultId, keyId, issuerId)
 	if err != nil {
@@ -166,7 +168,12 @@ func (s *badgeService) PublishBadge(
 		ProofValue: token,
 	}
 
-	client, err := s.nodeClientPrv.New(issuer.IdentityNodeURL)
+	idNodeURL := issuer.IdentityNodeURL
+	if identityNodeURL != nil {
+		idNodeURL = *identityNodeURL
+	}
+
+	client, err := s.nodeClientPrv.New(idNodeURL)
 	if err != nil {
 		return nil, err
 	}
