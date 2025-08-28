@@ -18,7 +18,7 @@ import (
 )
 
 type GenerateFlags struct {
-	IdentityNodeURL *string
+	IdentityNodeURL string
 	IdpClientID     string
 	IdpClientSecret string
 	IdpIssuerURL    string
@@ -66,7 +66,7 @@ func NewGenerateFlags() *GenerateFlags {
 
 func (f *GenerateFlags) AddFlags(cmd *cobra.Command) {
 	cmd.Flags().
-		StringVarP(f.IdentityNodeURL, "identity-node-address", "i", "",
+		StringVarP(&f.IdentityNodeURL, "identity-node-address", "i", "",
 			"Use a different Identity node than the Issuer's default")
 	cmd.Flags().StringVarP(&f.IdpClientID, "idp-client-id", "c", "", "IDP Client ID")
 	cmd.Flags().StringVarP(&f.IdpClientSecret, "idp-client-secret", "s", "", "IDP Client Secret")
@@ -124,7 +124,7 @@ func (cmd *GenerateCommand) Run(ctx context.Context, flags *GenerateFlags) error
 		cmd.cache.KeyID,
 		cmd.cache.IssuerId,
 		idpConfig,
-		flags.IdentityNodeURL,
+		&flags.IdentityNodeURL,
 	)
 	if err != nil {
 		return fmt.Errorf("error generating metadata: %w", err)

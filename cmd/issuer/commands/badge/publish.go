@@ -16,7 +16,7 @@ import (
 )
 
 type PublishFlags struct {
-	IdentityNodeURL *string
+	IdentityNodeURL string
 	BadgeID         string
 }
 
@@ -62,7 +62,7 @@ func NewPublishFlags() *PublishFlags {
 
 func (f *PublishFlags) AddFlags(cmd *cobra.Command) {
 	cmd.Flags().
-		StringVarP(f.IdentityNodeURL, "identity-node-address", "i", "",
+		StringVarP(&f.IdentityNodeURL, "identity-node-address", "i", "",
 			"Use a different Identity node than the Issuer's default")
 	cmd.Flags().StringVarP(&f.BadgeID, "badge-id", "b", "", "The ID of the badge to publish")
 }
@@ -107,7 +107,7 @@ func (cmd *PublishCommand) Run(ctx context.Context, flags *PublishFlags) error {
 		cmd.cache.IssuerId,
 		cmd.cache.MetadataId,
 		badge,
-		flags.IdentityNodeURL,
+		&flags.IdentityNodeURL,
 	)
 	if err != nil {
 		return fmt.Errorf("error publishing badge: %w", err)
@@ -125,8 +125,8 @@ func (cmd *PublishCommand) Run(ctx context.Context, flags *PublishFlags) error {
 	}
 
 	iNodeURL := issuer.IdentityNodeURL
-	if flags.IdentityNodeURL != nil {
-		iNodeURL = *flags.IdentityNodeURL
+	if flags.IdentityNodeURL != "" {
+		iNodeURL = flags.IdentityNodeURL
 	}
 
 	fmt.Fprintf(os.Stdout,
