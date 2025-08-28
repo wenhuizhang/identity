@@ -168,12 +168,12 @@ func (s *badgeService) PublishBadge(
 		ProofValue: token,
 	}
 
-	idNodeURL := issuer.IdentityNodeURL
-	if identityNodeURL != nil {
-		idNodeURL = *identityNodeURL
+	iNodeURL := issuer.IdentityNodeURL
+	if identityNodeURL != nil && *identityNodeURL != "" {
+		iNodeURL = *identityNodeURL
 	}
 
-	client, err := s.nodeClientPrv.New(idNodeURL)
+	client, err := s.nodeClientPrv.New(iNodeURL)
 	if err != nil {
 		return nil, err
 	}
