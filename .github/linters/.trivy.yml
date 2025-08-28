@@ -22,10 +22,6 @@ dependency-tree: false
 # Default is false
 list-all-pkgs: false
 
-# Same as '--ignorefile'
-# Default is '.trivyignore'
-ignorefile: .trivyignore
-
 # Same as '--ignore-policy'
 # Default is empty
 ignore-policy:
