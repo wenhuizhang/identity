@@ -49,7 +49,7 @@ class Client:  # pylint: disable=too-few-public-methods
         logger.debug("Using SSL: %s, Insecure: %s", use_ssl, use_ssl_insecure)
 
         if use_ssl == 1:
-            channel_credentials = grpc.local_channel_credentials()
+            channel_credentials = None
 
             if use_ssl_insecure == 1:
                 root_cert = base64.b64decode(
