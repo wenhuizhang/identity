@@ -49,10 +49,8 @@ class Client:  # pylint: disable=too-few-public-methods
         logger.debug("Using SSL: %s, Insecure: %s", use_ssl, use_ssl_insecure)
 
         if use_ssl == 1:
-            logger.debug("Using secure channel")
             channel_credentials = grpc.local_channel_credentials()
 
-            logger.debug("Using SSL")
             if use_ssl_insecure == 1:
                 root_cert = base64.b64decode(
                     os.environ["IDENTITY_NODE_INSECURE_ROOT_CA"])
@@ -71,10 +69,8 @@ class Client:  # pylint: disable=too-few-public-methods
                 options=options,
             )
         else:
-            logger.debug("Using insecure channel")
-
             # Set if async
             insecure_channel = (grpc.aio.insecure_channel
                                 if async_mode else grpc.insecure_channel)
 
-            self.channel = insecure_channel(grpc_server_url)
+            self.channel = insecure_channel(grpc_server_url, options=options)
